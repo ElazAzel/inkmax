@@ -249,7 +249,7 @@ export interface ScratchBlock {
   backgroundColor?: string;
   isPremium: true;
   schedule?: BlockSchedule;
-  style?: BlockStyle;
+  blockStyle?: BlockStyle;
 }
 
 export interface MapBlock {
@@ -261,7 +261,7 @@ export interface MapBlock {
   address?: string;
   height?: 'small' | 'medium' | 'large';
   schedule?: BlockSchedule;
-  style?: BlockStyle;
+  blockStyle?: BlockStyle;
 }
 
 export interface AvatarBlock {
@@ -276,7 +276,7 @@ export interface AvatarBlock {
   borderColor?: string;
   shadow?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
   schedule?: BlockSchedule;
-  style?: BlockStyle;
+  blockStyle?: BlockStyle;
 }
 
 export interface SeparatorBlock {
@@ -288,7 +288,7 @@ export interface SeparatorBlock {
   width?: 'full' | 'half' | 'third';
   spacing?: 'sm' | 'md' | 'lg' | 'xl';
   schedule?: BlockSchedule;
-  style?: BlockStyle;
+  blockStyle?: BlockStyle;
 }
 
 export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock;

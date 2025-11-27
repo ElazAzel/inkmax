@@ -39,7 +39,7 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
     <div 
       className={cn(
         "flex flex-col items-center gap-3 text-center",
-        getBlockSpacing(block.style)
+        getBlockSpacing(block.blockStyle)
       )}
     >
       <div className={cn(
@@ -52,7 +52,7 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
             sizeClasses[block.size || 'medium'],
             shapeClasses[block.shape || 'circle'],
             shadowClasses[block.shadow || 'soft'],
-            getBlockStyles(block.style)
+            getBlockStyles(block.blockStyle)
           )}
         >
           <AvatarImage src={block.imageUrl} alt={block.name} />
@@ -73,40 +73,40 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
 }
 
 // Helper functions
-function getBlockSpacing(style?: AvatarBlockType['style']) {
-  if (!style) return '';
+function getBlockSpacing(blockStyle?: AvatarBlockType['blockStyle']) {
+  if (!blockStyle) return '';
   
   const classes = [];
   
-  if (style.margin) {
+  if (blockStyle.margin) {
     const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
-    classes.push(marginMap[style.margin]);
+    classes.push(marginMap[blockStyle.margin]);
   }
   
-  if (style.padding) {
+  if (blockStyle.padding) {
     const paddingMap = { none: '', sm: 'p-2', md: 'p-4', lg: 'p-6', xl: 'p-8' };
-    classes.push(paddingMap[style.padding]);
+    classes.push(paddingMap[blockStyle.padding]);
   }
   
   return classes.join(' ');
 }
 
-function getBlockStyles(style?: AvatarBlockType['style']) {
-  if (!style) return '';
+function getBlockStyles(blockStyle?: AvatarBlockType['blockStyle']) {
+  if (!blockStyle) return '';
   
   const classes = [];
   
-  if (style.animation) {
+  if (blockStyle.animation) {
     const animationMap = { 
       none: '', 
       'fade-in': 'animate-fade-in', 
       'slide-up': 'animate-slide-up', 
       'scale-in': 'animate-scale-in' 
     };
-    classes.push(animationMap[style.animation]);
+    classes.push(animationMap[blockStyle.animation]);
   }
 
-  if (style.hoverEffect) {
+  if (blockStyle.hoverEffect) {
     const hoverMap = {
       none: '',
       scale: 'hover:scale-105 transition-transform',
@@ -114,7 +114,7 @@ function getBlockStyles(style?: AvatarBlockType['style']) {
       lift: 'hover:-translate-y-1 transition-transform',
       fade: 'hover:opacity-80 transition-opacity',
     };
-    classes.push(hoverMap[style.hoverEffect]);
+    classes.push(hoverMap[blockStyle.hoverEffect]);
   }
   
   return classes.join(' ');
