@@ -43,7 +43,7 @@ export async function savePage(
       .from('pages')
       .select('id, slug')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     let slug = existingPage?.slug;
     
@@ -53,7 +53,7 @@ export async function savePage(
         .from('user_profiles')
         .select('username')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       
       const baseSlug = profile?.username || `user-${userId.slice(0, 8)}`;
       const { data: generatedSlug } = await supabase.rpc('generate_unique_slug', { 
@@ -166,7 +166,7 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
         blocks (*)
       `)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (pageError) {
       // If no page exists, return empty page data
@@ -201,6 +201,36 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
       return { data: null, chatbotContext: null, error: pageError };
     }
 
+    // If no page exists, return default data
+    if (!page) {
+      return { 
+        data: {
+          id: userId,
+          blocks: [
+            {
+              id: 'profile-1',
+              type: 'profile',
+              name: 'Your Name',
+              bio: 'Your bio goes here',
+            },
+          ],
+          theme: {
+            backgroundColor: 'hsl(var(--background))',
+            textColor: 'hsl(var(--foreground))',
+            buttonStyle: 'rounded',
+            fontFamily: 'sans',
+          },
+          seo: {
+            title: 'My LinkMAX Page',
+            description: 'Check out my links',
+            keywords: [],
+          },
+        },
+        chatbotContext: null,
+        error: null 
+      };
+    }
+
     // Convert to PageData format
     const pageData: PageData = {
       id: page.id,
@@ -227,9 +257,10 @@ export async function publishPage(userId: string): Promise<{ slug: string | null
       .update({ is_published: true })
       .eq('user_id', userId)
       .select('slug')
-      .single();
+      .maybeSingle();
 
     if (error) return { slug: null, error };
+    if (!data) return { slug: null, error: new Error('Page not found') };
 
     return { slug: data.slug, error: null };
   } catch (error) {
