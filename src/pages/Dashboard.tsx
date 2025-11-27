@@ -181,13 +181,13 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Top Toolbar */}
+      {/* Top Toolbar - Mobile Optimized */}
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm">
-        <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-4">
-          <h1 className="text-xl font-bold text-primary">LinkMAX</h1>
+        <div className="container mx-auto px-3 sm:px-4 h-14 flex items-center justify-between gap-2">
+          <h1 className="text-lg sm:text-xl font-bold text-primary">LinkMAX</h1>
           
-          <div className="flex items-center gap-2">
-            {/* AI Tools */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* AI Tools - Hidden on mobile */}
             <Button 
               variant="ghost" 
               size="sm"
@@ -195,16 +195,18 @@ export default function Dashboard() {
                 setAiGeneratorType('ai-builder');
                 setAiGeneratorOpen(true);
               }}
+              className="hidden md:inline-flex"
             >
               <Wand2 className="h-4 w-4 mr-2" />
               AI Builder
             </Button>
 
-            {/* Templates */}
+            {/* Templates - Hidden on mobile */}
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setTemplateGalleryOpen(true)}
+              className="hidden md:inline-flex"
             >
               <LayoutTemplate className="h-4 w-4 mr-2" />
               Templates
@@ -215,12 +217,13 @@ export default function Dashboard() {
               variant={showSettings ? "default" : "ghost"} 
               size="sm"
               onClick={() => setShowSettings(!showSettings)}
+              className="hidden sm:inline-flex"
             >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Settings
+              <MessageCircle className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Settings</span>
             </Button>
 
-            <div className="h-6 w-px bg-border" />
+            <div className="h-6 w-px bg-border hidden sm:block" />
 
             {/* Save */}
             <Button 
@@ -229,27 +232,28 @@ export default function Dashboard() {
               onClick={save} 
               disabled={saving}
             >
-              <Save className="h-4 w-4 mr-2" />
-              {saving ? 'Saving...' : 'Save'}
+              <Save className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save'}</span>
             </Button>
 
-            {/* Preview */}
+            {/* Preview - Hidden on mobile */}
             <Button 
               variant="outline" 
               size="sm" 
               onClick={handlePreview}
+              className="hidden sm:inline-flex"
             >
               <Eye className="h-4 w-4 mr-2" />
               Preview
             </Button>
 
-            {/* Publish */}
+            {/* Publish/Share */}
             <Button size="sm" onClick={handleShare}>
-              <Upload className="h-4 w-4 mr-2" />
-              Publish
+              <Upload className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Share</span>
             </Button>
 
-            <div className="h-6 w-px bg-border" />
+            <div className="h-6 w-px bg-border hidden sm:block" />
 
             {/* Sign Out */}
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
@@ -261,9 +265,9 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="relative">
-        {/* Settings Sidebar */}
+        {/* Settings Sidebar - Mobile Optimized */}
         {showSettings && (
-          <div className="fixed left-0 top-14 bottom-0 w-80 bg-card border-r shadow-lg z-40 overflow-y-auto">
+          <div className="fixed left-0 top-14 bottom-0 w-full sm:w-80 bg-card border-r shadow-lg z-40 overflow-y-auto">
             <div className="p-6 space-y-6">
               {/* Profile Settings */}
               {profileBlock && (
@@ -353,9 +357,9 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Preview Editor */}
-        <div className={`transition-all duration-300 ${showSettings ? 'ml-80' : ''}`}>
-          <div className="py-8">
+        {/* Preview Editor - Mobile Optimized */}
+        <div className={`transition-all duration-300 ${showSettings ? 'sm:ml-80' : ''}`}>
+          <div className="py-4 sm:py-8">
             <PreviewEditor
               blocks={pageData.blocks}
               isPremium={isPremium}
