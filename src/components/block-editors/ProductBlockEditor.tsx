@@ -5,13 +5,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
 import { generateSalesCopy } from '@/lib/ai-helpers';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { validateProductBlock } from '@/lib/block-validators';
 
-interface ProductBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function ProductBlockEditor({ formData, onChange }: ProductBlockEditorProps) {
+function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const [aiLoading, setAiLoading] = useState(false);
 
   const handleGenerateCopy = async () => {
@@ -96,3 +93,8 @@ export function ProductBlockEditor({ formData, onChange }: ProductBlockEditorPro
     </div>
   );
 }
+
+export const ProductBlockEditor = withBlockEditor(ProductBlockEditorComponent, {
+  hint: 'Create a product showcase with pricing and buy link',
+  validate: validateProductBlock,
+});

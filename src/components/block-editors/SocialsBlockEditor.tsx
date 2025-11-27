@@ -3,13 +3,10 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Trash2, Plus } from 'lucide-react';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { validateSocialsBlock } from '@/lib/block-validators';
 
-interface SocialsBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function SocialsBlockEditor({ formData, onChange }: SocialsBlockEditorProps) {
+function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const platforms = formData.platforms || [];
 
   const addPlatform = () => {
@@ -114,3 +111,8 @@ export function SocialsBlockEditor({ formData, onChange }: SocialsBlockEditorPro
     </div>
   );
 }
+
+export const SocialsBlockEditor = withBlockEditor(SocialsBlockEditorComponent, {
+  hint: 'Add social media icons with links to your profiles',
+  validate: validateSocialsBlock,
+});

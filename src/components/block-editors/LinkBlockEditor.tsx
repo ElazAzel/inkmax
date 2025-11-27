@@ -4,13 +4,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { generateMagicTitle } from '@/lib/ai-helpers';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { validateLinkBlock } from '@/lib/block-validators';
 
-interface LinkBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function LinkBlockEditor({ formData, onChange }: LinkBlockEditorProps) {
+function LinkBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const [aiLoading, setAiLoading] = useState(false);
 
   const handleGenerateTitle = async () => {
@@ -92,3 +89,8 @@ export function LinkBlockEditor({ formData, onChange }: LinkBlockEditorProps) {
     </div>
   );
 }
+
+export const LinkBlockEditor = withBlockEditor(LinkBlockEditorComponent, {
+  hint: 'Add clickable links to any external page or resource',
+  validate: validateLinkBlock,
+});

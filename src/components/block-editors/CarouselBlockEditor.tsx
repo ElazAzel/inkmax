@@ -2,13 +2,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Trash2, Plus } from 'lucide-react';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { validateCarouselBlock } from '@/lib/block-validators';
 
-interface CarouselBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function CarouselBlockEditor({ formData, onChange }: CarouselBlockEditorProps) {
+function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const images = formData.images || [];
 
   const addImage = () => {
@@ -122,3 +119,8 @@ export function CarouselBlockEditor({ formData, onChange }: CarouselBlockEditorP
     </div>
   );
 }
+
+export const CarouselBlockEditor = withBlockEditor(CarouselBlockEditorComponent, {
+  hint: 'Create an image gallery carousel with auto-play option',
+  validate: validateCarouselBlock,
+});

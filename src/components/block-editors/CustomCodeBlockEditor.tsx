@@ -2,23 +2,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Crown, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { validateCustomCodeBlock } from '@/lib/block-validators';
 
-interface CustomCodeBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function CustomCodeBlockEditor({ formData, onChange }: CustomCodeBlockEditorProps) {
+function CustomCodeBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   return (
     <div className="space-y-4">
-      <Alert>
-        <Crown className="h-4 w-4" />
-        <AlertDescription>
-          This is a Premium feature. Custom code blocks allow you to embed HTML and CSS.
-        </AlertDescription>
-      </Alert>
-
       <Alert variant="destructive">
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
@@ -59,3 +49,9 @@ export function CustomCodeBlockEditor({ formData, onChange }: CustomCodeBlockEdi
     </div>
   );
 }
+
+export const CustomCodeBlockEditor = withBlockEditor(CustomCodeBlockEditorComponent, {
+  isPremium: true,
+  description: 'Custom code blocks allow you to embed HTML and CSS for advanced customization',
+  validate: validateCustomCodeBlock,
+});

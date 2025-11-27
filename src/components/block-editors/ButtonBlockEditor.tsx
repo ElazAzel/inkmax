@@ -1,13 +1,10 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { validateButtonBlock } from '@/lib/block-validators';
 
-interface ButtonBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function ButtonBlockEditor({ formData, onChange }: ButtonBlockEditorProps) {
+function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -143,3 +140,8 @@ export function ButtonBlockEditor({ formData, onChange }: ButtonBlockEditorProps
     </div>
   );
 }
+
+export const ButtonBlockEditor = withBlockEditor(ButtonBlockEditorComponent, {
+  hint: 'Create custom buttons with gradients, images, and hover effects',
+  validate: validateButtonBlock,
+});

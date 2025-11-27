@@ -1,13 +1,9 @@
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 
-interface TextBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function TextBlockEditor({ formData, onChange }: TextBlockEditorProps) {
+function TextBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -39,3 +35,7 @@ export function TextBlockEditor({ formData, onChange }: TextBlockEditorProps) {
     </div>
   );
 }
+
+export const TextBlockEditor = withBlockEditor(TextBlockEditorComponent, {
+  hint: 'Add text content with different styles: Heading, Paragraph, or Quote',
+});

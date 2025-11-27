@@ -1,13 +1,10 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { validateVideoBlock } from '@/lib/block-validators';
 
-interface VideoBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function VideoBlockEditor({ formData, onChange }: VideoBlockEditorProps) {
+function VideoBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -63,3 +60,8 @@ export function VideoBlockEditor({ formData, onChange }: VideoBlockEditorProps) 
     </div>
   );
 }
+
+export const VideoBlockEditor = withBlockEditor(VideoBlockEditorComponent, {
+  hint: 'Embed YouTube or Vimeo videos with custom aspect ratios',
+  validate: validateVideoBlock,
+});
