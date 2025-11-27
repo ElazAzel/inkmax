@@ -228,19 +228,21 @@ export const ThemeSelector = memo(function ThemeSelector({
         </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {THEMES.map((theme) => (
-            <Card
-              key={theme.id}
-              onClick={() => {
-                // Auto-calculate optimal text color based on background
-                const bgColor = theme.theme.backgroundGradient || theme.theme.backgroundColor;
-                const optimalTextColor = getContrastTextColor(bgColor);
-                onThemeChange({
-                  ...theme.theme,
-                  textColor: optimalTextColor
-                });
-              }}
-              className={cn(
+          {THEMES.map((theme) => {
+            const bgColor = theme.theme.backgroundGradient || theme.theme.backgroundColor;
+            const autoTextColor = getContrastTextColor(bgColor);
+            
+            return (
+              <Card
+                key={theme.id}
+                onClick={() => {
+                  // Apply theme with auto-calculated text color if possible
+                  const themeToApply = autoTextColor 
+                    ? { ...theme.theme, textColor: autoTextColor }
+                    : theme.theme;
+                  onThemeChange(themeToApply);
+                }}
+                className={cn(
                 "relative cursor-pointer transition-all hover:scale-105 overflow-hidden",
                 activeThemeId === theme.id 
                   ? "ring-2 ring-primary shadow-lg" 
@@ -266,11 +268,11 @@ export const ThemeSelector = memo(function ThemeSelector({
                   theme.preview.button
                 )}>
                   Button
+                  </div>
                 </div>
-              </div>
 
-              {/* Theme Info */}
-              <div className="p-2 bg-card">
+                {/* Theme Info */}
+                <div className="p-2 bg-card">
                 <div className="flex items-center justify-between mb-0.5">
                   <h4 className="text-sm font-semibold">{theme.name}</h4>
                   {activeThemeId === theme.id && (
@@ -280,7 +282,8 @@ export const ThemeSelector = memo(function ThemeSelector({
                 <p className="text-xs text-muted-foreground">{theme.description}</p>
               </div>
             </Card>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -353,11 +356,11 @@ export const ThemeSelector = memo(function ThemeSelector({
                 size="sm"
                 onClick={() => {
                   const gradient = `linear-gradient(135deg, ${currentTheme.customGradientStart} 0%, ${currentTheme.customGradientEnd} 100%)`;
-                  const optimalTextColor = getContrastTextColor(gradient);
+                  const autoTextColor = getContrastTextColor(gradient);
                   onThemeChange({ 
-                    backgroundColor: gradient,
+                    backgroundColor: currentTheme.customGradientStart || 'hsl(0 0% 100%)',
                     backgroundGradient: gradient,
-                    textColor: optimalTextColor
+                    textColor: autoTextColor || currentTheme.textColor
                   });
                 }}
                 className="w-full mt-2"
