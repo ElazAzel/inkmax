@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Share2, QrCode } from 'lucide-react';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { ChatbotWidget } from '@/components/ChatbotWidget';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { toast } from 'sonner';
@@ -88,6 +89,11 @@ export default function PublicPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Language Switcher - Top Right */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Content - Mobile Optimized */}
         <div className="space-y-3 sm:space-y-4">
