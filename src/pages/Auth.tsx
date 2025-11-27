@@ -8,6 +8,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { Sparkles } from 'lucide-react';
+import { z } from 'zod';
+
+const authSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email('Please enter a valid email address')
+    .max(255, 'Email must be less than 255 characters'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number'),
+});
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -29,19 +44,17 @@ export default function Auth() {
     const email = formData.get('signup-email') as string;
     const password = formData.get('signup-password') as string;
 
-    if (!email || !password) {
-      toast.error('Please fill in all fields');
+    // Validate with zod schema
+    const validation = authSchema.safeParse({ email, password });
+    
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       setIsLoading(false);
       return;
     }
 
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      setIsLoading(false);
-      return;
-    }
-
-    const { error } = await signUp(email, password);
+    const { error } = await signUp(validation.data.email, validation.data.password);
 
     if (error) {
       console.error('Signup error:', error);
@@ -62,13 +75,17 @@ export default function Auth() {
     const email = formData.get('signin-email') as string;
     const password = formData.get('signin-password') as string;
 
-    if (!email || !password) {
-      toast.error('Please fill in all fields');
+    // Validate with zod schema
+    const validation = authSchema.safeParse({ email, password });
+    
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       setIsLoading(false);
       return;
     }
 
-    const { error } = await signIn(email, password);
+    const { error } = await signIn(validation.data.email, validation.data.password);
 
     if (error) {
       console.error('Signin error:', error);
@@ -157,11 +174,10 @@ export default function Auth() {
                       name="signup-password"
                       type="password"
                       placeholder="••••••••"
-                      minLength={6}
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      Minimum 6 characters
+                      Minimum 8 characters, with uppercase, lowercase, and number
                     </p>
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
