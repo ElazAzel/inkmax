@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import type { Block } from '@/types/page';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 
 // Helper function to check if block should be visible based on schedule
 function isBlockVisible(block: Block): boolean {
@@ -63,6 +64,9 @@ export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
     return null;
   }
 
+  const animationClass = getAnimationClass(block.blockStyle);
+  const animationStyle = getAnimationStyle(block.blockStyle);
+
   switch (block.type) {
     case 'profile':
       return (
@@ -72,117 +76,155 @@ export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
       );
     case 'link':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <LinkBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <LinkBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'button':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <ButtonBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <ButtonBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'socials':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <SocialsBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <SocialsBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'text':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <TextBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <TextBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'image':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <ImageBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <ImageBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'product':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <ProductBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <ProductBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'video':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <VideoBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <VideoBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'carousel':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <CarouselBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <CarouselBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'search':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <SearchBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <SearchBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'custom_code':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <CustomCodeBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <CustomCodeBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'messenger':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <MessengerBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <MessengerBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'form':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <FormBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <FormBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'download':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <DownloadBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <DownloadBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'newsletter':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <NewsletterBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <NewsletterBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'testimonial':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <TestimonialBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <TestimonialBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'scratch':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <ScratchBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <ScratchBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'map':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <MapBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <MapBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'avatar':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <AvatarBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <AvatarBlock block={block} />
+          </Suspense>
+        </div>
       );
     case 'separator':
       return (
-        <Suspense fallback={<BlockSkeleton />}>
-          <SeparatorBlock block={block} />
-        </Suspense>
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <SeparatorBlock block={block} />
+          </Suspense>
+        </div>
       );
     default:
       return null;
