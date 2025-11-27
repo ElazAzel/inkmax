@@ -95,10 +95,20 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
     }
   };
 
+  const getCoverHeight = () => {
+    const height = block.coverHeight || 'medium';
+    switch (height) {
+      case 'small': return 'h-[120px]';
+      case 'medium': return 'h-[200px]';
+      case 'large': return 'h-[320px]';
+      default: return 'h-[200px]';
+    }
+  };
+
   return (
     <div className={`relative flex flex-col ${getPositionClass()}`}>
       {block.coverImage && (
-        <div className="relative w-full h-48 overflow-hidden">
+        <div className={`relative w-full ${getCoverHeight()} overflow-hidden`}>
           <img 
             src={block.coverImage} 
             alt="Cover" 

@@ -15,6 +15,7 @@ export function createBlock(type: string): Block {
         avatarFrame: 'default',
         coverImage: '',
         coverGradient: 'none',
+        coverHeight: 'medium',
         avatarSize: 'large',
         avatarPosition: 'center',
         shadowStyle: 'soft',
