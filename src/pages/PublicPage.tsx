@@ -7,7 +7,7 @@ import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { toast } from 'sonner';
-import type { PageData } from '@/types/page';
+import type { PageData, PageTheme } from '@/types/page';
 import {
   Dialog,
   DialogContent,
@@ -86,13 +86,27 @@ export default function PublicPage() {
     );
   }
 
+  // Get font family class
+  const fontClass = pageData.theme.fontFamily === 'serif' 
+    ? 'font-serif' 
+    : pageData.theme.fontFamily === 'mono' 
+    ? 'font-mono' 
+    : 'font-sans';
+
+  // Get background style
+  const backgroundStyle: React.CSSProperties = {
+    backgroundColor: pageData.theme.backgroundColor,
+    backgroundImage: pageData.theme.backgroundGradient,
+    color: pageData.theme.textColor,
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen ${fontClass}`} style={backgroundStyle}>
       <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Content - Mobile Optimized */}
         <div className="space-y-3 sm:space-y-4">
           {pageData.blocks.map(block => (
-            <BlockRenderer key={block.id} block={block} />
+            <BlockRenderer key={block.id} block={block} theme={pageData.theme} isPreview={false} />
           ))}
         </div>
 

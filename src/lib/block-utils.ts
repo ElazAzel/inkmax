@@ -3,7 +3,7 @@
  * Centralizes common styling and interaction patterns
  */
 
-export type ButtonStyle = 'default' | 'rounded' | 'pill';
+export type ButtonStyle = 'default' | 'rounded' | 'pill' | 'gradient';
 export type HoverEffect = 'default' | 'none' | 'glow' | 'scale' | 'shadow';
 
 export interface BackgroundConfig {
@@ -21,6 +21,8 @@ export function getButtonClass(style?: ButtonStyle): string {
       return 'rounded-full';
     case 'rounded':
       return 'rounded-lg';
+    case 'gradient':
+      return 'rounded-lg bg-gradient-to-r from-primary to-primary/70';
     default:
       return 'rounded-md';
   }

@@ -504,6 +504,7 @@ export default function Dashboard() {
           <div className="py-4 sm:py-8">
             <PreviewEditor
               blocks={pageData.blocks}
+              theme={pageData.theme}
               isPremium={isPremium}
               onInsertBlock={handleInsertBlock}
               onEditBlock={handleEditBlock}
