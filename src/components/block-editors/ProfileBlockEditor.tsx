@@ -2,13 +2,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 
-interface ProfileBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
-}
-
-export function ProfileBlockEditor({ formData, onChange }: ProfileBlockEditorProps) {
+function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -78,3 +74,7 @@ export function ProfileBlockEditor({ formData, onChange }: ProfileBlockEditorPro
     </div>
   );
 }
+
+export const ProfileBlockEditor = withBlockEditor(ProfileBlockEditorComponent, {
+  hint: 'Customize your profile with avatar, name, bio, and special frame effects',
+});
