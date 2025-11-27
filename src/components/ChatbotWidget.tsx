@@ -121,39 +121,40 @@ export function ChatbotWidget({ pageSlug }: ChatbotWidgetProps) {
 
   return (
     <>
-      {/* Chat Button */}
+      {/* Chat Button - Mobile Optimized */}
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg z-50"
           size="icon"
         >
-          <MessageCircle className="h-6 w-6" />
+          <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
       )}
 
-      {/* Chat Window */}
+      {/* Chat Window - Fullscreen on Mobile */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-[380px] h-[600px] shadow-2xl z-50 flex flex-col">
+        <Card className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[380px] sm:h-[600px] shadow-2xl z-50 flex flex-col sm:rounded-lg">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between p-3 sm:p-4 border-b bg-background">
             <div className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold">Ask me anything</h3>
+              <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              <h3 className="font-semibold text-sm sm:text-base">Ask me anything</h3>
             </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsOpen(false)}
+              className="h-8 w-8 sm:h-10 sm:w-10"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Messages - Optimized Scroll */}
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
             {messages.length === 0 && (
-              <div className="text-center text-muted-foreground text-sm py-8">
+              <div className="text-center text-muted-foreground text-xs sm:text-sm py-8">
                 <p>Hi! I'm here to help answer questions about this page.</p>
                 <p className="mt-2">Ask me anything!</p>
               </div>
@@ -169,20 +170,20 @@ export function ChatbotWidget({ pageSlug }: ChatbotWidgetProps) {
               >
                 <div
                   className={cn(
-                    'rounded-lg px-4 py-2 max-w-[80%]',
+                    'rounded-lg px-3 py-2 sm:px-4 max-w-[85%] sm:max-w-[80%]',
                     message.role === 'user'
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted'
                   )}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-xs sm:text-sm whitespace-pre-wrap break-words">{message.content}</p>
                 </div>
               </div>
             ))}
 
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-muted rounded-lg px-4 py-2">
+                <div className="bg-muted rounded-lg px-3 py-2 sm:px-4">
                   <Loader2 className="h-4 w-4 animate-spin" />
                 </div>
               </div>
@@ -191,8 +192,8 @@ export function ChatbotWidget({ pageSlug }: ChatbotWidgetProps) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="p-4 border-t">
+          {/* Input - Touch Optimized */}
+          <div className="p-3 sm:p-4 border-t bg-background">
             <div className="flex gap-2">
               <Input
                 value={input}
@@ -200,11 +201,13 @@ export function ChatbotWidget({ pageSlug }: ChatbotWidgetProps) {
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
                 disabled={isLoading}
+                className="text-sm sm:text-base h-10 sm:h-10"
               />
               <Button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
                 size="icon"
+                className="h-10 w-10 sm:h-10 sm:w-10 flex-shrink-0"
               >
                 <Send className="h-4 w-4" />
               </Button>

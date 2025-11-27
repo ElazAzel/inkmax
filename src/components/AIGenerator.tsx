@@ -227,24 +227,24 @@ export function AIGenerator({ type, isOpen, onClose, onResult, currentData }: AI
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
+      <DialogContent className="max-w-[95vw] sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="space-y-2">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <DialogTitle>{getTitle()}</DialogTitle>
+            <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            <DialogTitle className="text-base sm:text-lg">{getTitle()}</DialogTitle>
           </div>
-          <DialogDescription>{getDescription()}</DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">{getDescription()}</DialogDescription>
         </DialogHeader>
 
-        <div className="py-4">
+        <div className="py-3 sm:py-4">
           {renderInput()}
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={loading}>
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={onClose} disabled={loading} className="w-full sm:w-auto">
             Cancel
           </Button>
-          <Button onClick={handleGenerate} disabled={loading}>
+          <Button onClick={handleGenerate} disabled={loading} className="w-full sm:w-auto">
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
