@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Eye, LogOut, Save, Upload, Crown, Video, Images, Code } from 'lucide-react';
+import { Plus, Eye, LogOut, Save, Upload, Crown, Video, Images, Code, Sparkles, Wand2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
@@ -14,6 +14,7 @@ import { BlockRenderer } from '@/components/BlockRenderer';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { DraggableBlockList } from '@/components/DraggableBlockList';
 import { BlockEditor } from '@/components/BlockEditor';
+import { AIGenerator } from '@/components/AIGenerator';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
 
@@ -36,6 +37,8 @@ export default function Dashboard() {
   const [migrationKey, setMigrationKey] = useState(0);
   const [editingBlock, setEditingBlock] = useState<Block | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
+  const [aiGeneratorType, setAiGeneratorType] = useState<'magic-title' | 'sales-copy' | 'seo' | 'ai-builder'>('magic-title');
 
   // Redirect if not logged in
   useEffect(() => {
@@ -169,6 +172,49 @@ export default function Dashboard() {
     }
   };
 
+  const handleAIResult = (result: any) => {
+    if (aiGeneratorType === 'ai-builder') {
+      // AI Builder creates entire page structure
+      const { profile, blocks } = result;
+      
+      // Update profile if exists
+      if (profile && profileBlock) {
+        updateBlock(profileBlock.id, { 
+          name: profile.name, 
+          bio: profile.bio 
+        });
+      }
+      
+      // Add suggested blocks
+      blocks.forEach((blockData: any, index: number) => {
+        const newBlock: Block = {
+          id: `${blockData.type}-${Date.now()}-${index}`,
+          ...blockData,
+        };
+        addBlock(newBlock);
+      });
+      
+      toast.success(`Added ${blocks.length} blocks from AI suggestion`);
+    } else if (aiGeneratorType === 'seo') {
+      // Update SEO meta tags
+      const { title, description, keywords } = result;
+      if (pageData) {
+        pageData.seo = {
+          title,
+          description,
+          keywords,
+        };
+        toast.success('SEO meta tags updated');
+      }
+    }
+    // For magic-title and sales-copy, result will be used in the context where it's called
+  };
+
+  const openAIGenerator = (type: typeof aiGeneratorType) => {
+    setAiGeneratorType(type);
+    setAiGeneratorOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -282,6 +328,37 @@ export default function Dashboard() {
                       )}
                     </div>
                   )}
+
+                  {/* AI Tools */}
+                  <div className="space-y-3 p-4 border rounded-lg bg-gradient-to-br from-primary/5 to-primary/10">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <h3 className="font-semibold">AI Tools</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => openAIGenerator('ai-builder')}
+                        className="justify-start"
+                      >
+                        <Wand2 className="h-3 w-3 mr-2" />
+                        AI Builder
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => openAIGenerator('seo')}
+                        className="justify-start"
+                      >
+                        <Sparkles className="h-3 w-3 mr-2" />
+                        SEO Generator
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Use AI to build your page or optimize for search engines
+                    </p>
+                  </div>
 
                   {/* Add Blocks */}
                   <div className="space-y-3">
@@ -405,6 +482,15 @@ export default function Dashboard() {
           setEditingBlock(null);
         }}
         onSave={handleSaveBlock}
+      />
+
+      {/* AI Generator Dialog */}
+      <AIGenerator
+        type={aiGeneratorType}
+        isOpen={aiGeneratorOpen}
+        onClose={() => setAiGeneratorOpen(false)}
+        onResult={handleAIResult}
+        currentData={profileBlock}
       />
     </div>
   );

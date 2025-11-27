@@ -18,7 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Sparkles, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import type { Block, VideoBlock, CarouselBlock, CustomCodeBlock, LinkBlock, ProductBlock } from '@/types/page';
 
 interface BlockEditorProps {
@@ -33,10 +35,69 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
     if (!block) return {};
     return { ...block };
   });
+  const [aiLoading, setAiLoading] = useState(false);
 
   const handleSave = () => {
     onSave(formData);
     onClose();
+  };
+
+  const generateMagicTitle = async () => {
+    if (!formData.url) {
+      toast.error('Please enter a URL first');
+      return;
+    }
+
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-content-generator', {
+        body: {
+          type: 'magic-title',
+          input: { url: formData.url },
+        },
+      });
+
+      if (error) throw error;
+      
+      setFormData({ ...formData, title: data.result });
+      toast.success('Title generated!');
+    } catch (error) {
+      console.error('Magic title error:', error);
+      toast.error('Failed to generate title');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const generateSalesCopy = async () => {
+    if (!formData.name || !formData.price) {
+      toast.error('Please enter product name and price first');
+      return;
+    }
+
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-content-generator', {
+        body: {
+          type: 'sales-copy',
+          input: {
+            productName: formData.name,
+            price: formData.price,
+            currency: formData.currency || '$',
+          },
+        },
+      });
+
+      if (error) throw error;
+      
+      setFormData({ ...formData, description: data.result });
+      toast.success('Description generated!');
+    } catch (error) {
+      console.error('Sales copy error:', error);
+      toast.error('Failed to generate description');
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   if (!block) return null;
@@ -47,19 +108,36 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <div className="space-y-4">
             <div>
-              <Label>Title</Label>
-              <Input
-                value={formData.title || ''}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              />
-            </div>
-            <div>
               <Label>URL</Label>
               <Input
                 type="url"
                 value={formData.url || ''}
                 onChange={(e) => setFormData({ ...formData, url: e.target.value })}
               />
+            </div>
+            <div>
+              <Label>Title</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={formData.title || ''}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={generateMagicTitle}
+                  disabled={aiLoading || !formData.url}
+                  title="Generate with AI"
+                >
+                  {aiLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </div>
             <div>
               <Label>Icon</Label>
@@ -93,20 +171,12 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
-            <div>
-              <Label>Description</Label>
-              <Textarea
-                value={formData.description || ''}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2">
               <div>
                 <Label>Price</Label>
                 <Input
                   type="number"
-                  step="0.01"
-                  value={formData.price || 0}
+                  value={formData.price || ''}
                   onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
                 />
               </div>
@@ -119,7 +189,37 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
               </div>
             </div>
             <div>
-              <Label>Image URL</Label>
+              <Label>Description</Label>
+              <div className="space-y-2">
+                <Textarea
+                  value={formData.description || ''}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={3}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={generateSalesCopy}
+                  disabled={aiLoading || !formData.name || !formData.price}
+                  className="w-full"
+                >
+                  {aiLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Generate with AI
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+            <div>
+              <Label>Image URL (optional)</Label>
               <Input
                 type="url"
                 value={formData.image || ''}
@@ -127,7 +227,7 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
               />
             </div>
             <div>
-              <Label>Buy Link</Label>
+              <Label>Buy Link (optional)</Label>
               <Input
                 type="url"
                 value={formData.buyLink || ''}
