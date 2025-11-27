@@ -11,7 +11,13 @@ serve(async (req) => {
   }
 
   try {
-    const { type, input } = await req.json();
+    // Check if body exists and is not empty
+    const text = await req.text();
+    if (!text) {
+      throw new Error('Request body is empty');
+    }
+    
+    const { type, input } = JSON.parse(text);
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {

@@ -13,6 +13,7 @@ export interface DbPage {
   seo_meta: any;
   is_published: boolean;
   view_count: number;
+  chatbot_context: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -31,7 +32,11 @@ export interface DbBlock {
 }
 
 // Save page to database
-export async function savePage(pageData: PageData, userId: string): Promise<{ data: DbPage | null; error: any }> {
+export async function savePage(
+  pageData: PageData, 
+  userId: string, 
+  chatbotContext?: string
+): Promise<{ data: DbPage | null; error: any }> {
   try {
     // Проверяем, есть ли уже страница у пользователя
     const { data: existingPage } = await supabase
@@ -66,6 +71,7 @@ export async function savePage(pageData: PageData, userId: string): Promise<{ da
       avatar_url: pageData.blocks.find(b => b.type === 'profile')?.avatar,
       theme_settings: pageData.theme as any,
       seo_meta: pageData.seo as any,
+      chatbot_context: chatbotContext || null,
       is_published: false,
       updated_at: new Date().toISOString(),
     };
@@ -151,7 +157,7 @@ export async function loadPageBySlug(slug: string): Promise<{ data: PageData | n
 }
 
 // Load user's page
-export async function loadUserPage(userId: string): Promise<{ data: PageData | null; error: any }> {
+export async function loadUserPage(userId: string): Promise<{ data: PageData | null; chatbotContext: string | null; error: any }> {
   try {
     const { data: page, error: pageError } = await supabase
       .from('pages')
@@ -187,11 +193,12 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
               description: 'Check out my links',
               keywords: [],
             },
-          }, 
+          },
+          chatbotContext: null,
           error: null 
         };
       }
-      return { data: null, error: pageError };
+      return { data: null, chatbotContext: null, error: pageError };
     }
 
     // Convert to PageData format
@@ -205,10 +212,10 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
       isPremium: (page.blocks as DbBlock[]).some(b => b.is_premium),
     };
 
-    return { data: pageData, error: null };
+    return { data: pageData, chatbotContext: page.chatbot_context, error: null };
   } catch (error) {
     console.error('Error loading user page:', error);
-    return { data: null, error };
+    return { data: null, chatbotContext: null, error };
   }
 }
 

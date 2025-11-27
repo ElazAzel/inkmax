@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 export function useCloudPageState() {
   const { user } = useAuth();
   const [pageData, setPageData] = useState<PageData | null>(null);
+  const [chatbotContext, setChatbotContext] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -23,13 +24,14 @@ export function useCloudPageState() {
     if (!user) return;
     
     setLoading(true);
-    const { data, error } = await loadUserPage(user.id);
+    const { data, chatbotContext: context, error } = await loadUserPage(user.id);
     
     if (error) {
       console.error('Error loading page:', error);
       toast.error('Failed to load your page');
     } else if (data) {
       setPageData(data);
+      setChatbotContext(context || '');
     }
     
     setLoading(false);
@@ -39,7 +41,7 @@ export function useCloudPageState() {
     if (!user || !pageData) return;
     
     setSaving(true);
-    const { error } = await savePage(pageData, user.id);
+    const { error } = await savePage(pageData, user.id, chatbotContext);
     
     if (error) {
       console.error('Error saving page:', error);
@@ -79,7 +81,7 @@ export function useCloudPageState() {
     // Auto-save after adding block
     setTimeout(() => {
       if (user) {
-        savePage(newPageData, user.id);
+        savePage(newPageData, user.id, chatbotContext);
       }
     }, 500);
   };
@@ -96,7 +98,7 @@ export function useCloudPageState() {
     // Auto-save after updating block
     setTimeout(() => {
       if (user) {
-        savePage(newPageData, user.id);
+        savePage(newPageData, user.id, chatbotContext);
       }
     }, 1000);
   };
@@ -111,7 +113,7 @@ export function useCloudPageState() {
     // Auto-save after deleting block
     setTimeout(() => {
       if (user) {
-        savePage(newPageData, user.id);
+        savePage(newPageData, user.id, chatbotContext);
       }
     }, 500);
   };
@@ -134,13 +136,15 @@ export function useCloudPageState() {
     // Auto-save after updating theme
     setTimeout(() => {
       if (user) {
-        savePage(newPageData, user.id);
+        savePage(newPageData, user.id, chatbotContext);
       }
     }, 1000);
   };
 
   return {
     pageData,
+    chatbotContext,
+    setChatbotContext,
     loading,
     saving,
     save,
