@@ -9,6 +9,11 @@ export function cn(...inputs: ClassValue[]) {
  * Convert HSL color string to RGB values
  */
 function hslToRgb(hsl: string): { r: number; g: number; b: number } | null {
+  // Handle CSS variables - cannot parse, return null
+  if (hsl.includes('var(--')) {
+    return null;
+  }
+  
   const match = hsl.match(/hsl\((\d+)\s+(\d+)%\s+(\d+)%\)/);
   if (!match) return null;
 
@@ -59,8 +64,9 @@ function getLuminance(r: number, g: number, b: number): number {
 /**
  * Automatically determine optimal text color based on background brightness
  * Returns either dark or light text color in HSL format
+ * Returns null if color cannot be parsed (e.g., CSS variables)
  */
-export function getContrastTextColor(backgroundColor: string): string {
+export function getContrastTextColor(backgroundColor: string): string | null {
   // Handle gradients - extract first color
   if (backgroundColor.includes('linear-gradient')) {
     const firstColorMatch = backgroundColor.match(/hsl\([^)]+\)/);
@@ -72,8 +78,8 @@ export function getContrastTextColor(backgroundColor: string): string {
   // Convert HSL to RGB
   const rgb = hslToRgb(backgroundColor);
   if (!rgb) {
-    // Fallback to dark text if parsing fails
-    return 'hsl(0 0% 13%)';
+    // Cannot parse - return null to use theme's default textColor
+    return null;
   }
 
   // Calculate luminance
