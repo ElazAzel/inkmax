@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Check, Moon, Sun, Palette } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, getContrastTextColor } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -231,7 +231,15 @@ export const ThemeSelector = memo(function ThemeSelector({
           {THEMES.map((theme) => (
             <Card
               key={theme.id}
-              onClick={() => onThemeChange(theme.theme)}
+              onClick={() => {
+                // Auto-calculate optimal text color based on background
+                const bgColor = theme.theme.backgroundGradient || theme.theme.backgroundColor;
+                const optimalTextColor = getContrastTextColor(bgColor);
+                onThemeChange({
+                  ...theme.theme,
+                  textColor: optimalTextColor
+                });
+              }}
               className={cn(
                 "relative cursor-pointer transition-all hover:scale-105 overflow-hidden",
                 activeThemeId === theme.id 
@@ -345,9 +353,11 @@ export const ThemeSelector = memo(function ThemeSelector({
                 size="sm"
                 onClick={() => {
                   const gradient = `linear-gradient(135deg, ${currentTheme.customGradientStart} 0%, ${currentTheme.customGradientEnd} 100%)`;
+                  const optimalTextColor = getContrastTextColor(gradient);
                   onThemeChange({ 
                     backgroundColor: gradient,
-                    backgroundGradient: gradient 
+                    backgroundGradient: gradient,
+                    textColor: optimalTextColor
                   });
                 }}
                 className="w-full mt-2"
