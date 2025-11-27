@@ -67,8 +67,14 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="w-52 sm:w-56 bg-card z-50">
-          <DropdownMenuLabel className="text-xs text-muted-foreground">Add Block</DropdownMenuLabel>
+        <DropdownMenuContent 
+          align="center" 
+          className="w-52 sm:w-56 bg-card z-50 max-h-[70vh] overflow-y-auto"
+          sideOffset={5}
+        >
+          <DropdownMenuLabel className="text-xs text-muted-foreground sticky top-0 bg-card z-10">
+            Add Block
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           
           {BASIC_BLOCKS.map((block) => (
@@ -83,7 +89,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
           ))}
           
           <DropdownMenuSeparator />
-          <DropdownMenuLabel className="text-xs text-muted-foreground flex items-center gap-1">
+          <DropdownMenuLabel className="text-xs text-muted-foreground flex items-center gap-1 sticky top-0 bg-card z-10">
             Premium Blocks
             {!isPremium && <span className="text-primary">🔒</span>}
           </DropdownMenuLabel>
