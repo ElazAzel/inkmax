@@ -18,6 +18,13 @@ import { ButtonBlockEditor } from './block-editors/ButtonBlockEditor';
 import { SocialsBlockEditor } from './block-editors/SocialsBlockEditor';
 import { ImageBlockEditor } from './block-editors/ImageBlockEditor';
 import { CustomCodeBlockEditor } from './block-editors/CustomCodeBlockEditor';
+import { MessengerBlockEditor } from './block-editors/MessengerBlockEditor';
+import { FormBlockEditor } from './block-editors/FormBlockEditor';
+import { DownloadBlockEditor } from './block-editors/DownloadBlockEditor';
+import { NewsletterBlockEditor } from './block-editors/NewsletterBlockEditor';
+import { TestimonialBlockEditor } from './block-editors/TestimonialBlockEditor';
+import { ScratchBlockEditor } from './block-editors/ScratchBlockEditor';
+import { SearchBlockEditor } from './block-editors/SearchBlockEditor';
 import type { Block } from '@/types/page';
 
 interface BlockEditorProps {
@@ -101,11 +108,31 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
       case 'custom_code':
         return <CustomCodeBlockEditor {...commonProps} />;
       
-      // For blocks not yet extracted, show message
+      case 'messenger':
+        return <MessengerBlockEditor {...commonProps} />;
+      
+      case 'form':
+        return <FormBlockEditor {...commonProps} />;
+      
+      case 'download':
+        return <DownloadBlockEditor {...commonProps} />;
+      
+      case 'newsletter':
+        return <NewsletterBlockEditor {...commonProps} />;
+      
+      case 'testimonial':
+        return <TestimonialBlockEditor {...commonProps} />;
+      
+      case 'scratch':
+        return <ScratchBlockEditor {...commonProps} />;
+      
+      case 'search':
+        return <SearchBlockEditor {...commonProps} />;
+      
       default:
         return (
           <p className="text-sm text-muted-foreground">
-            Editor for {block.type} block is being refactored. Please use the old editor temporarily.
+            Editor for this block type is not available.
           </p>
         );
     }
