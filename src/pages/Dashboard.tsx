@@ -21,6 +21,7 @@ import { useCloudPageState } from '@/hooks/useCloudPageState';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import { useBlockHints } from '@/hooks/useBlockHints';
 import { useAchievements } from '@/hooks/useAchievements';
+import { useUserProfile } from '@/hooks/useUserProfile';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { ThemeSelector } from '@/components/editor/ThemeSelector';
@@ -42,6 +43,7 @@ export default function Dashboard() {
   const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
   const blockHints = useBlockHints();
   const achievements = useAchievements();
+  const userProfile = useUserProfile(user?.id);
   const {
     pageData,
     chatbotContext,
@@ -66,6 +68,7 @@ export default function Dashboard() {
   const [showSettings, setShowSettings] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [usernameInput, setUsernameInput] = useState('');
 
   // Check achievements whenever blocks or features change
   useEffect(() => {
@@ -89,6 +92,13 @@ export default function Dashboard() {
 
     achievements.checkAchievements(stats);
   }, [pageData, chatbotContext, achievements, user]);
+
+  // Initialize username input
+  useEffect(() => {
+    if (userProfile.profile?.username) {
+      setUsernameInput(userProfile.profile.username);
+    }
+  }, [userProfile.profile]);
 
   // Check if user has completed onboarding
   useEffect(() => {
@@ -167,6 +177,18 @@ export default function Dashboard() {
       });
       
       toast.success(`Added ${blocks.length} blocks from AI`);
+    }
+  };
+
+  const handleUpdateUsername = async () => {
+    if (!usernameInput.trim()) {
+      toast.error('Please enter a username');
+      return;
+    }
+
+    const success = await userProfile.updateUsername(usernameInput.trim());
+    if (success) {
+      await save();
     }
   };
 
@@ -347,6 +369,40 @@ export default function Dashboard() {
         {showSettings && (
           <div className="fixed left-0 top-14 bottom-0 w-full sm:w-80 bg-card border-r shadow-lg z-40 overflow-y-auto">
             <div className="p-6 space-y-6">
+              {/* Username Settings */}
+              <Card className="p-4">
+                <h3 className="font-semibold mb-4">Your Link</h3>
+                <div className="space-y-3">
+                  <div>
+                    <Label>Username</Label>
+                    <div className="flex gap-2 mt-1">
+                      <Input
+                        value={usernameInput}
+                        onChange={(e) => setUsernameInput(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
+                        placeholder="username"
+                        maxLength={30}
+                        disabled={userProfile.saving}
+                      />
+                      <Button 
+                        size="sm" 
+                        onClick={handleUpdateUsername}
+                        disabled={userProfile.saving || !usernameInput.trim()}
+                      >
+                        {userProfile.saving ? 'Saving...' : 'Save'}
+                      </Button>
+                    </div>
+                    {usernameInput && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Your link: {window.location.origin}/{usernameInput}
+                      </p>
+                    )}
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Only lowercase letters, numbers, hyphens, and underscores (3-30 characters)
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
               {/* Profile Settings */}
               {profileBlock && (
                 <Card className="p-4">

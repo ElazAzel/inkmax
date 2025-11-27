@@ -45,17 +45,21 @@ export async function savePage(
       .eq('user_id', userId)
       .maybeSingle();
 
+    // Получаем username из профиля
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('username')
+      .eq('id', userId)
+      .maybeSingle();
+
     let slug = existingPage?.slug;
     
-    // Если нет slug, генерируем новый
-    if (!slug) {
-      const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('username')
-        .eq('id', userId)
-        .maybeSingle();
-      
-      const baseSlug = profile?.username || `user-${userId.slice(0, 8)}`;
+    // Если есть username, используем его как slug
+    if (profile?.username) {
+      slug = profile.username;
+    } else if (!slug) {
+      // Если нет ни username, ни slug, генерируем новый
+      const baseSlug = `user-${userId.slice(0, 8)}`;
       const { data: generatedSlug } = await supabase.rpc('generate_unique_slug', { 
         base_slug: baseSlug.toLowerCase().replace(/[^a-z0-9]/g, '') 
       });
