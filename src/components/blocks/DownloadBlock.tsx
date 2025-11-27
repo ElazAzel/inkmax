@@ -10,7 +10,7 @@ interface DownloadBlockProps {
 export function DownloadBlock({ block }: DownloadBlockProps) {
   const handleDownload = () => {
     // In production, this would track download analytics
-    window.open(block.fileUrl, '_blank');
+    window.open(block.fileUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
