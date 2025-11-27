@@ -17,7 +17,6 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet';
-import { BlockPreview } from './BlockPreview';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
@@ -65,9 +64,6 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [hoveredBlock, setHoveredBlock] = useState<string | null>(null);
-  const [longPressBlock, setLongPressBlock] = useState<string | null>(null);
-  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Filter blocks based on search
   const filteredBlocks = ALL_BLOCKS.filter(block => 
@@ -90,40 +86,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
     onInsert(blockType);
     setIsOpen(false);
     setSearchQuery('');
-    setHoveredBlock(null);
-    setLongPressBlock(null);
   };
-
-  const handleMouseEnter = (blockType: string) => {
-    // Only on desktop
-    if (window.innerWidth >= 768) {
-      setHoveredBlock(blockType);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredBlock(null);
-  };
-
-  const handleTouchStart = (blockType: string) => {
-    const timer = setTimeout(() => {
-      setLongPressBlock(blockType);
-    }, 500); // 500ms for long press
-    setLongPressTimer(timer);
-  };
-
-  const handleTouchEnd = () => {
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      setLongPressTimer(null);
-    }
-    // Keep preview visible for a moment
-    setTimeout(() => {
-      setLongPressBlock(null);
-    }, 300);
-  };
-
-  const activePreview = hoveredBlock || longPressBlock;
 
   // Mobile Sheet Interface
   const MobileSheet = () => (
@@ -163,15 +126,12 @@ export const BlockInsertButton = memo(function BlockInsertButton({
                   <button
                     key={block.type}
                     onClick={() => handleInsert(block.type, block.premium)}
-                    onTouchStart={() => handleTouchStart(block.type)}
-                    onTouchEnd={handleTouchEnd}
                     disabled={block.premium && !isPremium}
                     className={cn(
                       "relative flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all active:scale-95",
                       block.premium && !isPremium
                         ? "bg-muted/50 border-border cursor-not-allowed opacity-60"
-                        : "bg-card border-border hover:border-primary hover:bg-accent cursor-pointer",
-                      activePreview === block.type && "border-primary bg-accent scale-[0.98]"
+                        : "bg-card border-border hover:border-primary hover:bg-accent cursor-pointer"
                     )}
                   >
                     {block.premium && !isPremium && (
@@ -241,12 +201,9 @@ export const BlockInsertButton = memo(function BlockInsertButton({
                 <DropdownMenuItem
                   key={block.type}
                   onClick={() => handleInsert(block.type, block.premium)}
-                  onMouseEnter={() => handleMouseEnter(block.type)}
-                  onMouseLeave={handleMouseLeave}
                   disabled={block.premium && !isPremium}
                   className={cn(
                     "cursor-pointer transition-colors rounded-lg mx-1 my-0.5",
-                    activePreview === block.type && "bg-accent",
                     block.premium && !isPremium && "opacity-60"
                   )}
                 >
@@ -276,26 +233,6 @@ export const BlockInsertButton = memo(function BlockInsertButton({
       className
     )}>
       {isMobile ? <MobileSheet /> : <DesktopDropdown />}
-
-      {/* Preview Tooltip - Desktop only */}
-      {!isMobile && activePreview && (
-        <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] animate-in fade-in zoom-in-95 duration-200 max-w-md">
-          <BlockPreview blockType={activePreview} />
-        </div>
-      )}
-
-      {/* Preview Overlay - Mobile long press */}
-      {isMobile && longPressBlock && (
-        <>
-          <div 
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[99]"
-            onClick={() => setLongPressBlock(null)}
-          />
-          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] animate-in fade-in zoom-in-95 duration-200 max-w-[90vw]">
-            <BlockPreview blockType={longPressBlock} />
-          </div>
-        </>
-      )}
     </div>
   );
 });
