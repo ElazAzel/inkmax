@@ -193,6 +193,40 @@ export function createBlock(type: string): Block {
         isPremium: true,
       };
     
+    case 'map':
+      return {
+        id: `map-${timestamp}`,
+        type: 'map',
+        title: 'Наше местоположение',
+        provider: 'google',
+        embedUrl: '',
+        address: '',
+        height: 'medium',
+      };
+    
+    case 'avatar':
+      return {
+        id: `avatar-${timestamp}`,
+        type: 'avatar',
+        imageUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Avatar',
+        name: 'Имя',
+        subtitle: '',
+        size: 'medium',
+        shape: 'circle',
+        border: false,
+        shadow: 'soft',
+      };
+    
+    case 'separator':
+      return {
+        id: `separator-${timestamp}`,
+        type: 'separator',
+        variant: 'solid',
+        thickness: 'thin',
+        width: 'full',
+        spacing: 'md',
+      };
+    
     default:
       throw new Error(`Unknown block type: ${type}`);
   }

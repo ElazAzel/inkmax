@@ -40,6 +40,9 @@ const DownloadBlock = lazy(() => import('./blocks/DownloadBlock').then(m => ({ d
 const NewsletterBlock = lazy(() => import('./blocks/NewsletterBlock').then(m => ({ default: m.NewsletterBlock })));
 const TestimonialBlock = lazy(() => import('./blocks/TestimonialBlock').then(m => ({ default: m.TestimonialBlock })));
 const ScratchBlock = lazy(() => import('./blocks/ScratchBlock').then(m => ({ default: m.ScratchBlock })));
+const MapBlock = lazy(() => import('./blocks/MapBlock').then(m => ({ default: m.MapBlock })));
+const AvatarBlock = lazy(() => import('./blocks/AvatarBlock').then(m => ({ default: m.AvatarBlock })));
+const SeparatorBlock = lazy(() => import('./blocks/SeparatorBlock').then(m => ({ default: m.SeparatorBlock })));
 
 interface BlockRendererProps {
   block: Block;
@@ -161,6 +164,24 @@ export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
       return (
         <Suspense fallback={<BlockSkeleton />}>
           <ScratchBlock block={block} />
+        </Suspense>
+      );
+    case 'map':
+      return (
+        <Suspense fallback={<BlockSkeleton />}>
+          <MapBlock block={block} />
+        </Suspense>
+      );
+    case 'avatar':
+      return (
+        <Suspense fallback={<BlockSkeleton />}>
+          <AvatarBlock block={block} />
+        </Suspense>
+      );
+    case 'separator':
+      return (
+        <Suspense fallback={<BlockSkeleton />}>
+          <SeparatorBlock block={block} />
         </Suspense>
       );
     default:

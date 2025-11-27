@@ -37,6 +37,9 @@ const ALL_BLOCKS = [
   { type: 'image', label: 'Image', icon: '🖼️', category: 'Content', premium: false },
   { type: 'video', label: 'Video', icon: '🎬', category: 'Content', premium: true },
   { type: 'carousel', label: 'Carousel', icon: '📸', category: 'Content', premium: true },
+  { type: 'avatar', label: 'Avatar', icon: '👤', category: 'Content', premium: false },
+  { type: 'separator', label: 'Separator', icon: '➖', category: 'Content', premium: false },
+  { type: 'map', label: 'Map', icon: '🗺️', category: 'Content', premium: false },
   
   // Shop & Products
   { type: 'product', label: 'Product', icon: '🛍️', category: 'Shop', premium: false },

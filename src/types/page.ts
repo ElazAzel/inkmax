@@ -1,4 +1,28 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator';
+
+// Extended style system for all blocks
+export interface BlockStyle {
+  // Spacing
+  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  margin?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  
+  // Border
+  borderRadius?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+  borderWidth?: 'none' | 'thin' | 'medium' | 'thick';
+  borderColor?: string;
+  
+  // Shadow
+  shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'glow';
+  
+  // Background
+  backgroundColor?: string;
+  backgroundGradient?: string;
+  backgroundOpacity?: number;
+  
+  // Animation
+  hoverEffect?: 'none' | 'scale' | 'glow' | 'lift' | 'fade';
+  animation?: 'none' | 'fade-in' | 'slide-up' | 'scale-in';
+}
 
 export interface BlockSchedule {
   startDate?: string; // ISO date string
@@ -207,9 +231,49 @@ export interface ScratchBlock {
   backgroundColor?: string;
   isPremium: true;
   schedule?: BlockSchedule;
+  style?: BlockStyle;
 }
 
-export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock;
+export interface MapBlock {
+  id: string;
+  type: 'map';
+  title?: string;
+  provider: 'google' | 'yandex';
+  embedUrl: string;
+  address?: string;
+  height?: 'small' | 'medium' | 'large';
+  schedule?: BlockSchedule;
+  style?: BlockStyle;
+}
+
+export interface AvatarBlock {
+  id: string;
+  type: 'avatar';
+  imageUrl: string;
+  name: string;
+  subtitle?: string;
+  size?: 'small' | 'medium' | 'large' | 'xlarge';
+  shape?: 'circle' | 'rounded' | 'square';
+  border?: boolean;
+  borderColor?: string;
+  shadow?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
+  schedule?: BlockSchedule;
+  style?: BlockStyle;
+}
+
+export interface SeparatorBlock {
+  id: string;
+  type: 'separator';
+  variant?: 'solid' | 'dashed' | 'dotted' | 'gradient';
+  thickness?: 'thin' | 'medium' | 'thick';
+  color?: string;
+  width?: 'full' | 'half' | 'third';
+  spacing?: 'sm' | 'md' | 'lg' | 'xl';
+  schedule?: BlockSchedule;
+  style?: BlockStyle;
+}
+
+export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock;
 
 export interface PageTheme {
   backgroundColor: string;
