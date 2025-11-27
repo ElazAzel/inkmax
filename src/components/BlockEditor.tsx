@@ -133,6 +133,32 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
                 rows={3}
               />
             </div>
+            
+            <div className="border-t pt-4">
+              <Label>Avatar Frame Style</Label>
+              <Select
+                value={formData.avatarFrame || 'default'}
+                onValueChange={(value) => setFormData({ ...formData, avatarFrame: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default - Simple Ring</SelectItem>
+                  <SelectItem value="neon">Neon - Glowing Effect</SelectItem>
+                  <SelectItem value="glitch">Glitch - Digital Effect</SelectItem>
+                  <SelectItem value="aura">Aura - Soft Glow</SelectItem>
+                  <SelectItem value="gradient">Gradient - Color Shift</SelectItem>
+                  <SelectItem value="pulse">Pulse - Animated Beat</SelectItem>
+                  <SelectItem value="rainbow">Rainbow - Color Wave</SelectItem>
+                  <SelectItem value="double">Double - Two Rings</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-2">
+                Choose a frame style to make your avatar stand out
+              </p>
+            </div>
+
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"

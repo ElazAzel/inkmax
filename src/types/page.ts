@@ -7,6 +7,7 @@ export interface ProfileBlock {
   name: string;
   bio: string;
   verified?: boolean;
+  avatarFrame?: 'default' | 'neon' | 'glitch' | 'aura' | 'gradient' | 'pulse' | 'rainbow' | 'double';
 }
 
 export interface LinkBlock {
