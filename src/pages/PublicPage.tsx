@@ -1,0 +1,114 @@
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Share2, QrCode } from 'lucide-react';
+import { BlockRenderer } from '@/components/BlockRenderer';
+import { decompressPageData } from '@/lib/compression';
+import { toast } from 'sonner';
+import type { PageData } from '@/types/page';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { QRCodeSVG } from 'qrcode.react';
+
+export default function PublicPage() {
+  const { compressed } = useParams<{ compressed: string }>();
+  const [pageData, setPageData] = useState<PageData | null>(null);
+  const [showQR, setShowQR] = useState(false);
+  const currentUrl = window.location.href;
+
+  useEffect(() => {
+    if (compressed) {
+      const data = decompressPageData(compressed);
+      if (data) {
+        setPageData(data);
+        // Update SEO
+        document.title = data.seo.title;
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+          metaDescription.setAttribute('content', data.seo.description);
+        }
+      }
+    }
+  }, [compressed]);
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: pageData?.seo.title || 'Check out my LinkMAX',
+        url: currentUrl,
+      }).catch(() => {
+        navigator.clipboard.writeText(currentUrl);
+        toast.success('Link copied to clipboard');
+      });
+    } else {
+      navigator.clipboard.writeText(currentUrl);
+      toast.success('Link copied to clipboard');
+    }
+  };
+
+  if (!pageData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Page not found</h1>
+          <p className="text-muted-foreground">Invalid or corrupted link</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container max-w-2xl mx-auto px-4 py-8">
+        {/* Content */}
+        <div className="space-y-4">
+          {pageData.blocks.map(block => (
+            <BlockRenderer key={block.id} block={block} />
+          ))}
+        </div>
+
+        {/* Share Section */}
+        <div className="mt-8 flex gap-2 justify-center">
+          <Button variant="outline" onClick={handleShare}>
+            <Share2 className="h-4 w-4 mr-2" />
+            Share
+          </Button>
+          <Button variant="outline" onClick={() => setShowQR(true)}>
+            <QrCode className="h-4 w-4 mr-2" />
+            QR Code
+          </Button>
+        </div>
+
+        {/* Branding */}
+        <div className="mt-12 text-center">
+          <a
+            href="/"
+            className="text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
+            Create your own LinkMAX
+          </a>
+        </div>
+      </div>
+
+      {/* QR Dialog */}
+      <Dialog open={showQR} onOpenChange={setShowQR}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>QR Code</DialogTitle>
+            <DialogDescription>
+              Scan this code to share your page
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center p-6">
+            <QRCodeSVG value={currentUrl} size={256} level="H" />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
