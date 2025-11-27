@@ -26,6 +26,22 @@ export function getAnimationClass(style?: BlockStyle): string {
   return `${baseAnimation} ${speed}`.trim();
 }
 
+export function getContinuousAnimationClass(style?: BlockStyle): string {
+  if (!style?.continuousAnimation || style.continuousAnimation === 'none') {
+    return '';
+  }
+
+  const continuousAnimationMap: Record<string, string> = {
+    'pulse': 'animate-pulse',
+    'glow': 'animate-glow',
+    'float': 'animate-float',
+    'bounce': 'animate-bounce-continuous',
+    'blink': 'animate-blink',
+  };
+
+  return continuousAnimationMap[style.continuousAnimation] || '';
+}
+
 export function getAnimationStyle(style?: BlockStyle): React.CSSProperties {
   if (!style?.animationDelay) {
     return {};
