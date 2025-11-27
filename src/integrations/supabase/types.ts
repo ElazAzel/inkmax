@@ -65,6 +65,7 @@ export type Database = {
           is_premium: boolean | null
           page_id: string
           position: number
+          schedule: Json | null
           style: Json | null
           title: string | null
           type: string
@@ -77,6 +78,7 @@ export type Database = {
           is_premium?: boolean | null
           page_id: string
           position: number
+          schedule?: Json | null
           style?: Json | null
           title?: string | null
           type: string
@@ -89,6 +91,7 @@ export type Database = {
           is_premium?: boolean | null
           page_id?: string
           position?: number
+          schedule?: Json | null
           style?: Json | null
           title?: string | null
           type?: string
