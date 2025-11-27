@@ -158,11 +158,20 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    /* Prevent text size adjust on mobile */
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Improve touch scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
+    /* Prevent horizontal overflow */
+    overflow-x: hidden;
   }
 }
 
@@ -186,5 +195,25 @@ All colors MUST be HSL.
   /* Smooth transitions */
   .transition-smooth {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Touch-friendly tap targets */
+  @media (hover: none) {
+    button,
+    a,
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
   }
 }

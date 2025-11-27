@@ -220,23 +220,25 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="max-w-2xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="text-lg sm:text-xl">
             {BLOCK_TITLES[block.type] || 'Редактировать Блок'}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm">
             Настройте все параметры блока. Изменения сохраняются автоматически.
           </DialogDescription>
         </DialogHeader>
         
-        {renderEditor()}
+        <div className="py-4">
+          {renderEditor()}
+        </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
             Отмена
           </Button>
-          <Button onClick={handleSave}>
+          <Button onClick={handleSave} className="w-full sm:w-auto">
             Сохранить
           </Button>
         </DialogFooter>

@@ -110,34 +110,34 @@ export const TemplateGallery = memo(function TemplateGallery({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>Choose a Template</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Choose a Template</DialogTitle>
+          <DialogDescription className="text-sm">
             Start with a pre-designed template or create from scratch
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {categories.map((category) => (
-            <div key={category} className="space-y-3">
-              <h3 className="font-semibold text-sm text-muted-foreground">{category}</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div key={category} className="space-y-2 sm:space-y-3">
+              <h3 className="font-semibold text-xs sm:text-sm text-muted-foreground">{category}</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                 {TEMPLATES.filter(t => t.category === category).map((template) => (
                   <Card
                     key={template.id}
-                    className="p-4 hover:border-primary cursor-pointer transition-all hover:shadow-lg group"
+                    className="p-3 sm:p-4 hover:border-primary cursor-pointer transition-all hover:shadow-lg group"
                     onClick={() => handleSelect(template)}
                   >
-                    <div className="text-4xl mb-2 text-center group-hover:scale-110 transition-transform">
+                    <div className="text-3xl sm:text-4xl mb-2 text-center group-hover:scale-110 transition-transform">
                       {template.preview}
                     </div>
-                    <h4 className="font-semibold text-center mb-1">{template.name}</h4>
-                    <p className="text-xs text-muted-foreground text-center">
+                    <h4 className="font-semibold text-xs sm:text-sm text-center mb-1">{template.name}</h4>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground text-center line-clamp-2">
                       {template.description}
                     </p>
-                    <div className="mt-3 text-center">
-                      <Badge variant="secondary" className="text-xs">
+                    <div className="mt-2 sm:mt-3 text-center">
+                      <Badge variant="secondary" className="text-[10px] sm:text-xs">
                         {template.blocks.length} blocks
                       </Badge>
                     </div>
@@ -149,7 +149,7 @@ export const TemplateGallery = memo(function TemplateGallery({
         </div>
 
         <div className="flex justify-end gap-2 pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
             Cancel
           </Button>
         </div>
