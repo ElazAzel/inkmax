@@ -170,3 +170,19 @@ export function validateSearchBlock(formData: any): string | null {
   // Search block has no required fields, placeholder is optional
   return null;
 }
+
+export function validateMapBlock(formData: any): string | null {
+  return validateRequired(formData.embedUrl, 'Embed URL');
+}
+
+export function validateAvatarBlock(formData: any): string | null {
+  return (
+    validateUrl(formData.imageUrl, 'Image URL') ||
+    validateRequired(formData.name, 'Name')
+  );
+}
+
+export function validateSeparatorBlock(formData: any): string | null {
+  // Separator block has no required fields
+  return null;
+}
