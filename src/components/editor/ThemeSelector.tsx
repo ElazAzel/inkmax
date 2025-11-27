@@ -207,7 +207,7 @@ export const ThemeSelector = memo(function ThemeSelector({
         </div>
         <Switch
           checked={currentTheme.darkMode || false}
-          onCheckedChange={(checked) => onThemeChange({ ...currentTheme, darkMode: checked })}
+          onCheckedChange={(checked) => onThemeChange({ darkMode: checked })}
         />
       </div>
 
@@ -282,7 +282,7 @@ export const ThemeSelector = memo(function ThemeSelector({
             <input
               type="color"
               value={currentTheme.accentColor || '#3b82f6'}
-              onChange={(e) => onThemeChange({ ...currentTheme, accentColor: e.target.value })}
+              onChange={(e) => onThemeChange({ accentColor: e.target.value })}
               className="w-full h-10 rounded-md border border-input cursor-pointer"
             />
           </div>
@@ -292,7 +292,7 @@ export const ThemeSelector = memo(function ThemeSelector({
             <Label>Shadow Intensity</Label>
             <Select
               value={currentTheme.shadowIntensity || 'medium'}
-              onValueChange={(value: any) => onThemeChange({ ...currentTheme, shadowIntensity: value })}
+              onValueChange={(value: any) => onThemeChange({ shadowIntensity: value })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -316,7 +316,7 @@ export const ThemeSelector = memo(function ThemeSelector({
                 <input
                   type="color"
                   value={currentTheme.customGradientStart || '#3b82f6'}
-                  onChange={(e) => onThemeChange({ ...currentTheme, customGradientStart: e.target.value })}
+                  onChange={(e) => onThemeChange({ customGradientStart: e.target.value })}
                   className="w-full h-10 rounded-md border border-input cursor-pointer"
                 />
               </div>
@@ -325,7 +325,7 @@ export const ThemeSelector = memo(function ThemeSelector({
                 <input
                   type="color"
                   value={currentTheme.customGradientEnd || '#8b5cf6'}
-                  onChange={(e) => onThemeChange({ ...currentTheme, customGradientEnd: e.target.value })}
+                  onChange={(e) => onThemeChange({ customGradientEnd: e.target.value })}
                   className="w-full h-10 rounded-md border border-input cursor-pointer"
                 />
               </div>
@@ -337,7 +337,6 @@ export const ThemeSelector = memo(function ThemeSelector({
                 onClick={() => {
                   const gradient = `linear-gradient(135deg, ${currentTheme.customGradientStart} 0%, ${currentTheme.customGradientEnd} 100%)`;
                   onThemeChange({ 
-                    ...currentTheme, 
                     backgroundColor: gradient,
                     backgroundGradient: gradient 
                   });
