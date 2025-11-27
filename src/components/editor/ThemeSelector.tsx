@@ -20,9 +20,11 @@ const THEMES = [
     name: 'Classic',
     description: 'Clean and minimal',
     isPremium: false,
+    isActive: true,
     theme: {
       backgroundColor: 'hsl(0 0% 100%)',
       textColor: 'hsl(0 0% 9%)',
+      accentColor: 'hsl(217 91% 60%)',
       buttonStyle: 'rounded' as const,
       fontFamily: 'sans' as const,
     },
@@ -37,6 +39,7 @@ const THEMES = [
     name: 'Dark Mode',
     description: 'Sleek dark design',
     isPremium: false,
+    isActive: true,
     theme: {
       backgroundColor: 'hsl(220 13% 9%)',
       textColor: 'hsl(210 40% 98%)',
@@ -54,8 +57,9 @@ const THEMES = [
   {
     id: 'gradient',
     name: 'Gradient',
-    description: 'Colorful and vibrant',
+    description: 'Coming Soon',
     isPremium: false,
+    isActive: false,
     theme: {
       backgroundColor: 'hsl(280 100% 70%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(280 100% 70%) 0%, hsl(220 100% 75%) 100%)',
@@ -73,8 +77,9 @@ const THEMES = [
   {
     id: 'minimal',
     name: 'Minimal',
-    description: 'Ultra clean aesthetic',
+    description: 'Coming Soon',
     isPremium: false,
+    isActive: false,
     theme: {
       backgroundColor: 'hsl(0 0% 98%)',
       textColor: 'hsl(0 0% 13%)',
@@ -91,8 +96,9 @@ const THEMES = [
   {
     id: 'neon',
     name: 'Neon',
-    description: 'Bold and electric',
+    description: 'Coming Soon',
     isPremium: true,
+    isActive: false,
     theme: {
       backgroundColor: 'hsl(270 100% 5%)',
       textColor: 'hsl(180 100% 70%)',
@@ -110,8 +116,9 @@ const THEMES = [
   {
     id: 'sunset',
     name: 'Sunset Pro',
-    description: 'Warm gradients',
+    description: 'Coming Soon',
     isPremium: true,
+    isActive: false,
     theme: {
       backgroundColor: 'hsl(15 100% 65%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(15 100% 65%) 0%, hsl(340 100% 70%) 100%)',
@@ -130,8 +137,9 @@ const THEMES = [
   {
     id: 'ocean',
     name: 'Ocean Pro',
-    description: 'Deep blue vibes',
+    description: 'Coming Soon',
     isPremium: true,
+    isActive: false,
     theme: {
       backgroundColor: 'hsl(200 100% 40%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(200 100% 40%) 0%, hsl(220 100% 20%) 100%)',
@@ -150,8 +158,9 @@ const THEMES = [
   {
     id: 'forest',
     name: 'Forest Pro',
-    description: 'Natural greens',
+    description: 'Coming Soon',
     isPremium: true,
+    isActive: false,
     theme: {
       backgroundColor: 'hsl(140 60% 40%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(140 60% 40%) 0%, hsl(160 80% 25%) 100%)',
@@ -170,8 +179,9 @@ const THEMES = [
   {
     id: 'midnight',
     name: 'Midnight Pro',
-    description: 'Dark with purple accent',
+    description: 'Coming Soon',
     isPremium: true,
+    isActive: false,
     theme: {
       backgroundColor: 'hsl(240 20% 8%)',
       textColor: 'hsl(0 0% 95%)',
@@ -237,11 +247,13 @@ export const ThemeSelector = memo(function ThemeSelector({
           {THEMES.map((theme) => {
             const bgColor = theme.theme.backgroundGradient || theme.theme.backgroundColor;
             const autoTextColor = getContrastTextColor(bgColor);
+            const isDisabled = !theme.isActive;
             
             return (
               <Card
                 key={theme.id}
                 onClick={() => {
+                  if (isDisabled) return;
                   // Apply theme with auto-calculated text color if possible
                   const themeToApply = autoTextColor 
                     ? { ...theme.theme, textColor: autoTextColor }
@@ -250,6 +262,7 @@ export const ThemeSelector = memo(function ThemeSelector({
                 }}
                 className={cn(
                 "relative cursor-pointer transition-all hover:scale-105 overflow-hidden",
+                isDisabled && "opacity-50 cursor-not-allowed hover:scale-100",
                 activeThemeId === theme.id 
                   ? "ring-2 ring-primary shadow-lg" 
                   : "hover:ring-1 hover:ring-border"
@@ -260,6 +273,15 @@ export const ThemeSelector = memo(function ThemeSelector({
                 <div className="absolute top-2 right-2 z-10">
                   <span className="text-[10px] font-bold px-2 py-0.5 bg-primary text-primary-foreground rounded-full">
                     PRO
+                  </span>
+                </div>
+              )}
+              
+              {/* Coming Soon Badge */}
+              {isDisabled && (
+                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                  <span className="text-xs font-bold px-3 py-1 bg-muted text-muted-foreground rounded-full">
+                    Coming Soon
                   </span>
                 </div>
               )}
@@ -281,7 +303,7 @@ export const ThemeSelector = memo(function ThemeSelector({
                 <div className="p-2 bg-card">
                 <div className="flex items-center justify-between mb-0.5">
                   <h4 className="text-sm font-semibold">{theme.name}</h4>
-                  {activeThemeId === theme.id && (
+                  {activeThemeId === theme.id && !isDisabled && (
                     <Check className="h-4 w-4 text-primary" />
                   )}
                 </div>
