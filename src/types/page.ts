@@ -1,5 +1,10 @@
 export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch';
 
+export interface BlockSchedule {
+  startDate?: string; // ISO date string
+  endDate?: string; // ISO date string
+}
+
 export interface ProfileBlock {
   id: string;
   type: 'profile';
@@ -14,6 +19,7 @@ export interface ProfileBlock {
   avatarSize?: 'small' | 'medium' | 'large' | 'xlarge';
   avatarPosition?: 'left' | 'center' | 'right';
   shadowStyle?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
+  schedule?: BlockSchedule;
 }
 
 export interface LinkBlock {
@@ -23,6 +29,7 @@ export interface LinkBlock {
   url: string;
   icon?: string;
   style?: 'default' | 'rounded' | 'pill';
+  schedule?: BlockSchedule;
 }
 
 export interface TextBlock {
@@ -30,6 +37,7 @@ export interface TextBlock {
   type: 'text';
   content: string;
   style?: 'heading' | 'paragraph' | 'quote';
+  schedule?: BlockSchedule;
 }
 
 export type Currency = 'KZT' | 'RUB' | 'BYN' | 'AMD' | 'AZN' | 'KGS' | 'TJS' | 'TMT' | 'UZS' | 'USD' | 'EUR' | 'GBP' | 'CNY' | 'JPY' | 'CHF' | 'CAD' | 'AUD';
@@ -43,6 +51,7 @@ export interface ProductBlock {
   currency: Currency;
   image?: string;
   buyLink?: string;
+  schedule?: BlockSchedule;
 }
 
 export interface VideoBlock {
@@ -52,6 +61,7 @@ export interface VideoBlock {
   url: string;
   platform: 'youtube' | 'vimeo';
   aspectRatio?: '16:9' | '4:3' | '1:1';
+  schedule?: BlockSchedule;
 }
 
 export interface CarouselBlock {
@@ -65,6 +75,7 @@ export interface CarouselBlock {
   }>;
   autoPlay?: boolean;
   interval?: number;
+  schedule?: BlockSchedule;
 }
 
 export interface ButtonBlock {
@@ -78,6 +89,7 @@ export interface ButtonBlock {
     gradientAngle?: number;
   };
   hoverEffect?: 'glow' | 'scale' | 'shadow' | 'none';
+  schedule?: BlockSchedule;
 }
 
 export interface SocialsBlock {
@@ -89,6 +101,7 @@ export interface SocialsBlock {
     url: string;
     icon: string;
   }>;
+  schedule?: BlockSchedule;
 }
 
 export interface ImageBlock {
@@ -98,6 +111,7 @@ export interface ImageBlock {
   alt: string;
   caption?: string;
   style?: 'polaroid' | 'vignette' | 'circle' | 'default';
+  schedule?: BlockSchedule;
 }
 
 export interface SearchBlock {
@@ -106,6 +120,7 @@ export interface SearchBlock {
   title?: string;
   placeholder?: string;
   isPremium: true;
+  schedule?: BlockSchedule;
 }
 
 export interface CustomCodeBlock {
@@ -115,6 +130,7 @@ export interface CustomCodeBlock {
   html: string;
   css?: string;
   isPremium: true;
+  schedule?: BlockSchedule;
 }
 
 export interface MessengerBlock {
@@ -126,6 +142,7 @@ export interface MessengerBlock {
     username: string;
     message?: string;
   }>;
+  schedule?: BlockSchedule;
 }
 
 export interface FormBlock {
@@ -140,6 +157,7 @@ export interface FormBlock {
   submitEmail: string;
   buttonText: string;
   isPremium: true;
+  schedule?: BlockSchedule;
 }
 
 export interface DownloadBlock {
@@ -151,6 +169,7 @@ export interface DownloadBlock {
   fileName: string;
   fileSize?: string;
   icon?: string;
+  schedule?: BlockSchedule;
 }
 
 export interface NewsletterBlock {
@@ -161,6 +180,7 @@ export interface NewsletterBlock {
   buttonText: string;
   apiEndpoint?: string;
   isPremium: true;
+  schedule?: BlockSchedule;
 }
 
 export interface TestimonialBlock {
@@ -175,6 +195,7 @@ export interface TestimonialBlock {
     role?: string;
   }>;
   isPremium: true;
+  schedule?: BlockSchedule;
 }
 
 export interface ScratchBlock {
@@ -185,6 +206,7 @@ export interface ScratchBlock {
   scratchImage?: string;
   backgroundColor?: string;
   isPremium: true;
+  schedule?: BlockSchedule;
 }
 
 export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock;
