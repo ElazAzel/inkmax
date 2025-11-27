@@ -18,6 +18,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
+import { useBlockHints } from '@/hooks/useBlockHints';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { BlockEditor } from '@/components/BlockEditor';
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
+  const blockHints = useBlockHints();
   const {
     pageData,
     chatbotContext,
@@ -85,6 +87,9 @@ export default function Dashboard() {
 
       addBlock(newBlock);
       toast.success('Block added');
+      
+      // Показываем подсказку при первом использовании блока
+      blockHints.showHint(blockType, newBlock.id);
     } catch (error) {
       toast.error('Failed to add block');
       console.error(error);
@@ -389,6 +394,8 @@ export default function Dashboard() {
               onEditBlock={handleEditBlock}
               onDeleteBlock={deleteBlock}
               onReorderBlocks={reorderBlocks}
+              activeBlockHint={blockHints.activeHint}
+              onDismissHint={blockHints.dismissHint}
             />
           </div>
         </div>
