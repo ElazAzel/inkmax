@@ -103,10 +103,10 @@ export default function Auth() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
         <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-12 w-12" />
+          <div className="flex items-center justify-center gap-2 mb-2 animate-fade-in">
+            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-12 w-12 animate-scale-in" />
           </div>
-          <h1 className="text-3xl font-bold text-primary">
+          <h1 className="text-3xl font-bold text-primary animate-fade-in" style={{ animationDelay: '0.1s' }}>
             LinkMAX
           </h1>
           <p className="text-muted-foreground mt-2">
