@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import type { Block, PageTheme } from '@/types/page';
+import type { Block } from '@/types/page';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 
@@ -48,7 +48,6 @@ const SeparatorBlock = lazy(() => import('./blocks/SeparatorBlock').then(m => ({
 interface BlockRendererProps {
   block: Block;
   isPreview?: boolean;
-  theme?: PageTheme;
 }
 
 // Loading skeleton for blocks
@@ -58,7 +57,7 @@ const BlockSkeleton = () => (
   </div>
 );
 
-export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
+export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
   // Check if block should be visible based on schedule
   // In preview mode, always show blocks
   if (!isPreview && !isBlockVisible(block)) {
@@ -72,14 +71,14 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
     case 'profile':
       return (
         <Suspense fallback={<BlockSkeleton />}>
-          <ProfileBlock block={block} isPreview={isPreview} theme={theme} />
+          <ProfileBlock block={block} isPreview={isPreview} />
         </Suspense>
       );
     case 'link':
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <LinkBlock block={block} buttonStyle={theme?.buttonStyle} theme={theme} />
+            <LinkBlock block={block} />
           </Suspense>
         </div>
       );
@@ -87,7 +86,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <ButtonBlock block={block} buttonStyle={theme?.buttonStyle} theme={theme} />
+            <ButtonBlock block={block} />
           </Suspense>
         </div>
       );
@@ -95,7 +94,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <SocialsBlock block={block} theme={theme} />
+            <SocialsBlock block={block} />
           </Suspense>
         </div>
       );
@@ -103,7 +102,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <TextBlock block={block} theme={theme} />
+            <TextBlock block={block} />
           </Suspense>
         </div>
       );
@@ -111,7 +110,15 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <ImageBlock block={block} theme={theme} />
+            <ImageBlock block={block} />
+          </Suspense>
+        </div>
+      );
+    case 'product':
+      return (
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <ProductBlock block={block} />
           </Suspense>
         </div>
       );
@@ -119,7 +126,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <VideoBlock block={block} theme={theme} />
+            <VideoBlock block={block} />
           </Suspense>
         </div>
       );
@@ -127,7 +134,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <CarouselBlock block={block} theme={theme} />
+            <CarouselBlock block={block} />
           </Suspense>
         </div>
       );
@@ -135,7 +142,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <SearchBlock block={block} theme={theme} />
+            <SearchBlock block={block} />
           </Suspense>
         </div>
       );
@@ -143,7 +150,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <CustomCodeBlock block={block} theme={theme} />
+            <CustomCodeBlock block={block} />
           </Suspense>
         </div>
       );
@@ -151,7 +158,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <MessengerBlock block={block} theme={theme} />
+            <MessengerBlock block={block} />
           </Suspense>
         </div>
       );
@@ -159,7 +166,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <FormBlock block={block} theme={theme} />
+            <FormBlock block={block} />
           </Suspense>
         </div>
       );
@@ -167,7 +174,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <DownloadBlock block={block} theme={theme} />
+            <DownloadBlock block={block} />
           </Suspense>
         </div>
       );
@@ -175,7 +182,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <NewsletterBlock block={block} theme={theme} />
+            <NewsletterBlock block={block} />
           </Suspense>
         </div>
       );
@@ -183,7 +190,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <TestimonialBlock block={block} theme={theme} />
+            <TestimonialBlock block={block} />
           </Suspense>
         </div>
       );
@@ -191,7 +198,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <ScratchBlock block={block} theme={theme} />
+            <ScratchBlock block={block} />
           </Suspense>
         </div>
       );
@@ -199,7 +206,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <MapBlock block={block} theme={theme} />
+            <MapBlock block={block} />
           </Suspense>
         </div>
       );
@@ -207,7 +214,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <AvatarBlock block={block} theme={theme} />
+            <AvatarBlock block={block} />
           </Suspense>
         </div>
       );
@@ -215,7 +222,7 @@ export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <SeparatorBlock block={block} theme={theme} />
+            <SeparatorBlock block={block} />
           </Suspense>
         </div>
       );

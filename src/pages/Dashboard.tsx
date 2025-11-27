@@ -32,7 +32,6 @@ import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { Card } from '@/components/ui/card';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { createBlock } from '@/lib/block-factory';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
@@ -366,25 +365,13 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="relative">
-        {/* Settings Sidebar - Mobile Optimized as Sheet */}
-        <Sheet open={showSettings} onOpenChange={setShowSettings}>
-          <SheetContent side="left" className="w-full sm:w-96 overflow-y-auto p-0">
-            <SheetHeader className="p-6 pb-4 border-b sticky top-0 bg-card z-10">
-              <SheetTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5" />
-                Page Settings
-              </SheetTitle>
-              <SheetDescription className="text-left">
-                Customize your page appearance and settings
-              </SheetDescription>
-            </SheetHeader>
-            
+        {/* Settings Sidebar - Mobile Optimized */}
+        {showSettings && (
+          <div className="fixed left-0 top-14 bottom-0 w-full sm:w-80 bg-card border-r shadow-lg z-40 overflow-y-auto">
             <div className="p-6 space-y-6">
               {/* Username Settings */}
               <Card className="p-4">
-                <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <span>Your Link</span>
-                </h3>
+                <h3 className="font-semibold mb-4">Your Link</h3>
                 <div className="space-y-3">
                   <div>
                     <Label>Username</Label>
@@ -395,19 +382,17 @@ export default function Dashboard() {
                         placeholder="username"
                         maxLength={30}
                         disabled={userProfile.saving}
-                        className="flex-1"
                       />
                       <Button 
                         size="sm" 
                         onClick={handleUpdateUsername}
                         disabled={userProfile.saving || !usernameInput.trim()}
-                        className="shrink-0"
                       >
                         {userProfile.saving ? 'Saving...' : 'Save'}
                       </Button>
                     </div>
                     {usernameInput && (
-                      <p className="text-xs text-muted-foreground mt-2 break-all">
+                      <p className="text-xs text-muted-foreground mt-1">
                         Your link: {window.location.origin}/{usernameInput}
                       </p>
                     )}
@@ -428,7 +413,6 @@ export default function Dashboard() {
                       <Input
                         value={profileBlock.name}
                         onChange={(e) => updateBlock(profileBlock.id, { name: e.target.value })}
-                        className="mt-1"
                       />
                     </div>
                     <div>
@@ -437,7 +421,6 @@ export default function Dashboard() {
                         value={profileBlock.bio}
                         onChange={(e) => updateBlock(profileBlock.id, { bio: e.target.value })}
                         rows={3}
-                        className="mt-1 resize-none"
                       />
                     </div>
                   </div>
@@ -456,13 +439,13 @@ export default function Dashboard() {
               {!premiumLoading && (
                 <Card className="p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Crown className={`h-5 w-5 ${isPremium ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <Crown className={`h-4 w-4 ${isPremium ? 'text-primary' : 'text-muted-foreground'}`} />
                     <span className="font-semibold">
                       {isPremium ? 'Premium Active' : 'Free Plan'}
                     </span>
                   </div>
                   {!isPremium && (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       Upgrade to unlock all blocks and features
                     </p>
                   )}
@@ -472,7 +455,7 @@ export default function Dashboard() {
               {/* Chatbot Settings */}
               <Card className="p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <MessageCircle className="h-5 w-5" />
+                  <MessageCircle className="h-4 w-4" />
                   <h3 className="font-semibold">AI Chatbot Context</h3>
                 </div>
                 <div className="space-y-2">
@@ -483,7 +466,7 @@ export default function Dashboard() {
                     onBlur={save}
                     placeholder="Add context for the AI chatbot (pricing, services, availability, etc.)"
                     rows={6}
-                    className="text-sm resize-none mt-1"
+                    className="text-sm"
                   />
                   <p className="text-xs text-muted-foreground">
                     This helps the AI answer visitor questions accurately
@@ -494,7 +477,7 @@ export default function Dashboard() {
               {/* AI Tools */}
               <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10">
                 <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-5 w-5 text-primary" />
+                  <Sparkles className="h-4 w-4 text-primary" />
                   <h3 className="font-semibold">AI Tools</h3>
                 </div>
                 <div className="space-y-2">
@@ -507,21 +490,20 @@ export default function Dashboard() {
                       setAiGeneratorOpen(true);
                     }}
                   >
-                    <Sparkles className="h-4 w-4 mr-2" />
+                    <Sparkles className="h-3 w-3 mr-2" />
                     SEO Generator
                   </Button>
                 </div>
               </Card>
             </div>
-          </SheetContent>
-        </Sheet>
+          </div>
+        )}
 
         {/* Preview Editor - Mobile Optimized */}
-        <div className="transition-all duration-300">
+        <div className={`transition-all duration-300 ${showSettings ? 'sm:ml-80' : ''}`}>
           <div className="py-4 sm:py-8">
             <PreviewEditor
               blocks={pageData.blocks}
-              theme={pageData.theme}
               isPremium={isPremium}
               onInsertBlock={handleInsertBlock}
               onEditBlock={handleEditBlock}
@@ -539,10 +521,7 @@ export default function Dashboard() {
         <BlockEditor
           block={editingBlock}
           isOpen={editorOpen}
-          onClose={() => {
-            setEditorOpen(false);
-            setEditingBlock(null);
-          }}
+          onClose={() => setEditorOpen(false)}
           onSave={handleSaveBlock}
         />
       )}

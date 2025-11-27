@@ -46,61 +46,58 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         <div className="absolute inset-0 bg-primary/5 border-2 border-primary/30 rounded-2xl pointer-events-none z-10" />
       )}
 
-      {/* Control buttons - Touch-friendly sizes */}
+      {/* Control buttons - Mobile Optimized with Arrow buttons */}
       {isHovered && !isDragging && block.type !== 'profile' && (
-        <div className="absolute -top-3 right-2 flex gap-1.5 z-20">
+        <div className="absolute -top-2 sm:-top-3 right-1 sm:right-2 flex gap-1 z-20">
           {/* Arrow controls for reordering */}
           {onMoveUp && onMoveDown && (
-            <div className="flex flex-col gap-0.5 bg-card/95 backdrop-blur-sm rounded-lg shadow-lg border border-border">
+            <div className="flex flex-col gap-0.5 bg-background rounded shadow-lg">
               <Button
-                variant="ghost"
+                variant="secondary"
                 size="sm"
-                className="h-7 w-8 p-0 rounded-b-none hover:bg-primary/10"
+                className="h-4 sm:h-5 w-6 sm:w-7 p-0 rounded-b-none"
                 onClick={() => onMoveUp(block.id)}
                 disabled={isFirst}
                 title="Переместить вверх"
               >
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className="h-3 w-3" />
               </Button>
               <Button
-                variant="ghost"
+                variant="secondary"
                 size="sm"
-                className="h-7 w-8 p-0 rounded-t-none hover:bg-primary/10"
+                className="h-4 sm:h-5 w-6 sm:w-7 p-0 rounded-t-none"
                 onClick={() => onMoveDown(block.id)}
                 disabled={isLast}
                 title="Переместить вниз"
               >
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-3 w-3" />
               </Button>
             </div>
           )}
           
           <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
-            className="h-8 w-8 p-0 bg-card/95 backdrop-blur-sm shadow-lg border border-border hover:bg-primary/10 hidden sm:inline-flex"
+            className="h-6 sm:h-7 shadow-lg hidden sm:inline-flex"
             {...dragHandleProps}
-            title="Перетащить"
           >
-            <GripVertical className="h-4 w-4" />
+            <GripVertical className="h-3 w-3" />
           </Button>
           <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
-            className="h-8 w-8 p-0 bg-card/95 backdrop-blur-sm shadow-lg border border-border hover:bg-primary/10"
+            className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
             onClick={() => onEdit(block)}
-            title="Редактировать"
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="h-3 w-3" />
           </Button>
           <Button
-            variant="ghost"
+            variant="destructive"
             size="sm"
-            className="h-8 w-8 p-0 bg-card/95 backdrop-blur-sm shadow-lg border border-border hover:bg-destructive/10 text-destructive"
+            className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
             onClick={() => onDelete(block.id)}
-            title="Удалить"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-3 w-3" />
           </Button>
         </div>
       )}

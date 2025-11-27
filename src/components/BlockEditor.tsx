@@ -66,12 +66,12 @@ const BLOCK_TITLES: Record<string, string> = {
 export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps) {
   const [formData, setFormData] = useState<any>(() => block ? { ...block } : {});
 
-  // Update formData when block changes or dialog opens
+  // Update formData when block changes
   useEffect(() => {
-    if (block && isOpen) {
+    if (block) {
       setFormData({ ...block });
     }
-  }, [block, isOpen]);
+  }, [block]);
 
   const handleSave = () => {
     onSave(formData);

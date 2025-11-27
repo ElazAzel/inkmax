@@ -2,16 +2,14 @@ import { memo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2 } from 'lucide-react';
-import type { ProfileBlock as ProfileBlockType, PageTheme } from '@/types/page';
-import { getShadowClass } from '@/lib/block-utils';
+import type { ProfileBlock as ProfileBlockType } from '@/types/page';
 
 interface ProfileBlockProps {
   block: ProfileBlockType;
   isPreview?: boolean;
-  theme?: PageTheme;
 }
 
-export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview, theme }: ProfileBlockProps) {
+export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview }: ProfileBlockProps) {
   const initials = block.name
     .split(' ')
     .map(n => n[0])
@@ -126,13 +124,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         <div className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()}`}>
           <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
             <AvatarImage src={block.avatar} alt={block.name} />
-            <AvatarFallback 
-              className="text-2xl font-semibold"
-              style={{
-                backgroundColor: theme?.accentColor || theme?.textColor,
-                color: theme?.backgroundColor
-              }}
-            >
+            <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -140,17 +132,9 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2">
-            <h1 className="text-2xl font-bold" style={{ color: theme?.textColor }}>{block.name}</h1>
+            <h1 className="text-2xl font-bold">{block.name}</h1>
             {block.verified && (
-              <Badge 
-                variant="secondary" 
-                className="gap-1 border-current/20"
-                style={{
-                  backgroundColor: theme?.accentColor ? `${theme.accentColor}22` : undefined,
-                  borderColor: theme?.accentColor,
-                  color: theme?.accentColor || theme?.textColor
-                }}
-              >
+              <Badge variant="secondary" className="gap-1">
                 <CheckCircle2 className="h-3 w-3" />
                 Verified
               </Badge>
@@ -158,7 +142,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           </div>
           
           {block.bio && (
-            <p className="max-w-md opacity-80" style={{ color: theme?.textColor }}>{block.bio}</p>
+            <p className="text-muted-foreground max-w-md">{block.bio}</p>
           )}
         </div>
       </div>

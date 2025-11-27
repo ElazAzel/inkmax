@@ -3,9 +3,8 @@
  * Centralizes common styling and interaction patterns
  */
 
-export type ButtonStyle = 'default' | 'rounded' | 'pill' | 'gradient';
+export type ButtonStyle = 'default' | 'rounded' | 'pill';
 export type HoverEffect = 'default' | 'none' | 'glow' | 'scale' | 'shadow';
-export type ShadowIntensity = 'none' | 'soft' | 'medium' | 'strong' | 'glow';
 
 export interface BackgroundConfig {
   type: 'solid' | 'gradient' | 'image';
@@ -22,8 +21,6 @@ export function getButtonClass(style?: ButtonStyle): string {
       return 'rounded-full';
     case 'rounded':
       return 'rounded-lg';
-    case 'gradient':
-      return 'rounded-lg bg-gradient-to-r from-primary to-primary/70';
     default:
       return 'rounded-md';
   }
@@ -95,34 +92,4 @@ export function createBlockClickHandler(
       openUrlSafely(url);
     }
   };
-}
-
-/**
- * Get shadow class based on theme shadow intensity
- */
-export function getShadowClass(intensity?: ShadowIntensity): string {
-  switch (intensity) {
-    case 'none':
-      return '';
-    case 'soft':
-      return 'shadow-sm';
-    case 'medium':
-      return 'shadow-md';
-    case 'strong':
-      return 'shadow-xl';
-    case 'glow':
-      return 'shadow-lg shadow-primary/50';
-    default:
-      return 'shadow-md';
-  }
-}
-
-/**
- * Get accent color style for theme customization
- */
-export function getAccentStyle(accentColor?: string): React.CSSProperties {
-  if (!accentColor) return {};
-  return {
-    '--accent-color': accentColor,
-  } as React.CSSProperties;
 }

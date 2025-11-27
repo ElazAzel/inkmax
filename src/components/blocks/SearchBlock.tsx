@@ -3,16 +3,14 @@ import { Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import type { SearchBlock as SearchBlockType, PageTheme } from '@/types/page';
+import type { SearchBlock as SearchBlockType } from '@/types/page';
 import { supabase } from '@/integrations/supabase/client';
-import { getShadowClass } from '@/lib/block-utils';
 
 interface SearchBlockProps {
   block: SearchBlockType;
-  theme?: PageTheme;
 }
 
-export const SearchBlock = memo(function SearchBlockComponent({ block, theme }: SearchBlockProps) {
+export const SearchBlock = memo(function SearchBlockComponent({ block }: SearchBlockProps) {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<{ answer: string; sources?: string[] } | null>(null);

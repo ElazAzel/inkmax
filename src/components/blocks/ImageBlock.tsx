@@ -1,13 +1,11 @@
 import { memo } from 'react';
-import type { ImageBlock as ImageBlockType, PageTheme } from '@/types/page';
-import { getShadowClass } from '@/lib/block-utils';
+import type { ImageBlock as ImageBlockType } from '@/types/page';
 
 interface ImageBlockProps {
   block: ImageBlockType;
-  theme?: PageTheme;
 }
 
-export const ImageBlock = memo(function ImageBlockComponent({ block, theme }: ImageBlockProps) {
+export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBlockProps) {
   const getImageClass = () => {
     switch (block.style) {
       case 'polaroid':
@@ -23,7 +21,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, theme }: Im
 
   return (
     <div className="w-full">
-      <div className={`overflow-hidden ${getImageClass()} ${getShadowClass(theme?.shadowIntensity)}`}>
+      <div className={`overflow-hidden ${getImageClass()}`}>
         <img
           src={block.url}
           alt={block.alt}
@@ -31,7 +29,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, theme }: Im
         />
       </div>
       {block.caption && (
-        <p className="text-center text-sm opacity-60 mt-4" style={{ color: theme?.textColor }}>
+        <p className="text-center text-sm text-muted-foreground mt-4">
           {block.caption}
         </p>
       )}

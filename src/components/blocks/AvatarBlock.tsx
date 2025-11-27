@@ -1,15 +1,13 @@
-import type { AvatarBlock as AvatarBlockType, PageTheme } from '@/types/page';
+import type { AvatarBlock as AvatarBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
-import { getShadowClass } from '@/lib/block-utils';
 
 interface AvatarBlockProps {
   block: AvatarBlockType;
-  theme?: PageTheme;
 }
 
-export function AvatarBlock({ block, theme }: AvatarBlockProps) {
+export function AvatarBlock({ block }: AvatarBlockProps) {
   const sizeClasses = {
     small: 'h-16 w-16',
     medium: 'h-24 w-24',

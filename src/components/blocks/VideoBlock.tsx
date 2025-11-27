@@ -1,11 +1,9 @@
 import { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { VideoBlock as VideoBlockType, PageTheme } from '@/types/page';
-import { getShadowClass } from '@/lib/block-utils';
+import type { VideoBlock as VideoBlockType } from '@/types/page';
 
 interface VideoBlockProps {
   block: VideoBlockType;
-  theme?: PageTheme;
 }
 
 function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | null {
@@ -27,7 +25,7 @@ function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | 
   return null;
 }
 
-export const VideoBlock = memo(function VideoBlockComponent({ block, theme }: VideoBlockProps) {
+export const VideoBlock = memo(function VideoBlockComponent({ block }: VideoBlockProps) {
   const embedUrl = getVideoEmbedUrl(block.url, block.platform);
   const aspectRatioClass = {
     '16:9': 'aspect-video',
@@ -37,18 +35,12 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, theme }: Vi
 
   if (!embedUrl) {
     return (
-      <Card 
-        className="border-current/20"
-        style={{ 
-          backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
-          borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
-        }}
-      >
+      <Card>
         <CardHeader>
-          <CardTitle className="text-sm" style={{ color: theme?.accentColor || theme?.textColor }}>Invalid Video URL</CardTitle>
+          <CardTitle className="text-sm text-destructive">Invalid Video URL</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm opacity-60" style={{ color: theme?.textColor }}>
+          <p className="text-sm text-muted-foreground">
             Please check the video URL and try again.
           </p>
         </CardContent>
@@ -57,16 +49,10 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, theme }: Vi
   }
 
   return (
-    <Card 
-      className="overflow-hidden border-current/20"
-      style={{ 
-        backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
-        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
-      }}
-    >
+    <Card className="overflow-hidden">
       {block.title && (
         <CardHeader>
-          <CardTitle style={{ color: theme?.textColor }}>{block.title}</CardTitle>
+          <CardTitle>{block.title}</CardTitle>
         </CardHeader>
       )}
       <CardContent className="p-0">

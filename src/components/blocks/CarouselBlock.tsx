@@ -8,15 +8,13 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import type { CarouselBlock as CarouselBlockType, PageTheme } from '@/types/page';
-import { getShadowClass } from '@/lib/block-utils';
+import type { CarouselBlock as CarouselBlockType } from '@/types/page';
 
 interface CarouselBlockProps {
   block: CarouselBlockType;
-  theme?: PageTheme;
 }
 
-export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme }: CarouselBlockProps) {
+export const CarouselBlock = memo(function CarouselBlockComponent({ block }: CarouselBlockProps) {
   const autoplayPlugin = block.autoPlay
     ? Autoplay({ delay: block.interval || 3000, stopOnInteraction: true })
     : undefined;
@@ -29,15 +27,9 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme
 
   if (!block.images || block.images.length === 0) {
     return (
-      <Card 
-        className="border-current/20"
-        style={{ 
-          backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
-          borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
-        }}
-      >
+      <Card>
         <CardContent className="p-6">
-          <p className="text-sm opacity-60 text-center" style={{ color: theme?.textColor }}>
+          <p className="text-sm text-muted-foreground text-center">
             No images added to carousel
           </p>
         </CardContent>
@@ -46,16 +38,10 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme
   }
 
   return (
-    <Card 
-      className="overflow-hidden border-current/20"
-      style={{ 
-        backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
-        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
-      }}
-    >
+    <Card className="overflow-hidden">
       {block.title && (
         <CardHeader>
-          <CardTitle style={{ color: theme?.textColor }}>{block.title}</CardTitle>
+          <CardTitle>{block.title}</CardTitle>
         </CardHeader>
       )}
       <CardContent className="p-0">
@@ -71,8 +57,7 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme
             {block.images.map((image, index) => (
               <CarouselItem key={index}>
                 <div
-                  className="aspect-video overflow-hidden cursor-pointer"
-                  style={{ backgroundColor: theme?.textColor ? `${theme.textColor}11` : undefined }}
+                  className="aspect-video overflow-hidden bg-muted cursor-pointer"
                   onClick={() => handleImageClick(image.link)}
                 >
                   <img

@@ -1,15 +1,13 @@
-import type { MapBlock as MapBlockType, PageTheme } from '@/types/page';
+import type { MapBlock as MapBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 import { MapPin } from 'lucide-react';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
-import { getShadowClass } from '@/lib/block-utils';
 
 interface MapBlockProps {
   block: MapBlockType;
-  theme?: PageTheme;
 }
 
-export function MapBlock({ block, theme }: MapBlockProps) {
+export function MapBlock({ block }: MapBlockProps) {
   const heightClasses = {
     small: 'h-48',
     medium: 'h-64',

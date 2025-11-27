@@ -1,18 +1,16 @@
 import { memo, useState } from 'react';
 import { Mail, Crown } from 'lucide-react';
-import type { NewsletterBlock as NewsletterBlockType, PageTheme } from '@/types/page';
+import type { NewsletterBlock as NewsletterBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { getShadowClass } from '@/lib/block-utils';
 
 interface NewsletterBlockProps {
   block: NewsletterBlockType;
-  theme?: PageTheme;
 }
 
-export const NewsletterBlock = memo(function NewsletterBlock({ block, theme }: NewsletterBlockProps) {
+export const NewsletterBlock = memo(function NewsletterBlock({ block }: NewsletterBlockProps) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 

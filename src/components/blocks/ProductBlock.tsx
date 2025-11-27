@@ -2,16 +2,13 @@ import { memo } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
-import { getButtonClass, getShadowClass } from '@/lib/block-utils';
-import type { ProductBlock as ProductBlockType, PageTheme } from '@/types/page';
+import type { ProductBlock as ProductBlockType } from '@/types/page';
 
 interface ProductBlockProps {
   block: ProductBlockType;
-  buttonStyle?: 'default' | 'rounded' | 'pill' | 'gradient';
-  theme?: PageTheme;
 }
 
-export const ProductBlock = memo(function ProductBlockComponent({ block, buttonStyle, theme }: ProductBlockProps) {
+export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
   const handleBuy = () => {
     if (block.buyLink) {
       window.open(block.buyLink, '_blank', 'noopener,noreferrer');
@@ -42,15 +39,9 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, buttonS
   };
 
   return (
-    <Card 
-      className="overflow-hidden hover:shadow-lg transition-shadow border-current/20"
-      style={{ 
-        backgroundColor: theme?.textColor ? `${theme.textColor}11` : 'rgba(255, 255, 255, 0.05)',
-        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
-      }}
-    >
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       {block.image && (
-        <div className="aspect-square overflow-hidden" style={{ backgroundColor: theme?.textColor ? `${theme.textColor}11` : undefined }}>
+        <div className="aspect-square overflow-hidden bg-muted">
           <img
             src={block.image}
             alt={block.name}
@@ -60,9 +51,9 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, buttonS
       )}
       
       <CardHeader>
-        <CardTitle className="flex items-center justify-between" style={{ color: theme?.textColor }}>
+        <CardTitle className="flex items-center justify-between">
           <span>{block.name}</span>
-          <span className="font-bold" style={{ color: theme?.accentColor || theme?.textColor }}>
+          <span className="text-primary font-bold">
             {getCurrencySymbol(block.currency)}{block.price.toLocaleString()} {block.currency}
           </span>
         </CardTitle>
@@ -70,19 +61,12 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, buttonS
       
       {block.description && (
         <CardContent>
-          <p className="text-sm opacity-70" style={{ color: theme?.textColor }}>{block.description}</p>
+          <p className="text-sm text-muted-foreground">{block.description}</p>
         </CardContent>
       )}
       
       <CardFooter>
-        <Button 
-          className={`w-full gap-2 ${buttonStyle ? getButtonClass(buttonStyle) : ''}`}
-          onClick={handleBuy}
-          style={{
-            backgroundColor: theme?.accentColor || theme?.textColor,
-            color: theme?.backgroundColor
-          }}
-        >
+        <Button className="w-full gap-2" onClick={handleBuy}>
           <ShoppingCart className="h-4 w-4" />
           Buy Now
         </Button>

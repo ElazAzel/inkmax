@@ -2,14 +2,13 @@ import { memo, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Crown } from 'lucide-react';
-import type { CustomCodeBlock as CustomCodeBlockType, PageTheme } from '@/types/page';
+import type { CustomCodeBlock as CustomCodeBlockType } from '@/types/page';
 
 interface CustomCodeBlockProps {
   block: CustomCodeBlockType;
-  theme?: PageTheme;
 }
 
-export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block, theme }: CustomCodeBlockProps) {
+export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }: CustomCodeBlockProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
