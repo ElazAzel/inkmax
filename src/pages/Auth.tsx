@@ -103,8 +103,10 @@ export default function Auth() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary flex items-center justify-center gap-2">
-            <Sparkles className="h-8 w-8" />
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-12 w-12" />
+          </div>
+          <h1 className="text-3xl font-bold text-primary">
             LinkMAX
           </h1>
           <p className="text-muted-foreground mt-2">
