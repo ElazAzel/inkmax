@@ -63,12 +63,14 @@ export async function savePage(
     }
 
     // Сохраняем или обновляем страницу
+    const profileBlock = pageData.blocks.find(b => b.type === 'profile') as any;
     const pageUpdate: any = {
       user_id: userId,
       slug: slug!,
-      title: pageData.blocks.find(b => b.type === 'profile')?.name || 'My Page',
-      description: pageData.blocks.find(b => b.type === 'profile')?.bio,
-      avatar_url: pageData.blocks.find(b => b.type === 'profile')?.avatar,
+      title: profileBlock?.name || 'My Page',
+      description: profileBlock?.bio,
+      avatar_url: profileBlock?.avatar,
+      avatar_style: profileBlock?.avatarStyle || { type: 'default', color: '#000000' },
       theme_settings: pageData.theme as any,
       seo_meta: pageData.seo as any,
       chatbot_context: chatbotContext || null,
@@ -125,15 +127,17 @@ export async function loadPageBySlug(slug: string): Promise<{ data: PageData | n
   try {
     const { data: page, error: pageError } = await supabase
       .from('pages')
-      .select(`
-        *,
-        blocks (*)
-      `)
+      .select('*, blocks(*)')
       .eq('slug', slug)
       .eq('is_published', true)
-      .single();
+      .maybeSingle();
 
-    if (pageError || !page) return { data: null, error: pageError };
+    if (pageError) {
+      console.error('Error loading page by slug:', pageError);
+      return { data: null, error: pageError };
+    }
+    
+    if (!page) return { data: null, error: new Error('Page not found') };
 
     // Increment view count
     await supabase.rpc('increment_view_count', { page_slug: slug });
@@ -161,10 +165,7 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
   try {
     const { data: page, error: pageError } = await supabase
       .from('pages')
-      .select(`
-        *,
-        blocks (*)
-      `)
+      .select('*, blocks(*)')
       .eq('user_id', userId)
       .maybeSingle();
 
