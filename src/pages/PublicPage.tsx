@@ -96,7 +96,7 @@ export default function PublicPage() {
   // Get background style with smooth transitions
   const backgroundStyle: React.CSSProperties = {
     backgroundColor: pageData.theme.backgroundColor,
-    backgroundImage: pageData.theme.backgroundGradient,
+    backgroundImage: pageData.theme.backgroundGradient || 'none',
     color: pageData.theme.textColor,
     transition: 'background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease',
   };
@@ -111,13 +111,23 @@ export default function PublicPage() {
           ))}
         </div>
 
-        {/* Share Section - Mobile Optimized */}
+        {/* Share Section - Mobile Optimized with theme-aware styling */}
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2 justify-center">
-          <Button variant="outline" onClick={handleShare} className="w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            onClick={handleShare} 
+            className="w-full sm:w-auto border-current/20 hover:bg-current/10"
+            style={{ color: pageData.theme.textColor }}
+          >
             <Share2 className="h-4 w-4 mr-2" />
             Share Link
           </Button>
-          <Button variant="outline" onClick={() => setShowQR(true)} className="w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowQR(true)} 
+            className="w-full sm:w-auto border-current/20 hover:bg-current/10"
+            style={{ color: pageData.theme.textColor }}
+          >
             <QrCode className="h-4 w-4 mr-2" />
             QR Code
           </Button>
@@ -127,7 +137,8 @@ export default function PublicPage() {
         <div className="mt-8 sm:mt-12 text-center pb-4">
           <a
             href="/"
-            className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
+            className="text-xs sm:text-sm opacity-60 hover:opacity-100 transition-opacity"
+            style={{ color: pageData.theme.textColor }}
           >
             Create your own LinkMAX
           </a>

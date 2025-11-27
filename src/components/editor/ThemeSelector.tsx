@@ -56,7 +56,8 @@ const THEMES = [
     description: 'Colorful and vibrant',
     isPremium: false,
     theme: {
-      backgroundColor: 'linear-gradient(135deg, hsl(280 100% 70%) 0%, hsl(220 100% 75%) 100%)',
+      backgroundColor: 'hsl(280 100% 70%)',
+      backgroundGradient: 'linear-gradient(135deg, hsl(280 100% 70%) 0%, hsl(220 100% 75%) 100%)',
       textColor: 'hsl(0 0% 100%)',
       buttonStyle: 'rounded' as const,
       fontFamily: 'sans' as const,
@@ -109,7 +110,8 @@ const THEMES = [
     description: 'Warm gradients',
     isPremium: true,
     theme: {
-      backgroundColor: 'linear-gradient(135deg, hsl(15 100% 65%) 0%, hsl(340 100% 70%) 100%)',
+      backgroundColor: 'hsl(15 100% 65%)',
+      backgroundGradient: 'linear-gradient(135deg, hsl(15 100% 65%) 0%, hsl(340 100% 70%) 100%)',
       textColor: 'hsl(0 0% 100%)',
       buttonStyle: 'gradient' as const,
       fontFamily: 'sans' as const,
@@ -127,7 +129,8 @@ const THEMES = [
     description: 'Deep blue vibes',
     isPremium: true,
     theme: {
-      backgroundColor: 'linear-gradient(135deg, hsl(200 100% 40%) 0%, hsl(220 100% 20%) 100%)',
+      backgroundColor: 'hsl(200 100% 40%)',
+      backgroundGradient: 'linear-gradient(135deg, hsl(200 100% 40%) 0%, hsl(220 100% 20%) 100%)',
       textColor: 'hsl(0 0% 100%)',
       buttonStyle: 'rounded' as const,
       fontFamily: 'sans' as const,
@@ -145,7 +148,8 @@ const THEMES = [
     description: 'Natural greens',
     isPremium: true,
     theme: {
-      backgroundColor: 'linear-gradient(135deg, hsl(140 60% 40%) 0%, hsl(160 80% 25%) 100%)',
+      backgroundColor: 'hsl(140 60% 40%)',
+      backgroundGradient: 'linear-gradient(135deg, hsl(140 60% 40%) 0%, hsl(160 80% 25%) 100%)',
       textColor: 'hsl(0 0% 100%)',
       buttonStyle: 'pill' as const,
       fontFamily: 'sans' as const,
@@ -185,10 +189,15 @@ export const ThemeSelector = memo(function ThemeSelector({
 }: ThemeSelectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   
-  // Simple theme matching based on backgroundColor
-  const activeThemeId = THEMES.find(
-    t => t.theme.backgroundColor === currentTheme.backgroundColor
-  )?.id || 'classic';
+  // Match theme by backgroundColor and backgroundGradient
+  const activeThemeId = THEMES.find(t => {
+    // For gradient themes, check both backgroundColor and backgroundGradient
+    if (t.theme.backgroundGradient) {
+      return t.theme.backgroundGradient === currentTheme.backgroundGradient;
+    }
+    // For solid color themes, just check backgroundColor
+    return t.theme.backgroundColor === currentTheme.backgroundColor;
+  })?.id || 'classic';
 
   return (
     <div className="space-y-6">
