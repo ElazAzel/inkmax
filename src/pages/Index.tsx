@@ -28,12 +28,12 @@ export default function Index() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8">
+            <Button size="lg" onClick={() => navigate('/auth')} className="text-lg px-8">
               Get Started Free
               <Sparkles className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8">
-              View Demo
+            <Button size="lg" variant="outline" className="text-lg px-8" onClick={() => navigate('/dashboard')}>
+              Sign In
             </Button>
           </div>
 
@@ -130,7 +130,7 @@ export default function Index() {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Join thousands of creators, influencers, and entrepreneurs who trust LinkMAX
             </p>
-            <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8">
+            <Button size="lg" onClick={() => navigate('/auth')} className="text-lg px-8">
               Start Creating Now
               <Sparkles className="ml-2 h-5 w-5" />
             </Button>

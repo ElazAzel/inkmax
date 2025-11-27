@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Share2, QrCode } from 'lucide-react';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { decompressPageData } from '@/lib/compression';
+import { loadPageBySlug } from '@/lib/database';
 import { toast } from 'sonner';
 import type { PageData } from '@/types/page';
 import {
@@ -16,17 +17,38 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function PublicPage() {
-  const { compressed } = useParams<{ compressed: string }>();
+  const { compressed, slug } = useParams<{ compressed?: string; slug?: string }>();
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [showQR, setShowQR] = useState(false);
+  const [loading, setLoading] = useState(true);
   const currentUrl = window.location.href;
 
   useEffect(() => {
-    if (compressed) {
+    loadPage();
+  }, [compressed, slug]);
+
+  const loadPage = async () => {
+    setLoading(true);
+    
+    // Try slug-based URL first (new format)
+    if (slug) {
+      const { data, error } = await loadPageBySlug(slug);
+      if (data) {
+        setPageData(data);
+        document.title = data.seo.title;
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+          metaDescription.setAttribute('content', data.seo.description);
+        }
+      } else {
+        console.error('Error loading page by slug:', error);
+      }
+    }
+    // Fall back to compressed format (old format for backward compatibility)
+    else if (compressed) {
       const data = decompressPageData(compressed);
       if (data) {
         setPageData(data);
-        // Update SEO
         document.title = data.seo.title;
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
@@ -34,7 +56,9 @@ export default function PublicPage() {
         }
       }
     }
-  }, [compressed]);
+    
+    setLoading(false);
+  };
 
   const handleShare = () => {
     if (navigator.share) {
@@ -50,6 +74,17 @@ export default function PublicPage() {
       toast.success('Link copied to clipboard');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading page...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!pageData) {
     return (
