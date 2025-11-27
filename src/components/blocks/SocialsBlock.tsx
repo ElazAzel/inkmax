@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { Instagram, Send, Youtube, Music, Twitter, Github, Linkedin, Facebook, Globe } from 'lucide-react';
-import type { SocialsBlock } from '@/types/page';
+import type { SocialsBlock as SocialsBlockType } from '@/types/page';
 
 interface SocialsBlockProps {
-  block: SocialsBlock;
+  block: SocialsBlockType;
 }
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -18,7 +19,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   globe: Globe,
 };
 
-export function SocialsBlock({ block }: SocialsBlockProps) {
+export const SocialsBlock = memo(function SocialsBlockComponent({ block }: SocialsBlockProps) {
   const handleClick = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
@@ -47,4 +48,4 @@ export function SocialsBlock({ block }: SocialsBlockProps) {
       </div>
     </div>
   );
-}
+});

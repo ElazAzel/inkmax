@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import { Crown } from 'lucide-react';
 import type { ScratchBlock as ScratchBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
@@ -7,7 +7,7 @@ interface ScratchBlockProps {
   block: ScratchBlockType;
 }
 
-export function ScratchBlock({ block }: ScratchBlockProps) {
+export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockProps) {
   const [isRevealed, setIsRevealed] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isScratching, setIsScratching] = useState(false);
@@ -120,4 +120,4 @@ export function ScratchBlock({ block }: ScratchBlockProps) {
       </p>
     </Card>
   );
-}
+});

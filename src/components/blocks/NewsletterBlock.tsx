@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Mail, Crown } from 'lucide-react';
 import type { NewsletterBlock as NewsletterBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
@@ -10,7 +10,7 @@ interface NewsletterBlockProps {
   block: NewsletterBlockType;
 }
 
-export function NewsletterBlock({ block }: NewsletterBlockProps) {
+export const NewsletterBlock = memo(function NewsletterBlock({ block }: NewsletterBlockProps) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,4 +61,4 @@ export function NewsletterBlock({ block }: NewsletterBlockProps) {
       </form>
     </Card>
   );
-}
+});

@@ -1,13 +1,14 @@
+import { memo } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
-import type { ProductBlock } from '@/types/page';
+import type { ProductBlock as ProductBlockType } from '@/types/page';
 
 interface ProductBlockProps {
-  block: ProductBlock;
+  block: ProductBlockType;
 }
 
-export function ProductBlock({ block }: ProductBlockProps) {
+export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
   const handleBuy = () => {
     if (block.buyLink) {
       window.open(block.buyLink, '_blank', 'noopener,noreferrer');
@@ -72,4 +73,4 @@ export function ProductBlock({ block }: ProductBlockProps) {
       </CardFooter>
     </Card>
   );
-}
+});

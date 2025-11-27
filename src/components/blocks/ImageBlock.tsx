@@ -1,10 +1,11 @@
-import type { ImageBlock } from '@/types/page';
+import { memo } from 'react';
+import type { ImageBlock as ImageBlockType } from '@/types/page';
 
 interface ImageBlockProps {
-  block: ImageBlock;
+  block: ImageBlockType;
 }
 
-export function ImageBlock({ block }: ImageBlockProps) {
+export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBlockProps) {
   const getImageClass = () => {
     switch (block.style) {
       case 'polaroid':
@@ -34,4 +35,4 @@ export function ImageBlock({ block }: ImageBlockProps) {
       )}
     </div>
   );
-}
+});

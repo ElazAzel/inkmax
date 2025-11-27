@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Star, Crown } from 'lucide-react';
 import type { TestimonialBlock as TestimonialBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
@@ -7,7 +8,7 @@ interface TestimonialBlockProps {
   block: TestimonialBlockType;
 }
 
-export function TestimonialBlock({ block }: TestimonialBlockProps) {
+export const TestimonialBlock = memo(function TestimonialBlock({ block }: TestimonialBlockProps) {
   const renderStars = (rating: number = 5) => {
     return (
       <div className="flex gap-1">
@@ -57,4 +58,4 @@ export function TestimonialBlock({ block }: TestimonialBlockProps) {
       </div>
     </div>
   );
-}
+});

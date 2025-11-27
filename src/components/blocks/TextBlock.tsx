@@ -1,10 +1,11 @@
-import type { TextBlock } from '@/types/page';
+import { memo } from 'react';
+import type { TextBlock as TextBlockType } from '@/types/page';
 
 interface TextBlockProps {
-  block: TextBlock;
+  block: TextBlockType;
 }
 
-export function TextBlock({ block }: TextBlockProps) {
+export const TextBlock = memo(function TextBlockComponent({ block }: TextBlockProps) {
   switch (block.style) {
     case 'heading':
       return <h2 className="text-2xl font-bold">{block.content}</h2>;
@@ -17,4 +18,4 @@ export function TextBlock({ block }: TextBlockProps) {
     default:
       return <p className="text-foreground">{block.content}</p>;
   }
-}
+});

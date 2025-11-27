@@ -1,14 +1,14 @@
+import { memo, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Crown } from 'lucide-react';
-import type { CustomCodeBlock } from '@/types/page';
-import { useEffect, useRef } from 'react';
+import type { CustomCodeBlock as CustomCodeBlockType } from '@/types/page';
 
 interface CustomCodeBlockProps {
-  block: CustomCodeBlock;
+  block: CustomCodeBlockType;
 }
 
-export function CustomCodeBlock({ block }: CustomCodeBlockProps) {
+export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }: CustomCodeBlockProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,4 +57,4 @@ export function CustomCodeBlock({ block }: CustomCodeBlockProps) {
       </CardContent>
     </Card>
   );
-}
+});
