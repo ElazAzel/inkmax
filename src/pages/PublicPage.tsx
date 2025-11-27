@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Share2, QrCode } from 'lucide-react';
 import { BlockRenderer } from '@/components/BlockRenderer';
+import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { decompressPageData } from '@/lib/compression';
 import { loadPageBySlug } from '@/lib/database';
 import { toast } from 'sonner';
@@ -144,6 +145,9 @@ export default function PublicPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* AI Chatbot Widget */}
+      {slug && <ChatbotWidget pageSlug={slug} />}
     </div>
   );
 }

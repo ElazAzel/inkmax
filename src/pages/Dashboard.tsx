@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Eye, LogOut, Save, Upload, Crown, Video, Images, Code, Sparkles, Wand2 } from 'lucide-react';
+import { Plus, Eye, LogOut, Save, Upload, Crown, Video, Images, Code, Sparkles, Wand2, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
@@ -24,6 +24,8 @@ export default function Dashboard() {
   const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
   const {
     pageData,
+    chatbotContext,
+    setChatbotContext,
     loading,
     saving,
     save,
@@ -358,6 +360,28 @@ export default function Dashboard() {
                     <p className="text-xs text-muted-foreground">
                       Use AI to build your page or optimize for search engines
                     </p>
+                  </div>
+
+                  {/* Chatbot Settings */}
+                  <div className="space-y-3 p-4 border rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="h-4 w-4" />
+                      <h3 className="font-semibold">AI Chatbot</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Additional Context (Hidden)</Label>
+                      <Textarea
+                        value={chatbotContext}
+                        onChange={(e) => setChatbotContext(e.target.value)}
+                        onBlur={save}
+                        placeholder="Add information for the chatbot to use when answering questions. This is not visible to visitors but helps the AI provide better answers about your services, pricing, availability, etc."
+                        rows={4}
+                        className="text-sm"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        This info helps the AI chatbot answer visitor questions more accurately
+                      </p>
+                    </div>
                   </div>
 
                   {/* Add Blocks */}
