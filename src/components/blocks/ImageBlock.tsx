@@ -23,7 +23,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, theme }: Im
 
   return (
     <div className="w-full">
-      <div className={`overflow-hidden ${getImageClass()}`}>
+      <div className={`overflow-hidden ${getImageClass()} ${getShadowClass(theme?.shadowIntensity)}`}>
         <img
           src={block.url}
           alt={block.alt}
@@ -31,7 +31,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, theme }: Im
         />
       </div>
       {block.caption && (
-        <p className="text-center text-sm text-muted-foreground mt-4">
+        <p className="text-center text-sm opacity-60 mt-4" style={{ color: theme?.textColor }}>
           {block.caption}
         </p>
       )}

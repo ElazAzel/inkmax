@@ -37,12 +37,18 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, theme }: Vi
 
   if (!embedUrl) {
     return (
-      <Card>
+      <Card 
+        className="border-current/20"
+        style={{ 
+          backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
+          borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+        }}
+      >
         <CardHeader>
-          <CardTitle className="text-sm text-destructive">Invalid Video URL</CardTitle>
+          <CardTitle className="text-sm" style={{ color: theme?.accentColor || theme?.textColor }}>Invalid Video URL</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm opacity-60" style={{ color: theme?.textColor }}>
             Please check the video URL and try again.
           </p>
         </CardContent>
@@ -51,10 +57,16 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, theme }: Vi
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card 
+      className="overflow-hidden border-current/20"
+      style={{ 
+        backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
+        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+      }}
+    >
       {block.title && (
         <CardHeader>
-          <CardTitle>{block.title}</CardTitle>
+          <CardTitle style={{ color: theme?.textColor }}>{block.title}</CardTitle>
         </CardHeader>
       )}
       <CardContent className="p-0">
