@@ -243,8 +243,8 @@ export default function Dashboard() {
       {/* Top Toolbar - Mobile Optimized */}
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm">
         <div className="container mx-auto px-3 sm:px-4 h-14 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8" />
+          <div className="flex items-center gap-2 animate-fade-in">
+            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8 animate-scale-in hover-scale" />
             <h1 className="text-lg sm:text-xl font-bold text-primary">LinkMAX</h1>
           </div>
           

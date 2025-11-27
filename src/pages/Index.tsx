@@ -11,8 +11,8 @@ export default function Index() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass border-b">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8" />
+          <div className="flex items-center gap-2 animate-fade-in">
+            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8 animate-scale-in" />
             <span className="text-2xl font-semibold tracking-tight text-foreground">LinkMAX</span>
           </div>
           <div className="flex items-center gap-4">
@@ -174,7 +174,7 @@ export default function Index() {
         <div className="container mx-auto px-4 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2">
-              <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8" />
+              <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8 hover-scale" />
               <span className="text-2xl font-semibold tracking-tight">LinkMAX</span>
             </div>
             <p className="text-sm text-muted-foreground">
