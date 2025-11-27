@@ -1,13 +1,15 @@
 import { memo, useState, useRef, useEffect } from 'react';
 import { Crown } from 'lucide-react';
-import type { ScratchBlock as ScratchBlockType } from '@/types/page';
+import type { ScratchBlock as ScratchBlockType, PageTheme } from '@/types/page';
 import { Card } from '@/components/ui/card';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface ScratchBlockProps {
   block: ScratchBlockType;
+  theme?: PageTheme;
 }
 
-export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockProps) {
+export const ScratchBlock = memo(function ScratchBlock({ block, theme }: ScratchBlockProps) {
   const [isRevealed, setIsRevealed] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isScratching, setIsScratching] = useState(false);

@@ -1,13 +1,14 @@
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Instagram, Twitter, Youtube, Facebook, Linkedin, Globe } from 'lucide-react';
-import { getButtonClass, createBlockClickHandler } from '@/lib/block-utils';
-import type { LinkBlock as LinkBlockType } from '@/types/page';
+import { getButtonClass, createBlockClickHandler, getShadowClass } from '@/lib/block-utils';
+import type { LinkBlock as LinkBlockType, PageTheme } from '@/types/page';
 
 interface LinkBlockProps {
   block: LinkBlockType;
   onClick?: () => void;
   buttonStyle?: 'default' | 'rounded' | 'pill' | 'gradient';
+  theme?: PageTheme;
 }
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -19,7 +20,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   globe: Globe,
 };
 
-export const LinkBlock = memo(function LinkBlockComponent({ block, onClick, buttonStyle }: LinkBlockProps) {
+export const LinkBlock = memo(function LinkBlockComponent({ block, onClick, buttonStyle, theme }: LinkBlockProps) {
   const Icon = block.icon && iconMap[block.icon.toLowerCase()] 
     ? iconMap[block.icon.toLowerCase()] 
     : ExternalLink;
@@ -31,9 +32,9 @@ export const LinkBlock = memo(function LinkBlockComponent({ block, onClick, butt
 
   return (
     <Button
-      variant="outline"
-      className={`w-full justify-between h-auto py-4 px-6 hover:scale-[1.02] transition-transform ${getButtonClass(effectiveStyle)}`}
       onClick={handleClick}
+      variant="outline"
+      className={`w-full justify-start gap-3 px-4 h-auto py-3 ${getButtonClass(effectiveStyle)} ${getShadowClass(theme?.shadowIntensity)} transition-all duration-300`}
     >
       <div className="flex items-center gap-3">
         <Icon className="h-5 w-5 text-primary" />

@@ -1,11 +1,13 @@
 import { memo } from 'react';
-import type { ImageBlock as ImageBlockType } from '@/types/page';
+import type { ImageBlock as ImageBlockType, PageTheme } from '@/types/page';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface ImageBlockProps {
   block: ImageBlockType;
+  theme?: PageTheme;
 }
 
-export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBlockProps) {
+export const ImageBlock = memo(function ImageBlockComponent({ block, theme }: ImageBlockProps) {
   const getImageClass = () => {
     switch (block.style) {
       case 'polaroid':

@@ -8,13 +8,15 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import type { CarouselBlock as CarouselBlockType } from '@/types/page';
+import type { CarouselBlock as CarouselBlockType, PageTheme } from '@/types/page';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface CarouselBlockProps {
   block: CarouselBlockType;
+  theme?: PageTheme;
 }
 
-export const CarouselBlock = memo(function CarouselBlockComponent({ block }: CarouselBlockProps) {
+export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme }: CarouselBlockProps) {
   const autoplayPlugin = block.autoPlay
     ? Autoplay({ delay: block.interval || 3000, stopOnInteraction: true })
     : undefined;

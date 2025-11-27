@@ -2,14 +2,16 @@ import { memo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2 } from 'lucide-react';
-import type { ProfileBlock as ProfileBlockType } from '@/types/page';
+import type { ProfileBlock as ProfileBlockType, PageTheme } from '@/types/page';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface ProfileBlockProps {
   block: ProfileBlockType;
   isPreview?: boolean;
+  theme?: PageTheme;
 }
 
-export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview }: ProfileBlockProps) {
+export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview, theme }: ProfileBlockProps) {
   const initials = block.name
     .split(' ')
     .map(n => n[0])

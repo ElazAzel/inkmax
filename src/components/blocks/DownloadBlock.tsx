@@ -1,14 +1,16 @@
 import { memo } from 'react';
 import { Download, FileText } from 'lucide-react';
-import type { DownloadBlock as DownloadBlockType } from '@/types/page';
+import type { DownloadBlock as DownloadBlockType, PageTheme } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface DownloadBlockProps {
   block: DownloadBlockType;
+  theme?: PageTheme;
 }
 
-export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBlockProps) {
+export const DownloadBlock = memo(function DownloadBlock({ block, theme }: DownloadBlockProps) {
   const handleDownload = () => {
     // In production, this would track download analytics
     window.open(block.fileUrl, '_blank', 'noopener,noreferrer');

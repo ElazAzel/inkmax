@@ -1,13 +1,14 @@
-import type { SeparatorBlock as SeparatorBlockType } from '@/types/page';
+import type { SeparatorBlock as SeparatorBlockType, PageTheme } from '@/types/page';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 
 interface SeparatorBlockProps {
   block: SeparatorBlockType;
+  theme?: PageTheme;
 }
 
-export function SeparatorBlock({ block }: SeparatorBlockProps) {
+export function SeparatorBlock({ block, theme }: SeparatorBlockProps) {
   const variantClasses = {
     solid: 'border-solid',
     dashed: 'border-dashed',
