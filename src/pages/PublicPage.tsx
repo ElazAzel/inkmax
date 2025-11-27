@@ -100,31 +100,31 @@ export default function PublicPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container max-w-2xl mx-auto px-4 py-8">
-        {/* Content */}
-        <div className="space-y-4">
+      <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Content - Mobile Optimized */}
+        <div className="space-y-3 sm:space-y-4">
           {pageData.blocks.map(block => (
             <BlockRenderer key={block.id} block={block} />
           ))}
         </div>
 
-        {/* Share Section */}
-        <div className="mt-8 flex gap-2 justify-center">
-          <Button variant="outline" onClick={handleShare}>
+        {/* Share Section - Mobile Optimized */}
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2 justify-center">
+          <Button variant="outline" onClick={handleShare} className="w-full sm:w-auto">
             <Share2 className="h-4 w-4 mr-2" />
-            Share
+            Share Link
           </Button>
-          <Button variant="outline" onClick={() => setShowQR(true)}>
+          <Button variant="outline" onClick={() => setShowQR(true)} className="w-full sm:w-auto">
             <QrCode className="h-4 w-4 mr-2" />
             QR Code
           </Button>
         </div>
 
         {/* Branding */}
-        <div className="mt-12 text-center">
+        <div className="mt-8 sm:mt-12 text-center pb-4">
           <a
             href="/"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
           >
             Create your own LinkMAX
           </a>

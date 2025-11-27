@@ -53,7 +53,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
 
   return (
     <div className={cn(
-      "flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 group-hover:opacity-100",
+      "flex items-center justify-center opacity-100 sm:opacity-0 sm:hover:opacity-100 transition-opacity duration-200 sm:group-hover:opacity-100",
       className
     )}>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -61,12 +61,12 @@ export const BlockInsertButton = memo(function BlockInsertButton({
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
+            className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-full border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
           >
-            <Plus className="h-4 w-4 text-primary" />
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="w-56 bg-card z-50">
+        <DropdownMenuContent align="center" className="w-52 sm:w-56 bg-card z-50">
           <DropdownMenuLabel className="text-xs text-muted-foreground">Add Block</DropdownMenuLabel>
           <DropdownMenuSeparator />
           

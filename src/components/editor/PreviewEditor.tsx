@@ -106,7 +106,7 @@ export const PreviewEditor = memo(function PreviewEditor({
   const contentBlocks = blocks.filter(b => b.type !== 'profile');
 
   return (
-    <div className="max-w-lg mx-auto p-4 space-y-4">
+    <div className="max-w-lg mx-auto px-3 sm:px-4 py-2 space-y-3 sm:space-y-4">
       {/* Profile block (not draggable) */}
       {profileBlock && (
         <>
@@ -148,8 +148,8 @@ export const PreviewEditor = memo(function PreviewEditor({
           </SortableContext>
         </DndContext>
       ) : (
-        <div className="text-center py-12 border-2 border-dashed border-border rounded-2xl">
-          <p className="text-muted-foreground mb-4">
+        <div className="text-center py-8 sm:py-12 border-2 border-dashed border-border rounded-xl sm:rounded-2xl mx-2">
+          <p className="text-sm sm:text-base text-muted-foreground mb-4 px-4">
             Click the + button above to add your first block
           </p>
         </div>

@@ -36,13 +36,13 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         <div className="absolute inset-0 bg-primary/5 border-2 border-primary/30 rounded-2xl pointer-events-none z-10" />
       )}
 
-      {/* Control buttons */}
+      {/* Control buttons - Mobile Optimized */}
       {isHovered && !isDragging && block.type !== 'profile' && (
-        <div className="absolute -top-3 right-2 flex gap-1 z-20">
+        <div className="absolute -top-2 sm:-top-3 right-1 sm:right-2 flex gap-1 z-20">
           <Button
             variant="secondary"
             size="sm"
-            className="h-7 shadow-lg"
+            className="h-6 sm:h-7 shadow-lg hidden sm:inline-flex"
             {...dragHandleProps}
           >
             <GripVertical className="h-3 w-3" />
@@ -50,7 +50,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
           <Button
             variant="secondary"
             size="sm"
-            className="h-7 shadow-lg"
+            className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
             onClick={() => onEdit(block)}
           >
             <Pencil className="h-3 w-3" />
@@ -58,7 +58,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
           <Button
             variant="destructive"
             size="sm"
-            className="h-7 shadow-lg"
+            className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
             onClick={() => onDelete(block.id)}
           >
             <Trash2 className="h-3 w-3" />
