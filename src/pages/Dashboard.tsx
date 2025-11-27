@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,6 +27,7 @@ import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
@@ -37,6 +39,7 @@ import type { Block } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
@@ -292,8 +295,13 @@ export default function Dashboard() {
               className="hidden md:inline-flex"
             >
               <LayoutTemplate className="h-4 w-4 mr-2" />
-              Templates
+              {t('editor.settings')}
             </Button>
+
+            {/* Language Switcher - Desktop Only */}
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
 
             {/* Settings Toggle */}
             <Button 
