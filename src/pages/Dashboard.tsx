@@ -6,17 +6,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Eye, Share2, Trash2, Sparkles, LogOut, Save, Upload } from 'lucide-react';
+import { Plus, Eye, LogOut, Save, Upload, Crown, Video, Images, Code } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
+import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
+import { DraggableBlockList } from '@/components/DraggableBlockList';
+import { BlockEditor } from '@/components/BlockEditor';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
   const {
     pageData,
     loading,
@@ -26,9 +30,12 @@ export default function Dashboard() {
     addBlock,
     updateBlock,
     deleteBlock,
+    reorderBlocks,
     updateTheme,
   } = useCloudPageState();
   const [migrationKey, setMigrationKey] = useState(0);
+  const [editingBlock, setEditingBlock] = useState<Block | null>(null);
+  const [editorOpen, setEditorOpen] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -63,6 +70,69 @@ export default function Dashboard() {
     toast.success('Product added');
   };
 
+  const handleAddVideo = () => {
+    if (!isPremium) {
+      toast.error('Video blocks require Premium');
+      return;
+    }
+
+    const newBlock: Block = {
+      id: `video-${Date.now()}`,
+      type: 'video',
+      title: 'My Video',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      platform: 'youtube',
+      aspectRatio: '16:9',
+    };
+    addBlock(newBlock);
+    toast.success('Video block added');
+  };
+
+  const handleAddCarousel = () => {
+    if (!isPremium) {
+      toast.error('Carousel blocks require Premium');
+      return;
+    }
+
+    const newBlock: Block = {
+      id: `carousel-${Date.now()}`,
+      type: 'carousel',
+      title: 'Image Carousel',
+      images: [
+        {
+          url: 'https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?w=800',
+          alt: 'Sample image 1',
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800',
+          alt: 'Sample image 2',
+        },
+      ],
+      autoPlay: true,
+      interval: 3000,
+    };
+    addBlock(newBlock);
+    toast.success('Carousel added');
+  };
+
+  const handleAddCustomCode = () => {
+    if (!isPremium) {
+      toast.error('Custom code blocks require Premium');
+      return;
+    }
+
+    const newBlock: Block = {
+      id: `custom-${Date.now()}`,
+      type: 'custom_code',
+      title: 'Custom HTML/CSS',
+      html: '<div class="custom-block"><h3>Custom Content</h3><p>Add your HTML here</p></div>',
+      css: '.custom-block { padding: 20px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white; }',
+      isPremium: true,
+    };
+    addBlock(newBlock);
+    toast.success('Custom code block added');
+  };
+
   const handleShare = async () => {
     const slug = await publish();
     if (slug) {
@@ -83,6 +153,20 @@ export default function Dashboard() {
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleEditBlock = (id: string) => {
+    const block = pageData?.blocks.find(b => b.id === id);
+    if (block) {
+      setEditingBlock(block);
+      setEditorOpen(true);
+    }
+  };
+
+  const handleSaveBlock = (updates: Partial<Block>) => {
+    if (editingBlock) {
+      updateBlock(editingBlock.id, updates);
+    }
   };
 
   if (loading) {
@@ -182,52 +266,95 @@ export default function Dashboard() {
                     </div>
                   )}
 
+                  {/* Premium Status */}
+                  {!premiumLoading && (
+                    <div className="p-3 border rounded-lg bg-muted/50">
+                      <div className="flex items-center gap-2">
+                        <Crown className={`h-4 w-4 ${isPremium ? 'text-primary' : 'text-muted-foreground'}`} />
+                        <span className="text-sm font-medium">
+                          {isPremium ? 'Premium Active' : 'Free Plan'}
+                        </span>
+                      </div>
+                      {!isPremium && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Upgrade to unlock video, carousel, and custom code blocks
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {/* Add Blocks */}
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <h3 className="font-semibold">Add Blocks</h3>
-                    <div className="flex gap-2">
-                      <Button variant="outline" onClick={handleAddLink} className="flex-1">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Link
-                      </Button>
-                      <Button variant="outline" onClick={handleAddProduct} className="flex-1">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Product
-                      </Button>
+                    
+                    {/* Basic Blocks */}
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground">Basic</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button variant="outline" onClick={handleAddLink} className="justify-start">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Link
+                        </Button>
+                        <Button variant="outline" onClick={handleAddProduct} className="justify-start">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Product
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Premium Blocks */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-muted-foreground">Premium</p>
+                        <Crown className="h-3 w-3 text-primary" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button 
+                          variant={isPremium ? "outline" : "ghost"} 
+                          onClick={handleAddVideo}
+                          disabled={!isPremium}
+                          className="justify-start"
+                        >
+                          <Video className="h-4 w-4 mr-2" />
+                          Video
+                        </Button>
+                        <Button 
+                          variant={isPremium ? "outline" : "ghost"}
+                          onClick={handleAddCarousel}
+                          disabled={!isPremium}
+                          className="justify-start"
+                        >
+                          <Images className="h-4 w-4 mr-2" />
+                          Carousel
+                        </Button>
+                        <Button 
+                          variant={isPremium ? "outline" : "ghost"}
+                          onClick={handleAddCustomCode}
+                          disabled={!isPremium}
+                          className="justify-start col-span-2"
+                        >
+                          <Code className="h-4 w-4 mr-2" />
+                          Custom HTML/CSS
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Block List */}
+                  {/* Block List with Drag & Drop */}
                   <div className="space-y-2">
                     <h3 className="font-semibold">Your Blocks</h3>
-                    {pageData.blocks
-                      .filter(b => b.type !== 'profile')
-                      .map(block => (
-                        <Card key={block.id} className="p-3">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium capitalize">
-                              {block.type}: {block.type === 'link' && block.title}
-                              {block.type === 'product' && block.name}
-                            </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => deleteBlock(block.id)}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </Card>
-                      ))}
+                    <DraggableBlockList
+                      blocks={pageData.blocks}
+                      onReorder={reorderBlocks}
+                      onDelete={deleteBlock}
+                      onEdit={handleEditBlock}
+                    />
                   </div>
                 </TabsContent>
 
                 <TabsContent value="design" className="space-y-4 mt-4">
                   <div className="space-y-4 p-4 border rounded-lg">
-                    <h3 className="font-semibold flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-primary" />
-                      Theme Settings
-                    </h3>
+                    <h3 className="font-semibold">Theme Settings</h3>
                     <div className="space-y-3">
                       <div>
                         <Label>Button Style</Label>
@@ -268,6 +395,17 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Block Editor Dialog */}
+      <BlockEditor
+        block={editingBlock}
+        isOpen={editorOpen}
+        onClose={() => {
+          setEditorOpen(false);
+          setEditingBlock(null);
+        }}
+        onSave={handleSaveBlock}
+      />
     </div>
   );
 }
