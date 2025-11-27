@@ -34,13 +34,17 @@ export const LinkBlock = memo(function LinkBlockComponent({ block, onClick, butt
     <Button
       onClick={handleClick}
       variant="outline"
-      className={`w-full justify-start gap-3 px-4 h-auto py-3 ${getButtonClass(effectiveStyle)} ${getShadowClass(theme?.shadowIntensity)} transition-all duration-300`}
+      className={`w-full justify-start gap-3 px-4 h-auto py-3 ${getButtonClass(effectiveStyle)} ${getShadowClass(theme?.shadowIntensity)} transition-all duration-300 border-current/20 hover:bg-current/10`}
+      style={{ 
+        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined,
+        color: theme?.textColor 
+      }}
     >
-      <div className="flex items-center gap-3">
-        <Icon className="h-5 w-5 text-primary" />
+      <div className="flex items-center gap-3 flex-1">
+        <Icon className="h-5 w-5" style={{ color: theme?.accentColor || theme?.textColor }} />
         <span className="font-medium">{block.title}</span>
       </div>
-      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+      <ExternalLink className="h-4 w-4 opacity-60" />
     </Button>
   );
 });

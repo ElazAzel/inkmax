@@ -29,7 +29,7 @@ export const SocialsBlock = memo(function SocialsBlockComponent({ block, theme }
   return (
     <div className="w-full">
       {block.title && (
-        <h3 className="text-center text-sm font-medium text-muted-foreground mb-4">
+        <h3 className="text-center text-sm font-medium mb-4 opacity-70" style={{ color: theme?.textColor }}>
           {block.title}
         </h3>
       )}
@@ -40,10 +40,22 @@ export const SocialsBlock = memo(function SocialsBlockComponent({ block, theme }
             <button
               key={index}
               onClick={() => handleClick(platform.url)}
-              className={`group relative w-14 h-14 rounded-2xl bg-background/50 backdrop-blur-xl border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-110 ${getShadowClass(theme?.shadowIntensity)} flex items-center justify-center`}
+              className={`group relative w-14 h-14 rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-110 ${getShadowClass(theme?.shadowIntensity)} flex items-center justify-center`}
+              style={{
+                backgroundColor: theme?.textColor ? `${theme.textColor}11` : 'rgba(255, 255, 255, 0.05)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: theme?.textColor ? `${theme.textColor}33` : 'rgba(255, 255, 255, 0.1)'
+              }}
               aria-label={platform.name}
             >
-              <Icon className="w-6 h-6 text-foreground group-hover:text-primary transition-colors duration-300" />
+              <Icon 
+                className="w-6 h-6 transition-colors duration-300" 
+                style={{ 
+                  color: theme?.textColor,
+                  opacity: 0.8
+                }}
+              />
             </button>
           );
         })}

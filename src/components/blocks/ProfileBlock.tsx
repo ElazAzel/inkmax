@@ -126,7 +126,13 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         <div className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()}`}>
           <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
             <AvatarImage src={block.avatar} alt={block.name} />
-            <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
+            <AvatarFallback 
+              className="text-2xl font-semibold"
+              style={{
+                backgroundColor: theme?.accentColor || theme?.textColor,
+                color: theme?.backgroundColor
+              }}
+            >
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -134,9 +140,17 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2">
-            <h1 className="text-2xl font-bold">{block.name}</h1>
+            <h1 className="text-2xl font-bold" style={{ color: theme?.textColor }}>{block.name}</h1>
             {block.verified && (
-              <Badge variant="secondary" className="gap-1">
+              <Badge 
+                variant="secondary" 
+                className="gap-1 border-current/20"
+                style={{
+                  backgroundColor: theme?.accentColor ? `${theme.accentColor}22` : undefined,
+                  borderColor: theme?.accentColor,
+                  color: theme?.accentColor || theme?.textColor
+                }}
+              >
                 <CheckCircle2 className="h-3 w-3" />
                 Verified
               </Badge>
@@ -144,7 +158,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           </div>
           
           {block.bio && (
-            <p className="text-muted-foreground max-w-md">{block.bio}</p>
+            <p className="max-w-md opacity-80" style={{ color: theme?.textColor }}>{block.bio}</p>
           )}
         </div>
       </div>

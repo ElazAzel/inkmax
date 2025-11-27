@@ -42,9 +42,15 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, buttonS
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card 
+      className="overflow-hidden hover:shadow-lg transition-shadow border-current/20"
+      style={{ 
+        backgroundColor: theme?.textColor ? `${theme.textColor}11` : 'rgba(255, 255, 255, 0.05)',
+        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+      }}
+    >
       {block.image && (
-        <div className="aspect-square overflow-hidden bg-muted">
+        <div className="aspect-square overflow-hidden" style={{ backgroundColor: theme?.textColor ? `${theme.textColor}11` : undefined }}>
           <img
             src={block.image}
             alt={block.name}
@@ -54,9 +60,9 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, buttonS
       )}
       
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between" style={{ color: theme?.textColor }}>
           <span>{block.name}</span>
-          <span className="text-primary font-bold">
+          <span className="font-bold" style={{ color: theme?.accentColor || theme?.textColor }}>
             {getCurrencySymbol(block.currency)}{block.price.toLocaleString()} {block.currency}
           </span>
         </CardTitle>
@@ -64,7 +70,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, buttonS
       
       {block.description && (
         <CardContent>
-          <p className="text-sm text-muted-foreground">{block.description}</p>
+          <p className="text-sm opacity-70" style={{ color: theme?.textColor }}>{block.description}</p>
         </CardContent>
       )}
       
@@ -72,6 +78,10 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, buttonS
         <Button 
           className={`w-full gap-2 ${buttonStyle ? getButtonClass(buttonStyle) : ''}`}
           onClick={handleBuy}
+          style={{
+            backgroundColor: theme?.accentColor || theme?.textColor,
+            color: theme?.backgroundColor
+          }}
         >
           <ShoppingCart className="h-4 w-4" />
           Buy Now
