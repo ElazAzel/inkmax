@@ -26,13 +26,15 @@ export interface TextBlock {
   style?: 'heading' | 'paragraph' | 'quote';
 }
 
+export type Currency = 'KZT' | 'RUB' | 'BYN' | 'AMD' | 'AZN' | 'KGS' | 'TJS' | 'TMT' | 'UZS' | 'USD' | 'EUR' | 'GBP' | 'CNY' | 'JPY' | 'CHF' | 'CAD' | 'AUD';
+
 export interface ProductBlock {
   id: string;
   type: 'product';
   name: string;
   description: string;
   price: number;
-  currency: string;
+  currency: Currency;
   image?: string;
   buyLink?: string;
 }

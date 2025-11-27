@@ -14,6 +14,29 @@ export function ProductBlock({ block }: ProductBlockProps) {
     }
   };
 
+  const getCurrencySymbol = (currency: string) => {
+    const symbols: Record<string, string> = {
+      'KZT': '₸',
+      'RUB': '₽',
+      'BYN': 'Br',
+      'AMD': '֏',
+      'AZN': '₼',
+      'KGS': 'с',
+      'TJS': 'ЅМ',
+      'TMT': 'm',
+      'UZS': '',
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'CNY': '¥',
+      'JPY': '¥',
+      'CHF': '₣',
+      'CAD': '$',
+      'AUD': '$',
+    };
+    return symbols[currency] || currency;
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       {block.image && (
@@ -30,7 +53,7 @@ export function ProductBlock({ block }: ProductBlockProps) {
         <CardTitle className="flex items-center justify-between">
           <span>{block.name}</span>
           <span className="text-primary font-bold">
-            {block.currency}{block.price}
+            {getCurrencySymbol(block.currency)}{block.price.toLocaleString()} {block.currency}
           </span>
         </CardTitle>
       </CardHeader>

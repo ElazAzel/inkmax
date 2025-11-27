@@ -83,7 +83,7 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
           input: {
             productName: formData.name,
             price: formData.price,
-            currency: formData.currency || '$',
+            currency: formData.currency || 'KZT',
           },
         },
       });
@@ -297,10 +297,33 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
               </div>
               <div>
                 <Label>Currency</Label>
-                <Input
-                  value={formData.currency || '$'}
-                  onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                />
+                <Select
+                  value={formData.currency || 'KZT'}
+                  onValueChange={(value) => setFormData({ ...formData, currency: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="KZT">₸ KZT - Тенге (Казахстан)</SelectItem>
+                    <SelectItem value="RUB">₽ RUB - Рубль (Россия)</SelectItem>
+                    <SelectItem value="BYN">Br BYN - Рубль (Беларусь)</SelectItem>
+                    <SelectItem value="AMD">֏ AMD - Драм (Армения)</SelectItem>
+                    <SelectItem value="AZN">₼ AZN - Манат (Азербайджан)</SelectItem>
+                    <SelectItem value="KGS">с KGS - Сом (Кыргызстан)</SelectItem>
+                    <SelectItem value="TJS">ЅМ TJS - Сомони (Таджикистан)</SelectItem>
+                    <SelectItem value="TMT">m TMT - Манат (Туркменистан)</SelectItem>
+                    <SelectItem value="UZS">UZS - Сум (Узбекистан)</SelectItem>
+                    <SelectItem value="USD">$ USD - Доллар США</SelectItem>
+                    <SelectItem value="EUR">€ EUR - Евро</SelectItem>
+                    <SelectItem value="GBP">£ GBP - Фунт стерлингов</SelectItem>
+                    <SelectItem value="CNY">¥ CNY - Юань</SelectItem>
+                    <SelectItem value="JPY">¥ JPY - Йена</SelectItem>
+                    <SelectItem value="CHF">₣ CHF - Швейцарский франк</SelectItem>
+                    <SelectItem value="CAD">$ CAD - Канадский доллар</SelectItem>
+                    <SelectItem value="AUD">$ AUD - Австралийский доллар</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div>
