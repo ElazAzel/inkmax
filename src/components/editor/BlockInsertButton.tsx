@@ -53,7 +53,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
 
   return (
     <div className={cn(
-      "flex items-center justify-center opacity-100 sm:opacity-0 sm:hover:opacity-100 transition-opacity duration-200 sm:group-hover:opacity-100",
+      "flex items-center justify-center transition-opacity duration-200",
       className
     )}>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
