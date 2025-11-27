@@ -24,7 +24,6 @@ import { useAchievements } from '@/hooks/useAchievements';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
-import { ThemeSelector } from '@/components/editor/ThemeSelector';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
@@ -426,14 +425,6 @@ export default function Dashboard() {
                   </div>
                 </Card>
               )}
-
-              {/* Theme Selector */}
-              <Card className="p-4">
-                <ThemeSelector 
-                  currentTheme={pageData.theme}
-                  onThemeChange={updateTheme}
-                />
-              </Card>
 
               {/* Premium Status */}
               {!premiumLoading && (
