@@ -1,10 +1,10 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2, Plus } from 'lucide-react';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateSocialsBlock } from '@/lib/block-validators';
+import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
+import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
 
 function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const platforms = formData.platforms || [];
@@ -40,29 +40,14 @@ function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         />
       </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label>Social Platforms</Label>
-          <Button type="button" size="sm" onClick={addPlatform}>
-            <Plus className="h-4 w-4 mr-1" />
-            Add Platform
-          </Button>
-        </div>
-
+      <ArrayFieldList label="Social Platforms" items={platforms} onAdd={addPlatform}>
         {platforms.map((platform: any, index: number) => (
-          <div key={index} className="p-4 border rounded-lg space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Platform {index + 1}</Label>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => removePlatform(index)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-
+          <ArrayFieldItem
+            key={index}
+            index={index}
+            label="Platform"
+            onRemove={() => removePlatform(index)}
+          >
             <div>
               <Label className="text-xs">Icon</Label>
               <Select
@@ -105,9 +90,9 @@ function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
                 placeholder="https://instagram.com/username"
               />
             </div>
-          </div>
+          </ArrayFieldItem>
         ))}
-      </div>
+      </ArrayFieldList>
     </div>
   );
 }

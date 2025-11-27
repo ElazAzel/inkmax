@@ -1,9 +1,9 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Trash2, Plus } from 'lucide-react';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateCarouselBlock } from '@/lib/block-validators';
+import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
+import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
 
 function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const images = formData.images || [];
@@ -38,29 +38,14 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
         />
       </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label>Images</Label>
-          <Button type="button" size="sm" onClick={addImage}>
-            <Plus className="h-4 w-4 mr-1" />
-            Add Image
-          </Button>
-        </div>
-
+      <ArrayFieldList label="Images" items={images} onAdd={addImage}>
         {images.map((image: any, index: number) => (
-          <div key={index} className="p-4 border rounded-lg space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Image {index + 1}</Label>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => removeImage(index)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-
+          <ArrayFieldItem
+            key={index}
+            index={index}
+            label="Image"
+            onRemove={() => removeImage(index)}
+          >
             <div>
               <Label className="text-xs">Image URL</Label>
               <Input
@@ -89,9 +74,9 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
                 placeholder="https://example.com"
               />
             </div>
-          </div>
+          </ArrayFieldItem>
         ))}
-      </div>
+      </ArrayFieldList>
 
       <div className="flex items-center gap-2">
         <input
