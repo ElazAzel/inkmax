@@ -104,6 +104,23 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
           onCheckedChange={(checked) => onChange({ border: checked })}
         />
       </div>
+
+      <div className="space-y-2">
+        <Label>Выравнивание</Label>
+        <Select
+          value={formData.alignment || 'center'}
+          onValueChange={(value: 'left' | 'center' | 'right') => onChange({ alignment: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="left">Слева</SelectItem>
+            <SelectItem value="center">По центру</SelectItem>
+            <SelectItem value="right">Справа</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 }

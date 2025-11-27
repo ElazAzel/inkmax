@@ -19,9 +19,13 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
     }
   };
 
+  const alignmentClass = block.alignment === 'left' ? 'items-start' 
+    : block.alignment === 'right' ? 'items-end' 
+    : 'items-center';
+
   return (
-    <div className="w-full">
-      <div className={`overflow-hidden ${getImageClass()}`}>
+    <div className={`w-full flex flex-col ${alignmentClass}`}>
+      <div className={`overflow-hidden max-w-md ${getImageClass()}`}>
         <img
           src={block.url}
           alt={block.alt}
@@ -29,7 +33,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
         />
       </div>
       {block.caption && (
-        <p className="text-center text-sm text-muted-foreground mt-4">
+        <p className={`text-sm text-muted-foreground mt-4 ${block.alignment === 'center' ? 'text-center' : block.alignment === 'right' ? 'text-right' : 'text-left'}`}>
           {block.caption}
         </p>
       )}

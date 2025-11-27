@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateDownloadBlock } from '@/lib/block-validators';
 
@@ -52,6 +53,23 @@ function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
           onChange={(e) => onChange({ ...formData, fileSize: e.target.value })}
           placeholder="2.5 MB"
         />
+      </div>
+
+      <div>
+        <Label>Alignment</Label>
+        <Select
+          value={formData.alignment || 'center'}
+          onValueChange={(value) => onChange({ ...formData, alignment: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="left">Left</SelectItem>
+            <SelectItem value="center">Center</SelectItem>
+            <SelectItem value="right">Right</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

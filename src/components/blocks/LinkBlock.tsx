@@ -25,17 +25,23 @@ export const LinkBlock = memo(function LinkBlockComponent({ block, onClick }: Li
 
   const handleClick = createBlockClickHandler(block.url, onClick);
 
+  const alignmentClass = block.alignment === 'left' ? 'mr-auto' 
+    : block.alignment === 'right' ? 'ml-auto' 
+    : 'mx-auto';
+
   return (
-    <Button
-      variant="outline"
-      className={`w-full justify-between h-auto py-4 px-6 hover:scale-[1.02] transition-transform ${getButtonClass(block.style)}`}
-      onClick={handleClick}
-    >
-      <div className="flex items-center gap-3">
-        <Icon className="h-5 w-5 text-primary" />
-        <span className="font-medium">{block.title}</span>
-      </div>
-      <ExternalLink className="h-4 w-4 text-muted-foreground" />
-    </Button>
+    <div className={`flex ${block.alignment === 'left' ? 'justify-start' : block.alignment === 'right' ? 'justify-end' : 'justify-center'}`}>
+      <Button
+        variant="outline"
+        className={`${alignmentClass} max-w-full sm:max-w-md justify-between h-auto py-4 px-6 hover:scale-[1.02] transition-transform ${getButtonClass(block.style)}`}
+        onClick={handleClick}
+      >
+        <div className="flex items-center gap-3">
+          <Icon className="h-5 w-5 text-primary" />
+          <span className="font-medium">{block.title}</span>
+        </div>
+        <ExternalLink className="h-4 w-4 text-muted-foreground" />
+      </Button>
+    </div>
   );
 });

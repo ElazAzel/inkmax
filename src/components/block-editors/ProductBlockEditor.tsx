@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
 import { generateSalesCopy } from '@/lib/ai-helpers';
@@ -89,6 +90,23 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
           value={formData.buyLink || ''}
           onChange={(e) => onChange({ ...formData, buyLink: e.target.value })}
         />
+      </div>
+
+      <div>
+        <Label>Alignment</Label>
+        <Select
+          value={formData.alignment || 'center'}
+          onValueChange={(value) => onChange({ ...formData, alignment: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="left">Left</SelectItem>
+            <SelectItem value="center">Center</SelectItem>
+            <SelectItem value="right">Right</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

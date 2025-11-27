@@ -86,6 +86,23 @@ function LinkBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
           </SelectContent>
         </Select>
       </div>
+
+      <div>
+        <Label>Alignment</Label>
+        <Select
+          value={formData.alignment || 'center'}
+          onValueChange={(value) => onChange({ ...formData, alignment: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="left">Left</SelectItem>
+            <SelectItem value="center">Center</SelectItem>
+            <SelectItem value="right">Right</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 }
