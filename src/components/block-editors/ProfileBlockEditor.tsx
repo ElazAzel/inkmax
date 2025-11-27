@@ -87,6 +87,23 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         </div>
 
         <div>
+          <Label>Avatar Position</Label>
+          <Select
+            value={formData.avatarPosition || 'center'}
+            onValueChange={(value) => onChange({ ...formData, avatarPosition: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="left">Left</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="right">Right</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
           <Label>Avatar Frame Style</Label>
           <Select
             value={formData.avatarFrame || 'default'}

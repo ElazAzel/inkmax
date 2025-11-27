@@ -11,6 +11,7 @@ export interface ProfileBlock {
   coverImage?: string;
   coverGradient?: 'none' | 'dark' | 'light' | 'primary' | 'sunset' | 'ocean' | 'purple';
   avatarSize?: 'small' | 'medium' | 'large' | 'xlarge';
+  avatarPosition?: 'left' | 'center' | 'right';
   shadowStyle?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
 }
 
