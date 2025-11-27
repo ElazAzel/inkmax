@@ -69,7 +69,7 @@ export default function Dashboard() {
       name: 'New Product',
       description: 'Product description',
       price: 0,
-      currency: '$',
+      currency: 'KZT',
     };
     addBlock(newBlock);
     toast.success('Product added');
