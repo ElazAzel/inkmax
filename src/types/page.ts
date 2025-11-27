@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch';
 
 export interface ProfileBlock {
   id: string;
@@ -111,7 +111,77 @@ export interface CustomCodeBlock {
   isPremium: true;
 }
 
-export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock;
+export interface MessengerBlock {
+  id: string;
+  type: 'messenger';
+  title?: string;
+  messengers: Array<{
+    platform: 'whatsapp' | 'telegram' | 'viber' | 'wechat';
+    username: string;
+    message?: string;
+  }>;
+}
+
+export interface FormBlock {
+  id: string;
+  type: 'form';
+  title: string;
+  fields: Array<{
+    name: string;
+    type: 'text' | 'email' | 'phone' | 'textarea';
+    required: boolean;
+  }>;
+  submitEmail: string;
+  buttonText: string;
+  isPremium: true;
+}
+
+export interface DownloadBlock {
+  id: string;
+  type: 'download';
+  title: string;
+  description?: string;
+  fileUrl: string;
+  fileName: string;
+  fileSize?: string;
+  icon?: string;
+}
+
+export interface NewsletterBlock {
+  id: string;
+  type: 'newsletter';
+  title: string;
+  description?: string;
+  buttonText: string;
+  apiEndpoint?: string;
+  isPremium: true;
+}
+
+export interface TestimonialBlock {
+  id: string;
+  type: 'testimonial';
+  title?: string;
+  testimonials: Array<{
+    name: string;
+    text: string;
+    rating?: number;
+    avatar?: string;
+    role?: string;
+  }>;
+  isPremium: true;
+}
+
+export interface ScratchBlock {
+  id: string;
+  type: 'scratch';
+  title?: string;
+  revealText: string;
+  scratchImage?: string;
+  backgroundColor?: string;
+  isPremium: true;
+}
+
+export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock;
 
 export interface PageTheme {
   backgroundColor: string;
@@ -119,6 +189,14 @@ export interface PageTheme {
   textColor: string;
   buttonStyle: 'default' | 'rounded' | 'pill' | 'gradient';
   fontFamily: 'sans' | 'serif' | 'mono';
+  darkMode?: boolean;
+}
+
+export interface PageMetrics {
+  googleAnalytics?: string;
+  facebookPixel?: string;
+  yandexMetrika?: string;
+  tiktokPixel?: string;
 }
 
 export interface PageData {
@@ -131,4 +209,5 @@ export interface PageData {
     keywords: string[];
   };
   isPremium?: boolean;
+  metrics?: PageMetrics;
 }

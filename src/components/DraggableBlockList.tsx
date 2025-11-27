@@ -52,25 +52,37 @@ function SortableBlockItem({ block, onDelete, onEdit }: SortableBlockItemProps) 
   const getBlockTitle = (block: Block): string => {
     switch (block.type) {
       case 'profile':
-        return `Profile: ${block.name}`;
+        return `Профиль: ${block.name}`;
       case 'link':
-        return `Link: ${block.title}`;
+        return `Ссылка: ${block.title}`;
       case 'product':
-        return `Product: ${block.name}`;
+        return `Товар: ${block.name}`;
       case 'text':
-        return `Text: ${block.content.slice(0, 30)}...`;
+        return `Текст: ${block.content.slice(0, 30)}...`;
       case 'video':
-        return `Video: ${block.title || 'Untitled'}`;
+        return `Видео: ${block.title || 'Без названия'}`;
       case 'carousel':
-        return `Carousel: ${block.title || `${block.images?.length || 0} images`}`;
+        return `Галерея: ${block.title || `${block.images?.length || 0} фото`}`;
       case 'custom_code':
-        return `Custom Code: ${block.title || 'Untitled'}`;
+        return `HTML код: ${block.title || 'Без названия'}`;
+      case 'messenger':
+        return `Мессенджеры: ${block.title || 'Связь'}`;
+      case 'form':
+        return `Форма: ${block.title}`;
+      case 'download':
+        return `Файл: ${block.title}`;
+      case 'newsletter':
+        return `Подписка: ${block.title}`;
+      case 'testimonial':
+        return `Отзывы: ${block.title || 'Отзывы'}`;
+      case 'scratch':
+        return `Скретч: ${block.title || 'Сюрприз'}`;
       default:
-        return 'Unknown block';
+        return 'Неизвестный блок';
     }
   };
 
-  const isPremiumBlock = block.type === 'video' || block.type === 'carousel' || block.type === 'custom_code';
+  const isPremiumBlock = block.type === 'video' || block.type === 'carousel' || block.type === 'custom_code' || block.type === 'form' || block.type === 'newsletter' || block.type === 'testimonial' || block.type === 'scratch';
 
   return (
     <Card
