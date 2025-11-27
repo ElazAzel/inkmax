@@ -287,17 +287,28 @@ export const ThemeSelector = memo(function ThemeSelector({
               )}
 
               {/* Theme Preview */}
-              <div className={cn("h-24 p-3 flex flex-col gap-1.5", theme.preview.bg)}>
-                <div className={cn("text-xs font-medium", theme.preview.text)}>
+              <div 
+                className="h-24 p-3 flex flex-col gap-1.5"
+                style={{
+                  background: theme.theme.backgroundGradient || theme.theme.backgroundColor,
+                }}
+              >
+                <div 
+                  className="text-xs font-medium"
+                  style={{ color: theme.theme.textColor }}
+                >
                   Aa
                 </div>
-                <div className={cn(
-                  "h-4 rounded-full w-full text-[8px] flex items-center justify-center font-medium",
-                  theme.preview.button
-                )}>
+                <div 
+                  className="h-4 rounded-full w-full text-[8px] flex items-center justify-center font-medium"
+                  style={{
+                    backgroundColor: theme.theme.accentColor,
+                    color: getContrastTextColor(theme.theme.accentColor) || theme.theme.textColor,
+                  }}
+                >
                   Button
-                  </div>
                 </div>
+              </div>
 
                 {/* Theme Info */}
                 <div className="p-2 bg-card">
