@@ -1,9 +1,56 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const RATE_LIMIT_REQUESTS = 20; // 20 requests per minute
+const RATE_LIMIT_WINDOW = 60; // 60 seconds
+
+async function checkRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<boolean> {
+  const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW * 1000);
+  
+  // Clean up old entries
+  await supabase
+    .from('rate_limits')
+    .delete()
+    .lt('window_start', windowStart.toISOString());
+  
+  // Get current rate limit entry
+  const { data: existing } = await supabase
+    .from('rate_limits')
+    .select('*')
+    .eq('ip_address', ipAddress)
+    .eq('endpoint', endpoint)
+    .gte('window_start', windowStart.toISOString())
+    .single();
+  
+  if (existing) {
+    if (existing.request_count >= RATE_LIMIT_REQUESTS) {
+      return false; // Rate limit exceeded
+    }
+    
+    // Update count
+    await supabase
+      .from('rate_limits')
+      .update({ request_count: existing.request_count + 1 })
+      .eq('id', existing.id);
+  } else {
+    // Create new entry
+    await supabase
+      .from('rate_limits')
+      .insert({
+        ip_address: ipAddress,
+        endpoint: endpoint,
+        request_count: 1,
+        window_start: new Date().toISOString()
+      });
+  }
+  
+  return true;
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -11,6 +58,25 @@ serve(async (req) => {
   }
 
   try {
+    // Extract IP address
+    const ipAddress = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 
+                      req.headers.get('x-real-ip') || 
+                      'unknown';
+    
+    // Initialize Supabase client for rate limiting
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+    
+    // Check rate limit
+    const allowed = await checkRateLimit(supabase, ipAddress, 'ai-content-generator');
+    if (!allowed) {
+      console.log(`Rate limit exceeded for IP: ${ipAddress}`);
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please try again in a minute.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     // Check if body exists and is not empty
     const text = await req.text();
     if (!text) {
