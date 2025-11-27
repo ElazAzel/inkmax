@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -8,24 +8,27 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { ProfileBlockEditor } from './block-editors/ProfileBlockEditor';
-import { TextBlockEditor } from './block-editors/TextBlockEditor';
-import { LinkBlockEditor } from './block-editors/LinkBlockEditor';
-import { ProductBlockEditor } from './block-editors/ProductBlockEditor';
-import { VideoBlockEditor } from './block-editors/VideoBlockEditor';
-import { CarouselBlockEditor } from './block-editors/CarouselBlockEditor';
-import { ButtonBlockEditor } from './block-editors/ButtonBlockEditor';
-import { SocialsBlockEditor } from './block-editors/SocialsBlockEditor';
-import { ImageBlockEditor } from './block-editors/ImageBlockEditor';
-import { CustomCodeBlockEditor } from './block-editors/CustomCodeBlockEditor';
-import { MessengerBlockEditor } from './block-editors/MessengerBlockEditor';
-import { FormBlockEditor } from './block-editors/FormBlockEditor';
-import { DownloadBlockEditor } from './block-editors/DownloadBlockEditor';
-import { NewsletterBlockEditor } from './block-editors/NewsletterBlockEditor';
-import { TestimonialBlockEditor } from './block-editors/TestimonialBlockEditor';
-import { ScratchBlockEditor } from './block-editors/ScratchBlockEditor';
-import { SearchBlockEditor } from './block-editors/SearchBlockEditor';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { Block } from '@/types/page';
+
+// Lazy load all block editors for code splitting
+const ProfileBlockEditor = lazy(() => import('./block-editors/ProfileBlockEditor').then(m => ({ default: m.ProfileBlockEditor })));
+const TextBlockEditor = lazy(() => import('./block-editors/TextBlockEditor').then(m => ({ default: m.TextBlockEditor })));
+const LinkBlockEditor = lazy(() => import('./block-editors/LinkBlockEditor').then(m => ({ default: m.LinkBlockEditor })));
+const ProductBlockEditor = lazy(() => import('./block-editors/ProductBlockEditor').then(m => ({ default: m.ProductBlockEditor })));
+const VideoBlockEditor = lazy(() => import('./block-editors/VideoBlockEditor').then(m => ({ default: m.VideoBlockEditor })));
+const CarouselBlockEditor = lazy(() => import('./block-editors/CarouselBlockEditor').then(m => ({ default: m.CarouselBlockEditor })));
+const ButtonBlockEditor = lazy(() => import('./block-editors/ButtonBlockEditor').then(m => ({ default: m.ButtonBlockEditor })));
+const SocialsBlockEditor = lazy(() => import('./block-editors/SocialsBlockEditor').then(m => ({ default: m.SocialsBlockEditor })));
+const ImageBlockEditor = lazy(() => import('./block-editors/ImageBlockEditor').then(m => ({ default: m.ImageBlockEditor })));
+const CustomCodeBlockEditor = lazy(() => import('./block-editors/CustomCodeBlockEditor').then(m => ({ default: m.CustomCodeBlockEditor })));
+const MessengerBlockEditor = lazy(() => import('./block-editors/MessengerBlockEditor').then(m => ({ default: m.MessengerBlockEditor })));
+const FormBlockEditor = lazy(() => import('./block-editors/FormBlockEditor').then(m => ({ default: m.FormBlockEditor })));
+const DownloadBlockEditor = lazy(() => import('./block-editors/DownloadBlockEditor').then(m => ({ default: m.DownloadBlockEditor })));
+const NewsletterBlockEditor = lazy(() => import('./block-editors/NewsletterBlockEditor').then(m => ({ default: m.NewsletterBlockEditor })));
+const TestimonialBlockEditor = lazy(() => import('./block-editors/TestimonialBlockEditor').then(m => ({ default: m.TestimonialBlockEditor })));
+const ScratchBlockEditor = lazy(() => import('./block-editors/ScratchBlockEditor').then(m => ({ default: m.ScratchBlockEditor })));
+const SearchBlockEditor = lazy(() => import('./block-editors/SearchBlockEditor').then(m => ({ default: m.SearchBlockEditor })));
 
 interface BlockEditorProps {
   block: Block | null;
@@ -77,57 +80,134 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
       onChange: setFormData,
     };
 
+    // Loading fallback for lazy-loaded editors
+    const EditorFallback = () => (
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-24 w-full" />
+      </div>
+    );
+
     switch (block.type) {
       case 'profile':
-        return <ProfileBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <ProfileBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'text':
-        return <TextBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <TextBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'link':
-        return <LinkBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <LinkBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'product':
-        return <ProductBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <ProductBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'video':
-        return <VideoBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <VideoBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'carousel':
-        return <CarouselBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <CarouselBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'button':
-        return <ButtonBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <ButtonBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'socials':
-        return <SocialsBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <SocialsBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'image':
-        return <ImageBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <ImageBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'custom_code':
-        return <CustomCodeBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <CustomCodeBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'messenger':
-        return <MessengerBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <MessengerBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'form':
-        return <FormBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <FormBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'download':
-        return <DownloadBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <DownloadBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'newsletter':
-        return <NewsletterBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <NewsletterBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'testimonial':
-        return <TestimonialBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <TestimonialBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'scratch':
-        return <ScratchBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <ScratchBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       case 'search':
-        return <SearchBlockEditor {...commonProps} />;
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <SearchBlockEditor {...commonProps} />
+          </Suspense>
+        );
       
       default:
         return (
