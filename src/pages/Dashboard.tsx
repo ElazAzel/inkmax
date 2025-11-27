@@ -13,28 +13,34 @@ import {
   Sparkles, 
   Wand2, 
   MessageCircle,
-  LayoutTemplate 
+  LayoutTemplate,
+  Trophy
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import { useBlockHints } from '@/hooks/useBlockHints';
+import { useAchievements } from '@/hooks/useAchievements';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
+import { AchievementNotification } from '@/components/achievements/AchievementNotification';
+import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { Card } from '@/components/ui/card';
 import { createBlock } from '@/lib/block-factory';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
+import type { UserStats } from '@/types/achievements';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
   const blockHints = useBlockHints();
+  const achievements = useAchievements();
   const {
     pageData,
     chatbotContext,
@@ -57,6 +63,30 @@ export default function Dashboard() {
   const [aiGeneratorType, setAiGeneratorType] = useState<'magic-title' | 'sales-copy' | 'seo' | 'ai-builder'>('ai-builder');
   const [showSettings, setShowSettings] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
+
+  // Check achievements whenever blocks or features change
+  useEffect(() => {
+    if (!pageData || achievements.loading || !user) return;
+
+    const blocksUsed = new Set(pageData.blocks.map(b => b.type));
+    const featuresUsed = new Set<string>();
+    
+    // Track feature usage
+    if (chatbotContext && chatbotContext.length > 0) {
+      featuresUsed.add('chatbot');
+    }
+
+    const stats: UserStats = {
+      blocksUsed,
+      totalBlocks: pageData.blocks.length,
+      featuresUsed,
+      pageViews: 0, // Will be fetched from database in future
+      published: false, // Will be fetched from database in future
+    };
+
+    achievements.checkAchievements(stats);
+  }, [pageData, chatbotContext, achievements, user]);
 
   // Check if user has completed onboarding
   useEffect(() => {
@@ -250,6 +280,22 @@ export default function Dashboard() {
               <span className="hidden sm:inline">Settings</span>
             </Button>
 
+            {/* Achievements Button - Mobile Optimized */}
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setShowAchievements(true)}
+              className="relative"
+            >
+              <Trophy className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Достижения</span>
+              {achievements.getProgress().unlocked > 0 && (
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-bold flex items-center justify-center text-primary-foreground">
+                  {achievements.getProgress().unlocked}
+                </span>
+              )}
+            </Button>
+
             <div className="h-6 w-px bg-border hidden sm:block" />
 
             {/* Save */}
@@ -432,6 +478,19 @@ export default function Dashboard() {
           onComplete={handleOnboardingComplete}
           onSkip={handleOnboardingSkip}
         />
+      )}
+
+      {/* Achievement Notification */}
+      {achievements.newAchievement && (
+        <AchievementNotification
+          achievement={achievements.newAchievement}
+          onDismiss={achievements.dismissAchievementNotification}
+        />
+      )}
+
+      {/* Achievements Panel */}
+      {showAchievements && (
+        <AchievementsPanel onClose={() => setShowAchievements(false)} />
       )}
     </div>
   );
