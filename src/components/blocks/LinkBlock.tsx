@@ -1,10 +1,11 @@
+import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Instagram, Twitter, Youtube, Facebook, Linkedin, Globe } from 'lucide-react';
 import { getButtonClass, createBlockClickHandler } from '@/lib/block-utils';
-import type { LinkBlock } from '@/types/page';
+import type { LinkBlock as LinkBlockType } from '@/types/page';
 
 interface LinkBlockProps {
-  block: LinkBlock;
+  block: LinkBlockType;
   onClick?: () => void;
 }
 
@@ -17,7 +18,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   globe: Globe,
 };
 
-export function LinkBlock({ block, onClick }: LinkBlockProps) {
+export const LinkBlock = memo(function LinkBlockComponent({ block, onClick }: LinkBlockProps) {
   const Icon = block.icon && iconMap[block.icon.toLowerCase()] 
     ? iconMap[block.icon.toLowerCase()] 
     : ExternalLink;
@@ -37,4 +38,4 @@ export function LinkBlock({ block, onClick }: LinkBlockProps) {
       <ExternalLink className="h-4 w-4 text-muted-foreground" />
     </Button>
   );
-}
+});

@@ -1,11 +1,12 @@
+import { memo } from 'react';
 import { createBlockClickHandler, getBackgroundStyle, getHoverClass } from '@/lib/block-utils';
-import type { ButtonBlock } from '@/types/page';
+import type { ButtonBlock as ButtonBlockType } from '@/types/page';
 
 interface ButtonBlockProps {
-  block: ButtonBlock;
+  block: ButtonBlockType;
 }
 
-export function ButtonBlock({ block }: ButtonBlockProps) {
+export const ButtonBlock = memo(function ButtonBlockComponent({ block }: ButtonBlockProps) {
   const handleClick = createBlockClickHandler(block.url);
 
   return (
@@ -17,4 +18,4 @@ export function ButtonBlock({ block }: ButtonBlockProps) {
       <span className="relative z-10">{block.title}</span>
     </button>
   );
-}
+});

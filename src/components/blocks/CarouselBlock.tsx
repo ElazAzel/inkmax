@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Carousel,
@@ -7,13 +8,13 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import type { CarouselBlock } from '@/types/page';
+import type { CarouselBlock as CarouselBlockType } from '@/types/page';
 
 interface CarouselBlockProps {
-  block: CarouselBlock;
+  block: CarouselBlockType;
 }
 
-export function CarouselBlock({ block }: CarouselBlockProps) {
+export const CarouselBlock = memo(function CarouselBlockComponent({ block }: CarouselBlockProps) {
   const autoplayPlugin = block.autoPlay
     ? Autoplay({ delay: block.interval || 3000, stopOnInteraction: true })
     : undefined;
@@ -78,4 +79,4 @@ export function CarouselBlock({ block }: CarouselBlockProps) {
       </CardContent>
     </Card>
   );
-}
+});

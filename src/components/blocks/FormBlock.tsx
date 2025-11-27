@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Crown, Send } from 'lucide-react';
 import type { FormBlock as FormBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
@@ -12,7 +12,7 @@ interface FormBlockProps {
   block: FormBlockType;
 }
 
-export function FormBlock({ block }: FormBlockProps) {
+export const FormBlock = memo(function FormBlock({ block }: FormBlockProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -87,4 +87,4 @@ export function FormBlock({ block }: FormBlockProps) {
       </form>
     </Card>
   );
-}
+});

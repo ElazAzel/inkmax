@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Download, FileText } from 'lucide-react';
 import type { DownloadBlock as DownloadBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
@@ -7,7 +8,7 @@ interface DownloadBlockProps {
   block: DownloadBlockType;
 }
 
-export function DownloadBlock({ block }: DownloadBlockProps) {
+export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBlockProps) {
   const handleDownload = () => {
     // In production, this would track download analytics
     window.open(block.fileUrl, '_blank', 'noopener,noreferrer');
@@ -43,4 +44,4 @@ export function DownloadBlock({ block }: DownloadBlockProps) {
       </div>
     </Card>
   );
-}
+});
