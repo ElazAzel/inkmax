@@ -105,3 +105,68 @@ export function validateSocialsBlock(formData: any): string | null {
 export function validateCustomCodeBlock(formData: any): string | null {
   return validateRequired(formData.html, 'HTML code');
 }
+
+export function validateMessengerBlock(formData: any): string | null {
+  const arrayError = validateArrayNotEmpty(formData.messengers, 'Messengers');
+  if (arrayError) return arrayError;
+  
+  for (let i = 0; i < formData.messengers.length; i++) {
+    const messenger = formData.messengers[i];
+    const usernameError = validateRequired(messenger.username, `Messenger ${i + 1} username`);
+    if (usernameError) return usernameError;
+  }
+  
+  return null;
+}
+
+export function validateFormBlock(formData: any): string | null {
+  const titleError = validateRequired(formData.title, 'Form title');
+  if (titleError) return titleError;
+  
+  const arrayError = validateArrayNotEmpty(formData.fields, 'Form fields');
+  if (arrayError) return arrayError;
+  
+  for (let i = 0; i < formData.fields.length; i++) {
+    const field = formData.fields[i];
+    const nameError = validateRequired(field.name, `Field ${i + 1} name`);
+    if (nameError) return nameError;
+  }
+  
+  return null;
+}
+
+export function validateDownloadBlock(formData: any): string | null {
+  return (
+    validateRequired(formData.title, 'Title') ||
+    validateUrl(formData.fileUrl, 'File URL') ||
+    validateRequired(formData.fileName, 'File name')
+  );
+}
+
+export function validateNewsletterBlock(formData: any): string | null {
+  return validateRequired(formData.title, 'Title');
+}
+
+export function validateTestimonialBlock(formData: any): string | null {
+  const arrayError = validateArrayNotEmpty(formData.testimonials, 'Testimonials');
+  if (arrayError) return arrayError;
+  
+  for (let i = 0; i < formData.testimonials.length; i++) {
+    const testimonial = formData.testimonials[i];
+    const nameError = validateRequired(testimonial.name, `Testimonial ${i + 1} name`);
+    if (nameError) return nameError;
+    const textError = validateRequired(testimonial.text, `Testimonial ${i + 1} text`);
+    if (textError) return textError;
+  }
+  
+  return null;
+}
+
+export function validateScratchBlock(formData: any): string | null {
+  return validateRequired(formData.revealText, 'Reveal text');
+}
+
+export function validateSearchBlock(formData: any): string | null {
+  // Search block has no required fields, placeholder is optional
+  return null;
+}
