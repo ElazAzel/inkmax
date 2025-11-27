@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { PWAUpdatePrompt } from "@/components/PWAUpdatePrompt";
 
 // Lazy load page components for route-based code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -13,6 +15,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PublicPage = lazy(() => import("./pages/PublicPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Install = lazy(() => import("./pages/Install"));
 
 const queryClient = new QueryClient();
 
@@ -40,6 +43,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/install" element={<Install />} />
               <Route path="/p/:compressed" element={<PublicPage />} />
               <Route path="/:slug" element={<PublicPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -47,6 +51,8 @@ const App = () => (
             </Routes>
           </Suspense>
         </BrowserRouter>
+        <PWAInstallPrompt />
+        <PWAUpdatePrompt />
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
