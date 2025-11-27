@@ -129,13 +129,13 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   const MobileSheet = () => (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <Button
-        variant="ghost"
-        size="sm"
+        variant="default"
+        size="lg"
         onClick={() => setIsOpen(true)}
-        className="h-9 w-9 p-0 rounded-full border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/10 transition-all active:scale-95"
+        className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all active:scale-95"
         data-onboarding="add-block"
       >
-        <Plus className="h-4 w-4 text-primary" />
+        <Plus className="h-6 w-6" />
       </Button>
       <SheetContent side="bottom" className="h-[85vh] p-0">
         <SheetHeader className="p-4 pb-2 border-b sticky top-0 bg-background z-10">
