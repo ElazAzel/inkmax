@@ -193,10 +193,24 @@ export const PreviewEditor = memo(function PreviewEditor({
     backgroundImage: theme.backgroundGradient || 'none',
     color: theme.textColor,
     transition: 'background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease',
+    // Set CSS variables for theme colors
+    ['--theme-bg' as string]: theme.backgroundColor,
+    ['--theme-text' as string]: theme.textColor,
+    ['--theme-accent' as string]: theme.accentColor || theme.textColor,
   };
 
   return (
     <>
+      <style>{`
+        /* Override component colors with theme colors in preview */
+        .text-foreground { color: var(--theme-text) !important; }
+        .text-muted-foreground { color: var(--theme-text) !important; opacity: 0.7; }
+        .text-primary { color: var(--theme-accent) !important; }
+        .border-primary { border-color: var(--theme-accent) !important; }
+        .bg-card { background-color: rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(10px); }
+        .bg-background { background-color: transparent !important; }
+        .border-border { border-color: var(--theme-text) !important; opacity: 0.2; }
+      `}</style>
       <div 
         className={`max-w-lg mx-auto px-3 sm:px-4 py-2 space-y-3 sm:space-y-4 pb-24 min-h-screen ${fontClass}`}
         style={backgroundStyle}

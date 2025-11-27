@@ -99,10 +99,24 @@ export default function PublicPage() {
     backgroundImage: pageData.theme.backgroundGradient || 'none',
     color: pageData.theme.textColor,
     transition: 'background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease',
+    // Set CSS variables for theme colors so all components can use them
+    ['--theme-bg' as string]: pageData.theme.backgroundColor,
+    ['--theme-text' as string]: pageData.theme.textColor,
+    ['--theme-accent' as string]: pageData.theme.accentColor || pageData.theme.textColor,
   };
 
   return (
     <div className={`min-h-screen ${fontClass}`} style={backgroundStyle}>
+      <style>{`
+        /* Override component colors with theme colors */
+        .text-foreground { color: var(--theme-text) !important; }
+        .text-muted-foreground { color: var(--theme-text) !important; opacity: 0.7; }
+        .text-primary { color: var(--theme-accent) !important; }
+        .border-primary { border-color: var(--theme-accent) !important; }
+        .bg-card { background-color: rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(10px); }
+        .bg-background { background-color: transparent !important; }
+        .border-border { border-color: var(--theme-text) !important; opacity: 0.2; }
+      `}</style>
       <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Content - Mobile Optimized */}
         <div className="space-y-3 sm:space-y-4">
