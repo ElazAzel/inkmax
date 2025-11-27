@@ -91,10 +91,15 @@ export async function savePage(
     if (pageError) return { data: null, error: pageError };
 
     // Удаляем старые блоки
-    await supabase
+    const { error: deleteError } = await supabase
       .from('blocks')
       .delete()
       .eq('page_id', page.id);
+
+    if (deleteError) {
+      console.error('Error deleting old blocks:', deleteError);
+      return { data: null, error: deleteError };
+    }
 
     // Сохраняем блоки
     const blocksToInsert: any[] = pageData.blocks.map((block, index) => ({
@@ -105,6 +110,8 @@ export async function savePage(
       content: block as any,
       style: {} as any,
       is_premium: pageData.isPremium || false,
+      schedule: 'schedule' in block ? block.schedule : null,
+      click_count: 0,
     }));
 
     if (blocksToInsert.length > 0) {
@@ -112,7 +119,10 @@ export async function savePage(
         .from('blocks')
         .insert(blocksToInsert);
 
-      if (blocksError) return { data: null, error: blocksError };
+      if (blocksError) {
+        console.error('Error inserting blocks:', blocksError);
+        return { data: null, error: blocksError };
+      }
     }
 
     return { data: page, error: null };

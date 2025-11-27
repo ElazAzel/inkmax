@@ -75,9 +75,10 @@ export function useSavePageMutation(userId: string | undefined) {
         });
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error saving page:', error);
-      toast.error('Failed to save changes');
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      toast.error(`Failed to save: ${error.message || 'Unknown error'}`);
     },
   });
 }
