@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Pencil, Trash2, GripVertical } from 'lucide-react';
+import { Pencil, Trash2, GripVertical, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { cn } from '@/lib/utils';
@@ -9,16 +9,24 @@ interface InlineEditableBlockProps {
   block: Block;
   onEdit: (block: Block) => void;
   onDelete: (id: string) => void;
+  onMoveUp?: (id: string) => void;
+  onMoveDown?: (id: string) => void;
   isDragging?: boolean;
   dragHandleProps?: any;
+  isFirst?: boolean;
+  isLast?: boolean;
 }
 
 export const InlineEditableBlock = memo(function InlineEditableBlock({
   block,
   onEdit,
   onDelete,
+  onMoveUp,
+  onMoveDown,
   isDragging,
   dragHandleProps,
+  isFirst = false,
+  isLast = false,
 }: InlineEditableBlockProps) {
   const [isHovered, setIsHovered] = useState(false);
   const isProfileBlock = block.type === 'profile';
@@ -38,9 +46,35 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         <div className="absolute inset-0 bg-primary/5 border-2 border-primary/30 rounded-2xl pointer-events-none z-10" />
       )}
 
-      {/* Control buttons - Mobile Optimized */}
+      {/* Control buttons - Mobile Optimized with Arrow buttons */}
       {isHovered && !isDragging && block.type !== 'profile' && (
         <div className="absolute -top-2 sm:-top-3 right-1 sm:right-2 flex gap-1 z-20">
+          {/* Arrow controls for reordering */}
+          {onMoveUp && onMoveDown && (
+            <div className="flex flex-col gap-0.5 bg-background rounded shadow-lg">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-4 sm:h-5 w-6 sm:w-7 p-0 rounded-b-none"
+                onClick={() => onMoveUp(block.id)}
+                disabled={isFirst}
+                title="Переместить вверх"
+              >
+                <ChevronUp className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-4 sm:h-5 w-6 sm:w-7 p-0 rounded-t-none"
+                onClick={() => onMoveDown(block.id)}
+                disabled={isLast}
+                title="Переместить вниз"
+              >
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
+          
           <Button
             variant="secondary"
             size="sm"

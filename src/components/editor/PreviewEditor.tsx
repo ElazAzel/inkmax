@@ -11,6 +11,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
   useSortable,
+  arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Plus } from 'lucide-react';
@@ -35,8 +36,11 @@ interface PreviewEditorProps {
 interface SortableBlockWrapperProps {
   block: Block;
   index: number;
+  totalCount: number;
   onEdit: (block: Block) => void;
   onDelete: (id: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
   onInsertAfter: (blockType: string) => void;
   isPremium: boolean;
 }
@@ -53,8 +57,11 @@ interface ExtendedSortableBlockWrapperProps extends SortableBlockWrapperProps {
 function SortableBlockWrapper({
   block,
   index,
+  totalCount,
   onEdit,
   onDelete,
+  onMoveUp,
+  onMoveDown,
   onInsertAfter,
   isPremium,
   context,
@@ -74,6 +81,8 @@ function SortableBlockWrapper({
   };
 
   const showHint = context?.activeBlockHint?.blockId === block.id;
+  const isFirst = index === 0;
+  const isLast = index === totalCount - 1;
 
   return (
     <div ref={setNodeRef} style={style} className="group relative">
@@ -81,6 +90,10 @@ function SortableBlockWrapper({
         block={block}
         onEdit={onEdit}
         onDelete={onDelete}
+        onMoveUp={onMoveUp}
+        onMoveDown={onMoveDown}
+        isFirst={isFirst}
+        isLast={isLast}
         isDragging={isDragging}
         dragHandleProps={{ ...attributes, ...listeners }}
       />
@@ -133,6 +146,24 @@ export const PreviewEditor = memo(function PreviewEditor({
     }
   };
 
+  const handleMoveUp = (id: string) => {
+    const allBlocks = [...blocks];
+    const index = allBlocks.findIndex((block) => block.id === id);
+    if (index > 0 && allBlocks[index - 1].type !== 'profile') {
+      const reorderedBlocks = arrayMove(allBlocks, index, index - 1);
+      onReorderBlocks(reorderedBlocks);
+    }
+  };
+
+  const handleMoveDown = (id: string) => {
+    const allBlocks = [...blocks];
+    const index = allBlocks.findIndex((block) => block.id === id);
+    if (index < allBlocks.length - 1) {
+      const reorderedBlocks = arrayMove(allBlocks, index, index + 1);
+      onReorderBlocks(reorderedBlocks);
+    }
+  };
+
   const profileBlock = blocks.find(b => b.type === 'profile');
   const contentBlocks = blocks.filter(b => b.type !== 'profile');
 
@@ -171,8 +202,11 @@ export const PreviewEditor = memo(function PreviewEditor({
                   key={block.id}
                   block={block}
                   index={index}
+                  totalCount={contentBlocks.length}
                   onEdit={onEditBlock}
                   onDelete={onDeleteBlock}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
                   onInsertAfter={(type) => onInsertBlock(type, index + 1)}
                   isPremium={isPremium}
                   context={{ activeBlockHint, onDismissHint }}
