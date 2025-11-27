@@ -21,15 +21,15 @@ const THEMES = [
     description: 'Clean and minimal',
     isPremium: false,
     theme: {
-      backgroundColor: 'hsl(var(--background))',
-      textColor: 'hsl(var(--foreground))',
+      backgroundColor: 'hsl(0 0% 100%)',
+      textColor: 'hsl(0 0% 9%)',
       buttonStyle: 'rounded' as const,
       fontFamily: 'sans' as const,
     },
     preview: {
-      bg: 'bg-background',
-      text: 'text-foreground',
-      button: 'bg-primary text-primary-foreground',
+      bg: 'bg-white',
+      text: 'text-gray-900',
+      button: 'bg-blue-600 text-white',
     }
   },
   {
@@ -42,12 +42,13 @@ const THEMES = [
       textColor: 'hsl(210 40% 98%)',
       buttonStyle: 'rounded' as const,
       fontFamily: 'sans' as const,
+      accentColor: 'hsl(217 91% 60%)',
       darkMode: true,
     },
     preview: {
       bg: 'bg-slate-900',
       text: 'text-slate-50',
-      button: 'bg-slate-700 text-slate-100',
+      button: 'bg-blue-600 text-white',
     }
   },
   {
@@ -59,13 +60,14 @@ const THEMES = [
       backgroundColor: 'hsl(280 100% 70%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(280 100% 70%) 0%, hsl(220 100% 75%) 100%)',
       textColor: 'hsl(0 0% 100%)',
+      accentColor: 'hsl(60 100% 90%)',
       buttonStyle: 'rounded' as const,
       fontFamily: 'sans' as const,
     },
     preview: {
       bg: 'bg-gradient-to-br from-purple-400 to-blue-400',
       text: 'text-white',
-      button: 'bg-white/20 text-white backdrop-blur-sm',
+      button: 'bg-yellow-300 text-purple-900',
     }
   },
   {
@@ -76,6 +78,7 @@ const THEMES = [
     theme: {
       backgroundColor: 'hsl(0 0% 98%)',
       textColor: 'hsl(0 0% 13%)',
+      accentColor: 'hsl(0 0% 20%)',
       buttonStyle: 'default' as const,
       fontFamily: 'mono' as const,
     },
@@ -95,13 +98,13 @@ const THEMES = [
       textColor: 'hsl(180 100% 70%)',
       buttonStyle: 'pill' as const,
       fontFamily: 'sans' as const,
-      accentColor: 'hsl(180 100% 70%)',
+      accentColor: 'hsl(320 100% 60%)',
       shadowIntensity: 'glow' as const,
     },
     preview: {
       bg: 'bg-violet-950',
       text: 'text-cyan-400',
-      button: 'bg-cyan-400 text-violet-950',
+      button: 'bg-pink-500 text-white',
     }
   },
   {
@@ -113,6 +116,7 @@ const THEMES = [
       backgroundColor: 'hsl(15 100% 65%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(15 100% 65%) 0%, hsl(340 100% 70%) 100%)',
       textColor: 'hsl(0 0% 100%)',
+      accentColor: 'hsl(45 100% 75%)',
       buttonStyle: 'gradient' as const,
       fontFamily: 'sans' as const,
       shadowIntensity: 'strong' as const,
@@ -120,7 +124,7 @@ const THEMES = [
     preview: {
       bg: 'bg-gradient-to-br from-orange-400 to-pink-500',
       text: 'text-white',
-      button: 'bg-white/30 text-white backdrop-blur-sm',
+      button: 'bg-yellow-300 text-orange-900',
     }
   },
   {
@@ -132,6 +136,7 @@ const THEMES = [
       backgroundColor: 'hsl(200 100% 40%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(200 100% 40%) 0%, hsl(220 100% 20%) 100%)',
       textColor: 'hsl(0 0% 100%)',
+      accentColor: 'hsl(180 100% 70%)',
       buttonStyle: 'rounded' as const,
       fontFamily: 'sans' as const,
       shadowIntensity: 'glow' as const,
@@ -139,7 +144,7 @@ const THEMES = [
     preview: {
       bg: 'bg-gradient-to-br from-blue-500 to-blue-900',
       text: 'text-white',
-      button: 'bg-white/20 text-white backdrop-blur-sm',
+      button: 'bg-cyan-400 text-blue-900',
     }
   },
   {
@@ -151,6 +156,7 @@ const THEMES = [
       backgroundColor: 'hsl(140 60% 40%)',
       backgroundGradient: 'linear-gradient(135deg, hsl(140 60% 40%) 0%, hsl(160 80% 25%) 100%)',
       textColor: 'hsl(0 0% 100%)',
+      accentColor: 'hsl(80 100% 70%)',
       buttonStyle: 'pill' as const,
       fontFamily: 'sans' as const,
       shadowIntensity: 'medium' as const,
@@ -158,7 +164,7 @@ const THEMES = [
     preview: {
       bg: 'bg-gradient-to-br from-green-600 to-emerald-800',
       text: 'text-white',
-      button: 'bg-white/25 text-white backdrop-blur-sm',
+      button: 'bg-lime-400 text-green-900',
     }
   },
   {
