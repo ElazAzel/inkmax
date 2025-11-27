@@ -13,6 +13,11 @@ import { TextBlockEditor } from './block-editors/TextBlockEditor';
 import { LinkBlockEditor } from './block-editors/LinkBlockEditor';
 import { ProductBlockEditor } from './block-editors/ProductBlockEditor';
 import { VideoBlockEditor } from './block-editors/VideoBlockEditor';
+import { CarouselBlockEditor } from './block-editors/CarouselBlockEditor';
+import { ButtonBlockEditor } from './block-editors/ButtonBlockEditor';
+import { SocialsBlockEditor } from './block-editors/SocialsBlockEditor';
+import { ImageBlockEditor } from './block-editors/ImageBlockEditor';
+import { CustomCodeBlockEditor } from './block-editors/CustomCodeBlockEditor';
 import type { Block } from '@/types/page';
 
 interface BlockEditorProps {
@@ -80,6 +85,21 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
       
       case 'video':
         return <VideoBlockEditor {...commonProps} />;
+      
+      case 'carousel':
+        return <CarouselBlockEditor {...commonProps} />;
+      
+      case 'button':
+        return <ButtonBlockEditor {...commonProps} />;
+      
+      case 'socials':
+        return <SocialsBlockEditor {...commonProps} />;
+      
+      case 'image':
+        return <ImageBlockEditor {...commonProps} />;
+      
+      case 'custom_code':
+        return <CustomCodeBlockEditor {...commonProps} />;
       
       // For blocks not yet extracted, show message
       default:
