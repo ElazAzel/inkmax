@@ -522,7 +522,10 @@ export default function Dashboard() {
         <BlockEditor
           block={editingBlock}
           isOpen={editorOpen}
-          onClose={() => setEditorOpen(false)}
+          onClose={() => {
+            setEditorOpen(false);
+            setEditingBlock(null);
+          }}
           onSave={handleSaveBlock}
         />
       )}
