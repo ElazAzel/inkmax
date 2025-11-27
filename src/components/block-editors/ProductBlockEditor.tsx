@@ -1,0 +1,98 @@
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { AIButton } from '@/components/form-fields/AIButton';
+import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
+import { generateSalesCopy } from '@/lib/ai-helpers';
+
+interface ProductBlockEditorProps {
+  formData: any;
+  onChange: (updates: any) => void;
+}
+
+export function ProductBlockEditor({ formData, onChange }: ProductBlockEditorProps) {
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleGenerateCopy = async () => {
+    if (!formData.name || !formData.price) return;
+    
+    setAiLoading(true);
+    try {
+      const description = await generateSalesCopy({
+        productName: formData.name,
+        price: formData.price,
+        currency: formData.currency || 'KZT',
+      });
+      onChange({ ...formData, description });
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label>Product Name</Label>
+        <Input
+          value={formData.name || ''}
+          onChange={(e) => onChange({ ...formData, name: e.target.value })}
+        />
+      </div>
+      
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <Label>Price</Label>
+          <Input
+            type="number"
+            value={formData.price || ''}
+            onChange={(e) => onChange({ ...formData, price: parseFloat(e.target.value) })}
+          />
+        </div>
+        <div>
+          <Label>Currency</Label>
+          <CurrencySelect
+            value={formData.currency || 'KZT'}
+            onValueChange={(value) => onChange({ ...formData, currency: value })}
+          />
+        </div>
+      </div>
+      
+      <div>
+        <Label>Description</Label>
+        <div className="space-y-2">
+          <Textarea
+            value={formData.description || ''}
+            onChange={(e) => onChange({ ...formData, description: e.target.value })}
+            rows={3}
+          />
+          <AIButton
+            onClick={handleGenerateCopy}
+            loading={aiLoading}
+            disabled={!formData.name || !formData.price}
+            variant="full"
+            title="Generate with AI"
+          />
+        </div>
+      </div>
+      
+      <div>
+        <Label>Image URL (optional)</Label>
+        <Input
+          type="url"
+          value={formData.image || ''}
+          onChange={(e) => onChange({ ...formData, image: e.target.value })}
+        />
+      </div>
+      
+      <div>
+        <Label>Buy Link (optional)</Label>
+        <Input
+          type="url"
+          value={formData.buyLink || ''}
+          onChange={(e) => onChange({ ...formData, buyLink: e.target.value })}
+        />
+      </div>
+    </div>
+  );
+}
