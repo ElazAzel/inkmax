@@ -2,6 +2,26 @@ import { lazy, Suspense } from 'react';
 import type { Block } from '@/types/page';
 import { Skeleton } from '@/components/ui/skeleton';
 
+// Helper function to check if block should be visible based on schedule
+function isBlockVisible(block: Block): boolean {
+  if (!block.schedule) return true;
+  
+  const now = new Date();
+  const { startDate, endDate } = block.schedule;
+  
+  if (startDate) {
+    const start = new Date(startDate);
+    if (now < start) return false;
+  }
+  
+  if (endDate) {
+    const end = new Date(endDate);
+    if (now > end) return false;
+  }
+  
+  return true;
+}
+
 // Lazy load all block components for optimal code splitting
 const ProfileBlock = lazy(() => import('./blocks/ProfileBlock').then(m => ({ default: m.ProfileBlock })));
 const LinkBlock = lazy(() => import('./blocks/LinkBlock').then(m => ({ default: m.LinkBlock })));
@@ -34,6 +54,12 @@ const BlockSkeleton = () => (
 );
 
 export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
+  // Check if block should be visible based on schedule
+  // In preview mode, always show blocks
+  if (!isPreview && !isBlockVisible(block)) {
+    return null;
+  }
+
   switch (block.type) {
     case 'profile':
       return (
