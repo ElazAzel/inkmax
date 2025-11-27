@@ -1,0 +1,55 @@
+import { Button } from '@/components/ui/button';
+import { ExternalLink, Instagram, Twitter, Youtube, Facebook, Linkedin, Globe } from 'lucide-react';
+import type { LinkBlock } from '@/types/page';
+
+interface LinkBlockProps {
+  block: LinkBlock;
+  onClick?: () => void;
+}
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  instagram: Instagram,
+  twitter: Twitter,
+  youtube: Youtube,
+  facebook: Facebook,
+  linkedin: Linkedin,
+  globe: Globe,
+};
+
+export function LinkBlock({ block, onClick }: LinkBlockProps) {
+  const Icon = block.icon && iconMap[block.icon.toLowerCase()] 
+    ? iconMap[block.icon.toLowerCase()] 
+    : ExternalLink;
+
+  const getButtonClass = () => {
+    switch (block.style) {
+      case 'pill':
+        return 'rounded-full';
+      case 'rounded':
+        return 'rounded-lg';
+      default:
+        return 'rounded-md';
+    }
+  };
+
+  const handleClick = () => {
+    onClick?.();
+    if (block.url) {
+      window.open(block.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  return (
+    <Button
+      variant="outline"
+      className={`w-full justify-between h-auto py-4 px-6 hover:scale-[1.02] transition-transform ${getButtonClass()}`}
+      onClick={handleClick}
+    >
+      <div className="flex items-center gap-3">
+        <Icon className="h-5 w-5 text-primary" />
+        <span className="font-medium">{block.title}</span>
+      </div>
+      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+    </Button>
+  );
+}
