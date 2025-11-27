@@ -42,11 +42,17 @@ export const MessengerBlock = memo(function MessengerBlock({ block, theme }: Mes
   };
 
   return (
-    <Card className="p-6">
+    <Card 
+      className="p-6 border-current/20"
+      style={{ 
+        backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
+        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+      }}
+    >
       {block.title && (
         <div className="flex items-center gap-2 mb-4">
-          <MessageCircle className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold text-lg">{block.title}</h3>
+          <MessageCircle className="h-5 w-5" style={{ color: theme?.accentColor || theme?.textColor }} />
+          <h3 className="font-semibold text-lg" style={{ color: theme?.textColor }}>{block.title}</h3>
         </div>
       )}
       <div className="grid gap-3">
@@ -56,14 +62,18 @@ export const MessengerBlock = memo(function MessengerBlock({ block, theme }: Mes
             href={getMessengerUrl(messenger.platform, messenger.username, messenger.message)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary transition-all hover:shadow-md bg-card"
+            className="flex items-center gap-3 p-4 rounded-lg border transition-all hover:shadow-md"
+            style={{
+              backgroundColor: theme?.textColor ? `${theme.textColor}05` : undefined,
+              borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+            }}
           >
             <span className="text-2xl">{getMessengerIcon(messenger.platform)}</span>
             <div className="flex-1">
-              <div className="font-medium">{getPlatformName(messenger.platform)}</div>
-              <div className="text-sm text-muted-foreground">@{messenger.username}</div>
+              <div className="font-medium" style={{ color: theme?.textColor }}>{getPlatformName(messenger.platform)}</div>
+              <div className="text-sm opacity-60" style={{ color: theme?.textColor }}>@{messenger.username}</div>
             </div>
-            <Send className="h-4 w-4 text-muted-foreground" />
+            <Send className="h-4 w-4 opacity-60" style={{ color: theme?.textColor }} />
           </a>
         ))}
       </div>

@@ -29,9 +29,15 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme
 
   if (!block.images || block.images.length === 0) {
     return (
-      <Card>
+      <Card 
+        className="border-current/20"
+        style={{ 
+          backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
+          borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+        }}
+      >
         <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-sm opacity-60 text-center" style={{ color: theme?.textColor }}>
             No images added to carousel
           </p>
         </CardContent>
@@ -40,10 +46,16 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card 
+      className="overflow-hidden border-current/20"
+      style={{ 
+        backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
+        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+      }}
+    >
       {block.title && (
         <CardHeader>
-          <CardTitle>{block.title}</CardTitle>
+          <CardTitle style={{ color: theme?.textColor }}>{block.title}</CardTitle>
         </CardHeader>
       )}
       <CardContent className="p-0">
@@ -59,7 +71,8 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block, theme
             {block.images.map((image, index) => (
               <CarouselItem key={index}>
                 <div
-                  className="aspect-video overflow-hidden bg-muted cursor-pointer"
+                  className="aspect-video overflow-hidden cursor-pointer"
+                  style={{ backgroundColor: theme?.textColor ? `${theme.textColor}11` : undefined }}
                   onClick={() => handleImageClick(image.link)}
                 >
                   <img

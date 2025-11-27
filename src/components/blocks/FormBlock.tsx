@@ -68,21 +68,35 @@ export const FormBlock = memo(function FormBlock({ block, theme }: FormBlockProp
   };
 
   return (
-    <Card className="p-6">
+    <Card 
+      className="p-6 border-current/20"
+      style={{ 
+        backgroundColor: theme?.textColor ? `${theme.textColor}08` : undefined,
+        borderColor: theme?.textColor ? `${theme.textColor}33` : undefined
+      }}
+    >
       <div className="flex items-center gap-2 mb-4">
-        <h3 className="font-semibold text-lg">{block.title}</h3>
-        <Crown className="h-4 w-4 text-primary" />
+        <h3 className="font-semibold text-lg" style={{ color: theme?.textColor }}>{block.title}</h3>
+        <Crown className="h-4 w-4" style={{ color: theme?.accentColor || theme?.textColor }} />
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         {block.fields.map((field) => (
           <div key={field.name}>
-            <Label htmlFor={field.name}>
-              {field.name} {field.required && <span className="text-destructive">*</span>}
+            <Label htmlFor={field.name} style={{ color: theme?.textColor }}>
+              {field.name} {field.required && <span style={{ color: theme?.accentColor }}>*</span>}
             </Label>
             {renderField(field)}
           </div>
         ))}
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <Button 
+          type="submit" 
+          className="w-full" 
+          disabled={isSubmitting}
+          style={{
+            backgroundColor: theme?.accentColor || theme?.textColor,
+            color: theme?.backgroundColor
+          }}
+        >
           <Send className="h-4 w-4 mr-2" />
           {isSubmitting ? 'Отправка...' : block.buttonText}
         </Button>
