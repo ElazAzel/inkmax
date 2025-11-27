@@ -300,6 +300,10 @@ export interface PageTheme {
   buttonStyle: 'default' | 'rounded' | 'pill' | 'gradient';
   fontFamily: 'sans' | 'serif' | 'mono';
   darkMode?: boolean;
+  accentColor?: string;
+  shadowIntensity?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
+  customGradientStart?: string;
+  customGradientEnd?: string;
 }
 
 export interface PageMetrics {
