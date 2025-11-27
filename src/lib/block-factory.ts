@@ -4,6 +4,21 @@ export function createBlock(type: string): Block {
   const timestamp = Date.now();
   
   switch (type) {
+    case 'profile':
+      return {
+        id: `profile-${timestamp}`,
+        type: 'profile',
+        name: 'Your Name',
+        bio: 'Tell people about yourself',
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
+        verified: false,
+        avatarFrame: 'default',
+        coverImage: '',
+        coverGradient: 'none',
+        avatarSize: 'large',
+        shadowStyle: 'soft',
+      };
+    
     case 'link':
       return {
         id: `link-${timestamp}`,
