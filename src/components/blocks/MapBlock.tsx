@@ -1,6 +1,7 @@
 import type { MapBlock as MapBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 import { MapPin } from 'lucide-react';
+import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 
 interface MapBlockProps {
   block: MapBlockType;
@@ -14,9 +15,20 @@ export function MapBlock({ block }: MapBlockProps) {
   };
 
   const height = heightClasses[block.height || 'medium'];
+  
+  const paddingMap = { none: '', sm: 'p-2', md: 'p-4', lg: 'p-6', xl: 'p-8' };
+  const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
 
   return (
-    <div className={cn("w-full space-y-3", getBlockSpacing(block.blockStyle))}>
+    <div 
+      className={cn(
+        "w-full space-y-3",
+        block.blockStyle?.padding && paddingMap[block.blockStyle.padding],
+        block.blockStyle?.margin && marginMap[block.blockStyle.margin],
+        getAnimationClass(block.blockStyle)
+      )}
+      style={getAnimationStyle(block.blockStyle)}
+    >
       {block.title && (
         <div className="flex items-center gap-2">
           <MapPin className="h-5 w-5 text-primary" />
@@ -31,8 +43,7 @@ export function MapBlock({ block }: MapBlockProps) {
       <div 
         className={cn(
           "w-full rounded-lg overflow-hidden border",
-          height,
-          getBlockStyles(block.blockStyle)
+          height
         )}
       >
         <iframe
@@ -48,53 +59,4 @@ export function MapBlock({ block }: MapBlockProps) {
       </div>
     </div>
   );
-}
-
-// Helper functions for block styling
-function getBlockSpacing(blockStyle?: MapBlockType['blockStyle']) {
-  if (!blockStyle) return '';
-  
-  const classes = [];
-  
-  if (blockStyle.margin) {
-    const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
-    classes.push(marginMap[blockStyle.margin]);
-  }
-  
-  return classes.join(' ');
-}
-
-function getBlockStyles(blockStyle?: MapBlockType['blockStyle']) {
-  if (!blockStyle) return '';
-  
-  const classes = [];
-  
-  if (blockStyle.borderRadius) {
-    const radiusMap = { none: 'rounded-none', sm: 'rounded-sm', md: 'rounded-md', lg: 'rounded-lg', full: 'rounded-full' };
-    classes.push(radiusMap[blockStyle.borderRadius]);
-  }
-  
-  if (blockStyle.shadow) {
-    const shadowMap = { 
-      none: '', 
-      sm: 'shadow-sm', 
-      md: 'shadow-md', 
-      lg: 'shadow-lg', 
-      xl: 'shadow-xl',
-      glow: 'shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]'
-    };
-    classes.push(shadowMap[blockStyle.shadow]);
-  }
-  
-  if (blockStyle.animation) {
-    const animationMap = { 
-      none: '', 
-      'fade-in': 'animate-fade-in', 
-      'slide-up': 'animate-slide-up', 
-      'scale-in': 'animate-scale-in' 
-    };
-    classes.push(animationMap[blockStyle.animation]);
-  }
-  
-  return classes.join(' ');
 }
