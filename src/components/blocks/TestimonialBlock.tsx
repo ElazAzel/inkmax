@@ -1,14 +1,16 @@
 import { memo } from 'react';
 import { Star, Crown } from 'lucide-react';
-import type { TestimonialBlock as TestimonialBlockType } from '@/types/page';
+import type { TestimonialBlock as TestimonialBlockType, PageTheme } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface TestimonialBlockProps {
   block: TestimonialBlockType;
+  theme?: PageTheme;
 }
 
-export const TestimonialBlock = memo(function TestimonialBlock({ block }: TestimonialBlockProps) {
+export const TestimonialBlock = memo(function TestimonialBlock({ block, theme }: TestimonialBlockProps) {
   const renderStars = (rating: number = 5) => {
     return (
       <div className="flex gap-1">

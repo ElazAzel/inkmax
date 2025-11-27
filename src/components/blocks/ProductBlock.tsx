@@ -2,15 +2,16 @@ import { memo } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
-import { getButtonClass } from '@/lib/block-utils';
-import type { ProductBlock as ProductBlockType } from '@/types/page';
+import { getButtonClass, getShadowClass } from '@/lib/block-utils';
+import type { ProductBlock as ProductBlockType, PageTheme } from '@/types/page';
 
 interface ProductBlockProps {
   block: ProductBlockType;
   buttonStyle?: 'default' | 'rounded' | 'pill' | 'gradient';
+  theme?: PageTheme;
 }
 
-export const ProductBlock = memo(function ProductBlockComponent({ block, buttonStyle }: ProductBlockProps) {
+export const ProductBlock = memo(function ProductBlockComponent({ block, buttonStyle, theme }: ProductBlockProps) {
   const handleBuy = () => {
     if (block.buyLink) {
       window.open(block.buyLink, '_blank', 'noopener,noreferrer');

@@ -1,18 +1,20 @@
 import { memo, useState } from 'react';
 import { Crown, Send } from 'lucide-react';
-import type { FormBlock as FormBlockType } from '@/types/page';
+import type { FormBlock as FormBlockType, PageTheme } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface FormBlockProps {
   block: FormBlockType;
+  theme?: PageTheme;
 }
 
-export const FormBlock = memo(function FormBlock({ block }: FormBlockProps) {
+export const FormBlock = memo(function FormBlock({ block, theme }: FormBlockProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 

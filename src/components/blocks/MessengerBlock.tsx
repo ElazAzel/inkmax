@@ -1,13 +1,15 @@
 import { memo } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
-import type { MessengerBlock as MessengerBlockType } from '@/types/page';
+import type { MessengerBlock as MessengerBlockType, PageTheme } from '@/types/page';
 import { Card } from '@/components/ui/card';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface MessengerBlockProps {
   block: MessengerBlockType;
+  theme?: PageTheme;
 }
 
-export const MessengerBlock = memo(function MessengerBlock({ block }: MessengerBlockProps) {
+export const MessengerBlock = memo(function MessengerBlock({ block, theme }: MessengerBlockProps) {
   const getMessengerIcon = (platform: string) => {
     const icons: Record<string, string> = {
       whatsapp: '🟢',

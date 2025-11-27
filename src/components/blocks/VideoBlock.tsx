@@ -1,9 +1,11 @@
 import { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { VideoBlock as VideoBlockType } from '@/types/page';
+import type { VideoBlock as VideoBlockType, PageTheme } from '@/types/page';
+import { getShadowClass } from '@/lib/block-utils';
 
 interface VideoBlockProps {
   block: VideoBlockType;
+  theme?: PageTheme;
 }
 
 function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | null {
@@ -25,7 +27,7 @@ function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | 
   return null;
 }
 
-export const VideoBlock = memo(function VideoBlockComponent({ block }: VideoBlockProps) {
+export const VideoBlock = memo(function VideoBlockComponent({ block, theme }: VideoBlockProps) {
   const embedUrl = getVideoEmbedUrl(block.url, block.platform);
   const aspectRatioClass = {
     '16:9': 'aspect-video',

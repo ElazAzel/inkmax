@@ -93,11 +93,12 @@ export default function PublicPage() {
     ? 'font-mono' 
     : 'font-sans';
 
-  // Get background style
+  // Get background style with smooth transitions
   const backgroundStyle: React.CSSProperties = {
     backgroundColor: pageData.theme.backgroundColor,
     backgroundImage: pageData.theme.backgroundGradient,
     color: pageData.theme.textColor,
+    transition: 'background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease',
   };
 
   return (
