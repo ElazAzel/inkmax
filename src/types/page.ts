@@ -7,7 +7,11 @@ export interface ProfileBlock {
   name: string;
   bio: string;
   verified?: boolean;
-  avatarFrame?: 'default' | 'neon' | 'glitch' | 'aura' | 'gradient' | 'pulse' | 'rainbow' | 'double';
+  avatarFrame?: 'default' | 'neon' | 'glitch' | 'aura' | 'gradient' | 'pulse' | 'rainbow' | 'double' | 'spinning' | 'dash' | 'wave';
+  coverImage?: string;
+  coverGradient?: 'none' | 'dark' | 'light' | 'primary' | 'sunset' | 'ocean' | 'purple';
+  avatarSize?: 'small' | 'medium' | 'large' | 'xlarge';
+  shadowStyle?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
 }
 
 export interface LinkBlock {

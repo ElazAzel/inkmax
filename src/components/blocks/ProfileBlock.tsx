@@ -17,6 +17,43 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
     .toUpperCase()
     .slice(0, 2);
 
+  const getAvatarSize = () => {
+    const size = block.avatarSize || 'large';
+    switch (size) {
+      case 'small': return 'h-16 w-16';
+      case 'medium': return 'h-24 w-24';
+      case 'large': return 'h-32 w-32';
+      case 'xlarge': return 'h-40 w-40';
+      default: return 'h-32 w-32';
+    }
+  };
+
+  const getShadowClass = () => {
+    const shadow = block.shadowStyle || 'soft';
+    switch (shadow) {
+      case 'none': return '';
+      case 'soft': return 'shadow-md';
+      case 'medium': return 'shadow-xl';
+      case 'strong': return 'shadow-2xl';
+      case 'glow': return 'shadow-[0_0_30px_hsl(var(--primary)/0.4)]';
+      default: return 'shadow-md';
+    }
+  };
+
+  const getCoverGradient = () => {
+    const gradient = block.coverGradient || 'none';
+    switch (gradient) {
+      case 'none': return '';
+      case 'dark': return 'bg-gradient-to-b from-black/50 to-black/20';
+      case 'light': return 'bg-gradient-to-b from-white/50 to-white/20';
+      case 'primary': return 'bg-gradient-to-b from-primary/60 to-primary/20';
+      case 'sunset': return 'bg-gradient-to-br from-orange-500/50 via-pink-500/50 to-purple-600/50';
+      case 'ocean': return 'bg-gradient-to-br from-blue-500/50 via-cyan-500/50 to-teal-500/50';
+      case 'purple': return 'bg-gradient-to-br from-purple-600/50 via-pink-500/50 to-blue-500/50';
+      default: return '';
+    }
+  };
+
   const getAvatarFrameClass = () => {
     const frameStyle = block.avatarFrame || 'default';
     
@@ -35,38 +72,59 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         return 'ring-4 ring-offset-4 ring-offset-background animate-[spin_3s_linear_infinite] bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 p-1 rounded-full';
       case 'double':
         return 'ring-4 ring-primary ring-offset-4 ring-offset-background shadow-[0_0_0_8px_hsl(var(--secondary))]';
+      case 'spinning':
+        return 'ring-4 ring-primary ring-offset-4 ring-offset-background animate-[spin_4s_linear_infinite]';
+      case 'dash':
+        return 'ring-4 ring-primary ring-offset-4 ring-offset-background [background:conic-gradient(from_0deg,hsl(var(--primary))_0%,transparent_50%,hsl(var(--primary))_100%)] animate-[spin_3s_linear_infinite] p-1 rounded-full';
+      case 'wave':
+        return 'ring-4 ring-primary ring-offset-4 ring-offset-background animate-[pulse_3s_ease-in-out_infinite] shadow-[0_0_20px_hsl(var(--primary)/0.3)]';
       default:
         return 'ring-2 ring-primary ring-offset-2 ring-offset-background';
     }
   };
 
-  const isGradientFrame = block.avatarFrame === 'gradient' || block.avatarFrame === 'rainbow';
+  const isGradientFrame = block.avatarFrame === 'gradient' || block.avatarFrame === 'rainbow' || block.avatarFrame === 'dash';
 
   return (
-    <div className="flex flex-col items-center gap-4 p-6">
-      <div className={isGradientFrame ? getAvatarFrameClass() : ''}>
-        <Avatar className={`h-24 w-24 ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
-          <AvatarImage src={block.avatar} alt={block.name} />
-          <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
-      </div>
-      
-      <div className="text-center space-y-2">
-        <div className="flex items-center justify-center gap-2">
-          <h1 className="text-2xl font-bold">{block.name}</h1>
-          {block.verified && (
-            <Badge variant="secondary" className="gap-1">
-              <CheckCircle2 className="h-3 w-3" />
-              Verified
-            </Badge>
+    <div className="relative flex flex-col items-center">
+      {block.coverImage && (
+        <div className="relative w-full h-48 overflow-hidden">
+          <img 
+            src={block.coverImage} 
+            alt="Cover" 
+            className="w-full h-full object-cover"
+          />
+          {block.coverGradient !== 'none' && (
+            <div className={`absolute inset-0 ${getCoverGradient()}`} />
           )}
         </div>
+      )}
+      
+      <div className={`flex flex-col items-center gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
+        <div className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()}`}>
+          <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
+            <AvatarImage src={block.avatar} alt={block.name} />
+            <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        </div>
         
-        {block.bio && (
-          <p className="text-muted-foreground max-w-md">{block.bio}</p>
-        )}
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-2">
+            <h1 className="text-2xl font-bold">{block.name}</h1>
+            {block.verified && (
+              <Badge variant="secondary" className="gap-1">
+                <CheckCircle2 className="h-3 w-3" />
+                Verified
+              </Badge>
+            )}
+          </div>
+          
+          {block.bio && (
+            <p className="text-muted-foreground max-w-md">{block.bio}</p>
+          )}
+        </div>
       </div>
     </div>
   );
