@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
-import { savePage, loadUserPage, publishPage } from '@/lib/database';
+import { useUserPage, useSavePageMutation, usePublishPageMutation } from '@/hooks/usePageCache';
 import type { PageData, Block } from '@/types/page';
 import { toast } from 'sonner';
 
@@ -8,71 +8,47 @@ export function useCloudPageState() {
   const { user } = useAuth();
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [chatbotContext, setChatbotContext] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
 
-  // Load page data when user logs in
+  // Use React Query for cached page loading
+  const { data: userData, isLoading: loading } = useUserPage(user?.id);
+  const savePageMutation = useSavePageMutation(user?.id);
+  const publishPageMutation = usePublishPageMutation(user?.id);
+
+  // Update local state when cached data loads
   useEffect(() => {
-    if (user) {
-      loadPage();
-    } else {
-      setLoading(false);
+    if (userData) {
+      setPageData(userData.pageData);
+      setChatbotContext(userData.chatbotContext || '');
     }
-  }, [user]);
+  }, [userData]);
 
-  const loadPage = async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    const { data, chatbotContext: context, error } = await loadUserPage(user.id);
-    
-    if (error) {
-      console.error('Error loading page:', error);
-      toast.error('Failed to load your page');
-    } else if (data) {
-      setPageData(data);
-      setChatbotContext(context || '');
-    }
-    
-    setLoading(false);
-  };
-
-  const save = async () => {
+  const save = useCallback(async () => {
     if (!user || !pageData) return;
     
-    setSaving(true);
-    const { error } = await savePage(pageData, user.id, chatbotContext);
+    await savePageMutation.mutateAsync({ 
+      pageData, 
+      chatbotContext 
+    });
     
-    if (error) {
-      console.error('Error saving page:', error);
-      toast.error('Failed to save changes');
-    } else {
-      toast.success('Changes saved!');
-    }
-    
-    setSaving(false);
-  };
+    toast.success('Changes saved!');
+  }, [user, pageData, chatbotContext, savePageMutation]);
 
-  const publish = async () => {
-    if (!user) return null;
+  const publish = useCallback(async () => {
+    if (!user || !pageData) return null;
     
     // Save first
-    await save();
+    await savePageMutation.mutateAsync({ 
+      pageData, 
+      chatbotContext 
+    });
     
-    const { slug, error } = await publishPage(user.id);
-    
-    if (error) {
-      console.error('Error publishing page:', error);
-      toast.error('Failed to publish page');
-      return null;
-    }
-    
-    toast.success('Page published!');
+    // Then publish
+    const slug = await publishPageMutation.mutateAsync();
     return slug;
-  };
+  }, [user, pageData, chatbotContext, savePageMutation, publishPageMutation]);
 
-  const addBlock = (block: Block) => {
-    if (!pageData) return;
+  const addBlock = useCallback((block: Block) => {
+    if (!pageData || !user) return;
     const newPageData = {
       ...pageData,
       blocks: [...pageData.blocks, block],
@@ -80,14 +56,15 @@ export function useCloudPageState() {
     setPageData(newPageData);
     // Auto-save after adding block
     setTimeout(() => {
-      if (user) {
-        savePage(newPageData, user.id, chatbotContext);
-      }
+      savePageMutation.mutate({ 
+        pageData: newPageData, 
+        chatbotContext 
+      });
     }, 500);
-  };
+  }, [pageData, user, chatbotContext, savePageMutation]);
 
-  const updateBlock = (id: string, updates: Partial<Block>) => {
-    if (!pageData) return;
+  const updateBlock = useCallback((id: string, updates: Partial<Block>) => {
+    if (!pageData || !user) return;
     const newPageData = {
       ...pageData,
       blocks: pageData.blocks.map(block =>
@@ -97,14 +74,15 @@ export function useCloudPageState() {
     setPageData(newPageData);
     // Auto-save after updating block
     setTimeout(() => {
-      if (user) {
-        savePage(newPageData, user.id, chatbotContext);
-      }
+      savePageMutation.mutate({ 
+        pageData: newPageData, 
+        chatbotContext 
+      });
     }, 1000);
-  };
+  }, [pageData, user, chatbotContext, savePageMutation]);
 
-  const deleteBlock = (id: string) => {
-    if (!pageData) return;
+  const deleteBlock = useCallback((id: string) => {
+    if (!pageData || !user) return;
     const newPageData = {
       ...pageData,
       blocks: pageData.blocks.filter(block => block.id !== id),
@@ -112,22 +90,23 @@ export function useCloudPageState() {
     setPageData(newPageData);
     // Auto-save after deleting block
     setTimeout(() => {
-      if (user) {
-        savePage(newPageData, user.id, chatbotContext);
-      }
+      savePageMutation.mutate({ 
+        pageData: newPageData, 
+        chatbotContext 
+      });
     }, 500);
-  };
+  }, [pageData, user, chatbotContext, savePageMutation]);
 
-  const reorderBlocks = (blocks: Block[]) => {
+  const reorderBlocks = useCallback((blocks: Block[]) => {
     if (!pageData) return;
     setPageData({
       ...pageData,
       blocks,
     });
-  };
+  }, [pageData]);
 
-  const updateTheme = (theme: Partial<PageData['theme']>) => {
-    if (!pageData) return;
+  const updateTheme = useCallback((theme: Partial<PageData['theme']>) => {
+    if (!pageData || !user) return;
     const newPageData = {
       ...pageData,
       theme: { ...pageData.theme, ...theme },
@@ -135,18 +114,19 @@ export function useCloudPageState() {
     setPageData(newPageData);
     // Auto-save after updating theme
     setTimeout(() => {
-      if (user) {
-        savePage(newPageData, user.id, chatbotContext);
-      }
+      savePageMutation.mutate({ 
+        pageData: newPageData, 
+        chatbotContext 
+      });
     }, 1000);
-  };
+  }, [pageData, user, chatbotContext, savePageMutation]);
 
   return {
     pageData,
     chatbotContext,
     setChatbotContext,
     loading,
-    saving,
+    saving: savePageMutation.isPending || publishPageMutation.isPending,
     save,
     publish,
     addBlock,

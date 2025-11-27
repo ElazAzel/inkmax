@@ -5,7 +5,7 @@ import { Share2, QrCode } from 'lucide-react';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { decompressPageData } from '@/lib/compression';
-import { loadPageBySlug } from '@/lib/database';
+import { usePublicPage } from '@/hooks/usePageCache';
 import { toast } from 'sonner';
 import type { PageData } from '@/types/page';
 import {
@@ -19,47 +19,35 @@ import { QRCodeSVG } from 'qrcode.react';
 
 export default function PublicPage() {
   const { compressed, slug } = useParams<{ compressed?: string; slug?: string }>();
-  const [pageData, setPageData] = useState<PageData | null>(null);
+  const [compressedPageData, setCompressedPageData] = useState<PageData | null>(null);
   const [showQR, setShowQR] = useState(false);
-  const [loading, setLoading] = useState(true);
   const currentUrl = window.location.href;
 
-  useEffect(() => {
-    loadPage();
-  }, [compressed, slug]);
+  // Use React Query for slug-based pages (with caching)
+  const { data: cachedPageData, isLoading: isLoadingCached, error } = usePublicPage(slug);
 
-  const loadPage = async () => {
-    setLoading(true);
-    
-    // Try slug-based URL first (new format)
-    if (slug) {
-      const { data, error } = await loadPageBySlug(slug);
-      if (data) {
-        setPageData(data);
-        document.title = data.seo.title;
-        const metaDescription = document.querySelector('meta[name="description"]');
-        if (metaDescription) {
-          metaDescription.setAttribute('content', data.seo.description);
-        }
-      } else {
-        console.error('Error loading page by slug:', error);
-      }
-    }
-    // Fall back to compressed format (old format for backward compatibility)
-    else if (compressed) {
+  // Handle compressed format (old format, no caching)
+  useEffect(() => {
+    if (compressed) {
       const data = decompressPageData(compressed);
-      if (data) {
-        setPageData(data);
-        document.title = data.seo.title;
-        const metaDescription = document.querySelector('meta[name="description"]');
-        if (metaDescription) {
-          metaDescription.setAttribute('content', data.seo.description);
-        }
+      setCompressedPageData(data);
+    }
+  }, [compressed]);
+
+  // Determine which data source to use
+  const pageData = slug ? cachedPageData : compressedPageData;
+  const loading = slug ? isLoadingCached : false;
+
+  // Update document metadata when page data loads
+  useEffect(() => {
+    if (pageData) {
+      document.title = pageData.seo.title;
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', pageData.seo.description);
       }
     }
-    
-    setLoading(false);
-  };
+  }, [pageData]);
 
   const handleShare = () => {
     if (navigator.share) {
