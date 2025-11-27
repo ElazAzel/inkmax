@@ -43,14 +43,14 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
           "mx-auto",
           widthClasses[block.width || 'full'],
           spacingClasses[block.spacing || 'md'],
-          getBlockSpacing(block.style)
+          getBlockSpacing(block.blockStyle)
         )}
       >
         <div 
           className={cn(
             thicknessClasses[block.thickness || 'thin'],
             'bg-gradient-to-r from-transparent via-primary to-transparent rounded-full',
-            getBlockStyles(block.style)
+            getBlockStyles(block.blockStyle)
           )}
         />
       </div>
@@ -62,7 +62,7 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
       className={cn(
         "flex items-center justify-center",
         spacingClasses[block.spacing || 'md'],
-        getBlockSpacing(block.style)
+        getBlockSpacing(block.blockStyle)
       )}
     >
       <Separator 
@@ -71,7 +71,7 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
           thicknessClasses[block.thickness || 'thin'],
           widthClasses[block.width || 'full'],
           block.color && `bg-[${block.color}]`,
-          getBlockStyles(block.style)
+          getBlockStyles(block.blockStyle)
         )}
       />
     </div>
@@ -79,32 +79,32 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
 }
 
 // Helper functions
-function getBlockSpacing(style?: SeparatorBlockType['style']) {
-  if (!style) return '';
+function getBlockSpacing(blockStyle?: SeparatorBlockType['blockStyle']) {
+  if (!blockStyle) return '';
   
   const classes = [];
   
-  if (style.margin) {
+  if (blockStyle.margin) {
     const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
-    classes.push(marginMap[style.margin]);
+    classes.push(marginMap[blockStyle.margin]);
   }
   
   return classes.join(' ');
 }
 
-function getBlockStyles(style?: SeparatorBlockType['style']) {
-  if (!style) return '';
+function getBlockStyles(blockStyle?: SeparatorBlockType['blockStyle']) {
+  if (!blockStyle) return '';
   
   const classes = [];
   
-  if (style.animation) {
+  if (blockStyle.animation) {
     const animationMap = { 
       none: '', 
       'fade-in': 'animate-fade-in', 
       'slide-up': 'animate-slide-up', 
       'scale-in': 'animate-scale-in' 
     };
-    classes.push(animationMap[style.animation]);
+    classes.push(animationMap[blockStyle.animation]);
   }
   
   return classes.join(' ');
