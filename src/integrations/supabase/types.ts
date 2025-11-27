@@ -14,13 +14,190 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analytics: {
+        Row: {
+          block_id: string | null
+          created_at: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_id: string | null
+        }
+        Insert: {
+          block_id?: string | null
+          created_at?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          page_id?: string | null
+        }
+        Update: {
+          block_id?: string | null
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blocks: {
+        Row: {
+          click_count: number | null
+          content: Json
+          created_at: string | null
+          id: string
+          is_premium: boolean | null
+          page_id: string
+          position: number
+          style: Json | null
+          title: string | null
+          type: string
+        }
+        Insert: {
+          click_count?: number | null
+          content?: Json
+          created_at?: string | null
+          id?: string
+          is_premium?: boolean | null
+          page_id: string
+          position: number
+          style?: Json | null
+          title?: string | null
+          type: string
+        }
+        Update: {
+          click_count?: number | null
+          content?: Json
+          created_at?: string | null
+          id?: string
+          is_premium?: boolean | null
+          page_id?: string
+          position?: number
+          style?: Json | null
+          title?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocks_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pages: {
+        Row: {
+          avatar_style: Json | null
+          avatar_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_published: boolean | null
+          seo_meta: Json | null
+          slug: string
+          theme_settings: Json | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+          view_count: number | null
+        }
+        Insert: {
+          avatar_style?: Json | null
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          seo_meta?: Json | null
+          slug: string
+          theme_settings?: Json | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+          view_count?: number | null
+        }
+        Update: {
+          avatar_style?: Json | null
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          seo_meta?: Json | null
+          slug?: string
+          theme_settings?: Json | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          is_premium: boolean | null
+          trial_ends_at: string | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+          is_premium?: boolean | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          is_premium?: boolean | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_unique_slug: { Args: { base_slug: string }; Returns: string }
+      increment_block_clicks: {
+        Args: { block_uuid: string }
+        Returns: undefined
+      }
+      increment_view_count: { Args: { page_slug: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
