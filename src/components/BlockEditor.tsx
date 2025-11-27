@@ -29,6 +29,9 @@ const NewsletterBlockEditor = lazy(() => import('./block-editors/NewsletterBlock
 const TestimonialBlockEditor = lazy(() => import('./block-editors/TestimonialBlockEditor').then(m => ({ default: m.TestimonialBlockEditor })));
 const ScratchBlockEditor = lazy(() => import('./block-editors/ScratchBlockEditor').then(m => ({ default: m.ScratchBlockEditor })));
 const SearchBlockEditor = lazy(() => import('./block-editors/SearchBlockEditor').then(m => ({ default: m.SearchBlockEditor })));
+const MapBlockEditor = lazy(() => import('./block-editors/MapBlockEditor').then(m => ({ default: m.MapBlockEditor })));
+const AvatarBlockEditor = lazy(() => import('./block-editors/AvatarBlockEditor').then(m => ({ default: m.AvatarBlockEditor })));
+const SeparatorBlockEditor = lazy(() => import('./block-editors/SeparatorBlockEditor').then(m => ({ default: m.SeparatorBlockEditor })));
 
 interface BlockEditorProps {
   block: Block | null;
@@ -55,6 +58,9 @@ const BLOCK_TITLES: Record<string, string> = {
   newsletter: 'Редактировать Рассылку',
   testimonial: 'Редактировать Отзывы',
   scratch: 'Редактировать Скретч-карту',
+  map: 'Редактировать Карту',
+  avatar: 'Редактировать Аватар',
+  separator: 'Редактировать Разделитель',
 };
 
 export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps) {
@@ -206,6 +212,27 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <Suspense fallback={<EditorFallback />}>
             <SearchBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'map':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <MapBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'avatar':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <AvatarBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'separator':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <SeparatorBlockEditor {...commonProps} />
           </Suspense>
         );
       
