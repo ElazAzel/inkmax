@@ -21,7 +21,7 @@ import {
 import { Plus, X, Sparkles, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import type { Block, VideoBlock, CarouselBlock, CustomCodeBlock, LinkBlock, ProductBlock, ButtonBlock, SocialsBlock, ImageBlock, SearchBlock } from '@/types/page';
+import type { Block, VideoBlock, CarouselBlock, CustomCodeBlock, LinkBlock, ProductBlock, ButtonBlock, SocialsBlock, ImageBlock, SearchBlock, ProfileBlock, TextBlock } from '@/types/page';
 
 interface BlockEditorProps {
   block: Block | null;
@@ -104,6 +104,79 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
 
   const renderEditor = () => {
     switch (block.type) {
+      case 'profile':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label>Avatar URL</Label>
+              <Input
+                type="url"
+                value={formData.avatar || ''}
+                onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
+                placeholder="https://example.com/avatar.jpg"
+              />
+            </div>
+            <div>
+              <Label>Name</Label>
+              <Input
+                value={formData.name || ''}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Your Name"
+              />
+            </div>
+            <div>
+              <Label>Bio</Label>
+              <Textarea
+                value={formData.bio || ''}
+                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                placeholder="Tell people about yourself..."
+                rows={3}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="verified"
+                checked={formData.verified || false}
+                onChange={(e) => setFormData({ ...formData, verified: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <Label htmlFor="verified" className="cursor-pointer">Verified badge</Label>
+            </div>
+          </div>
+        );
+
+      case 'text':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label>Content</Label>
+              <Textarea
+                value={formData.content || ''}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Enter your text..."
+                rows={4}
+              />
+            </div>
+            <div>
+              <Label>Style</Label>
+              <Select
+                value={formData.style || 'paragraph'}
+                onValueChange={(value) => setFormData({ ...formData, style: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="heading">Heading</SelectItem>
+                  <SelectItem value="paragraph">Paragraph</SelectItem>
+                  <SelectItem value="quote">Quote</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+
       case 'link':
         return (
           <div className="space-y-4">
@@ -155,6 +228,22 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
                   <SelectItem value="youtube">YouTube</SelectItem>
                   <SelectItem value="facebook">Facebook</SelectItem>
                   <SelectItem value="linkedin">LinkedIn</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Button Style</Label>
+              <Select
+                value={formData.style || 'default'}
+                onValueChange={(value) => setFormData({ ...formData, style: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="rounded">Rounded</SelectItem>
+                  <SelectItem value="pill">Pill (Fully Rounded)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -688,9 +777,21 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit {block.type} Block</DialogTitle>
+          <DialogTitle>
+            {block.type === 'profile' && 'Редактировать Профиль'}
+            {block.type === 'text' && 'Редактировать Текст'}
+            {block.type === 'link' && 'Редактировать Ссылку'}
+            {block.type === 'button' && 'Редактировать Кнопку'}
+            {block.type === 'image' && 'Редактировать Фото'}
+            {block.type === 'video' && 'Редактировать Видео'}
+            {block.type === 'carousel' && 'Редактировать Галерею'}
+            {block.type === 'product' && 'Редактировать Магазин'}
+            {block.type === 'search' && 'Редактировать Поиск'}
+            {block.type === 'socials' && 'Редактировать Соцсети'}
+            {block.type === 'custom_code' && 'Редактировать Код'}
+          </DialogTitle>
           <DialogDescription>
-            Make changes to your block. Changes are saved automatically.
+            Настройте все параметры блока. Изменения сохраняются автоматически.
           </DialogDescription>
         </DialogHeader>
         
@@ -698,10 +799,10 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            Отмена
           </Button>
           <Button onClick={handleSave}>
-            Save Changes
+            Сохранить
           </Button>
         </DialogFooter>
       </DialogContent>
