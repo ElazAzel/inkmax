@@ -1,7 +1,7 @@
 import type { AvatarBlock as AvatarBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { getAnimationClass, getAnimationStyle, getContinuousAnimationClass } from '@/lib/animation-utils';
+import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 
 interface AvatarBlockProps {
   block: AvatarBlockType;
@@ -50,8 +50,7 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
         alignmentClass,
         block.blockStyle?.padding && paddingMap[block.blockStyle.padding],
         block.blockStyle?.margin && marginMap[block.blockStyle.margin],
-        getAnimationClass(block.blockStyle),
-        getContinuousAnimationClass(block.blockStyle)
+        getAnimationClass(block.blockStyle)
       )}
       style={getAnimationStyle(block.blockStyle)}
     >

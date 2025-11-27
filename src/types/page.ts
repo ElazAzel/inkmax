@@ -24,7 +24,6 @@ export interface BlockStyle {
   animation?: 'none' | 'fade-in' | 'slide-up' | 'scale-in' | 'bounce';
   animationDelay?: number; // in milliseconds (0-2000)
   animationSpeed?: 'slow' | 'normal' | 'fast'; // slow: 0.8s, normal: 0.5s, fast: 0.3s
-  continuousAnimation?: 'none' | 'pulse' | 'glow' | 'float' | 'bounce' | 'blink'; // Постоянные анимации
 }
 
 export interface BlockSchedule {
