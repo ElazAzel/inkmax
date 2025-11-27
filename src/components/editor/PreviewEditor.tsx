@@ -15,6 +15,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { BlockInsertButton } from './BlockInsertButton';
 import { InlineEditableBlock } from './InlineEditableBlock';
+import { BlockHint } from '../onboarding/BlockHint';
 import type { Block } from '@/types/page';
 
 interface PreviewEditorProps {
@@ -24,6 +25,8 @@ interface PreviewEditorProps {
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
   onReorderBlocks: (blocks: Block[]) => void;
+  activeBlockHint?: { blockType: string; blockId: string } | null;
+  onDismissHint?: () => void;
 }
 
 interface SortableBlockWrapperProps {
@@ -35,6 +38,15 @@ interface SortableBlockWrapperProps {
   isPremium: boolean;
 }
 
+interface PreviewEditorContext {
+  activeBlockHint?: { blockType: string; blockId: string } | null;
+  onDismissHint?: () => void;
+}
+
+interface ExtendedSortableBlockWrapperProps extends SortableBlockWrapperProps {
+  context?: PreviewEditorContext;
+}
+
 function SortableBlockWrapper({
   block,
   index,
@@ -42,7 +54,8 @@ function SortableBlockWrapper({
   onDelete,
   onInsertAfter,
   isPremium,
-}: SortableBlockWrapperProps) {
+  context,
+}: ExtendedSortableBlockWrapperProps) {
   const {
     attributes,
     listeners,
@@ -57,8 +70,10 @@ function SortableBlockWrapper({
     transition,
   };
 
+  const showHint = context?.activeBlockHint?.blockId === block.id;
+
   return (
-    <div ref={setNodeRef} style={style} className="group">
+    <div ref={setNodeRef} style={style} className="group relative">
       <InlineEditableBlock
         block={block}
         onEdit={onEdit}
@@ -66,6 +81,15 @@ function SortableBlockWrapper({
         isDragging={isDragging}
         dragHandleProps={{ ...attributes, ...listeners }}
       />
+      
+      {/* Block hint */}
+      {showHint && context?.onDismissHint && (
+        <BlockHint
+          blockType={context.activeBlockHint!.blockType}
+          blockId={block.id}
+          onDismiss={context.onDismissHint}
+        />
+      )}
       
       {/* Insert button after each block */}
       <BlockInsertButton
@@ -84,6 +108,8 @@ export const PreviewEditor = memo(function PreviewEditor({
   onEditBlock,
   onDeleteBlock,
   onReorderBlocks,
+  activeBlockHint,
+  onDismissHint,
 }: PreviewEditorProps) {
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -143,6 +169,7 @@ export const PreviewEditor = memo(function PreviewEditor({
                 onDelete={onDeleteBlock}
                 onInsertAfter={(type) => onInsertBlock(type, index + 1)}
                 isPremium={isPremium}
+                context={{ activeBlockHint, onDismissHint }}
               />
             ))}
           </SortableContext>
