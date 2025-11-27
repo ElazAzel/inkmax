@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'text' | 'product' | 'video' | 'carousel' | 'custom_code';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code';
 
 export interface ProfileBlock {
   id: string;
@@ -58,6 +58,47 @@ export interface CarouselBlock {
   interval?: number;
 }
 
+export interface ButtonBlock {
+  id: string;
+  type: 'button';
+  title: string;
+  url: string;
+  background?: {
+    type: 'solid' | 'gradient' | 'image';
+    value: string;
+    gradientAngle?: number;
+  };
+  hoverEffect?: 'glow' | 'scale' | 'shadow' | 'none';
+}
+
+export interface SocialsBlock {
+  id: string;
+  type: 'socials';
+  title?: string;
+  platforms: Array<{
+    name: string;
+    url: string;
+    icon: string;
+  }>;
+}
+
+export interface ImageBlock {
+  id: string;
+  type: 'image';
+  url: string;
+  alt: string;
+  caption?: string;
+  style?: 'polaroid' | 'vignette' | 'circle' | 'default';
+}
+
+export interface SearchBlock {
+  id: string;
+  type: 'search';
+  title?: string;
+  placeholder?: string;
+  isPremium: true;
+}
+
 export interface CustomCodeBlock {
   id: string;
   type: 'custom_code';
@@ -67,7 +108,7 @@ export interface CustomCodeBlock {
   isPremium: true;
 }
 
-export type Block = ProfileBlock | LinkBlock | TextBlock | ProductBlock | VideoBlock | CarouselBlock | CustomCodeBlock;
+export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock;
 
 export interface PageTheme {
   backgroundColor: string;

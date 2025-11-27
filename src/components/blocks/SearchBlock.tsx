@@ -1,0 +1,92 @@
+import { useState } from 'react';
+import { Search, Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import type { SearchBlock } from '@/types/page';
+import { supabase } from '@/integrations/supabase/client';
+
+interface SearchBlockProps {
+  block: SearchBlock;
+}
+
+export function SearchBlock({ block }: SearchBlockProps) {
+  const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<{ answer: string; sources?: string[] } | null>(null);
+
+  const handleSearch = async () => {
+    if (!query.trim()) return;
+    
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-search', {
+        body: { query }
+      });
+
+      if (error) throw error;
+      setResult(data);
+    } catch (error) {
+      console.error('Search error:', error);
+      setResult({ answer: 'Произошла ошибка при поиске. Попробуйте еще раз.' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full space-y-4">
+      {block.title && (
+        <h3 className="text-lg font-semibold text-foreground">{block.title}</h3>
+      )}
+      
+      <div className="relative">
+        <Input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          placeholder={block.placeholder || 'Задайте вопрос...'}
+          className="pr-12 h-14 rounded-2xl bg-background/50 backdrop-blur-xl border-border/50 focus:border-primary/50 transition-colors"
+        />
+        <Button
+          onClick={handleSearch}
+          disabled={isLoading}
+          size="icon"
+          className="absolute right-2 top-2 h-10 w-10 rounded-xl"
+        >
+          {isLoading ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <Search className="h-5 w-5" />
+          )}
+        </Button>
+      </div>
+
+      {result && (
+        <Card className="p-6 bg-background/50 backdrop-blur-xl border-border/50 rounded-2xl">
+          <p className="text-foreground whitespace-pre-wrap">{result.answer}</p>
+          {result.sources && result.sources.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <p className="text-sm font-medium text-muted-foreground mb-2">Источники:</p>
+              <ul className="space-y-1">
+                {result.sources.map((source, index) => (
+                  <li key={index}>
+                    <a
+                      href={source}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      {source}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Card>
+      )}
+    </div>
+  );
+}
