@@ -62,6 +62,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             variant="ghost"
             size="sm"
             className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-full border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/10 transition-all"
+            data-onboarding="add-block"
           >
             <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
           </Button>

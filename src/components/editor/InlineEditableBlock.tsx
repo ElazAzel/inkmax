@@ -21,6 +21,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   dragHandleProps,
 }: InlineEditableBlockProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const isProfileBlock = block.type === 'profile';
 
   return (
     <div
@@ -30,6 +31,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      data-onboarding={isProfileBlock ? 'profile-block' : 'block-edit'}
     >
       {/* Hover overlay with controls */}
       {isHovered && !isDragging && (

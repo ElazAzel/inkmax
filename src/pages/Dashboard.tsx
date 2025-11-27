@@ -23,6 +23,7 @@ import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
+import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 import { Card } from '@/components/ui/card';
 import { createBlock } from '@/lib/block-factory';
 import { toast } from 'sonner';
@@ -53,6 +54,16 @@ export default function Dashboard() {
   const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
   const [aiGeneratorType, setAiGeneratorType] = useState<'magic-title' | 'sales-copy' | 'seo' | 'ai-builder'>('ai-builder');
   const [showSettings, setShowSettings] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if user has completed onboarding
+  useEffect(() => {
+    const hasCompletedOnboarding = localStorage.getItem('linkmax_onboarding_completed');
+    if (!hasCompletedOnboarding && user && pageData) {
+      // Show onboarding after a short delay to let the page load
+      setTimeout(() => setShowOnboarding(true), 1000);
+    }
+  }, [user, pageData]);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -142,6 +153,17 @@ export default function Dashboard() {
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('linkmax_onboarding_completed', 'true');
+    setShowOnboarding(false);
+    toast.success('Добро пожаловать! Начните создавать свою страницу.');
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('linkmax_onboarding_completed', 'true');
+    setShowOnboarding(false);
   };
 
   if (loading) {
@@ -248,7 +270,7 @@ export default function Dashboard() {
             </Button>
 
             {/* Publish/Share */}
-            <Button size="sm" onClick={handleShare}>
+            <Button size="sm" onClick={handleShare} data-onboarding="share-button">
               <Upload className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Share</span>
             </Button>
@@ -394,6 +416,14 @@ export default function Dashboard() {
           isOpen={aiGeneratorOpen}
           onClose={() => setAiGeneratorOpen(false)}
           onResult={handleAIResult}
+        />
+      )}
+
+      {/* Onboarding Tour */}
+      {showOnboarding && (
+        <OnboardingTour
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
         />
       )}
     </div>
