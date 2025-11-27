@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -6,17 +6,36 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Eye, Share2, Trash2, Sparkles } from 'lucide-react';
-import { usePageState } from '@/hooks/usePageState';
+import { Plus, Eye, Share2, Trash2, Sparkles, LogOut, Save, Upload } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useCloudPageState } from '@/hooks/useCloudPageState';
 import { BlockRenderer } from '@/components/BlockRenderer';
-import { generateMagicLink } from '@/lib/compression';
+import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { pageData, addBlock, updateBlock, deleteBlock, updateTheme } = usePageState();
-  const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+  const { user, signOut } = useAuth();
+  const {
+    pageData,
+    loading,
+    saving,
+    save,
+    publish,
+    addBlock,
+    updateBlock,
+    deleteBlock,
+    updateTheme,
+  } = useCloudPageState();
+  const [migrationKey, setMigrationKey] = useState(0);
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!user && !loading) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
 
   const handleAddLink = () => {
     const newBlock: Block = {
@@ -44,17 +63,48 @@ export default function Dashboard() {
     toast.success('Product added');
   };
 
-  const handleShare = () => {
-    const magicLink = generateMagicLink(pageData);
-    navigator.clipboard.writeText(magicLink);
-    toast.success('Magic link copied to clipboard!');
+  const handleShare = async () => {
+    const slug = await publish();
+    if (slug) {
+      const url = `${window.location.origin}/${slug}`;
+      navigator.clipboard.writeText(url);
+      toast.success('Link copied to clipboard!');
+    }
   };
 
-  const handlePreview = () => {
-    const magicLink = generateMagicLink(pageData);
-    const compressed = magicLink.split('/p/')[1];
-    navigate(`/p/${compressed}`);
+  const handlePreview = async () => {
+    await save();
+    const slug = await publish();
+    if (slug) {
+      window.open(`/${slug}`, '_blank');
+    }
   };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your page...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!pageData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Failed to load page</p>
+        </div>
+      </div>
+    );
+  }
 
   const profileBlock = pageData.blocks.find(b => b.type === 'profile');
 
@@ -65,13 +115,21 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-primary">LinkMAX</h1>
           <div className="flex gap-2">
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+            <Button variant="outline" size="sm" onClick={save} disabled={saving}>
+              <Save className="h-4 w-4 mr-2" />
+              {saving ? 'Saving...' : 'Save'}
+            </Button>
             <Button variant="outline" size="sm" onClick={handlePreview}>
               <Eye className="h-4 w-4 mr-2" />
               Preview
             </Button>
             <Button size="sm" onClick={handleShare}>
-              <Share2 className="h-4 w-4 mr-2" />
-              Share
+              <Upload className="h-4 w-4 mr-2" />
+              Publish
             </Button>
           </div>
         </div>
@@ -81,6 +139,18 @@ export default function Dashboard() {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Editor Panel */}
           <div className="space-y-6">
+            {/* Migration Notice */}
+            {user && (
+              <LocalStorageMigration 
+                key={migrationKey}
+                userId={user.id} 
+                onMigrated={() => {
+                  setMigrationKey(prev => prev + 1);
+                  window.location.reload();
+                }}
+              />
+            )}
+
             <Card className="p-6">
               <Tabs defaultValue="content">
                 <TabsList className="w-full">
