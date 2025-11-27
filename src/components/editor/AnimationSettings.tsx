@@ -21,11 +21,15 @@ export function AnimationSettings({ style = {}, onChange }: AnimationSettingsPro
     onChange({ ...style, animationDelay: value[0] });
   };
 
+  const handleContinuousAnimationChange = (animation: string) => {
+    onChange({ ...style, continuousAnimation: animation as BlockStyle['continuousAnimation'] });
+  };
+
   return (
     <div className="space-y-4 p-4 border border-border rounded-lg bg-card/50">
       <div className="flex items-center gap-2">
         <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-        <h3 className="font-medium">Анимация появления</h3>
+        <h3 className="font-medium">Анимация</h3>
       </div>
 
       <div className="space-y-4">
@@ -85,6 +89,29 @@ export function AnimationSettings({ style = {}, onChange }: AnimationSettingsPro
             </div>
           </>
         )}
+
+        <div className="pt-4 border-t border-border">
+          <Label>Постоянная анимация</Label>
+          <Select
+            value={style.continuousAnimation || 'none'}
+            onValueChange={handleContinuousAnimationChange}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Без анимации</SelectItem>
+              <SelectItem value="pulse">Пульсация</SelectItem>
+              <SelectItem value="glow">Свечение</SelectItem>
+              <SelectItem value="float">Плавание</SelectItem>
+              <SelectItem value="bounce">Отскок</SelectItem>
+              <SelectItem value="blink">Мигание</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground mt-1">
+            Анимация, которая постоянно повторяется
+          </p>
+        </div>
       </div>
     </div>
   );
