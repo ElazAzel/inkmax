@@ -84,9 +84,19 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
   };
 
   const isGradientFrame = block.avatarFrame === 'gradient' || block.avatarFrame === 'rainbow' || block.avatarFrame === 'dash';
+  
+  const getPositionClass = () => {
+    const position = block.avatarPosition || 'center';
+    switch (position) {
+      case 'left': return 'items-start';
+      case 'right': return 'items-end';
+      case 'center': 
+      default: return 'items-center';
+    }
+  };
 
   return (
-    <div className="relative flex flex-col items-center">
+    <div className={`relative flex flex-col ${getPositionClass()}`}>
       {block.coverImage && (
         <div className="relative w-full h-48 overflow-hidden">
           <img 
@@ -100,7 +110,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         </div>
       )}
       
-      <div className={`flex flex-col items-center gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
+      <div className={`flex flex-col ${getPositionClass()} gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
         <div className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()}`}>
           <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
             <AvatarImage src={block.avatar} alt={block.name} />
