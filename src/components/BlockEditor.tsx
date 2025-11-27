@@ -21,7 +21,7 @@ import {
 import { Plus, X, Sparkles, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import type { Block, VideoBlock, CarouselBlock, CustomCodeBlock, LinkBlock, ProductBlock } from '@/types/page';
+import type { Block, VideoBlock, CarouselBlock, CustomCodeBlock, LinkBlock, ProductBlock, ButtonBlock, SocialsBlock, ImageBlock, SearchBlock } from '@/types/page';
 
 interface BlockEditorProps {
   block: Block | null;
@@ -362,6 +362,286 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
                   />
                 </div>
               )}
+            </div>
+          </div>
+        );
+
+      case 'button':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label>Title</Label>
+              <Input
+                value={formData.title || ''}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>URL</Label>
+              <Input
+                type="url"
+                value={formData.url || ''}
+                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              />
+            </div>
+            
+            <div className="border-t pt-4 space-y-4">
+              <Label className="text-base font-semibold">Background</Label>
+              <div>
+                <Label>Type</Label>
+                <Select
+                  value={formData.background?.type || 'solid'}
+                  onValueChange={(value) => setFormData({
+                    ...formData,
+                    background: { ...formData.background, type: value }
+                  })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="solid">Solid Color</SelectItem>
+                    <SelectItem value="gradient">Gradient</SelectItem>
+                    <SelectItem value="image">Image</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {formData.background?.type === 'solid' && (
+                <div>
+                  <Label>Color</Label>
+                  <Input
+                    type="color"
+                    value={formData.background?.value || '#3b82f6'}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      background: { ...formData.background, value: e.target.value }
+                    })}
+                  />
+                </div>
+              )}
+
+              {formData.background?.type === 'gradient' && (
+                <>
+                  <div>
+                    <Label>Gradient Colors (comma-separated)</Label>
+                    <Input
+                      placeholder="#3b82f6, #8b5cf6"
+                      value={formData.background?.value || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        background: { ...formData.background, value: e.target.value }
+                      })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Angle (degrees)</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="360"
+                      value={formData.background?.gradientAngle || 135}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        background: { ...formData.background, gradientAngle: parseInt(e.target.value) }
+                      })}
+                    />
+                  </div>
+                </>
+              )}
+
+              {formData.background?.type === 'image' && (
+                <div>
+                  <Label>Image URL</Label>
+                  <Input
+                    type="url"
+                    value={formData.background?.value || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      background: { ...formData.background, value: e.target.value }
+                    })}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="border-t pt-4">
+              <Label>Hover Effect</Label>
+              <Select
+                value={formData.hoverEffect || 'none'}
+                onValueChange={(value) => setFormData({ ...formData, hoverEffect: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="glow">Glow</SelectItem>
+                  <SelectItem value="scale">Scale</SelectItem>
+                  <SelectItem value="shadow">Shadow</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+
+      case 'socials':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label>Title (optional)</Label>
+              <Input
+                value={formData.title || ''}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Social Platforms</Label>
+              <div className="space-y-2">
+                {(formData.platforms || []).map((platform: any, index: number) => (
+                  <div key={index} className="flex gap-2 p-3 border rounded-lg">
+                    <div className="flex-1 space-y-2">
+                      <Input
+                        placeholder="Platform name"
+                        value={platform.name}
+                        onChange={(e) => {
+                          const newPlatforms = [...formData.platforms];
+                          newPlatforms[index].name = e.target.value;
+                          setFormData({ ...formData, platforms: newPlatforms });
+                        }}
+                      />
+                      <Input
+                        placeholder="URL"
+                        value={platform.url}
+                        onChange={(e) => {
+                          const newPlatforms = [...formData.platforms];
+                          newPlatforms[index].url = e.target.value;
+                          setFormData({ ...formData, platforms: newPlatforms });
+                        }}
+                      />
+                      <Select
+                        value={platform.icon || 'globe'}
+                        onValueChange={(value) => {
+                          const newPlatforms = [...formData.platforms];
+                          newPlatforms[index].icon = value;
+                          setFormData({ ...formData, platforms: newPlatforms });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Icon" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="instagram">Instagram</SelectItem>
+                          <SelectItem value="telegram">Telegram</SelectItem>
+                          <SelectItem value="youtube">YouTube</SelectItem>
+                          <SelectItem value="tiktok">TikTok</SelectItem>
+                          <SelectItem value="twitter">Twitter</SelectItem>
+                          <SelectItem value="github">GitHub</SelectItem>
+                          <SelectItem value="linkedin">LinkedIn</SelectItem>
+                          <SelectItem value="facebook">Facebook</SelectItem>
+                          <SelectItem value="threads">Threads</SelectItem>
+                          <SelectItem value="globe">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const newPlatforms = formData.platforms.filter((_: any, i: number) => i !== index);
+                        setFormData({ ...formData, platforms: newPlatforms });
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      platforms: [...(formData.platforms || []), { name: '', url: '', icon: 'globe' }],
+                    });
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Platform
+                </Button>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'image':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label>Image URL</Label>
+              <Input
+                type="url"
+                value={formData.url || ''}
+                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Alt Text</Label>
+              <Input
+                value={formData.alt || ''}
+                onChange={(e) => setFormData({ ...formData, alt: e.target.value })}
+                placeholder="Describe the image"
+              />
+            </div>
+            <div>
+              <Label>Caption (optional)</Label>
+              <Input
+                value={formData.caption || ''}
+                onChange={(e) => setFormData({ ...formData, caption: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Style</Label>
+              <Select
+                value={formData.style || 'default'}
+                onValueChange={(value) => setFormData({ ...formData, style: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="polaroid">Polaroid</SelectItem>
+                  <SelectItem value="vignette">Vignette</SelectItem>
+                  <SelectItem value="circle">Circle</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+
+      case 'search':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label>Title (optional)</Label>
+              <Input
+                value={formData.title || ''}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Placeholder</Label>
+              <Input
+                value={formData.placeholder || ''}
+                onChange={(e) => setFormData({ ...formData, placeholder: e.target.value })}
+                placeholder="Задайте вопрос..."
+              />
+            </div>
+            <div className="p-4 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                ⚡ This is a Premium feature. Search uses AI to find answers in real-time.
+              </p>
             </div>
           </div>
         );
