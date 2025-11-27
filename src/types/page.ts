@@ -56,6 +56,7 @@ export interface LinkBlock {
   url: string;
   icon?: string;
   style?: 'default' | 'rounded' | 'pill';
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -65,6 +66,7 @@ export interface TextBlock {
   type: 'text';
   content: string;
   style?: 'heading' | 'paragraph' | 'quote';
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -80,6 +82,7 @@ export interface ProductBlock {
   currency: Currency;
   image?: string;
   buyLink?: string;
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -121,6 +124,7 @@ export interface ButtonBlock {
     gradientAngle?: number;
   };
   hoverEffect?: 'glow' | 'scale' | 'shadow' | 'none';
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -134,6 +138,7 @@ export interface SocialsBlock {
     url: string;
     icon: string;
   }>;
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -145,6 +150,7 @@ export interface ImageBlock {
   alt: string;
   caption?: string;
   style?: 'polaroid' | 'vignette' | 'circle' | 'default';
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -208,6 +214,7 @@ export interface DownloadBlock {
   fileName: string;
   fileSize?: string;
   icon?: string;
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -275,6 +282,7 @@ export interface AvatarBlock {
   border?: boolean;
   borderColor?: string;
   shadow?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
+  alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }

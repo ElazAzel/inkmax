@@ -39,10 +39,15 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
   const paddingMap = { none: '', sm: 'p-2', md: 'p-4', lg: 'p-6', xl: 'p-8' };
   const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
 
+  const alignmentClass = block.alignment === 'left' ? 'items-start text-left' 
+    : block.alignment === 'right' ? 'items-end text-right' 
+    : 'items-center text-center';
+
   return (
     <div 
       className={cn(
-        "flex flex-col items-center gap-3 text-center",
+        "flex flex-col gap-3",
+        alignmentClass,
         block.blockStyle?.padding && paddingMap[block.blockStyle.padding],
         block.blockStyle?.margin && marginMap[block.blockStyle.margin],
         getAnimationClass(block.blockStyle)

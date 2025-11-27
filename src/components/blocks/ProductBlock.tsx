@@ -38,39 +38,45 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
     return symbols[currency] || currency;
   };
 
+  const alignmentClass = block.alignment === 'left' ? 'mr-auto' 
+    : block.alignment === 'right' ? 'ml-auto' 
+    : 'mx-auto';
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      {block.image && (
-        <div className="aspect-square overflow-hidden bg-muted">
-          <img
-            src={block.image}
-            alt={block.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-      
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>{block.name}</span>
-          <span className="text-primary font-bold">
-            {getCurrencySymbol(block.currency)}{block.price.toLocaleString()} {block.currency}
-          </span>
-        </CardTitle>
-      </CardHeader>
-      
-      {block.description && (
-        <CardContent>
-          <p className="text-sm text-muted-foreground">{block.description}</p>
-        </CardContent>
-      )}
-      
-      <CardFooter>
-        <Button className="w-full gap-2" onClick={handleBuy}>
-          <ShoppingCart className="h-4 w-4" />
-          Buy Now
-        </Button>
-      </CardFooter>
-    </Card>
+    <div className={`flex ${block.alignment === 'left' ? 'justify-start' : block.alignment === 'right' ? 'justify-end' : 'justify-center'}`}>
+      <Card className={`${alignmentClass} max-w-sm overflow-hidden hover:shadow-lg transition-shadow`}>
+        {block.image && (
+          <div className="aspect-square overflow-hidden bg-muted">
+            <img
+              src={block.image}
+              alt={block.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+        
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>{block.name}</span>
+            <span className="text-primary font-bold">
+              {getCurrencySymbol(block.currency)}{block.price.toLocaleString()} {block.currency}
+            </span>
+          </CardTitle>
+        </CardHeader>
+        
+        {block.description && (
+          <CardContent>
+            <p className="text-sm text-muted-foreground">{block.description}</p>
+          </CardContent>
+        )}
+        
+        <CardFooter>
+          <Button className="w-full gap-2" onClick={handleBuy}>
+            <ShoppingCart className="h-4 w-4" />
+            Buy Now
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 });

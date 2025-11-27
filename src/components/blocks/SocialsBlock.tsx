@@ -24,14 +24,18 @@ export const SocialsBlock = memo(function SocialsBlockComponent({ block }: Socia
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  const justifyClass = block.alignment === 'left' ? 'justify-start' 
+    : block.alignment === 'right' ? 'justify-end' 
+    : 'justify-center';
+
   return (
     <div className="w-full">
       {block.title && (
-        <h3 className="text-center text-sm font-medium text-muted-foreground mb-4">
+        <h3 className={`text-sm font-medium text-muted-foreground mb-4 ${block.alignment === 'center' ? 'text-center' : block.alignment === 'right' ? 'text-right' : 'text-left'}`}>
           {block.title}
         </h3>
       )}
-      <div className="flex items-center justify-center gap-4 flex-wrap">
+      <div className={`flex items-center ${justifyClass} gap-4 flex-wrap`}>
         {block.platforms.map((platform, index) => {
           const Icon = iconMap[platform.icon.toLowerCase()] || Globe;
           return (
