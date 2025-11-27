@@ -10,6 +10,8 @@ import { Separator } from '@/components/ui/separator';
 import { Crown, Info, Calendar as CalendarIcon, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { AnimationSettings } from '@/components/editor/AnimationSettings';
+import type { BlockStyle } from '@/types/page';
 
 export interface BaseBlockEditorProps {
   formData: any;
@@ -113,6 +115,13 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
           </Alert>
         )}
         <Component {...props} onChange={handleChange} />
+        
+        <Separator className="my-6" />
+        
+        <AnimationSettings
+          style={formData.blockStyle}
+          onChange={(style: BlockStyle) => handleChange({ ...formData, blockStyle: style })}
+        />
         
         <Separator className="my-6" />
         

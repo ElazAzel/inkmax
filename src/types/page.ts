@@ -21,7 +21,9 @@ export interface BlockStyle {
   
   // Animation
   hoverEffect?: 'none' | 'scale' | 'glow' | 'lift' | 'fade';
-  animation?: 'none' | 'fade-in' | 'slide-up' | 'scale-in';
+  animation?: 'none' | 'fade-in' | 'slide-up' | 'scale-in' | 'bounce';
+  animationDelay?: number; // in milliseconds (0-2000)
+  animationSpeed?: 'slow' | 'normal' | 'fast'; // slow: 0.8s, normal: 0.5s, fast: 0.3s
 }
 
 export interface BlockSchedule {
@@ -44,6 +46,7 @@ export interface ProfileBlock {
   avatarPosition?: 'left' | 'center' | 'right';
   shadowStyle?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface LinkBlock {
@@ -54,6 +57,7 @@ export interface LinkBlock {
   icon?: string;
   style?: 'default' | 'rounded' | 'pill';
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface TextBlock {
@@ -62,6 +66,7 @@ export interface TextBlock {
   content: string;
   style?: 'heading' | 'paragraph' | 'quote';
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export type Currency = 'KZT' | 'RUB' | 'BYN' | 'AMD' | 'AZN' | 'KGS' | 'TJS' | 'TMT' | 'UZS' | 'USD' | 'EUR' | 'GBP' | 'CNY' | 'JPY' | 'CHF' | 'CAD' | 'AUD';
@@ -76,6 +81,7 @@ export interface ProductBlock {
   image?: string;
   buyLink?: string;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface VideoBlock {
@@ -86,6 +92,7 @@ export interface VideoBlock {
   platform: 'youtube' | 'vimeo';
   aspectRatio?: '16:9' | '4:3' | '1:1';
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface CarouselBlock {
@@ -100,6 +107,7 @@ export interface CarouselBlock {
   autoPlay?: boolean;
   interval?: number;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface ButtonBlock {
@@ -114,6 +122,7 @@ export interface ButtonBlock {
   };
   hoverEffect?: 'glow' | 'scale' | 'shadow' | 'none';
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface SocialsBlock {
@@ -126,6 +135,7 @@ export interface SocialsBlock {
     icon: string;
   }>;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface ImageBlock {
@@ -136,6 +146,7 @@ export interface ImageBlock {
   caption?: string;
   style?: 'polaroid' | 'vignette' | 'circle' | 'default';
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface SearchBlock {
@@ -145,6 +156,7 @@ export interface SearchBlock {
   placeholder?: string;
   isPremium: true;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface CustomCodeBlock {
@@ -155,6 +167,7 @@ export interface CustomCodeBlock {
   css?: string;
   isPremium: true;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface MessengerBlock {
@@ -167,6 +180,7 @@ export interface MessengerBlock {
     message?: string;
   }>;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface FormBlock {
@@ -182,6 +196,7 @@ export interface FormBlock {
   buttonText: string;
   isPremium: true;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface DownloadBlock {
@@ -194,6 +209,7 @@ export interface DownloadBlock {
   fileSize?: string;
   icon?: string;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface NewsletterBlock {
@@ -205,6 +221,7 @@ export interface NewsletterBlock {
   apiEndpoint?: string;
   isPremium: true;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface TestimonialBlock {
@@ -220,6 +237,7 @@ export interface TestimonialBlock {
   }>;
   isPremium: true;
   schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
 }
 
 export interface ScratchBlock {
