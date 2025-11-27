@@ -10,6 +10,7 @@ export interface ProfileBlock {
   avatarFrame?: 'default' | 'neon' | 'glitch' | 'aura' | 'gradient' | 'pulse' | 'rainbow' | 'double' | 'spinning' | 'dash' | 'wave';
   coverImage?: string;
   coverGradient?: 'none' | 'dark' | 'light' | 'primary' | 'sunset' | 'ocean' | 'purple';
+  coverHeight?: 'small' | 'medium' | 'large';
   avatarSize?: 'small' | 'medium' | 'large' | 'xlarge';
   avatarPosition?: 'left' | 'center' | 'right';
   shadowStyle?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';

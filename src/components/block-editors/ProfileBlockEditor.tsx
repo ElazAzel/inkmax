@@ -69,6 +69,23 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         </div>
 
         <div>
+          <Label>Cover Height</Label>
+          <Select
+            value={formData.coverHeight || 'medium'}
+            onValueChange={(value) => onChange({ ...formData, coverHeight: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="small">Small - 120px</SelectItem>
+              <SelectItem value="medium">Medium - 200px</SelectItem>
+              <SelectItem value="large">Large - 320px</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
           <Label>Avatar Size</Label>
           <Select
             value={formData.avatarSize || 'large'}
