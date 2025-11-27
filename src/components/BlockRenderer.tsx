@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import type { Block } from '@/types/page';
+import type { Block, PageTheme } from '@/types/page';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 
@@ -48,6 +48,7 @@ const SeparatorBlock = lazy(() => import('./blocks/SeparatorBlock').then(m => ({
 interface BlockRendererProps {
   block: Block;
   isPreview?: boolean;
+  theme?: PageTheme;
 }
 
 // Loading skeleton for blocks
@@ -57,7 +58,7 @@ const BlockSkeleton = () => (
   </div>
 );
 
-export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
+export function BlockRenderer({ block, isPreview, theme }: BlockRendererProps) {
   // Check if block should be visible based on schedule
   // In preview mode, always show blocks
   if (!isPreview && !isBlockVisible(block)) {
@@ -78,7 +79,7 @@ export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <LinkBlock block={block} />
+            <LinkBlock block={block} buttonStyle={theme?.buttonStyle} />
           </Suspense>
         </div>
       );
@@ -86,7 +87,7 @@ export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <ButtonBlock block={block} />
+            <ButtonBlock block={block} buttonStyle={theme?.buttonStyle} />
           </Suspense>
         </div>
       );
@@ -118,7 +119,7 @@ export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <ProductBlock block={block} />
+            <ProductBlock block={block} buttonStyle={theme?.buttonStyle} />
           </Suspense>
         </div>
       );

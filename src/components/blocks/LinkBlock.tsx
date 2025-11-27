@@ -7,6 +7,7 @@ import type { LinkBlock as LinkBlockType } from '@/types/page';
 interface LinkBlockProps {
   block: LinkBlockType;
   onClick?: () => void;
+  buttonStyle?: 'default' | 'rounded' | 'pill' | 'gradient';
 }
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -18,17 +19,20 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   globe: Globe,
 };
 
-export const LinkBlock = memo(function LinkBlockComponent({ block, onClick }: LinkBlockProps) {
+export const LinkBlock = memo(function LinkBlockComponent({ block, onClick, buttonStyle }: LinkBlockProps) {
   const Icon = block.icon && iconMap[block.icon.toLowerCase()] 
     ? iconMap[block.icon.toLowerCase()] 
     : ExternalLink;
 
   const handleClick = createBlockClickHandler(block.url, onClick);
 
+  // Use theme buttonStyle if provided, otherwise fallback to block.style
+  const effectiveStyle = buttonStyle || block.style;
+
   return (
     <Button
       variant="outline"
-      className={`w-full justify-between h-auto py-4 px-6 hover:scale-[1.02] transition-transform ${getButtonClass(block.style)}`}
+      className={`w-full justify-between h-auto py-4 px-6 hover:scale-[1.02] transition-transform ${getButtonClass(effectiveStyle)}`}
       onClick={handleClick}
     >
       <div className="flex items-center gap-3">

@@ -2,13 +2,15 @@ import { memo } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
+import { getButtonClass } from '@/lib/block-utils';
 import type { ProductBlock as ProductBlockType } from '@/types/page';
 
 interface ProductBlockProps {
   block: ProductBlockType;
+  buttonStyle?: 'default' | 'rounded' | 'pill' | 'gradient';
 }
 
-export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
+export const ProductBlock = memo(function ProductBlockComponent({ block, buttonStyle }: ProductBlockProps) {
   const handleBuy = () => {
     if (block.buyLink) {
       window.open(block.buyLink, '_blank', 'noopener,noreferrer');
@@ -66,7 +68,10 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
       )}
       
       <CardFooter>
-        <Button className="w-full gap-2" onClick={handleBuy}>
+        <Button 
+          className={`w-full gap-2 ${buttonStyle ? getButtonClass(buttonStyle) : ''}`}
+          onClick={handleBuy}
+        >
           <ShoppingCart className="h-4 w-4" />
           Buy Now
         </Button>

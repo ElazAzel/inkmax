@@ -20,10 +20,12 @@ import { BlockInsertButton } from './BlockInsertButton';
 import { InlineEditableBlock } from './InlineEditableBlock';
 import { BlockHint } from '../onboarding/BlockHint';
 import { useIsMobile } from '@/hooks/use-mobile';
-import type { Block } from '@/types/page';
+import { BlockRenderer } from '@/components/BlockRenderer';
+import type { Block, PageTheme } from '@/types/page';
 
 interface PreviewEditorProps {
   blocks: Block[];
+  theme: PageTheme;
   isPremium: boolean;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
@@ -43,6 +45,7 @@ interface SortableBlockWrapperProps {
   onMoveDown: (id: string) => void;
   onInsertAfter: (blockType: string) => void;
   isPremium: boolean;
+  theme: PageTheme;
 }
 
 interface PreviewEditorContext {
@@ -64,6 +67,7 @@ function SortableBlockWrapper({
   onMoveDown,
   onInsertAfter,
   isPremium,
+  theme,
   context,
 }: ExtendedSortableBlockWrapperProps) {
   const {
@@ -86,17 +90,26 @@ function SortableBlockWrapper({
 
   return (
     <div ref={setNodeRef} style={style} className="group relative">
-      <InlineEditableBlock
-        block={block}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onMoveUp={onMoveUp}
-        onMoveDown={onMoveDown}
-        isFirst={isFirst}
-        isLast={isLast}
-        isDragging={isDragging}
-        dragHandleProps={{ ...attributes, ...listeners }}
-      />
+      {/* Preview wrapper with edit controls overlay */}
+      <div className="relative">
+        <div className="opacity-80">
+          <BlockRenderer block={block} isPreview={true} theme={theme} />
+        </div>
+        
+        <div className="absolute inset-0 pointer-events-none">
+          <InlineEditableBlock
+            block={block}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onMoveUp={onMoveUp}
+            onMoveDown={onMoveDown}
+            isFirst={isFirst}
+            isLast={isLast}
+            isDragging={isDragging}
+            dragHandleProps={{ ...attributes, ...listeners }}
+          />
+        </div>
+      </div>
       
       {/* Block hint */}
       {showHint && context?.onDismissHint && (
@@ -119,6 +132,7 @@ function SortableBlockWrapper({
 
 export const PreviewEditor = memo(function PreviewEditor({
   blocks,
+  theme,
   isPremium,
   onInsertBlock,
   onEditBlock,
@@ -129,7 +143,6 @@ export const PreviewEditor = memo(function PreviewEditor({
 }: PreviewEditorProps) {
   const sensors = useSensors(useSensor(PointerSensor));
   const isMobile = useIsMobile();
-  const [showMobileFAB, setShowMobileFAB] = useState(false);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -167,12 +180,32 @@ export const PreviewEditor = memo(function PreviewEditor({
   const profileBlock = blocks.find(b => b.type === 'profile');
   const contentBlocks = blocks.filter(b => b.type !== 'profile');
 
+  // Get font family class
+  const fontClass = theme.fontFamily === 'serif' 
+    ? 'font-serif' 
+    : theme.fontFamily === 'mono' 
+    ? 'font-mono' 
+    : 'font-sans';
+
+  // Get background style
+  const backgroundStyle: React.CSSProperties = {
+    backgroundColor: theme.backgroundColor,
+    backgroundImage: theme.backgroundGradient,
+    color: theme.textColor,
+  };
+
   return (
     <>
-      <div className="max-w-lg mx-auto px-3 sm:px-4 py-2 space-y-3 sm:space-y-4 pb-24">
+      <div 
+        className={`max-w-lg mx-auto px-3 sm:px-4 py-2 space-y-3 sm:space-y-4 pb-24 min-h-screen ${fontClass}`}
+        style={backgroundStyle}
+      >
         {/* Profile block (not draggable) */}
         {profileBlock && (
           <>
+            <div className="opacity-80">
+              <BlockRenderer block={profileBlock} isPreview={true} theme={theme} />
+            </div>
             <InlineEditableBlock
               block={profileBlock}
               onEdit={onEditBlock}
@@ -209,6 +242,7 @@ export const PreviewEditor = memo(function PreviewEditor({
                   onMoveDown={handleMoveDown}
                   onInsertAfter={(type) => onInsertBlock(type, index + 1)}
                   isPremium={isPremium}
+                  theme={theme}
                   context={{ activeBlockHint, onDismissHint }}
                 />
               ))}
