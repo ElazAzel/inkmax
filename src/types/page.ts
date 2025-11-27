@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'text' | 'product';
+export type BlockType = 'profile' | 'link' | 'text' | 'product' | 'video' | 'carousel' | 'custom_code';
 
 export interface ProfileBlock {
   id: string;
@@ -36,7 +36,38 @@ export interface ProductBlock {
   buyLink?: string;
 }
 
-export type Block = ProfileBlock | LinkBlock | TextBlock | ProductBlock;
+export interface VideoBlock {
+  id: string;
+  type: 'video';
+  title: string;
+  url: string;
+  platform: 'youtube' | 'vimeo';
+  aspectRatio?: '16:9' | '4:3' | '1:1';
+}
+
+export interface CarouselBlock {
+  id: string;
+  type: 'carousel';
+  title?: string;
+  images: Array<{
+    url: string;
+    alt: string;
+    link?: string;
+  }>;
+  autoPlay?: boolean;
+  interval?: number;
+}
+
+export interface CustomCodeBlock {
+  id: string;
+  type: 'custom_code';
+  title?: string;
+  html: string;
+  css?: string;
+  isPremium: true;
+}
+
+export type Block = ProfileBlock | LinkBlock | TextBlock | ProductBlock | VideoBlock | CarouselBlock | CustomCodeBlock;
 
 export interface PageTheme {
   backgroundColor: string;
