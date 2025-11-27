@@ -1,6 +1,7 @@
 import type { SeparatorBlock as SeparatorBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 
 interface SeparatorBlockProps {
   block: SeparatorBlockType;
@@ -35,6 +36,9 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
 
   const variant = block.variant || 'solid';
   const isGradient = variant === 'gradient';
+  
+  const paddingMap = { none: '', sm: 'p-2', md: 'p-4', lg: 'p-6', xl: 'p-8' };
+  const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
 
   if (isGradient) {
     return (
@@ -43,14 +47,16 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
           "mx-auto",
           widthClasses[block.width || 'full'],
           spacingClasses[block.spacing || 'md'],
-          getBlockSpacing(block.blockStyle)
+          block.blockStyle?.padding && paddingMap[block.blockStyle.padding],
+          block.blockStyle?.margin && marginMap[block.blockStyle.margin],
+          getAnimationClass(block.blockStyle)
         )}
+        style={getAnimationStyle(block.blockStyle)}
       >
         <div 
           className={cn(
             thicknessClasses[block.thickness || 'thin'],
-            'bg-gradient-to-r from-transparent via-primary to-transparent rounded-full',
-            getBlockStyles(block.blockStyle)
+            'bg-gradient-to-r from-transparent via-primary to-transparent rounded-full'
           )}
         />
       </div>
@@ -62,50 +68,20 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
       className={cn(
         "flex items-center justify-center",
         spacingClasses[block.spacing || 'md'],
-        getBlockSpacing(block.blockStyle)
+        block.blockStyle?.padding && paddingMap[block.blockStyle.padding],
+        block.blockStyle?.margin && marginMap[block.blockStyle.margin],
+        getAnimationClass(block.blockStyle)
       )}
+      style={getAnimationStyle(block.blockStyle)}
     >
       <Separator 
         className={cn(
           variantClasses[variant],
           thicknessClasses[block.thickness || 'thin'],
           widthClasses[block.width || 'full'],
-          block.color && `bg-[${block.color}]`,
-          getBlockStyles(block.blockStyle)
+          block.color && `bg-[${block.color}]`
         )}
       />
     </div>
   );
-}
-
-// Helper functions
-function getBlockSpacing(blockStyle?: SeparatorBlockType['blockStyle']) {
-  if (!blockStyle) return '';
-  
-  const classes = [];
-  
-  if (blockStyle.margin) {
-    const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
-    classes.push(marginMap[blockStyle.margin]);
-  }
-  
-  return classes.join(' ');
-}
-
-function getBlockStyles(blockStyle?: SeparatorBlockType['blockStyle']) {
-  if (!blockStyle) return '';
-  
-  const classes = [];
-  
-  if (blockStyle.animation) {
-    const animationMap = { 
-      none: '', 
-      'fade-in': 'animate-fade-in', 
-      'slide-up': 'animate-slide-up', 
-      'scale-in': 'animate-scale-in' 
-    };
-    classes.push(animationMap[blockStyle.animation]);
-  }
-  
-  return classes.join(' ');
 }
