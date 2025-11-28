@@ -2,6 +2,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import type { AvatarBlock } from '@/types/page';
 import { withBlockEditor } from './BlockEditorWrapper';
 
@@ -23,23 +25,18 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
         />
       </div>
 
-      <div className="space-y-2">
-        <Label>Имя *</Label>
-        <Input
-          placeholder="Иван Иванов"
-          value={formData.name}
-          onChange={(e) => onChange({ name: e.target.value })}
-        />
-      </div>
+      <MultilingualInput
+        label="Имя"
+        value={migrateToMultilingual(formData.name)}
+        onChange={(value) => onChange({ name: value })}
+        required
+      />
 
-      <div className="space-y-2">
-        <Label>Подзаголовок (опционально)</Label>
-        <Input
-          placeholder="Дизайнер / Разработчик"
-          value={formData.subtitle || ''}
-          onChange={(e) => onChange({ subtitle: e.target.value })}
-        />
-      </div>
+      <MultilingualInput
+        label="Подзаголовок (опционально)"
+        value={migrateToMultilingual(formData.subtitle)}
+        onChange={(value) => onChange({ subtitle: value })}
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -132,7 +129,8 @@ export const AvatarBlockEditor = withBlockEditor(
       if (!data.imageUrl || data.imageUrl.trim() === '') {
         return 'URL изображения обязателен';
       }
-      if (!data.name || data.name.trim() === '') {
+      const nameStr = typeof data.name === 'string' ? data.name : data.name?.ru || '';
+      if (!nameStr || nameStr.trim() === '') {
         return 'Имя обязательно';
       }
       return null;

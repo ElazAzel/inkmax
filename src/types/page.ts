@@ -1,5 +1,8 @@
 export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator';
 
+// Multilingual string support
+import type { MultilingualString } from '@/lib/i18n-helpers';
+
 // Extended style system for all blocks
 export interface BlockStyle {
   // Spacing
@@ -35,8 +38,8 @@ export interface ProfileBlock {
   id: string;
   type: 'profile';
   avatar?: string;
-  name: string;
-  bio: string;
+  name: string | MultilingualString;
+  bio: string | MultilingualString;
   verified?: boolean;
   avatarFrame?: 'default' | 'neon' | 'glitch' | 'aura' | 'gradient' | 'pulse' | 'rainbow' | 'double' | 'spinning' | 'dash' | 'wave';
   coverImage?: string;
@@ -52,7 +55,7 @@ export interface ProfileBlock {
 export interface LinkBlock {
   id: string;
   type: 'link';
-  title: string;
+  title: string | MultilingualString;
   url: string;
   icon?: string;
   style?: 'default' | 'rounded' | 'pill';
@@ -64,7 +67,7 @@ export interface LinkBlock {
 export interface TextBlock {
   id: string;
   type: 'text';
-  content: string;
+  content: string | MultilingualString;
   style?: 'heading' | 'paragraph' | 'quote';
   alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
@@ -76,8 +79,8 @@ export type Currency = 'KZT' | 'RUB' | 'BYN' | 'AMD' | 'AZN' | 'KGS' | 'TJS' | '
 export interface ProductBlock {
   id: string;
   type: 'product';
-  name: string;
-  description: string;
+  name: string | MultilingualString;
+  description: string | MultilingualString;
   price: number;
   currency: Currency;
   image?: string;
@@ -116,7 +119,7 @@ export interface CarouselBlock {
 export interface ButtonBlock {
   id: string;
   type: 'button';
-  title: string;
+  title: string | MultilingualString;
   url: string;
   background?: {
     type: 'solid' | 'gradient' | 'image';
@@ -275,8 +278,8 @@ export interface AvatarBlock {
   id: string;
   type: 'avatar';
   imageUrl: string;
-  name: string;
-  subtitle?: string;
+  name: string | MultilingualString;
+  subtitle?: string | MultilingualString;
   size?: 'small' | 'medium' | 'large' | 'xlarge';
   shape?: 'circle' | 'rounded' | 'square';
   border?: boolean;
