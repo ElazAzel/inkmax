@@ -1,7 +1,9 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2 } from 'lucide-react';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { ProfileBlock as ProfileBlockType } from '@/types/page';
 
 interface ProfileBlockProps {
@@ -10,7 +12,11 @@ interface ProfileBlockProps {
 }
 
 export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview }: ProfileBlockProps) {
-  const initials = block.name
+  const { i18n } = useTranslation();
+  const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
+  const bio = getTranslatedString(block.bio, i18n.language as SupportedLanguage);
+  
+  const initials = name
     .split(' ')
     .map(n => n[0])
     .join('')
@@ -123,7 +129,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
       <div className={`flex flex-col ${getPositionClass()} gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
         <div className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()}`}>
           <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
-            <AvatarImage src={block.avatar} alt={block.name} />
+            <AvatarImage src={block.avatar} alt={name} />
             <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
               {initials}
             </AvatarFallback>
@@ -132,7 +138,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2">
-            <h1 className="text-2xl font-bold">{block.name}</h1>
+            <h1 className="text-2xl font-bold">{name}</h1>
             {block.verified && (
               <Badge variant="secondary" className="gap-1">
                 <CheckCircle2 className="h-3 w-3" />
@@ -141,8 +147,8 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
             )}
           </div>
           
-          {block.bio && (
-            <p className="text-muted-foreground max-w-md">{block.bio}</p>
+          {bio && (
+            <p className="text-muted-foreground max-w-md">{bio}</p>
           )}
         </div>
       </div>

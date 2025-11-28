@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { generateMagicTitle } from '@/lib/ai-helpers';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
@@ -16,7 +18,7 @@ function LinkBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
     setAiLoading(true);
     try {
       const title = await generateMagicTitle(formData.url);
-      onChange({ ...formData, title });
+      onChange({ ...formData, title: { ru: title, en: '', kk: '' } });
     } finally {
       setAiLoading(false);
     }
@@ -33,21 +35,23 @@ function LinkBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
         />
       </div>
       
-      <div>
-        <Label>Title</Label>
-        <div className="flex gap-2">
-          <Input
-            value={formData.title || ''}
-            onChange={(e) => onChange({ ...formData, title: e.target.value })}
-            className="flex-1"
-          />
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label>Заголовок</Label>
           <AIButton
             onClick={handleGenerateTitle}
             loading={aiLoading}
             disabled={!formData.url}
             title="Generate with AI"
+            size="sm"
           />
         </div>
+        <MultilingualInput
+          label=""
+          value={migrateToMultilingual(formData.title)}
+          onChange={(value) => onChange({ ...formData, title: value })}
+          required
+        />
       </div>
       
       <div>

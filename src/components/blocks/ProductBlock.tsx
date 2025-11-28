@@ -1,7 +1,9 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { ProductBlock as ProductBlockType } from '@/types/page';
 
 interface ProductBlockProps {
@@ -9,6 +11,10 @@ interface ProductBlockProps {
 }
 
 export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
+  const { i18n } = useTranslation();
+  const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
+  const description = getTranslatedString(block.description, i18n.language as SupportedLanguage);
+  
   const handleBuy = () => {
     if (block.buyLink) {
       window.open(block.buyLink, '_blank', 'noopener,noreferrer');
@@ -49,7 +55,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
           <div className="aspect-square overflow-hidden bg-muted">
             <img
               src={block.image}
-              alt={block.name}
+              alt={name}
               className="w-full h-full object-cover"
             />
           </div>
@@ -57,16 +63,16 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
         
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>{block.name}</span>
+            <span>{name}</span>
             <span className="text-primary font-bold">
               {getCurrencySymbol(block.currency)}{block.price.toLocaleString()} {block.currency}
             </span>
           </CardTitle>
         </CardHeader>
         
-        {block.description && (
+        {description && (
           <CardContent>
-            <p className="text-sm text-muted-foreground">{block.description}</p>
+            <p className="text-sm text-muted-foreground">{description}</p>
           </CardContent>
         )}
         
