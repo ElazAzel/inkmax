@@ -43,7 +43,7 @@ function LinkBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
             loading={aiLoading}
             disabled={!formData.url}
             title="Generate with AI"
-            size="sm"
+            variant="icon"
           />
         </div>
         <MultilingualInput
