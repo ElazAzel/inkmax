@@ -418,14 +418,14 @@ export default function Dashboard() {
                     <div>
                       <Label>Name</Label>
                       <Input
-                        value={profileBlock.name}
+                        value={typeof profileBlock.name === 'string' ? profileBlock.name : profileBlock.name?.ru || ''}
                         onChange={(e) => updateBlock(profileBlock.id, { name: e.target.value })}
                       />
                     </div>
                     <div>
                       <Label>Bio</Label>
                       <Textarea
-                        value={profileBlock.bio}
+                        value={typeof profileBlock.bio === 'string' ? profileBlock.bio : profileBlock.bio?.ru || ''}
                         onChange={(e) => updateBlock(profileBlock.id, { bio: e.target.value })}
                         rows={3}
                       />

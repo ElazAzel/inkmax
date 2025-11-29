@@ -19,6 +19,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GripVertical, Trash2, Crown, ChevronUp, ChevronDown } from 'lucide-react';
 import type { Block } from '@/types/page';
+import { getTranslatedString } from '@/lib/i18n-helpers';
+import { useTranslation } from 'react-i18next';
 
 interface DraggableBlockListProps {
   blocks: Block[];
@@ -38,6 +40,7 @@ interface SortableBlockItemProps {
 }
 
 function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveUp, onMoveDown }: SortableBlockItemProps) {
+  const { i18n } = useTranslation();
   const {
     attributes,
     listeners,
@@ -54,19 +57,22 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
   };
 
   const getBlockTitle = (block: Block): string => {
+    const currentLang = i18n.language as 'ru' | 'en' | 'kk';
+    
     switch (block.type) {
       case 'profile':
-        return `Профиль: ${block.name}`;
+        return `Профиль: ${getTranslatedString(block.name, currentLang)}`;
       case 'link':
-        return `Ссылка: ${block.title}`;
+        return `Ссылка: ${getTranslatedString(block.title, currentLang)}`;
       case 'button':
-        return `Кнопка: ${block.title}`;
+        return `Кнопка: ${getTranslatedString(block.title, currentLang)}`;
       case 'socials':
         return `Соцсети: ${block.title || 'Социальные сети'}`;
       case 'product':
-        return `Товар: ${block.name}`;
+        return `Товар: ${getTranslatedString(block.name, currentLang)}`;
       case 'text':
-        return `Текст: ${block.content.slice(0, 30)}...`;
+        const content = getTranslatedString(block.content, currentLang);
+        return `Текст: ${content.slice(0, 30)}...`;
       case 'image':
         return `Изображение: ${block.alt || 'Без описания'}`;
       case 'video':
@@ -92,7 +98,7 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
       case 'map':
         return `Карта: ${block.title || 'Местоположение'}`;
       case 'avatar':
-        return `Аватар: ${block.name}`;
+        return `Аватар: ${getTranslatedString(block.name, currentLang)}`;
       case 'separator':
         return `Разделитель`;
       default:
