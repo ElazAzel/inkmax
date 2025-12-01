@@ -1,4 +1,71 @@
 {
+  "landing": {
+    "nav": {
+      "signIn": "Sign In",
+      "getStarted": "Get Started"
+    },
+    "hero": {
+      "badge": "AI-Powered Link Management",
+      "title1": "One Link,",
+      "title2": "Infinite Possibilities",
+      "subtitle": "Create a stunning bio page that brings together all your content, social media, and products in one beautiful place.",
+      "ctaMain": "Get Started Free",
+      "ctaDemo": "View Demo",
+      "trial": "No credit card required • 7-day premium trial • Cancel anytime"
+    },
+    "features": {
+      "title": "Everything you need",
+      "subtitle": "Powerful features designed for modern creators",
+      "aiGeneration": {
+        "title": "AI Content Generation",
+        "description": "Generate catchy titles and sales copy for your links and products with AI"
+      },
+      "magicLinks": {
+        "title": "Magic Links",
+        "description": "Your entire page compressed into a single shareable URL"
+      },
+      "fast": {
+        "title": "Lightning Fast",
+        "description": "Optimized performance with instant loading times"
+      },
+      "mobile": {
+        "title": "Mobile First",
+        "description": "Beautiful on every device, optimized for mobile viewing"
+      },
+      "sharing": {
+        "title": "Easy Sharing",
+        "description": "QR codes, direct links, and social sharing built-in"
+      },
+      "privacy": {
+        "title": "Privacy First",
+        "description": "Your data stays secure with enterprise-grade protection"
+      }
+    },
+    "cta": {
+      "title": "Ready to Build Your Link?",
+      "subtitle": "Join thousands of creators, influencers, and entrepreneurs who trust LinkMAX",
+      "button": "Start Creating Now"
+    },
+    "footer": {
+      "copyright": "© 2025 LinkMAX. All rights reserved."
+    }
+  },
+  "auth": {
+    "title": "LinkMAX",
+    "subtitle": "Create your link-in-bio page",
+    "getStarted": "Get Started",
+    "signInToAccount": "Sign in to your account or create a new one",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "Minimum 8 characters, with uppercase, lowercase, and number",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account...",
+    "backToHome": "← Back to Home",
+    "createAccount": "Create Account",
+    "welcomeBack": "Welcome back!"
+  },
   "editor": {
     "title": "Page Editor",
     "settings": "Settings",
@@ -12,7 +79,10 @@
     "duplicate": "Duplicate",
     "moveUp": "Move Up",
     "moveDown": "Move Down",
-    "language": "Language"
+    "language": "Language",
+    "editProfile": "Edit Profile",
+    "close": "Close",
+    "autoSave": "Changes are saved automatically"
   },
   "blocks": {
     "profile": "Profile",
@@ -36,6 +106,30 @@
     "scratch": "Scratch Card",
     "search": "Search"
   },
+  "blockEditor": {
+    "profile": "Edit Profile",
+    "text": "Edit Text",
+    "link": "Edit Link",
+    "button": "Edit Button",
+    "image": "Edit Image",
+    "video": "Edit Video",
+    "carousel": "Edit Carousel",
+    "product": "Edit Product",
+    "search": "Edit Search",
+    "socials": "Edit Socials",
+    "customCode": "Edit Code",
+    "messenger": "Edit Messengers",
+    "form": "Edit Form",
+    "download": "Edit Download",
+    "newsletter": "Edit Newsletter",
+    "testimonial": "Edit Testimonial",
+    "scratch": "Edit Scratch Card",
+    "map": "Edit Map",
+    "avatar": "Edit Avatar",
+    "separator": "Edit Separator",
+    "description": "Configure all block settings. Changes are saved automatically.",
+    "notAvailable": "Editor for this block type is not available."
+  },
   "fields": {
     "title": "Title",
     "content": "Content",
@@ -55,7 +149,20 @@
     "name": "Name",
     "email": "Email",
     "message": "Message",
-    "address": "Address"
+    "address": "Address",
+    "avatarUrl": "Avatar URL",
+    "bio": "Bio",
+    "coverImage": "Cover Image",
+    "coverGradient": "Cover Gradient Overlay",
+    "coverHeight": "Cover Height",
+    "avatarSize": "Avatar Size",
+    "avatarPosition": "Avatar Position",
+    "avatarFrame": "Avatar Frame Style",
+    "shadowStyle": "Shadow Style",
+    "verifiedBadge": "Verified badge",
+    "productName": "Product Name",
+    "buyLink": "Buy Link",
+    "optional": "(optional)"
   },
   "settings": {
     "pageSettings": "Page Settings",
@@ -73,14 +180,9 @@
     "loading": "Loading...",
     "noBlocks": "No blocks yet. Add your first block!",
     "confirmDelete": "Are you sure you want to delete?",
-    "copied": "Copied"
-  },
-  "auth": {
-    "login": "Login",
-    "signup": "Sign Up",
-    "logout": "Logout",
-    "email": "Email",
-    "password": "Password",
-    "forgotPassword": "Forgot Password?"
+    "copied": "Copied",
+    "accountCreated": "Account created! Redirecting...",
+    "failedToSignUp": "Failed to sign up",
+    "failedToSignIn": "Failed to sign in"
   }
 }

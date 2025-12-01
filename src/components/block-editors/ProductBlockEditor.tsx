@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +11,7 @@ import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper
 import { validateProductBlock } from '@/lib/block-validators';
 
 function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
   const [aiLoading, setAiLoading] = useState(false);
 
   const handleGenerateCopy = async () => {
@@ -31,7 +33,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
   return (
     <div className="space-y-4">
       <div>
-        <Label>Product Name</Label>
+        <Label>{t('fields.productName')}</Label>
         <Input
           value={formData.name || ''}
           onChange={(e) => onChange({ ...formData, name: e.target.value })}
@@ -40,7 +42,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <Label>Price</Label>
+          <Label>{t('fields.price')}</Label>
           <Input
             type="number"
             value={formData.price || ''}
@@ -48,7 +50,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
           />
         </div>
         <div>
-          <Label>Currency</Label>
+          <Label>{t('fields.currency')}</Label>
           <CurrencySelect
             value={formData.currency || 'KZT'}
             onValueChange={(value) => onChange({ ...formData, currency: value })}
@@ -57,7 +59,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
       
       <div>
-        <Label>Description</Label>
+        <Label>{t('fields.description')}</Label>
         <div className="space-y-2">
           <Textarea
             value={formData.description || ''}
@@ -75,7 +77,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
       
       <div>
-        <Label>Image URL (optional)</Label>
+        <Label>{t('fields.imageUrl')} {t('fields.optional')}</Label>
         <Input
           type="url"
           value={formData.image || ''}
@@ -84,7 +86,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
       
       <div>
-        <Label>Buy Link (optional)</Label>
+        <Label>{t('fields.buyLink')} {t('fields.optional')}</Label>
         <Input
           type="url"
           value={formData.buyLink || ''}
@@ -93,7 +95,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
 
       <div>
-        <Label>Alignment</Label>
+        <Label>{t('fields.alignment')}</Label>
         <Select
           value={formData.alignment || 'center'}
           onValueChange={(value) => onChange({ ...formData, alignment: value })}
@@ -102,9 +104,9 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="left">Left</SelectItem>
-            <SelectItem value="center">Center</SelectItem>
-            <SelectItem value="right">Right</SelectItem>
+            <SelectItem value="left">{t('fields.left')}</SelectItem>
+            <SelectItem value="center">{t('fields.center')}</SelectItem>
+            <SelectItem value="right">{t('fields.right')}</SelectItem>
           </SelectContent>
         </Select>
       </div>

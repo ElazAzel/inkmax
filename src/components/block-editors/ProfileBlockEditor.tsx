@@ -3,12 +3,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { useTranslation } from 'react-i18next';
 
 function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4">
       <div>
-        <Label>Avatar URL</Label>
+        <Label>{t('fields.avatarUrl')}</Label>
         <Input
           type="url"
           value={formData.avatar || ''}
@@ -18,7 +20,7 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
       
       <div>
-        <Label>Name</Label>
+        <Label>{t('fields.name')}</Label>
         <Input
           value={formData.name || ''}
           onChange={(e) => onChange({ ...formData, name: e.target.value })}
@@ -27,7 +29,7 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
       
       <div>
-        <Label>Bio</Label>
+        <Label>{t('fields.bio')}</Label>
         <Textarea
           value={formData.bio || ''}
           onChange={(e) => onChange({ ...formData, bio: e.target.value })}

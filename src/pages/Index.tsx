@@ -1,10 +1,13 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Sparkles, Link2, Zap, Shield, Smartphone, Share2, ArrowRight } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export default function Index() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 overflow-hidden">
@@ -16,18 +19,19 @@ export default function Index() {
             <span className="text-2xl font-semibold tracking-tight text-foreground">LinkMAX</span>
           </div>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <Button 
               variant="ghost" 
               onClick={() => navigate('/auth')}
               className="hidden sm:inline-flex"
             >
-              Sign In
+              {t('landing.nav.signIn')}
             </Button>
             <Button 
               onClick={() => navigate('/auth')}
               className="transition-smooth hover:scale-105"
             >
-              Get Started
+              {t('landing.nav.getStarted')}
             </Button>
           </div>
         </div>
@@ -42,18 +46,17 @@ export default function Index() {
         <div className="text-center max-w-5xl mx-auto space-y-8 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm font-medium mb-4 animate-fade-in">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span>AI-Powered Link Management</span>
+            <span>{t('landing.hero.badge')}</span>
           </div>
           
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-none animate-fade-in-up">
-            One Link,
+            {t('landing.hero.title1')}
             <br />
-            <span className="text-gradient">Infinite Possibilities</span>
+            <span className="text-gradient">{t('landing.hero.title2')}</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            Create a stunning bio page that brings together all your content, 
-            social media, and products in one beautiful place.
+            {t('landing.hero.subtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -62,7 +65,7 @@ export default function Index() {
               onClick={() => navigate('/auth')} 
               className="text-lg px-10 py-6 rounded-2xl transition-smooth hover:scale-105 shadow-lg hover:shadow-xl"
             >
-              Get Started Free
+              {t('landing.hero.ctaMain')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button 
@@ -71,12 +74,12 @@ export default function Index() {
               className="text-lg px-10 py-6 rounded-2xl glass transition-smooth hover:scale-105"
               onClick={() => navigate('/dashboard')}
             >
-              View Demo
+              {t('landing.hero.ctaDemo')}
             </Button>
           </div>
 
           <p className="text-sm text-muted-foreground pt-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            No credit card required • 7-day premium trial • Cancel anytime
+            {t('landing.hero.trial')}
           </p>
         </div>
       </section>
@@ -85,10 +88,10 @@ export default function Index() {
       <section className="container mx-auto px-4 py-24">
         <div className="text-center mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-semibold tracking-tight">
-            Everything you need
+            {t('landing.features.title')}
           </h2>
           <p className="text-xl text-muted-foreground font-light">
-            Powerful features designed for modern creators
+            {t('landing.features.subtitle')}
           </p>
         </div>
 
@@ -96,33 +99,33 @@ export default function Index() {
           {[
             {
               icon: Sparkles,
-              title: 'AI Content Generation',
-              description: 'Generate catchy titles and sales copy for your links and products with AI'
+              title: t('landing.features.aiGeneration.title'),
+              description: t('landing.features.aiGeneration.description')
             },
             {
               icon: Link2,
-              title: 'Magic Links',
-              description: 'Your entire page compressed into a single shareable URL'
+              title: t('landing.features.magicLinks.title'),
+              description: t('landing.features.magicLinks.description')
             },
             {
               icon: Zap,
-              title: 'Lightning Fast',
-              description: 'Optimized performance with instant loading times'
+              title: t('landing.features.fast.title'),
+              description: t('landing.features.fast.description')
             },
             {
               icon: Smartphone,
-              title: 'Mobile First',
-              description: 'Beautiful on every device, optimized for mobile viewing'
+              title: t('landing.features.mobile.title'),
+              description: t('landing.features.mobile.description')
             },
             {
               icon: Share2,
-              title: 'Easy Sharing',
-              description: 'QR codes, direct links, and social sharing built-in'
+              title: t('landing.features.sharing.title'),
+              description: t('landing.features.sharing.description')
             },
             {
               icon: Shield,
-              title: 'Privacy First',
-              description: 'Your data stays secure with enterprise-grade protection'
+              title: t('landing.features.privacy.title'),
+              description: t('landing.features.privacy.description')
             }
           ].map((feature, index) => (
             <Card 
@@ -151,17 +154,17 @@ export default function Index() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
             <div className="relative z-10 space-y-8">
               <h2 className="text-4xl md:text-5xl font-semibold tracking-tight">
-                Ready to Build Your Link?
+                {t('landing.cta.title')}
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-                Join thousands of creators, influencers, and entrepreneurs who trust LinkMAX
+                {t('landing.cta.subtitle')}
               </p>
               <Button 
                 size="lg" 
                 onClick={() => navigate('/auth')} 
                 className="text-lg px-10 py-6 rounded-2xl transition-smooth hover:scale-105 shadow-lg hover:shadow-xl"
               >
-                Start Creating Now
+                {t('landing.cta.button')}
                 <Sparkles className="ml-2 h-5 w-5" />
               </Button>
             </div>
@@ -178,7 +181,7 @@ export default function Index() {
               <span className="text-2xl font-semibold tracking-tight">LinkMAX</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2025 LinkMAX. All rights reserved.
+              {t('landing.footer.copyright')}
             </p>
           </div>
         </div>
