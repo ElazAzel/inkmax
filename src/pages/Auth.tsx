@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +10,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { Sparkles } from 'lucide-react';
 import { z } from 'zod';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 const authSchema = z.object({
   email: z
@@ -26,6 +28,7 @@ const authSchema = z.object({
 
 export default function Auth() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, signUp, signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,12 +61,12 @@ export default function Auth() {
 
     if (error) {
       console.error('Signup error:', error);
-      toast.error(error.message || 'Failed to sign up');
+      toast.error(error.message || t('messages.failedToSignUp'));
       setIsLoading(false);
       return;
     }
 
-    toast.success('Account created! Redirecting...');
+    toast.success(t('messages.accountCreated'));
     // Auth state change will trigger redirect
   };
 
@@ -89,12 +92,12 @@ export default function Auth() {
 
     if (error) {
       console.error('Signin error:', error);
-      toast.error(error.message || 'Failed to sign in');
+      toast.error(error.message || t('messages.failedToSignIn'));
       setIsLoading(false);
       return;
     }
 
-    toast.success('Welcome back!');
+    toast.success(t('auth.welcomeBack'));
     // Auth state change will trigger redirect
   };
 
@@ -107,32 +110,35 @@ export default function Auth() {
             <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-12 w-12 animate-scale-in" />
           </div>
           <h1 className="text-3xl font-bold text-primary animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            LinkMAX
+            {t('auth.title')}
           </h1>
           <p className="text-muted-foreground mt-2">
-            Create your link-in-bio page
+            {t('auth.subtitle')}
           </p>
+          <div className="mt-4 flex justify-center">
+            <LanguageSwitcher />
+          </div>
         </div>
 
         {/* Auth Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Get Started</CardTitle>
+            <CardTitle>{t('auth.getStarted')}</CardTitle>
             <CardDescription>
-              Sign in to your account or create a new one
+              {t('auth.signInToAccount')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsTrigger value="signin">{t('auth.signIn')}</TabsTrigger>
+                <TabsTrigger value="signup">{t('auth.signUp')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-email">{t('auth.email')}</Label>
                     <Input
                       id="signin-email"
                       name="signin-email"
@@ -142,7 +148,7 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                    <Label htmlFor="signin-password">{t('auth.password')}</Label>
                     <Input
                       id="signin-password"
                       name="signin-password"
@@ -152,7 +158,7 @@ export default function Auth() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Signing in...' : 'Sign In'}
+                    {isLoading ? t('auth.signingIn') : t('auth.signIn')}
                   </Button>
                 </form>
               </TabsContent>
@@ -160,7 +166,7 @@ export default function Auth() {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email">{t('auth.email')}</Label>
                     <Input
                       id="signup-email"
                       name="signup-email"
@@ -170,7 +176,7 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password">{t('auth.password')}</Label>
                     <Input
                       id="signup-password"
                       name="signup-password"
@@ -179,11 +185,11 @@ export default function Auth() {
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      Minimum 8 characters, with uppercase, lowercase, and number
+                      {t('auth.passwordHint')}
                     </p>
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Creating account...' : 'Create Account'}
+                    {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
                   </Button>
                 </form>
               </TabsContent>
@@ -194,7 +200,7 @@ export default function Auth() {
         {/* Back to home */}
         <div className="text-center">
           <Button variant="ghost" onClick={() => navigate('/')}>
-            ← Back to Home
+            {t('auth.backToHome')}
           </Button>
         </div>
       </div>
