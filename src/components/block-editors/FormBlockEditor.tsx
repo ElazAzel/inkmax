@@ -5,8 +5,12 @@ import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper
 import { validateFormBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
+import { useTranslation } from 'react-i18next';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 
 function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
   const fields = formData.fields || [];
 
   const addField = () => {
@@ -31,34 +35,30 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
 
   return (
     <div className="space-y-4">
-      <div>
-        <Label>Form Title</Label>
-        <Input
-          value={formData.title || ''}
-          onChange={(e) => onChange({ ...formData, title: e.target.value })}
-          placeholder="Contact Form"
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.formTitle', 'Form Title')}
+        value={migrateToMultilingual(formData.title)}
+        onChange={(value) => onChange({ ...formData, title: value })}
+        placeholder="Contact Form"
+      />
 
-      <div>
-        <Label>Button Text</Label>
-        <Input
-          value={formData.buttonText || 'Send'}
-          onChange={(e) => onChange({ ...formData, buttonText: e.target.value })}
-          placeholder="Send"
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.buttonText', 'Button Text')}
+        value={migrateToMultilingual(formData.buttonText)}
+        onChange={(value) => onChange({ ...formData, buttonText: value })}
+        placeholder="Send"
+      />
 
-      <ArrayFieldList label="Form Fields" items={fields} onAdd={addField}>
+      <ArrayFieldList label={t('fields.formFields', 'Form Fields')} items={fields} onAdd={addField}>
         {fields.map((field: any, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}
-            label="Field"
+            label={t('fields.field', 'Field')}
             onRemove={() => removeField(index)}
           >
             <div>
-              <Label className="text-xs">Field Name</Label>
+              <Label className="text-xs">{t('fields.fieldName', 'Field Name')}</Label>
               <Input
                 value={field.name}
                 onChange={(e) => updateField(index, 'name', e.target.value)}
@@ -67,7 +67,7 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
             </div>
 
             <div>
-              <Label className="text-xs">Field Type</Label>
+              <Label className="text-xs">{t('fields.fieldType', 'Field Type')}</Label>
               <Select
                 value={field.type}
                 onValueChange={(value) => updateField(index, 'type', value)}
@@ -76,10 +76,10 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="text">Text</SelectItem>
-                  <SelectItem value="email">Email</SelectItem>
-                  <SelectItem value="phone">Phone</SelectItem>
-                  <SelectItem value="textarea">Textarea</SelectItem>
+                  <SelectItem value="text">{t('fields.text', 'Text')}</SelectItem>
+                  <SelectItem value="email">{t('fields.email', 'Email')}</SelectItem>
+                  <SelectItem value="phone">{t('fields.phone', 'Phone')}</SelectItem>
+                  <SelectItem value="textarea">{t('fields.textarea', 'Textarea')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -93,7 +93,7 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
                 className="h-4 w-4"
               />
               <Label htmlFor={`required-${index}`} className="cursor-pointer text-xs">
-                Required field
+                {t('fields.requiredField', 'Required field')}
               </Label>
             </div>
           </ArrayFieldItem>

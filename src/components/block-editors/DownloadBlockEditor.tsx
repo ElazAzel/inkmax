@@ -1,34 +1,35 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateDownloadBlock } from '@/lib/block-validators';
+import { useTranslation } from 'react-i18next';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 
 function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-4">
-      <div>
-        <Label>Title</Label>
-        <Input
-          value={formData.title || ''}
-          onChange={(e) => onChange({ ...formData, title: e.target.value })}
-          placeholder="Download My File"
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.title', 'Title')}
+        value={migrateToMultilingual(formData.title)}
+        onChange={(value) => onChange({ ...formData, title: value })}
+        placeholder="Download My File"
+        required
+      />
+
+      <MultilingualInput
+        label={t('fields.description', 'Description')}
+        value={migrateToMultilingual(formData.description)}
+        onChange={(value) => onChange({ ...formData, description: value })}
+        type="textarea"
+        placeholder="Brief description of the file"
+      />
 
       <div>
-        <Label>Description (optional)</Label>
-        <Textarea
-          value={formData.description || ''}
-          onChange={(e) => onChange({ ...formData, description: e.target.value })}
-          placeholder="Brief description of the file"
-          rows={2}
-        />
-      </div>
-
-      <div>
-        <Label>File URL</Label>
+        <Label>{t('fields.fileUrl', 'File URL')}</Label>
         <Input
           type="url"
           value={formData.fileUrl || ''}
@@ -38,7 +39,7 @@ function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
       </div>
 
       <div>
-        <Label>File Name</Label>
+        <Label>{t('fields.fileName', 'File Name')}</Label>
         <Input
           value={formData.fileName || ''}
           onChange={(e) => onChange({ ...formData, fileName: e.target.value })}
@@ -47,7 +48,7 @@ function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
       </div>
 
       <div>
-        <Label>File Size (optional)</Label>
+        <Label>{t('fields.fileSize', 'File Size')} {t('fields.optional', '(optional)')}</Label>
         <Input
           value={formData.fileSize || ''}
           onChange={(e) => onChange({ ...formData, fileSize: e.target.value })}
@@ -56,7 +57,7 @@ function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
       </div>
 
       <div>
-        <Label>Alignment</Label>
+        <Label>{t('fields.alignment', 'Alignment')}</Label>
         <Select
           value={formData.alignment || 'center'}
           onValueChange={(value) => onChange({ ...formData, alignment: value })}
@@ -65,9 +66,9 @@ function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="left">Left</SelectItem>
-            <SelectItem value="center">Center</SelectItem>
-            <SelectItem value="right">Right</SelectItem>
+            <SelectItem value="left">{t('fields.left', 'Left')}</SelectItem>
+            <SelectItem value="center">{t('fields.center', 'Center')}</SelectItem>
+            <SelectItem value="right">{t('fields.right', 'Right')}</SelectItem>
           </SelectContent>
         </Select>
       </div>

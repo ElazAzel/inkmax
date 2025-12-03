@@ -1,12 +1,14 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { useTranslation } from 'react-i18next';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 
 function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  
   return (
     <div className="space-y-4">
       <div>
@@ -19,24 +21,20 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         />
       </div>
       
-      <div>
-        <Label>{t('fields.name')}</Label>
-        <Input
-          value={formData.name || ''}
-          onChange={(e) => onChange({ ...formData, name: e.target.value })}
-          placeholder="Your Name"
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.name')}
+        value={migrateToMultilingual(formData.name)}
+        onChange={(value) => onChange({ ...formData, name: value })}
+        placeholder="Your Name"
+      />
       
-      <div>
-        <Label>{t('fields.bio')}</Label>
-        <Textarea
-          value={formData.bio || ''}
-          onChange={(e) => onChange({ ...formData, bio: e.target.value })}
-          placeholder="Tell people about yourself..."
-          rows={3}
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.bio')}
+        value={migrateToMultilingual(formData.bio)}
+        onChange={(value) => onChange({ ...formData, bio: value })}
+        type="textarea"
+        placeholder="Tell people about yourself..."
+      />
       
       <div className="border-t pt-4 space-y-4">
         <div>

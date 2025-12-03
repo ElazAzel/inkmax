@@ -173,7 +173,7 @@
     "analytics": "Аналитика",
     "premium": "Премиум"
   },
-  "messages": {
+"messages": {
     "saved": "Сақталды",
     "published": "Жарияланды",
     "error": "Қате",
@@ -184,5 +184,19 @@
     "accountCreated": "Аккаунт жасалды! Бағыттау...",
     "failedToSignUp": "Тіркелу сәтсіз аяқталды",
     "failedToSignIn": "Кіру сәтсіз аяқталды"
+  },
+  "actions": {
+    "download": "Жүктеу",
+    "send": "Жіберу"
+  },
+  "form": {
+    "fillRequired": "Міндетті өрістерді толтырыңыз",
+    "success": "Форма сәтті жіберілді!",
+    "error": "Форманы жіберу қатесі",
+    "enterPlaceholder": "Енгізіңіз",
+    "submitting": "Жіберілуде..."
+  },
+  "ai": {
+    "generateDescription": "AI арқылы генерациялау"
   }
 }
