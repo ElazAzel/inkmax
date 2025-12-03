@@ -173,7 +173,7 @@
     "analytics": "Analytics",
     "premium": "Premium"
   },
-  "messages": {
+"messages": {
     "saved": "Saved",
     "published": "Published",
     "error": "Error",
@@ -184,5 +184,19 @@
     "accountCreated": "Account created! Redirecting...",
     "failedToSignUp": "Failed to sign up",
     "failedToSignIn": "Failed to sign in"
+  },
+  "actions": {
+    "download": "Download",
+    "send": "Send"
+  },
+  "form": {
+    "fillRequired": "Please fill required fields",
+    "success": "Form submitted successfully!",
+    "error": "Error submitting form",
+    "enterPlaceholder": "Enter",
+    "submitting": "Submitting..."
+  },
+  "ai": {
+    "generateDescription": "Generate with AI"
   }
 }

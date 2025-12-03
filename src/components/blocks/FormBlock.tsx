@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 import { Crown, Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { FormBlock as FormBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,38 +8,40 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 interface FormBlockProps {
   block: FormBlockType;
 }
 
 export const FormBlock = memo(function FormBlock({ block }: FormBlockProps) {
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+  const buttonText = getTranslatedString(block.buttonText, i18n.language as SupportedLanguage) || t('actions.send', 'Send');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check required fields
     const missingFields = block.fields
       .filter(field => field.required && !formData[field.name])
       .map(field => field.name);
     
     if (missingFields.length > 0) {
-      toast.error(`Заполните обязательные поля: ${missingFields.join(', ')}`);
+      toast.error(t('form.fillRequired', 'Please fill required fields') + `: ${missingFields.join(', ')}`);
       return;
     }
 
     setIsSubmitting(true);
     
-    // Simulate form submission
     try {
-      // In production, this would send to an edge function
       await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success('Форма отправлена успешно!');
+      toast.success(t('form.success', 'Form submitted successfully!'));
       setFormData({});
     } catch (error) {
-      toast.error('Ошибка отправки формы');
+      toast.error(t('form.error', 'Error submitting form'));
     } finally {
       setIsSubmitting(false);
     }
@@ -55,20 +58,20 @@ export const FormBlock = memo(function FormBlock({ block }: FormBlockProps) {
 
     switch (field.type) {
       case 'textarea':
-        return <Textarea {...commonProps} placeholder={`Введите ${field.name.toLowerCase()}`} />;
+        return <Textarea {...commonProps} placeholder={t('form.enterPlaceholder', 'Enter') + ` ${field.name.toLowerCase()}`} />;
       case 'email':
         return <Input {...commonProps} type="email" placeholder="example@email.com" />;
       case 'phone':
         return <Input {...commonProps} type="tel" placeholder="+7 (___) ___-__-__" />;
       default:
-        return <Input {...commonProps} type="text" placeholder={`Введите ${field.name.toLowerCase()}`} />;
+        return <Input {...commonProps} type="text" placeholder={t('form.enterPlaceholder', 'Enter') + ` ${field.name.toLowerCase()}`} />;
     }
   };
 
   return (
     <Card className="p-6">
       <div className="flex items-center gap-2 mb-4">
-        <h3 className="font-semibold text-lg">{block.title}</h3>
+        <h3 className="font-semibold text-lg">{title}</h3>
         <Crown className="h-4 w-4 text-primary" />
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -82,7 +85,7 @@ export const FormBlock = memo(function FormBlock({ block }: FormBlockProps) {
         ))}
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           <Send className="h-4 w-4 mr-2" />
-          {isSubmitting ? 'Отправка...' : block.buttonText}
+          {isSubmitting ? t('form.submitting', 'Submitting...') : buttonText}
         </Button>
       </form>
     </Card>

@@ -5,8 +5,12 @@ import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper
 import { validateTestimonialBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
+import { useTranslation } from 'react-i18next';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 
 function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
   const testimonials = formData.testimonials || [];
 
   const addTestimonial = () => {
@@ -31,25 +35,23 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
 
   return (
     <div className="space-y-4">
-      <div>
-        <Label>Title (optional)</Label>
-        <Input
-          value={formData.title || ''}
-          onChange={(e) => onChange({ ...formData, title: e.target.value })}
-          placeholder="What People Say"
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.title', 'Title')}
+        value={migrateToMultilingual(formData.title)}
+        onChange={(value) => onChange({ ...formData, title: value })}
+        placeholder="What People Say"
+      />
 
-      <ArrayFieldList label="Testimonials" items={testimonials} onAdd={addTestimonial}>
+      <ArrayFieldList label={t('fields.testimonials', 'Testimonials')} items={testimonials} onAdd={addTestimonial}>
         {testimonials.map((testimonial: any, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}
-            label="Testimonial"
+            label={t('fields.testimonial', 'Testimonial')}
             onRemove={() => removeTestimonial(index)}
           >
             <div>
-              <Label className="text-xs">Name</Label>
+              <Label className="text-xs">{t('fields.name', 'Name')}</Label>
               <Input
                 value={testimonial.name}
                 onChange={(e) => updateTestimonial(index, 'name', e.target.value)}
@@ -58,7 +60,7 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
             </div>
 
             <div>
-              <Label className="text-xs">Role (optional)</Label>
+              <Label className="text-xs">{t('fields.role', 'Role')} {t('fields.optional', '(optional)')}</Label>
               <Input
                 value={testimonial.role || ''}
                 onChange={(e) => updateTestimonial(index, 'role', e.target.value)}
@@ -67,7 +69,7 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
             </div>
 
             <div>
-              <Label className="text-xs">Avatar URL (optional)</Label>
+              <Label className="text-xs">{t('fields.avatarUrl', 'Avatar URL')} {t('fields.optional', '(optional)')}</Label>
               <Input
                 type="url"
                 value={testimonial.avatar || ''}
@@ -77,7 +79,7 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
             </div>
 
             <div>
-              <Label className="text-xs">Testimonial Text</Label>
+              <Label className="text-xs">{t('fields.testimonialText', 'Testimonial Text')}</Label>
               <Textarea
                 value={testimonial.text}
                 onChange={(e) => updateTestimonial(index, 'text', e.target.value)}
@@ -87,7 +89,7 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
             </div>
 
             <div>
-              <Label className="text-xs">Rating (1-5)</Label>
+              <Label className="text-xs">{t('fields.rating', 'Rating')} (1-5)</Label>
               <Input
                 type="number"
                 min="1"

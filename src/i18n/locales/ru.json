@@ -173,7 +173,7 @@
     "analytics": "Аналитика",
     "premium": "Премиум"
   },
-  "messages": {
+"messages": {
     "saved": "Сохранено",
     "published": "Опубликовано",
     "error": "Ошибка",
@@ -184,5 +184,19 @@
     "accountCreated": "Аккаунт создан! Перенаправление...",
     "failedToSignUp": "Не удалось зарегистрироваться",
     "failedToSignIn": "Не удалось войти"
+  },
+  "actions": {
+    "download": "Скачать",
+    "send": "Отправить"
+  },
+  "form": {
+    "fillRequired": "Заполните обязательные поля",
+    "success": "Форма отправлена успешно!",
+    "error": "Ошибка отправки формы",
+    "enterPlaceholder": "Введите",
+    "submitting": "Отправка..."
+  },
+  "ai": {
+    "generateDescription": "Сгенерировать с AI"
   }
 }

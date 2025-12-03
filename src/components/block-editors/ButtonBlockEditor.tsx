@@ -3,18 +3,22 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateButtonBlock } from '@/lib/block-validators';
+import { useTranslation } from 'react-i18next';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 
 function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-4">
-      <div>
-        <Label>Title</Label>
-        <Input
-          value={formData.title || ''}
-          onChange={(e) => onChange({ ...formData, title: e.target.value })}
-          placeholder="Button text"
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.title', 'Title')}
+        value={migrateToMultilingual(formData.title)}
+        onChange={(value) => onChange({ ...formData, title: value })}
+        placeholder="Button text"
+        required
+      />
 
       <div>
         <Label>URL</Label>
@@ -27,7 +31,7 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
       </div>
 
       <div>
-        <Label>Hover Effect</Label>
+        <Label>{t('fields.hoverEffect', 'Hover Effect')}</Label>
         <Select
           value={formData.hoverEffect || 'none'}
           onValueChange={(value) => onChange({ ...formData, hoverEffect: value })}
@@ -36,16 +40,16 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">None</SelectItem>
-            <SelectItem value="glow">Glow</SelectItem>
-            <SelectItem value="scale">Scale</SelectItem>
-            <SelectItem value="shadow">Shadow</SelectItem>
+            <SelectItem value="none">{t('fields.none', 'None')}</SelectItem>
+            <SelectItem value="glow">{t('fields.glow', 'Glow')}</SelectItem>
+            <SelectItem value="scale">{t('fields.scale', 'Scale')}</SelectItem>
+            <SelectItem value="shadow">{t('fields.shadow', 'Shadow')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="border-t pt-4">
-        <Label>Background Type</Label>
+        <Label>{t('fields.backgroundType', 'Background Type')}</Label>
         <Select
           value={formData.background?.type || 'solid'}
           onValueChange={(value) =>
@@ -59,16 +63,16 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="solid">Solid Color</SelectItem>
-            <SelectItem value="gradient">Gradient</SelectItem>
-            <SelectItem value="image">Image</SelectItem>
+            <SelectItem value="solid">{t('fields.solidColor', 'Solid Color')}</SelectItem>
+            <SelectItem value="gradient">{t('fields.gradient', 'Gradient')}</SelectItem>
+            <SelectItem value="image">{t('fields.image', 'Image')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {formData.background?.type === 'solid' && (
         <div>
-          <Label>Background Color</Label>
+          <Label>{t('fields.backgroundColor', 'Background Color')}</Label>
           <Input
             type="color"
             value={formData.background?.value || '#000000'}
@@ -85,7 +89,7 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
       {formData.background?.type === 'gradient' && (
         <>
           <div>
-            <Label>Gradient Colors</Label>
+            <Label>{t('fields.gradientColors', 'Gradient Colors')}</Label>
             <Input
               value={formData.background?.value || ''}
               onChange={(e) =>
@@ -97,11 +101,11 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
               placeholder="#ff0000, #0000ff"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              Enter comma-separated colors
+              {t('fields.enterCommaSeparatedColors', 'Enter comma-separated colors')}
             </p>
           </div>
           <div>
-            <Label>Gradient Angle (degrees)</Label>
+            <Label>{t('fields.gradientAngle', 'Gradient Angle (degrees)')}</Label>
             <Input
               type="number"
               value={formData.background?.gradientAngle || 135}
@@ -123,7 +127,7 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
 
       {formData.background?.type === 'image' && (
         <div>
-          <Label>Background Image URL</Label>
+          <Label>{t('fields.backgroundImageUrl', 'Background Image URL')}</Label>
           <Input
             type="url"
             value={formData.background?.value || ''}
@@ -139,7 +143,7 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
       )}
 
       <div>
-        <Label>Alignment</Label>
+        <Label>{t('fields.alignment', 'Alignment')}</Label>
         <Select
           value={formData.alignment || 'center'}
           onValueChange={(value) => onChange({ ...formData, alignment: value })}
@@ -148,9 +152,9 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="left">Left</SelectItem>
-            <SelectItem value="center">Center</SelectItem>
-            <SelectItem value="right">Right</SelectItem>
+            <SelectItem value="left">{t('fields.left', 'Left')}</SelectItem>
+            <SelectItem value="center">{t('fields.center', 'Center')}</SelectItem>
+            <SelectItem value="right">{t('fields.right', 'Right')}</SelectItem>
           </SelectContent>
         </Select>
       </div>

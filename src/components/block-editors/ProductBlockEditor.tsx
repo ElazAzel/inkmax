@@ -2,43 +2,55 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
 import { generateSalesCopy } from '@/lib/ai-helpers';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateProductBlock } from '@/lib/block-validators';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual, getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [aiLoading, setAiLoading] = useState(false);
 
   const handleGenerateCopy = async () => {
-    if (!formData.name || !formData.price) return;
+    const name = getTranslatedString(formData.name, i18n.language as SupportedLanguage);
+    if (!name || !formData.price) return;
     
     setAiLoading(true);
     try {
       const description = await generateSalesCopy({
-        productName: formData.name,
+        productName: name,
         price: formData.price,
         currency: formData.currency || 'KZT',
       });
-      onChange({ ...formData, description });
+      // Set generated description for current language
+      const currentDesc = migrateToMultilingual(formData.description);
+      onChange({ 
+        ...formData, 
+        description: { 
+          ...currentDesc, 
+          [i18n.language]: description 
+        } 
+      });
     } finally {
       setAiLoading(false);
     }
   };
 
+  const productName = getTranslatedString(formData.name, i18n.language as SupportedLanguage);
+
   return (
     <div className="space-y-4">
-      <div>
-        <Label>{t('fields.productName')}</Label>
-        <Input
-          value={formData.name || ''}
-          onChange={(e) => onChange({ ...formData, name: e.target.value })}
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.productName')}
+        value={migrateToMultilingual(formData.name)}
+        onChange={(value) => onChange({ ...formData, name: value })}
+        placeholder="Product Name"
+        required
+      />
       
       <div className="grid grid-cols-2 gap-2">
         <div>
@@ -59,19 +71,20 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
       
       <div>
-        <Label>{t('fields.description')}</Label>
-        <div className="space-y-2">
-          <Textarea
-            value={formData.description || ''}
-            onChange={(e) => onChange({ ...formData, description: e.target.value })}
-            rows={3}
-          />
+        <MultilingualInput
+          label={t('fields.description')}
+          value={migrateToMultilingual(formData.description)}
+          onChange={(value) => onChange({ ...formData, description: value })}
+          type="textarea"
+          placeholder="Product description..."
+        />
+        <div className="mt-2">
           <AIButton
             onClick={handleGenerateCopy}
             loading={aiLoading}
-            disabled={!formData.name || !formData.price}
+            disabled={!productName || !formData.price}
             variant="full"
-            title="Generate with AI"
+            title={t('ai.generateDescription', 'Generate with AI')}
           />
         </div>
       </div>

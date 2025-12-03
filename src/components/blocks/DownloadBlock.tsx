@@ -1,18 +1,24 @@
 import { memo } from 'react';
 import { Download, FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { DownloadBlock as DownloadBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 interface DownloadBlockProps {
   block: DownloadBlockType;
 }
 
 export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBlockProps) {
+  const { t, i18n } = useTranslation();
+  
   const handleDownload = () => {
-    // In production, this would track download analytics
     window.open(block.fileUrl, '_blank', 'noopener,noreferrer');
   };
+
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+  const description = getTranslatedString(block.description, i18n.language as SupportedLanguage);
 
   const alignmentClass = block.alignment === 'left' ? 'mr-auto' 
     : block.alignment === 'right' ? 'ml-auto' 
@@ -28,9 +34,9 @@ export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBloc
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-lg mb-1">{block.title}</h3>
-            {block.description && (
-              <p className="text-sm text-muted-foreground mb-2">{block.description}</p>
+            <h3 className="font-semibold text-lg mb-1">{title}</h3>
+            {description && (
+              <p className="text-sm text-muted-foreground mb-2">{description}</p>
             )}
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
               <span>{block.fileName}</span>
@@ -43,7 +49,7 @@ export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBloc
             </div>
             <Button onClick={handleDownload} size="sm" className="w-full sm:w-auto">
               <Download className="h-4 w-4 mr-2" />
-              Скачать файл
+              {t('actions.download', 'Download')}
             </Button>
           </div>
         </div>
