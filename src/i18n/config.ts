@@ -15,19 +15,24 @@ const customLanguageDetector = {
 
     // Auto-detect from browser language
     const browserLang = navigator.language || navigator.languages?.[0] || '';
+    const langCode = browserLang.substring(0, 2).toLowerCase();
     
-    // Map browser language codes to supported languages
-    if (browserLang.startsWith('ru')) return 'ru';
-    if (browserLang.startsWith('kk')) return 'kk';
-    if (browserLang.startsWith('en')) return 'en';
+    // Russian speakers
+    if (langCode === 'ru') return 'ru';
     
-    // Check for CIS region languages that should default to Russian
-    const cisLanguages = ['uk', 'be', 'uz', 'kz', 'ky', 'tg', 'az', 'hy', 'ka'];
-    const langCode = browserLang.substring(0, 2);
+    // Kazakh speakers
+    if (langCode === 'kk') return 'kk';
+    
+    // English speakers
+    if (langCode === 'en') return 'en';
+    
+    // CIS region languages default to Russian
+    // Ukrainian, Belarusian, Uzbek, Kyrgyz, Tajik, Azerbaijani, Armenian, Georgian, Moldovan
+    const cisLanguages = ['uk', 'be', 'uz', 'ky', 'tg', 'az', 'hy', 'ka', 'mo', 'ro'];
     if (cisLanguages.includes(langCode)) return 'ru';
     
-    // Default to Russian for unrecognized languages
-    return 'ru';
+    // Rest of the world defaults to English
+    return 'en';
   },
   cacheUserLanguage(lng: string) {
     localStorage.setItem('i18nextLng', lng);
