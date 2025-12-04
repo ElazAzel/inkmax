@@ -197,6 +197,11 @@
     "submitting": "Отправка..."
   },
   "ai": {
-    "generateDescription": "Сгенерировать с AI"
+    "generateDescription": "Сгенерировать с AI",
+    "translate": "Перевести",
+    "translateToOthers": "Перевести на другие языки",
+    "noTextToTranslate": "Введите текст для перевода",
+    "translationSuccess": "Перевод выполнен",
+    "translationError": "Ошибка перевода"
   }
 }

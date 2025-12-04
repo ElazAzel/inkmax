@@ -197,6 +197,11 @@
     "submitting": "Жіберілуде..."
   },
   "ai": {
-    "generateDescription": "AI арқылы генерациялау"
+    "generateDescription": "AI арқылы генерациялау",
+    "translate": "Аудару",
+    "translateToOthers": "Басқа тілдерге аудару",
+    "noTextToTranslate": "Аудару үшін мәтін енгізіңіз",
+    "translationSuccess": "Аударма орындалды",
+    "translationError": "Аударма қатесі"
   }
 }

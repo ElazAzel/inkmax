@@ -197,6 +197,11 @@
     "submitting": "Submitting..."
   },
   "ai": {
-    "generateDescription": "Generate with AI"
+    "generateDescription": "Generate with AI",
+    "translate": "Translate",
+    "translateToOthers": "Translate to other languages",
+    "noTextToTranslate": "Enter text to translate",
+    "translationSuccess": "Translation completed",
+    "translationError": "Translation error"
   }
 }
