@@ -96,20 +96,35 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
   const getTooltipPosition = () => {
     if (!highlightPosition) return {};
 
-    const padding = 16;
-    const tooltipOffset = 20;
+    const tooltipOffset = 12;
+    const viewportWidth = window.innerWidth;
+    const isMobile = viewportWidth < 640;
+
+    // On mobile, always position below or above with centered horizontal
+    if (isMobile) {
+      const spaceBelow = window.innerHeight - highlightPosition.bottom;
+      const positionBelow = spaceBelow > 200;
+      
+      return {
+        top: positionBelow 
+          ? highlightPosition.bottom + tooltipOffset 
+          : highlightPosition.top - tooltipOffset,
+        left: '50%',
+        transform: positionBelow ? 'translateX(-50%)' : 'translate(-50%, -100%)',
+      };
+    }
 
     switch (step.position) {
       case 'top':
         return {
           top: highlightPosition.top - tooltipOffset,
-          left: highlightPosition.left + highlightPosition.width / 2,
+          left: Math.min(Math.max(highlightPosition.left + highlightPosition.width / 2, 180), viewportWidth - 180),
           transform: 'translate(-50%, -100%)',
         };
       case 'bottom':
         return {
           top: highlightPosition.bottom + tooltipOffset,
-          left: highlightPosition.left + highlightPosition.width / 2,
+          left: Math.min(Math.max(highlightPosition.left + highlightPosition.width / 2, 180), viewportWidth - 180),
           transform: 'translateX(-50%)',
         };
       case 'left':
@@ -150,7 +165,7 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
       {/* Tooltip */}
       <Card
         className={cn(
-          "absolute w-[90vw] max-w-md p-6 shadow-2xl",
+          "absolute w-[calc(100vw-2rem)] max-w-sm p-4 sm:p-6 shadow-2xl mx-4 sm:mx-0",
           isCenterStep && "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         )}
         style={!isCenterStep ? getTooltipPosition() : {}}
