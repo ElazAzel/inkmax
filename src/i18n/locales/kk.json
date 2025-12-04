@@ -1,4 +1,36 @@
 {
+  "niche": {
+    "barber": "Шаштараз",
+    "photographer": "Фотограф",
+    "psychologist": "Психолог",
+    "fitness": "Фитнес-жаттықтырушы",
+    "musician": "Музыкант",
+    "designer": "Дизайнер",
+    "teacher": "Мұғалім",
+    "shop": "Дүкен",
+    "marketer": "Маркетолог",
+    "beauty": "Сұлулық шебері",
+    "chef": "Аспаз"
+  },
+  "onboarding": {
+    "nicheTitle": "Өз саланызды таңдаңыз",
+    "nicheDescription": "AI сіздің жеке бетіңізді 2 минутта жасайды",
+    "detailsTitle": "Өзіңіз туралы айтыңыз",
+    "detailsDescription": "Бұл ақпарат AI-ға тамаша бет жасауға көмектеседі",
+    "yourName": "Атыңыз немесе бренд",
+    "namePlaceholder": "Мысалы: Алексей немесе Beauty Studio",
+    "additionalDetails": "Қосымша ақпарат",
+    "detailsPlaceholder": "Қала, мамандық, тәжірибе...",
+    "detailsHint": "Міндетті емес, бірақ бетті дәлірек жасауға көмектеседі",
+    "skip": "Өткізіп жіберу",
+    "generatePage": "Бетті жасау",
+    "enterName": "Атыңызды енгізіңіз",
+    "pageGenerated": "Бет сәтті жасалды!",
+    "generationFailed": "Бетті жасау сәтсіз аяқталды",
+    "generatingTitle": "AI бетіңізді жасап жатыр",
+    "generatingDescription": "Құрылым, мазмұн және дизайн жасалуда...",
+    "pleaseWait": "Бұл шамамен 30 секунд алады"
+  },
   "landing": {
     "nav": {
       "signIn": "Кіру",
