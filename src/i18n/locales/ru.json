@@ -1,4 +1,36 @@
 {
+  "niche": {
+    "barber": "Барбер",
+    "photographer": "Фотограф",
+    "psychologist": "Психолог",
+    "fitness": "Фитнес-тренер",
+    "musician": "Музыкант",
+    "designer": "Дизайнер",
+    "teacher": "Репетитор",
+    "shop": "Магазин",
+    "marketer": "Маркетолог",
+    "beauty": "Мастер красоты",
+    "chef": "Повар/Кондитер"
+  },
+  "onboarding": {
+    "nicheTitle": "Выберите вашу нишу",
+    "nicheDescription": "AI создаст для вас персональную страницу за 2 минуты",
+    "detailsTitle": "Расскажите о себе",
+    "detailsDescription": "Эта информация поможет AI создать идеальную страницу",
+    "yourName": "Ваше имя или название",
+    "namePlaceholder": "Например: Алексей или Beauty Studio",
+    "additionalDetails": "Дополнительная информация",
+    "detailsPlaceholder": "Город, специализация, опыт...",
+    "detailsHint": "Необязательно, но поможет сделать страницу точнее",
+    "skip": "Пропустить",
+    "generatePage": "Создать страницу",
+    "enterName": "Введите ваше имя",
+    "pageGenerated": "Страница успешно создана!",
+    "generationFailed": "Не удалось создать страницу",
+    "generatingTitle": "AI создаёт вашу страницу",
+    "generatingDescription": "Генерируем структуру, тексты и оформление...",
+    "pleaseWait": "Это займёт около 30 секунд"
+  },
   "landing": {
     "nav": {
       "signIn": "Войти",

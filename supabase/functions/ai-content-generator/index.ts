@@ -123,6 +123,49 @@ Include 3-6 relevant blocks based on the description. Return ONLY valid JSON, no
         userPrompt = `Create a page layout for: ${input.description}`;
         break;
 
+      case 'niche-builder':
+        const nichePrompts: Record<string, string> = {
+          barber: 'барбера/парикмахера с услугами стрижки, бороды, укладки. Добавь ссылки на запись, портфолио работ, прайс-лист.',
+          photographer: 'фотографа с портфолио, услугами съёмки (портрет, свадьба, предметная), ценами и контактами для записи.',
+          psychologist: 'психолога/терапевта с описанием услуг (консультации, терапия), форматами работы (онлайн/офлайн) и записью.',
+          fitness: 'фитнес-тренера с программами тренировок, онлайн-курсами, персональными занятиями и отзывами клиентов.',
+          musician: 'музыканта/артиста со ссылками на стриминговые платформы, концерты, мерч и социальные сети.',
+          designer: 'дизайнера с портфолио работ, услугами (логотипы, брендинг, веб-дизайн) и ценами.',
+          teacher: 'репетитора/преподавателя с предметами, форматами занятий, ценами и записью на пробный урок.',
+          shop: 'магазина/бренда с товарами, акциями, доставкой и контактами для заказа.',
+          marketer: 'маркетолога/SMM-специалиста с услугами, кейсами, ценами и бесплатной консультацией.',
+          beauty: 'мастера красоты (маникюр, макияж, брови) с услугами, портфолио и записью.',
+          chef: 'повара/кондитера с меню, услугами кейтеринга, мастер-классами и заказом.',
+        };
+        
+        const nicheDescription = nichePrompts[input.niche] || 'специалиста с услугами и контактами';
+        
+        systemPrompt = `Ты AI-конструктор страниц LinkMAX. Создай профессиональную страницу для ${nicheDescription}
+
+ВАЖНО:
+- Имя пользователя: "${input.name}"
+- Дополнительная информация: "${input.details || 'не указана'}"
+
+Создай структуру страницы с 4-7 блоками, которые максимально подходят для этой ниши.
+
+Возможные типы блоков:
+- link: кнопка-ссылка (title, url, icon: globe|instagram|telegram|youtube|tiktok)
+- product: товар/услуга (name, description, price: число, currency: "KZT"|"RUB"|"USD")
+- text: текстовый блок (content, style: "heading"|"paragraph"|"quote")
+- socials: соцсети (platforms: [{name, url, icon}])
+- messenger: мессенджеры (messengers: [{platform: "whatsapp"|"telegram", username}])
+- video: видео (title, url, platform: "youtube"|"tiktok")
+
+Верни JSON:
+{
+  "profile": { "name": "Имя", "bio": "Краткое профессиональное описание (1-2 предложения)" },
+  "blocks": [массив блоков]
+}
+
+Текст должен быть на русском языке, профессиональный и продающий. Return ONLY valid JSON, no markdown.`;
+        userPrompt = `Создай страницу для: ${input.niche}. Имя: ${input.name}. Детали: ${input.details || 'нет'}`;
+        break;
+
       default:
         throw new Error('Invalid type');
     }

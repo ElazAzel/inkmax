@@ -30,6 +30,7 @@ import { AIGenerator } from '@/components/AIGenerator';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
+import { NicheOnboarding } from '@/components/onboarding/NicheOnboarding';
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { Card } from '@/components/ui/card';
@@ -69,6 +70,7 @@ export default function Dashboard() {
   const [aiGeneratorType, setAiGeneratorType] = useState<'magic-title' | 'sales-copy' | 'seo' | 'ai-builder'>('ai-builder');
   const [showSettings, setShowSettings] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showNicheOnboarding, setShowNicheOnboarding] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
 
@@ -102,11 +104,16 @@ export default function Dashboard() {
     }
   }, [userProfile.profile]);
 
-  // Check if user has completed onboarding
+  // Check if user has completed niche onboarding (show first for new users)
   useEffect(() => {
+    const hasCompletedNicheOnboarding = localStorage.getItem('linkmax_niche_onboarding_completed');
     const hasCompletedOnboarding = localStorage.getItem('linkmax_onboarding_completed');
-    if (!hasCompletedOnboarding && user && pageData) {
-      // Show onboarding after a short delay to let the page load
+    
+    if (!hasCompletedNicheOnboarding && user && pageData) {
+      // Show niche onboarding for new users
+      setTimeout(() => setShowNicheOnboarding(true), 500);
+    } else if (!hasCompletedOnboarding && user && pageData) {
+      // Show regular onboarding after niche onboarding
       setTimeout(() => setShowOnboarding(true), 1000);
     }
   }, [user, pageData]);
@@ -225,6 +232,26 @@ export default function Dashboard() {
   const handleOnboardingSkip = () => {
     localStorage.setItem('linkmax_onboarding_completed', 'true');
     setShowOnboarding(false);
+  };
+
+  const handleNicheOnboardingComplete = (profile: { name: string; bio: string }, blocks: Block[]) => {
+    // Update profile block
+    const profileBlock = pageData?.blocks.find(b => b.type === 'profile');
+    if (profile && profileBlock) {
+      updateBlock(profileBlock.id, { 
+        name: profile.name, 
+        bio: profile.bio 
+      });
+    }
+    
+    // Add generated blocks
+    blocks.forEach((block) => {
+      addBlock(block);
+    });
+    
+    setShowNicheOnboarding(false);
+    // Show regular onboarding after niche onboarding
+    setTimeout(() => setShowOnboarding(true), 500);
   };
 
   if (loading) {
@@ -537,6 +564,18 @@ export default function Dashboard() {
           isOpen={aiGeneratorOpen}
           onClose={() => setAiGeneratorOpen(false)}
           onResult={handleAIResult}
+        />
+      )}
+
+      {/* Niche Onboarding (shown first for new users) */}
+      {showNicheOnboarding && (
+        <NicheOnboarding
+          isOpen={showNicheOnboarding}
+          onClose={() => {
+            localStorage.setItem('linkmax_niche_onboarding_completed', 'true');
+            setShowNicheOnboarding(false);
+          }}
+          onComplete={handleNicheOnboardingComplete}
         />
       )}
 

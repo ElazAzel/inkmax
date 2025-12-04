@@ -1,4 +1,36 @@
 {
+  "niche": {
+    "barber": "Barber",
+    "photographer": "Photographer",
+    "psychologist": "Psychologist",
+    "fitness": "Fitness Trainer",
+    "musician": "Musician",
+    "designer": "Designer",
+    "teacher": "Teacher",
+    "shop": "Shop",
+    "marketer": "Marketer",
+    "beauty": "Beauty Master",
+    "chef": "Chef"
+  },
+  "onboarding": {
+    "nicheTitle": "Choose Your Niche",
+    "nicheDescription": "AI will create your personal page in 2 minutes",
+    "detailsTitle": "Tell Us About Yourself",
+    "detailsDescription": "This information helps AI create the perfect page",
+    "yourName": "Your Name or Brand",
+    "namePlaceholder": "e.g., Alex or Beauty Studio",
+    "additionalDetails": "Additional Details",
+    "detailsPlaceholder": "City, specialization, experience...",
+    "detailsHint": "Optional, but helps make the page more accurate",
+    "skip": "Skip",
+    "generatePage": "Create Page",
+    "enterName": "Please enter your name",
+    "pageGenerated": "Page created successfully!",
+    "generationFailed": "Failed to create page",
+    "generatingTitle": "AI is Creating Your Page",
+    "generatingDescription": "Generating structure, content, and design...",
+    "pleaseWait": "This will take about 30 seconds"
+  },
   "landing": {
     "nav": {
       "signIn": "Sign In",
