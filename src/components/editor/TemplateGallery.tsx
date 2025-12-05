@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +9,9 @@ import {
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Check, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Block } from '@/types/page';
 
 interface Template {
@@ -17,78 +20,229 @@ interface Template {
   description: string;
   category: string;
   preview: string;
+  isPremium?: boolean;
   blocks: Block[];
 }
 
 const TEMPLATES: Template[] = [
+  // Creator
   {
     id: 'influencer',
-    name: 'Influencer',
-    description: 'Perfect for content creators and influencers',
-    category: 'Creator',
+    name: 'Инфлюенсер',
+    description: 'Для блогеров и контент-мейкеров',
+    category: 'Креаторы',
     preview: '👤',
     blocks: [
-      { id: 'link-1', type: 'link', title: 'YouTube Channel', url: 'https://youtube.com', icon: 'youtube', style: 'rounded' },
+      { id: 'profile-1', type: 'profile', name: 'Имя блогера', bio: 'Создаю контент о lifestyle и путешествиях ✨' },
+      { id: 'link-1', type: 'link', title: 'YouTube канал', url: 'https://youtube.com', icon: 'youtube', style: 'rounded' },
       { id: 'link-2', type: 'link', title: 'Instagram', url: 'https://instagram.com', icon: 'instagram', style: 'rounded' },
-      { id: 'socials-1', type: 'socials', title: 'Follow Me', platforms: [] },
-    ],
-  },
-  {
-    id: 'business',
-    name: 'Business',
-    description: 'Professional setup for businesses',
-    category: 'Business',
-    preview: '💼',
-    blocks: [
-      { id: 'text-1', type: 'text', content: 'About Our Company', style: 'heading' },
-      { id: 'link-1', type: 'link', title: 'Our Services', url: 'https://example.com/services', icon: 'globe', style: 'rounded' },
-      { id: 'link-2', type: 'link', title: 'Contact Us', url: 'https://example.com/contact', icon: 'globe', style: 'rounded' },
-    ],
-  },
-  {
-    id: 'ecommerce',
-    name: 'E-commerce',
-    description: 'Showcase and sell your products',
-    category: 'Shop',
-    preview: '🛍️',
-    blocks: [
-      { id: 'product-1', type: 'product', name: 'Product 1', description: 'Amazing product', price: 1000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Product 2', description: 'Another great item', price: 2000, currency: 'KZT' },
+      { id: 'link-3', type: 'link', title: 'TikTok', url: 'https://tiktok.com', icon: 'globe', style: 'rounded' },
+      { id: 'socials-1', type: 'socials', title: 'Мои соцсети', platforms: [] },
     ],
   },
   {
     id: 'musician',
-    name: 'Musician',
-    description: 'For artists and musicians',
-    category: 'Creator',
+    name: 'Музыкант',
+    description: 'Для артистов и музыкантов',
+    category: 'Креаторы',
     preview: '🎵',
     blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Artist Name', bio: '🎤 Музыкант • Автор песен' },
       { id: 'link-1', type: 'link', title: 'Spotify', url: 'https://spotify.com', icon: 'globe', style: 'rounded' },
       { id: 'link-2', type: 'link', title: 'Apple Music', url: 'https://music.apple.com', icon: 'globe', style: 'rounded' },
       { id: 'link-3', type: 'link', title: 'YouTube Music', url: 'https://youtube.com', icon: 'youtube', style: 'rounded' },
+      { id: 'video-1', type: 'video', url: 'https://youtube.com/watch?v=dQw4w9WgXcQ', title: 'Новый клип', platform: 'youtube' },
+    ],
+  },
+  // Business
+  {
+    id: 'barber',
+    name: 'Барбер',
+    description: 'Для барберов и парикмахеров',
+    category: 'Бизнес',
+    preview: '💈',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Барбершоп', bio: '✂️ Мужские стрижки • Бороды • Укладки' },
+      { id: 'text-1', type: 'text', content: '📍 Алматы, ул. Абая 123', style: 'paragraph' },
+      { id: 'product-1', type: 'product', name: 'Стрижка', description: 'Классическая мужская стрижка', price: 3000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Стрижка + Борода', description: 'Комплекс услуг', price: 5000, currency: 'KZT' },
+      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }, { platform: 'telegram', username: '' }] },
+      { id: 'map-1', type: 'map', provider: 'google', embedUrl: '', address: 'Алматы' },
     ],
   },
   {
-    id: 'portfolio',
-    name: 'Portfolio',
-    description: 'Showcase your work and projects',
-    category: 'Professional',
-    preview: '📁',
+    id: 'photographer',
+    name: 'Фотограф',
+    description: 'Портфолио и услуги',
+    category: 'Бизнес',
+    preview: '📷',
     blocks: [
-      { id: 'text-1', type: 'text', content: 'My Work', style: 'heading' },
-      { id: 'link-1', type: 'link', title: 'Portfolio Website', url: 'https://example.com', icon: 'globe', style: 'rounded' },
-      { id: 'link-2', type: 'link', title: 'GitHub', url: 'https://github.com', icon: 'github', style: 'rounded' },
+      { id: 'profile-1', type: 'profile', name: 'Фотограф', bio: '📸 Портреты • Свадьбы • Репортажи' },
+      { id: 'carousel-1', type: 'carousel', images: [], title: 'Портфолио' },
+      { id: 'product-1', type: 'product', name: 'Портретная съемка', description: '1 час, 10 фото в обработке', price: 25000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Свадебная съемка', description: 'Полный день, 100+ фото', price: 150000, currency: 'KZT' },
+      { id: 'link-1', type: 'link', title: 'Записаться', url: '#', icon: 'calendar', style: 'pill' },
     ],
   },
+  {
+    id: 'fitness',
+    name: 'Фитнес-тренер',
+    description: 'Для тренеров и коучей',
+    category: 'Бизнес',
+    preview: '💪',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Фитнес Тренер', bio: '🏋️ Персональные тренировки • Онлайн-программы' },
+      { id: 'product-1', type: 'product', name: 'Персональная тренировка', description: '60 минут с тренером', price: 8000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Онлайн-программа', description: '4 недели тренировок + питание', price: 30000, currency: 'KZT' },
+      { id: 'video-1', type: 'video', url: '', title: 'Тренировка дня', platform: 'youtube' },
+      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }] },
+    ],
+  },
+  {
+    id: 'psychologist',
+    name: 'Психолог',
+    description: 'Для психологов и коучей',
+    category: 'Эксперты',
+    preview: '🧠',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Психолог', bio: '🎓 Клинический психолог • Семейная терапия' },
+      { id: 'text-1', type: 'text', content: 'Помогаю разобраться в себе и наладить отношения', style: 'paragraph' },
+      { id: 'product-1', type: 'product', name: 'Консультация', description: '50 минут онлайн/офлайн', price: 15000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Пакет 4 сессии', description: 'Экономия 10%', price: 54000, currency: 'KZT' },
+      { id: 'link-1', type: 'link', title: 'Записаться на консультацию', url: '#', icon: 'calendar', style: 'pill' },
+    ],
+  },
+  {
+    id: 'teacher',
+    name: 'Репетитор',
+    description: 'Для преподавателей и репетиторов',
+    category: 'Эксперты',
+    preview: '📚',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Репетитор', bio: '📖 Английский язык • IELTS • Разговорный' },
+      { id: 'text-1', type: 'text', content: 'Опыт преподавания 10+ лет', style: 'heading' },
+      { id: 'product-1', type: 'product', name: 'Индивидуальный урок', description: '60 минут онлайн', price: 6000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Курс подготовки к IELTS', description: '12 занятий', price: 60000, currency: 'KZT' },
+      { id: 'testimonial-1', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Студент', text: 'Сдал IELTS на 7.5!', rating: 5 }] },
+    ],
+  },
+  {
+    id: 'beauty',
+    name: 'Салон красоты',
+    description: 'Для салонов и мастеров',
+    category: 'Бизнес',
+    preview: '💅',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Beauty Studio', bio: '✨ Маникюр • Педикюр • Наращивание' },
+      { id: 'carousel-1', type: 'carousel', images: [], title: 'Наши работы' },
+      { id: 'product-1', type: 'product', name: 'Маникюр с покрытием', description: 'Гель-лак', price: 5000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Комплекс руки + ноги', description: 'Маникюр + педикюр', price: 9000, currency: 'KZT' },
+      { id: 'map-1', type: 'map', provider: 'google', embedUrl: '', address: 'Алматы' },
+    ],
+  },
+  {
+    id: 'shop',
+    name: 'Магазин',
+    description: 'Мини-витрина товаров',
+    category: 'Бизнес',
+    preview: '🛍️',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Shop Name', bio: '🛒 Доставка по всему Казахстану' },
+      { id: 'product-1', type: 'product', name: 'Товар 1', description: 'Описание товара', price: 10000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Товар 2', description: 'Описание товара', price: 15000, currency: 'KZT' },
+      { id: 'product-3', type: 'product', name: 'Товар 3', description: 'Описание товара', price: 20000, currency: 'KZT' },
+      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }, { platform: 'telegram', username: '' }] },
+    ],
+  },
+  {
+    id: 'marketer',
+    name: 'Маркетолог',
+    description: 'Для SMM и маркетологов',
+    category: 'Эксперты',
+    preview: '📊',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Digital Маркетолог', bio: '📈 SMM • Таргет • Контент-стратегия' },
+      { id: 'text-1', type: 'text', content: '100+ успешных проектов', style: 'heading' },
+      { id: 'product-1', type: 'product', name: 'Аудит соцсетей', description: 'Анализ + рекомендации', price: 25000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Ведение Instagram', description: 'Полный пакет на месяц', price: 150000, currency: 'KZT' },
+      { id: 'link-1', type: 'link', title: 'Кейсы', url: '#', icon: 'folder', style: 'rounded' },
+    ],
+  },
+  {
+    id: 'designer',
+    name: 'Дизайнер',
+    description: 'Портфолио дизайнера',
+    category: 'Креаторы',
+    preview: '🎨',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Дизайнер', bio: '🎨 UI/UX • Брендинг • Иллюстрации' },
+      { id: 'carousel-1', type: 'carousel', images: [], title: 'Портфолио' },
+      { id: 'product-1', type: 'product', name: 'Логотип', description: '3 варианта + исходники', price: 50000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Фирменный стиль', description: 'Полный брендбук', price: 200000, currency: 'KZT' },
+      { id: 'link-1', type: 'link', title: 'Behance', url: 'https://behance.net', icon: 'globe', style: 'rounded' },
+    ],
+  },
+  {
+    id: 'chef',
+    name: 'Повар / Кондитер',
+    description: 'Для кулинаров и кондитеров',
+    category: 'Бизнес',
+    preview: '👨‍🍳',
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Домашняя кухня', bio: '🍰 Торты на заказ • Десерты • Выпечка' },
+      { id: 'carousel-1', type: 'carousel', images: [], title: 'Меню' },
+      { id: 'product-1', type: 'product', name: 'Торт на заказ', description: 'от 2 кг', price: 8000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Капкейки', description: 'Набор 6 шт', price: 4500, currency: 'KZT' },
+      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }] },
+    ],
+  },
+  // Premium templates
+  {
+    id: 'agency',
+    name: 'Digital-агентство',
+    description: 'Для агентств и студий',
+    category: 'Премиум',
+    preview: '🚀',
+    isPremium: true,
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Agency Name', bio: '🚀 Digital-агентство полного цикла' },
+      { id: 'text-1', type: 'text', content: 'Разработка • Дизайн • Маркетинг', style: 'heading' },
+      { id: 'carousel-1', type: 'carousel', images: [], title: 'Кейсы' },
+      { id: 'product-1', type: 'product', name: 'Лендинг', description: 'Под ключ за 7 дней', price: 300000, currency: 'KZT' },
+      { id: 'product-2', type: 'product', name: 'Интернет-магазин', description: 'Полная разработка', price: 800000, currency: 'KZT' },
+      { id: 'testimonial-1', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Клиент', text: 'Отличная работа!', rating: 5 }] },
+      { id: 'form-1', type: 'form', title: 'Оставить заявку', fields: [], submitEmail: '', buttonText: 'Отправить', isPremium: true },
+    ],
+  },
+  {
+    id: 'portfolio-pro',
+    name: 'Портфолио PRO',
+    description: 'Расширенное портфолио',
+    category: 'Премиум',
+    preview: '💼',
+    isPremium: true,
+    blocks: [
+      { id: 'profile-1', type: 'profile', name: 'Имя Фамилия', bio: '💼 Профессионал своего дела' },
+      { id: 'video-1', type: 'video', url: '', title: 'Видео-визитка', platform: 'youtube' },
+      { id: 'carousel-1', type: 'carousel', images: [], title: 'Проекты' },
+      { id: 'testimonial-1', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Клиент 1', text: 'Рекомендую!', rating: 5 }] },
+      { id: 'testimonial-2', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Клиент 2', text: 'Супер работа!', rating: 5 }] },
+      { id: 'link-1', type: 'link', title: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin', style: 'rounded' },
+      { id: 'download-1', type: 'download', title: 'Скачать резюме', fileName: 'resume.pdf', fileUrl: '' },
+    ],
+  },
+  // Blank
   {
     id: 'blank',
-    name: 'Blank',
-    description: 'Start from scratch',
-    category: 'Other',
+    name: 'Пустой',
+    description: 'Начать с нуля',
+    category: 'Другое',
     preview: '📄',
     blocks: [],
   },
 ];
+
+const CATEGORIES = ['Все', 'Креаторы', 'Бизнес', 'Эксперты', 'Премиум', 'Другое'];
 
 interface TemplateGalleryProps {
   open: boolean;
@@ -101,56 +255,105 @@ export const TemplateGallery = memo(function TemplateGallery({
   onClose,
   onSelect,
 }: TemplateGalleryProps) {
+  const { t } = useTranslation();
+  const [selectedCategory, setSelectedCategory] = useState('Все');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
   const handleSelect = (template: Template) => {
-    onSelect(template.blocks);
-    onClose();
+    // Generate unique IDs for blocks
+    const blocksWithUniqueIds = template.blocks.map((block, index) => ({
+      ...block,
+      id: `${block.type}-${Date.now()}-${index}`,
+    }));
+    onSelect(blocksWithUniqueIds);
+    setCopiedId(template.id);
+    setTimeout(() => {
+      setCopiedId(null);
+      onClose();
+    }, 500);
   };
 
-  const categories = Array.from(new Set(TEMPLATES.map(t => t.category)));
+  const filteredTemplates = selectedCategory === 'Все' 
+    ? TEMPLATES 
+    : TEMPLATES.filter(t => t.category === selectedCategory);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto p-4 sm:p-6">
-        <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">Choose a Template</DialogTitle>
+      <DialogContent className="max-w-4xl max-h-[90vh] sm:max-h-[85vh] p-0 overflow-hidden">
+        <DialogHeader className="p-4 sm:p-6 pb-0">
+          <DialogTitle className="text-lg sm:text-xl flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            {t('templates.title', 'Галерея шаблонов')}
+          </DialogTitle>
           <DialogDescription className="text-sm">
-            Start with a pre-designed template or create from scratch
+            {t('templates.description', 'Выберите готовый шаблон и скопируйте в 1 клик')}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 sm:space-y-6">
-          {categories.map((category) => (
-            <div key={category} className="space-y-2 sm:space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm text-muted-foreground">{category}</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                {TEMPLATES.filter(t => t.category === category).map((template) => (
-                  <Card
-                    key={template.id}
-                    className="p-3 sm:p-4 hover:border-primary cursor-pointer transition-all hover:shadow-lg group"
-                    onClick={() => handleSelect(template)}
-                  >
-                    <div className="text-3xl sm:text-4xl mb-2 text-center group-hover:scale-110 transition-transform">
-                      {template.preview}
-                    </div>
-                    <h4 className="font-semibold text-xs sm:text-sm text-center mb-1">{template.name}</h4>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground text-center line-clamp-2">
-                      {template.description}
-                    </p>
-                    <div className="mt-2 sm:mt-3 text-center">
-                      <Badge variant="secondary" className="text-[10px] sm:text-xs">
-                        {template.blocks.length} blocks
-                      </Badge>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          ))}
+        {/* Category Filter */}
+        <div className="px-4 sm:px-6 py-3 border-b">
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            {CATEGORIES.map((category) => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedCategory(category)}
+                className="whitespace-nowrap text-xs sm:text-sm"
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
         </div>
 
-        <div className="flex justify-end gap-2 pt-4 border-t">
+        <ScrollArea className="h-[60vh] sm:h-[55vh]">
+          <div className="p-4 sm:p-6 pt-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {filteredTemplates.map((template) => (
+                <Card
+                  key={template.id}
+                  className={`relative p-3 sm:p-4 hover:border-primary cursor-pointer transition-all hover:shadow-lg group ${
+                    copiedId === template.id ? 'border-green-500 bg-green-500/10' : ''
+                  }`}
+                  onClick={() => handleSelect(template)}
+                >
+                  {template.isPremium && (
+                    <Badge className="absolute -top-2 -right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px]">
+                      PRO
+                    </Badge>
+                  )}
+                  
+                  <div className="text-3xl sm:text-4xl mb-2 text-center group-hover:scale-110 transition-transform">
+                    {copiedId === template.id ? (
+                      <Check className="h-8 w-8 mx-auto text-green-500" />
+                    ) : (
+                      template.preview
+                    )}
+                  </div>
+                  
+                  <h4 className="font-semibold text-xs sm:text-sm text-center mb-1 truncate">
+                    {template.name}
+                  </h4>
+                  
+                  <p className="text-[10px] sm:text-xs text-muted-foreground text-center line-clamp-2 min-h-[2.5em]">
+                    {template.description}
+                  </p>
+                  
+                  <div className="mt-2 sm:mt-3 text-center">
+                    <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                      {template.blocks.length} {t('templates.blocks', 'блоков')}
+                    </Badge>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </ScrollArea>
+
+        <div className="flex justify-end gap-2 p-4 border-t bg-muted/30">
           <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
-            Cancel
+            {t('common.cancel', 'Отмена')}
           </Button>
         </div>
       </DialogContent>
