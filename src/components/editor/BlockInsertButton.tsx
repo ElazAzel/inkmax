@@ -1,7 +1,8 @@
 import { memo, useState } from 'react';
-import { Plus, Search, Lock } from 'lucide-react';
+import { Plus, Search, Lock, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +20,13 @@ import {
 } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { FREE_LIMITS } from '@/hooks/useFreemiumLimits';
+import { toast } from 'sonner';
 
 interface BlockInsertButtonProps {
   onInsert: (blockType: string) => void;
   isPremium?: boolean;
+  currentBlockCount?: number;
   className?: string;
 }
 
@@ -62,11 +66,15 @@ const ALL_BLOCKS = [
 export const BlockInsertButton = memo(function BlockInsertButton({ 
   onInsert, 
   isPremium = false,
+  currentBlockCount = 0,
   className 
 }: BlockInsertButtonProps) {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const isAtBlockLimit = !isPremium && currentBlockCount >= FREE_LIMITS.maxBlocks;
+  const remainingBlocks = isPremium ? Infinity : FREE_LIMITS.maxBlocks - currentBlockCount;
 
   // Filter blocks based on search
   const filteredBlocks = ALL_BLOCKS.filter(block => 
@@ -84,7 +92,15 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   }, {} as Record<string, typeof ALL_BLOCKS>);
 
   const handleInsert = (blockType: string, premium: boolean) => {
-    if (premium && !isPremium) return;
+    if (premium && !isPremium) {
+      toast.error('Этот блок доступен только в Premium');
+      return;
+    }
+    
+    if (isAtBlockLimit) {
+      toast.error(`Достигнут лимит ${FREE_LIMITS.maxBlocks} блоков. Перейдите на Premium.`);
+      return;
+    }
     
     onInsert(blockType);
     setIsOpen(false);
@@ -105,7 +121,14 @@ export const BlockInsertButton = memo(function BlockInsertButton({
       </Button>
       <SheetContent side="bottom" className="h-[85vh] p-0">
         <SheetHeader className="p-4 pb-2 border-b sticky top-0 bg-background z-10">
-          <SheetTitle>Add Block</SheetTitle>
+          <div className="flex items-center justify-between">
+            <SheetTitle>Add Block</SheetTitle>
+            {!isPremium && (
+              <Badge variant={isAtBlockLimit ? 'destructive' : 'secondary'} className="text-xs">
+                {remainingBlocks > 0 ? `${remainingBlocks} осталось` : 'Лимит'}
+              </Badge>
+            )}
+          </div>
           <SheetDescription className="sr-only">Choose a block to add to your page</SheetDescription>
           <div className="relative mt-3">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -116,6 +139,14 @@ export const BlockInsertButton = memo(function BlockInsertButton({
               className="pl-9 h-10"
             />
           </div>
+          {isAtBlockLimit && (
+            <div className="mt-2 p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+              <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                <Crown className="h-3.5 w-3.5" />
+                Перейдите на Premium для неограниченных блоков
+              </p>
+            </div>
+          )}
         </SheetHeader>
         
         <div className="overflow-y-auto p-4 space-y-6 pb-safe" style={{ height: 'calc(100% - 130px)' }}>

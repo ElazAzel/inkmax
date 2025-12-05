@@ -5,6 +5,7 @@ import { Share2, QrCode } from 'lucide-react';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { FreemiumWatermark } from '@/components/FreemiumWatermark';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { toast } from 'sonner';
@@ -22,6 +23,7 @@ export default function PublicPage() {
   const { compressed, slug } = useParams<{ compressed?: string; slug?: string }>();
   const [compressedPageData, setCompressedPageData] = useState<PageData | null>(null);
   const [showQR, setShowQR] = useState(false);
+  const [showWatermark, setShowWatermark] = useState(true);
   const currentUrl = window.location.href;
 
   // Use React Query for slug-based pages (with caching)
@@ -114,16 +116,24 @@ export default function PublicPage() {
           </Button>
         </div>
 
-        {/* Branding */}
-        <div className="mt-8 sm:mt-12 text-center pb-4">
-          <a
-            href="/"
-            className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Create your own LinkMAX
-          </a>
-        </div>
+        {/* Branding - hidden when watermark is shown */}
+        {!showWatermark && (
+          <div className="mt-8 sm:mt-12 text-center pb-4">
+            <a
+              href="/"
+              className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              Create your own LinkMAX
+            </a>
+          </div>
+        )}
+        
+        {/* Extra padding for watermark */}
+        {showWatermark && <div className="h-16" />}
       </div>
+      
+      {/* Freemium Watermark */}
+      <FreemiumWatermark show={showWatermark && !pageData?.isPremium} />
 
       {/* QR Dialog */}
       <Dialog open={showQR} onOpenChange={setShowQR}>
