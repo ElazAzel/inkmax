@@ -37,6 +37,7 @@ interface SortableBlockWrapperProps {
   block: Block;
   index: number;
   totalCount: number;
+  totalBlocks: number;
   onEdit: (block: Block) => void;
   onDelete: (id: string) => void;
   onMoveUp: (id: string) => void;
@@ -58,6 +59,7 @@ function SortableBlockWrapper({
   block,
   index,
   totalCount,
+  totalBlocks,
   onEdit,
   onDelete,
   onMoveUp,
@@ -111,6 +113,7 @@ function SortableBlockWrapper({
       <BlockInsertButton
         onInsert={onInsertAfter}
         isPremium={isPremium}
+        currentBlockCount={totalBlocks}
         className="my-4"
       />
     </div>
@@ -181,6 +184,7 @@ export const PreviewEditor = memo(function PreviewEditor({
             <BlockInsertButton
               onInsert={(type) => onInsertBlock(type, 0)}
               isPremium={isPremium}
+              currentBlockCount={blocks.length}
               className="my-4"
             />
           </>
@@ -203,6 +207,7 @@ export const PreviewEditor = memo(function PreviewEditor({
                   block={block}
                   index={index}
                   totalCount={contentBlocks.length}
+                  totalBlocks={blocks.length}
                   onEdit={onEditBlock}
                   onDelete={onDeleteBlock}
                   onMoveUp={handleMoveUp}
@@ -229,6 +234,7 @@ export const PreviewEditor = memo(function PreviewEditor({
           <BlockInsertButton
             onInsert={(type) => onInsertBlock(type, contentBlocks.length)}
             isPremium={isPremium}
+            currentBlockCount={blocks.length}
           />
         </div>
       )}

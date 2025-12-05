@@ -235,5 +235,20 @@
     "noTextToTranslate": "Введите текст для перевода",
     "translationSuccess": "Перевод выполнен",
     "translationError": "Ошибка перевода"
+  },
+  "freemium": {
+    "blockLimitReached": "Достигнут лимит блоков. Перейдите на Premium для неограниченного количества.",
+    "blocksRemaining": "Осталось блоков: {{count}} из {{max}}",
+    "upgradeToPremium": "Перейти на Premium",
+    "aiLimitReached": "Лимит AI запросов исчерпан",
+    "aiRequestsRemaining": "Осталось AI запросов сегодня: {{count}}",
+    "aiLimitResets": "Лимит обновляется каждый день",
+    "unlimitedAI": "Безлимитный AI",
+    "premiumBlockRequired": "Этот блок доступен только в Premium"
+  },
+  "templates": {
+    "title": "Галерея шаблонов",
+    "description": "Выберите готовый шаблон и скопируйте в 1 клик",
+    "blocks": "блоков"
   }
 }

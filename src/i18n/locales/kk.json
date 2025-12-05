@@ -235,5 +235,20 @@
     "noTextToTranslate": "Аудару үшін мәтін енгізіңіз",
     "translationSuccess": "Аударма орындалды",
     "translationError": "Аударма қатесі"
+  },
+  "freemium": {
+    "blockLimitReached": "Блоктар лимитіне жеттіңіз. Premium-ға көшіңіз.",
+    "blocksRemaining": "Қалған блоктар: {{count}} / {{max}}",
+    "upgradeToPremium": "Premium-ға көшу",
+    "aiLimitReached": "AI сұраулар лимиті таусылды",
+    "aiRequestsRemaining": "Бүгінгі AI сұраулар: {{count}}",
+    "aiLimitResets": "Лимит күн сайын жаңарады",
+    "unlimitedAI": "Шексіз AI",
+    "premiumBlockRequired": "Бұл блок тек Premium-да қол жетімді"
+  },
+  "templates": {
+    "title": "Үлгілер галереясы",
+    "description": "Дайын үлгіні таңдап, 1 клик арқылы көшіріңіз",
+    "blocks": "блоктар"
   }
 }

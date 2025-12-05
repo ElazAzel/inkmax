@@ -235,5 +235,20 @@
     "noTextToTranslate": "Enter text to translate",
     "translationSuccess": "Translation completed",
     "translationError": "Translation error"
+  },
+  "freemium": {
+    "blockLimitReached": "Block limit reached. Upgrade to Premium for unlimited blocks.",
+    "blocksRemaining": "Blocks remaining: {{count}} of {{max}}",
+    "upgradeToPremium": "Upgrade to Premium",
+    "aiLimitReached": "AI request limit reached",
+    "aiRequestsRemaining": "AI requests remaining today: {{count}}",
+    "aiLimitResets": "Limit resets every day",
+    "unlimitedAI": "Unlimited AI",
+    "premiumBlockRequired": "This block requires Premium"
+  },
+  "templates": {
+    "title": "Template Gallery",
+    "description": "Choose a ready-made template and copy in 1 click",
+    "blocks": "blocks"
   }
 }
