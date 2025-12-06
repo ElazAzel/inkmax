@@ -15,7 +15,8 @@ import {
   Wand2, 
   MessageCircle,
   LayoutTemplate,
-  Trophy
+  Trophy,
+  Users
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
@@ -33,6 +34,7 @@ import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 import { NicheOnboarding } from '@/components/onboarding/NicheOnboarding';
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
+import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { Card } from '@/components/ui/card';
 import { createBlock } from '@/lib/block-factory';
 import { toast } from 'sonner';
@@ -72,6 +74,7 @@ export default function Dashboard() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showNicheOnboarding, setShowNicheOnboarding] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [showLeads, setShowLeads] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
 
   // Check achievements whenever blocks or features change
@@ -341,6 +344,16 @@ export default function Dashboard() {
               <span className="hidden sm:inline">Settings</span>
             </Button>
 
+            {/* CRM Button */}
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setShowLeads(true)}
+            >
+              <Users className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">CRM</span>
+            </Button>
+
             {/* Achievements Button - Mobile Optimized */}
             <Button 
               variant="ghost" 
@@ -599,6 +612,9 @@ export default function Dashboard() {
       {showAchievements && (
         <AchievementsPanel onClose={() => setShowAchievements(false)} />
       )}
+
+      {/* Leads Panel (CRM) */}
+      <LeadsPanel open={showLeads} onOpenChange={setShowLeads} />
     </div>
   );
 }
