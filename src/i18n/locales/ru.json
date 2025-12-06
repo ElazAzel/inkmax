@@ -250,5 +250,51 @@
     "title": "Галерея шаблонов",
     "description": "Выберите готовый шаблон и скопируйте в 1 клик",
     "blocks": "блоков"
+  },
+  "crm": {
+    "title": "CRM",
+    "description": "Управляйте лидами и взаимодействиями",
+    "premiumRequired": "Премиум функция",
+    "premiumDescription": "Перейдите на Premium для доступа к CRM и отслеживания лидов",
+    "addLead": "Добавить лид",
+    "searchPlaceholder": "Поиск лидов...",
+    "noLeads": "Лидов пока нет. Добавьте первого!",
+    "noResults": "Лиды не найдены",
+    "namePlaceholder": "Имя клиента",
+    "phone": "Телефон",
+    "source": "Источник",
+    "notes": "Заметки",
+    "notesPlaceholder": "Дополнительные заметки о лиде...",
+    "contactInfo": "Контактная информация",
+    "createdAt": "Создан",
+    "addInteraction": "Добавить взаимодействие",
+    "interactionPlaceholder": "Что произошло?",
+    "history": "История",
+    "noInteractions": "Взаимодействий пока нет",
+    "deleteLead": "Удалить лид",
+    "confirmDelete": "Удалить этот лид?",
+    "deleteWarning": "Это действие нельзя отменить. Все взаимодействия также будут удалены.",
+    "status": {
+      "label": "Статус",
+      "new": "Новый",
+      "contacted": "Связались",
+      "qualified": "Квалифиц.",
+      "converted": "Конверсия",
+      "lost": "Потерян"
+    },
+    "sources": {
+      "manual": "Вручную",
+      "page_view": "Просмотр страницы",
+      "form": "Форма",
+      "messenger": "Мессенджер",
+      "other": "Другое"
+    },
+    "interactionTypes": {
+      "note": "Заметка",
+      "call": "Звонок",
+      "email": "Email",
+      "message": "Сообщение",
+      "meeting": "Встреча"
+    }
   }
 }

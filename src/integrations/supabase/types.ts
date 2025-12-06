@@ -106,6 +106,83 @@ export type Database = {
           },
         ]
       }
+      lead_interactions: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          lead_id: string
+          type: Database["public"]["Enums"]["interaction_type"]
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          lead_id: string
+          type?: Database["public"]["Enums"]["interaction_type"]
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+          type?: Database["public"]["Enums"]["interaction_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_interactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          metadata: Json | null
+          name: string
+          notes: string | null
+          phone: string | null
+          source: Database["public"]["Enums"]["lead_source"]
+          status: Database["public"]["Enums"]["lead_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          metadata?: Json | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source?: Database["public"]["Enums"]["lead_source"]
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          metadata?: Json | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: Database["public"]["Enums"]["lead_source"]
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pages: {
         Row: {
           avatar_style: Json | null
@@ -258,7 +335,9 @@ export type Database = {
       increment_view_count: { Args: { page_slug: string }; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      interaction_type: "note" | "call" | "email" | "message" | "meeting"
+      lead_source: "page_view" | "form" | "messenger" | "manual" | "other"
+      lead_status: "new" | "contacted" | "qualified" | "converted" | "lost"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -385,6 +464,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      interaction_type: ["note", "call", "email", "message", "meeting"],
+      lead_source: ["page_view", "form", "messenger", "manual", "other"],
+      lead_status: ["new", "contacted", "qualified", "converted", "lost"],
+    },
   },
 } as const

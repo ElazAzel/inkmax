@@ -250,5 +250,51 @@
     "title": "Template Gallery",
     "description": "Choose a ready-made template and copy in 1 click",
     "blocks": "blocks"
+  },
+  "crm": {
+    "title": "CRM",
+    "description": "Manage your leads and interactions",
+    "premiumRequired": "Premium Feature",
+    "premiumDescription": "Upgrade to Premium to access CRM and track your leads",
+    "addLead": "Add Lead",
+    "searchPlaceholder": "Search leads...",
+    "noLeads": "No leads yet. Add your first lead!",
+    "noResults": "No leads found",
+    "namePlaceholder": "Client name",
+    "phone": "Phone",
+    "source": "Source",
+    "notes": "Notes",
+    "notesPlaceholder": "Additional notes about this lead...",
+    "contactInfo": "Contact Information",
+    "createdAt": "Created",
+    "addInteraction": "Add Interaction",
+    "interactionPlaceholder": "What happened?",
+    "history": "History",
+    "noInteractions": "No interactions yet",
+    "deleteLead": "Delete Lead",
+    "confirmDelete": "Delete this lead?",
+    "deleteWarning": "This action cannot be undone. All interactions will also be deleted.",
+    "status": {
+      "label": "Status",
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "converted": "Converted",
+      "lost": "Lost"
+    },
+    "sources": {
+      "manual": "Manual",
+      "page_view": "Page View",
+      "form": "Form",
+      "messenger": "Messenger",
+      "other": "Other"
+    },
+    "interactionTypes": {
+      "note": "Note",
+      "call": "Call",
+      "email": "Email",
+      "message": "Message",
+      "meeting": "Meeting"
+    }
   }
 }

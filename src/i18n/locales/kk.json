@@ -250,5 +250,51 @@
     "title": "Үлгілер галереясы",
     "description": "Дайын үлгіні таңдап, 1 клик арқылы көшіріңіз",
     "blocks": "блоктар"
+  },
+  "crm": {
+    "title": "CRM",
+    "description": "Лидтерді және өзара әрекеттесулерді басқарыңыз",
+    "premiumRequired": "Premium мүмкіндік",
+    "premiumDescription": "CRM-ге қол жеткізу үшін Premium-ға көшіңіз",
+    "addLead": "Лид қосу",
+    "searchPlaceholder": "Лидтерді іздеу...",
+    "noLeads": "Лидтер әлі жоқ. Алғашқысын қосыңыз!",
+    "noResults": "Лидтер табылмады",
+    "namePlaceholder": "Клиент аты",
+    "phone": "Телефон",
+    "source": "Көзі",
+    "notes": "Жазбалар",
+    "notesPlaceholder": "Осы лид туралы қосымша жазбалар...",
+    "contactInfo": "Байланыс ақпараты",
+    "createdAt": "Құрылған",
+    "addInteraction": "Өзара әрекет қосу",
+    "interactionPlaceholder": "Не болды?",
+    "history": "Тарих",
+    "noInteractions": "Өзара әрекеттер әлі жоқ",
+    "deleteLead": "Лидті жою",
+    "confirmDelete": "Бұл лидті жою керек пе?",
+    "deleteWarning": "Бұл әрекетті болдырмау мүмкін емес. Барлық өзара әрекеттер де жойылады.",
+    "status": {
+      "label": "Күйі",
+      "new": "Жаңа",
+      "contacted": "Байланысқан",
+      "qualified": "Біліктілік",
+      "converted": "Конверсия",
+      "lost": "Жоғалған"
+    },
+    "sources": {
+      "manual": "Қолмен",
+      "page_view": "Бет көрінісі",
+      "form": "Форма",
+      "messenger": "Мессенджер",
+      "other": "Басқа"
+    },
+    "interactionTypes": {
+      "note": "Жазба",
+      "call": "Қоңырау",
+      "email": "Email",
+      "message": "Хабарлама",
+      "meeting": "Кездесу"
+    }
   }
 }
