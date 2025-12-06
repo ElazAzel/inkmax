@@ -48,6 +48,7 @@ const SeparatorBlock = lazy(() => import('./blocks/SeparatorBlock').then(m => ({
 interface BlockRendererProps {
   block: Block;
   isPreview?: boolean;
+  pageOwnerId?: string;
 }
 
 // Loading skeleton for blocks
@@ -57,7 +58,7 @@ const BlockSkeleton = () => (
   </div>
 );
 
-export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
+export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererProps) {
   // Check if block should be visible based on schedule
   // In preview mode, always show blocks
   if (!isPreview && !isBlockVisible(block)) {
@@ -166,7 +167,7 @@ export function BlockRenderer({ block, isPreview }: BlockRendererProps) {
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <FormBlock block={block} />
+            <FormBlock block={block} pageOwnerId={pageOwnerId} />
           </Suspense>
         </div>
       );

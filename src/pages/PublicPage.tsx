@@ -100,7 +100,7 @@ export default function PublicPage() {
         {/* Content - Mobile Optimized */}
         <div className="space-y-3 sm:space-y-4">
           {pageData.blocks.map(block => (
-            <BlockRenderer key={block.id} block={block} />
+            <BlockRenderer key={block.id} block={block} pageOwnerId={pageData?.userId} />
           ))}
         </div>
 

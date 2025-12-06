@@ -9,12 +9,14 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FormBlockProps {
   block: FormBlockType;
+  pageOwnerId?: string;
 }
 
-export const FormBlock = memo(function FormBlock({ block }: FormBlockProps) {
+export const FormBlock = memo(function FormBlock({ block, pageOwnerId }: FormBlockProps) {
   const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,10 +39,28 @@ export const FormBlock = memo(function FormBlock({ block }: FormBlockProps) {
     setIsSubmitting(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Create lead in CRM if page owner is known
+      if (pageOwnerId) {
+        const name = formData['name'] || formData['Name'] || formData['Имя'] || formData['имя'] || 'Unknown';
+        const email = formData['email'] || formData['Email'] || formData['Почта'] || formData['почта'] || null;
+        const phone = formData['phone'] || formData['Phone'] || formData['Телефон'] || formData['телефон'] || null;
+        
+        await supabase.from('leads').insert({
+          user_id: pageOwnerId,
+          name: name,
+          email: email,
+          phone: phone,
+          source: 'form' as const,
+          status: 'new' as const,
+          notes: title ? `Form: ${title}` : 'Form submission',
+          metadata: formData,
+        });
+      }
+
       toast.success(t('form.success', 'Form submitted successfully!'));
       setFormData({});
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast.error(t('form.error', 'Error submitting form'));
     } finally {
       setIsSubmitting(false);

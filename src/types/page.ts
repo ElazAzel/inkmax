@@ -322,6 +322,7 @@ export interface PageMetrics {
 
 export interface PageData {
   id: string;
+  userId?: string;
   blocks: Block[];
   theme: PageTheme;
   seo: {
