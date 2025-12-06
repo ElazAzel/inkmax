@@ -159,6 +159,7 @@ export async function loadPageBySlug(slug: string): Promise<{ data: PageData | n
     // Convert to PageData format
     const pageData: PageData = {
       id: page.id,
+      userId: page.user_id,
       blocks: (page.blocks as DbBlock[])
         .sort((a, b) => a.position - b.position)
         .map(block => block.content as Block),
