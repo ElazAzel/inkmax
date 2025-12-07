@@ -302,6 +302,11 @@ export interface SeparatorBlock {
   blockStyle?: BlockStyle;
 }
 
+export interface CatalogCategory {
+  id: string;
+  name: string | MultilingualString;
+}
+
 export interface CatalogItem {
   id: string;
   name: string | MultilingualString;
@@ -309,12 +314,14 @@ export interface CatalogItem {
   price?: number;
   currency?: Currency;
   image?: string;
+  categoryId?: string;
 }
 
 export interface CatalogBlock {
   id: string;
   type: 'catalog';
   title?: string | MultilingualString;
+  categories?: CatalogCategory[];
   items: CatalogItem[];
   layout?: 'list' | 'grid';
   showPrices?: boolean;
