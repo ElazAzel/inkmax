@@ -47,10 +47,10 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       )}
 
       {/* Control buttons - Mobile Optimized with Arrow buttons */}
-      {isHovered && !isDragging && block.type !== 'profile' && (
+      {isHovered && !isDragging && (
         <div className="absolute -top-2 sm:-top-3 right-1 sm:right-2 flex gap-1 z-20">
-          {/* Arrow controls for reordering */}
-          {onMoveUp && onMoveDown && (
+          {/* Arrow controls for reordering - only for non-profile blocks */}
+          {!isProfileBlock && onMoveUp && onMoveDown && (
             <div className="flex flex-col gap-0.5 bg-background rounded shadow-lg">
               <Button
                 variant="secondary"
@@ -75,14 +75,19 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
             </div>
           )}
           
-          <Button
-            variant="secondary"
-            size="sm"
-            className="h-6 sm:h-7 shadow-lg hidden sm:inline-flex"
-            {...dragHandleProps}
-          >
-            <GripVertical className="h-3 w-3" />
-          </Button>
+          {/* Drag handle - only for non-profile blocks */}
+          {!isProfileBlock && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="h-6 sm:h-7 shadow-lg hidden sm:inline-flex"
+              {...dragHandleProps}
+            >
+              <GripVertical className="h-3 w-3" />
+            </Button>
+          )}
+          
+          {/* Edit button - for all blocks including profile */}
           <Button
             variant="secondary"
             size="sm"
@@ -91,14 +96,18 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
           >
             <Pencil className="h-3 w-3" />
           </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
-            onClick={() => onDelete(block.id)}
-          >
-            <Trash2 className="h-3 w-3" />
-          </Button>
+          
+          {/* Delete button - only for non-profile blocks */}
+          {!isProfileBlock && (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
+              onClick={() => onDelete(block.id)}
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          )}
         </div>
       )}
 
