@@ -1,16 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from './useAuth';
-import { useUserPage, useSavePageMutation, usePublishPageMutation } from '@/hooks/usePageCache';
+import { useUserPage, useSavePageMutation, usePublishPageMutation, pageQueryKeys } from '@/hooks/usePageCache';
 import type { PageData, Block } from '@/types/page';
 import { toast } from 'sonner';
 
 export function useCloudPageState() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [chatbotContext, setChatbotContext] = useState<string>('');
 
   // Use React Query for cached page loading
-  const { data: userData, isLoading: loading } = useUserPage(user?.id);
+  const { data: userData, isLoading: loading, refetch } = useUserPage(user?.id);
   const savePageMutation = useSavePageMutation(user?.id);
   const publishPageMutation = usePublishPageMutation(user?.id);
 
@@ -137,6 +139,15 @@ export function useCloudPageState() {
     }, 1000);
   }, [pageData, user, chatbotContext, savePageMutation]);
 
+  const refresh = useCallback(async () => {
+    if (user?.id) {
+      await queryClient.invalidateQueries({ 
+        queryKey: pageQueryKeys.userPage(user.id) 
+      });
+      await refetch();
+    }
+  }, [user?.id, queryClient, refetch]);
+
   return {
     pageData,
     chatbotContext,
@@ -150,5 +161,6 @@ export function useCloudPageState() {
     deleteBlock,
     reorderBlocks,
     updateTheme,
+    refresh,
   };
 }
