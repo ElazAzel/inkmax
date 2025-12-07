@@ -145,6 +145,14 @@ export default {
 			'75%': {
 				transform: 'translateY(-5px)'
 			}
+		},
+		'shimmer': {
+			'0%': {
+				transform: 'translateX(-100%)'
+			},
+			'100%': {
+				transform: 'translateX(100%)'
+			}
 		}
   		},
   		animation: {
