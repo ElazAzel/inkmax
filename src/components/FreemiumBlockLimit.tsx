@@ -5,17 +5,16 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { FREE_LIMITS } from '@/hooks/useFreemiumLimits';
+import { openPremiumPurchase } from '@/lib/upgrade-utils';
 
 interface FreemiumBlockLimitProps {
   currentBlocks: number;
   isPremium: boolean;
-  onUpgrade?: () => void;
 }
 
 export const FreemiumBlockLimit = memo(function FreemiumBlockLimit({
   currentBlocks,
   isPremium,
-  onUpgrade,
 }: FreemiumBlockLimitProps) {
   const { t } = useTranslation();
   
@@ -55,10 +54,10 @@ export const FreemiumBlockLimit = memo(function FreemiumBlockLimit({
           
           <Progress value={percentage} className="h-1.5" />
           
-          {(isAtLimit || isNearLimit) && onUpgrade && (
+          {(isAtLimit || isNearLimit) && (
             <Button 
               size="sm" 
-              onClick={onUpgrade}
+              onClick={openPremiumPurchase}
               className="mt-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
             >
               <Crown className="h-3.5 w-3.5 mr-1.5" />

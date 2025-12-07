@@ -10,17 +10,16 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { FREE_LIMITS } from '@/hooks/useFreemiumLimits';
+import { openPremiumPurchase } from '@/lib/upgrade-utils';
 
 interface FreemiumAILimitProps {
   remainingRequests: number;
   isPremium: boolean;
-  onUpgrade?: () => void;
 }
 
 export const FreemiumAILimit = memo(function FreemiumAILimit({
   remainingRequests,
   isPremium,
-  onUpgrade,
 }: FreemiumAILimitProps) {
   const { t } = useTranslation();
   
@@ -57,17 +56,15 @@ export const FreemiumAILimit = memo(function FreemiumAILimit({
             <p className="text-xs text-muted-foreground">
               {t('freemium.aiLimitResets', 'Лимит обновляется каждый день')}
             </p>
-            {onUpgrade && (
-              <Button 
-                size="sm" 
-                variant="outline"
-                onClick={onUpgrade}
-                className="w-full mt-2"
-              >
-                <Crown className="h-3 w-3 mr-1.5 text-amber-500" />
-                {t('freemium.unlimitedAI', 'Безлимитный AI')}
-              </Button>
-            )}
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={openPremiumPurchase}
+              className="w-full mt-2"
+            >
+              <Crown className="h-3 w-3 mr-1.5 text-amber-500" />
+              {t('freemium.unlimitedAI', 'Безлимитный AI')}
+            </Button>
           </div>
         </TooltipContent>
       </Tooltip>

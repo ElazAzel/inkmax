@@ -37,6 +37,7 @@ import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { Card } from '@/components/ui/card';
 import { createBlock } from '@/lib/block-factory';
+import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
@@ -484,9 +485,19 @@ export default function Dashboard() {
                     </span>
                   </div>
                   {!isPremium && (
-                    <p className="text-xs text-muted-foreground">
-                      Upgrade to unlock all blocks and features
-                    </p>
+                    <>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Upgrade to unlock all blocks and features
+                      </p>
+                      <Button 
+                        size="sm" 
+                        onClick={openPremiumPurchase}
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                      >
+                        <Crown className="h-3.5 w-3.5 mr-1.5" />
+                        Upgrade to Premium
+                      </Button>
+                    </>
                   )}
                 </Card>
               )}
