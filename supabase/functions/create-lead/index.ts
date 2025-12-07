@@ -138,6 +138,29 @@ serve(async (req) => {
 
     console.log(`Lead created for user ${pageOwnerId}: ${lead.id} (IP: ${ipAddress})`);
 
+    // Send email notification asynchronously (don't wait for it)
+    try {
+      const notificationUrl = `${supabaseUrl}/functions/v1/send-lead-notification`;
+      fetch(notificationUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseKey}`,
+        },
+        body: JSON.stringify({
+          leadId: lead.id,
+          pageOwnerId,
+          leadName: name.trim(),
+          leadEmail: email?.trim() || null,
+          leadPhone: phone?.trim() || null,
+          source: source || 'form',
+        }),
+      }).catch(err => console.error('Failed to send notification:', err));
+    } catch (notifyError) {
+      console.error('Error triggering notification:', notifyError);
+      // Don't fail the lead creation if notification fails
+    }
+
     return new Response(
       JSON.stringify({ success: true, leadId: lead.id }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
