@@ -1,5 +1,22 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { PageData, Block } from '@/types/page';
+import type { PageData, Block, ProfileBlock } from '@/types/page';
+
+// Default profile block with all required fields
+const createDefaultProfileBlock = (): ProfileBlock => ({
+  id: 'profile-1',
+  type: 'profile',
+  name: 'Your Name',
+  bio: 'Your bio goes here',
+  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
+  verified: false,
+  avatarFrame: 'default',
+  coverImage: '',
+  coverGradient: 'none',
+  coverHeight: 'medium',
+  avatarSize: 'large',
+  avatarPosition: 'center',
+  shadowStyle: 'soft',
+});
 
 export interface DbPage {
   id: string;
@@ -200,14 +217,7 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
         return { 
           data: {
             id: userId,
-            blocks: [
-              {
-                id: 'profile-1',
-                type: 'profile',
-                name: 'Your Name',
-                bio: 'Your bio goes here',
-              },
-            ],
+            blocks: [createDefaultProfileBlock()],
             theme: {
               backgroundColor: 'hsl(var(--background))',
               textColor: 'hsl(var(--foreground))',
@@ -227,19 +237,11 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
       return { data: null, chatbotContext: null, error: pageError };
     }
 
-    // If no page exists, return default data
     if (!page) {
       return { 
         data: {
           id: userId,
-          blocks: [
-            {
-              id: 'profile-1',
-              type: 'profile',
-              name: 'Your Name',
-              bio: 'Your bio goes here',
-            },
-          ],
+          blocks: [createDefaultProfileBlock()],
           theme: {
             backgroundColor: 'hsl(var(--background))',
             textColor: 'hsl(var(--foreground))',
