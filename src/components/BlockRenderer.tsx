@@ -45,7 +45,10 @@ const MapBlock = lazy(() => import('./blocks/MapBlock').then(m => ({ default: m.
 const AvatarBlock = lazy(() => import('./blocks/AvatarBlock').then(m => ({ default: m.AvatarBlock })));
 const SeparatorBlock = lazy(() => import('./blocks/SeparatorBlock').then(m => ({ default: m.SeparatorBlock })));
 const CatalogBlock = lazy(() => import('./blocks/CatalogBlock').then(m => ({ default: m.CatalogBlock })));
-
+const BeforeAfterBlock = lazy(() => import('./blocks/BeforeAfterBlock').then(m => ({ default: m.BeforeAfterBlock })));
+const FAQBlock = lazy(() => import('./blocks/FAQBlock').then(m => ({ default: m.FAQBlock })));
+const CountdownBlock = lazy(() => import('./blocks/CountdownBlock').then(m => ({ default: m.CountdownBlock })));
+const PricingBlock = lazy(() => import('./blocks/PricingBlock').then(m => ({ default: m.PricingBlock })));
 interface BlockRendererProps {
   block: Block;
   isPreview?: boolean;
@@ -233,6 +236,38 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
             <CatalogBlock block={block} />
+          </Suspense>
+        </div>
+      );
+    case 'before_after':
+      return (
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <BeforeAfterBlock block={block} />
+          </Suspense>
+        </div>
+      );
+    case 'faq':
+      return (
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <FAQBlock block={block} />
+          </Suspense>
+        </div>
+      );
+    case 'countdown':
+      return (
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <CountdownBlock block={block} />
+          </Suspense>
+        </div>
+      );
+    case 'pricing':
+      return (
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <PricingBlock block={block} />
           </Suspense>
         </div>
       );
