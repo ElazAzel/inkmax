@@ -83,7 +83,7 @@ serve(async (req) => {
       throw new Error('Request body is empty');
     }
     
-    const { type, input } = JSON.parse(text);
+    const { type, input, prompt } = JSON.parse(text);
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
@@ -166,6 +166,15 @@ Include 3-6 relevant blocks based on the description. Return ONLY valid JSON, no
         userPrompt = `Создай страницу для: ${input.niche}. Имя: ${input.name}. Детали: ${input.details || 'нет'}`;
         break;
 
+      case 'search':
+        systemPrompt = `Ты - умный поисковой помощник. Отвечай на вопросы пользователя кратко, информативно и полезно. 
+Если вопрос требует фактической информации, старайся давать точные ответы.
+Если это субъективный вопрос, предложи разные точки зрения.
+Отвечай на языке вопроса (русский/английский/казахский).
+Будь дружелюбным и профессиональным.`;
+        userPrompt = prompt || input?.query || 'Привет';
+        break;
+
       default:
         throw new Error('Invalid type');
     }
@@ -208,7 +217,7 @@ Include 3-6 relevant blocks based on the description. Return ONLY valid JSON, no
     const content = data.choices[0].message.content;
 
     // For SEO and AI Builder, parse JSON response
-    if (type === 'seo' || type === 'ai-builder') {
+    if (type === 'seo' || type === 'ai-builder' || type === 'niche-builder') {
       try {
         const cleanContent = content.replace(/```json\n?|\n?```/g, '').trim();
         const parsed = JSON.parse(cleanContent);
@@ -218,8 +227,24 @@ Include 3-6 relevant blocks based on the description. Return ONLY valid JSON, no
         );
       } catch (e) {
         console.error('Failed to parse JSON:', content);
-        throw new Error('Invalid JSON response from AI');
+        // For niche-builder, return error if JSON fails
+        if (type === 'niche-builder') {
+          throw new Error('Invalid JSON response from AI');
+        }
+        // For others, return raw content
+        return new Response(
+          JSON.stringify({ result: content.trim() }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
+    }
+
+    // For search, return content directly
+    if (type === 'search') {
+      return new Response(
+        JSON.stringify({ content: content.trim() }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // For text responses
