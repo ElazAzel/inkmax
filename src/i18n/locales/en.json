@@ -156,7 +156,10 @@
     "creatingAccount": "Creating account...",
     "backToHome": "← Back to Home",
     "createAccount": "Create Account",
-    "welcomeBack": "Welcome back!"
+    "welcomeBack": "Welcome back!",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "orContinueWith": "or continue with email"
   },
   "editor": {
     "title": "Page Editor",

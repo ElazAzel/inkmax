@@ -156,7 +156,10 @@
     "creatingAccount": "Создание аккаунта...",
     "backToHome": "← Назад на главную",
     "createAccount": "Создать аккаунт",
-    "welcomeBack": "С возвращением!"
+    "welcomeBack": "С возвращением!",
+    "continueWithGoogle": "Продолжить через Google",
+    "continueWithApple": "Продолжить через Apple",
+    "orContinueWith": "или продолжить с email"
   },
   "editor": {
     "title": "Редактор страницы",

@@ -156,7 +156,10 @@
     "creatingAccount": "Аккаунт жасау...",
     "backToHome": "← Басты бетке оралу",
     "createAccount": "Аккаунт жасау",
-    "welcomeBack": "Қош келдіңіз!"
+    "welcomeBack": "Қош келдіңіз!",
+    "continueWithGoogle": "Google арқылы жалғастыру",
+    "continueWithApple": "Apple арқылы жалғастыру",
+    "orContinueWith": "немесе email арқылы жалғастыру"
   },
   "editor": {
     "title": "Бет редакторы",
