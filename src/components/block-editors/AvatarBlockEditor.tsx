@@ -1,11 +1,12 @@
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import type { AvatarBlock } from '@/types/page';
 import { withBlockEditor } from './BlockEditorWrapper';
+import { useTranslation } from 'react-i18next';
 
 interface AvatarBlockEditorProps {
   formData: AvatarBlock;
@@ -13,34 +14,33 @@ interface AvatarBlockEditorProps {
 }
 
 function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>URL изображения *</Label>
-        <Input
-          type="url"
-          placeholder="https://example.com/avatar.jpg"
-          value={formData.imageUrl}
-          onChange={(e) => onChange({ imageUrl: e.target.value })}
-        />
-      </div>
+      <MediaUpload
+        label={t('fields.imageUrl', 'Image URL') + ' *'}
+        value={formData.imageUrl}
+        onChange={(imageUrl) => onChange({ imageUrl })}
+        accept="image/*"
+      />
 
       <MultilingualInput
-        label="Имя"
+        label={t('fields.name', 'Name')}
         value={migrateToMultilingual(formData.name)}
         onChange={(value) => onChange({ name: value })}
         required
       />
 
       <MultilingualInput
-        label="Подзаголовок (опционально)"
+        label={t('fields.subtitle', 'Subtitle') + ` (${t('fields.optional', 'optional')})`}
         value={migrateToMultilingual(formData.subtitle)}
         onChange={(value) => onChange({ subtitle: value })}
       />
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Размер</Label>
+          <Label>{t('fields.size', 'Size')}</Label>
           <Select
             value={formData.size || 'medium'}
             onValueChange={(value: 'small' | 'medium' | 'large' | 'xlarge') => onChange({ size: value })}
@@ -49,16 +49,16 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="small">Маленький</SelectItem>
-              <SelectItem value="medium">Средний</SelectItem>
-              <SelectItem value="large">Большой</SelectItem>
-              <SelectItem value="xlarge">Очень большой</SelectItem>
+              <SelectItem value="small">{t('sizes.small', 'Small')}</SelectItem>
+              <SelectItem value="medium">{t('sizes.medium', 'Medium')}</SelectItem>
+              <SelectItem value="large">{t('sizes.large', 'Large')}</SelectItem>
+              <SelectItem value="xlarge">{t('sizes.xlarge', 'Extra Large')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-2">
-          <Label>Форма</Label>
+          <Label>{t('fields.shape', 'Shape')}</Label>
           <Select
             value={formData.shape || 'circle'}
             onValueChange={(value: 'circle' | 'rounded' | 'square') => onChange({ shape: value })}
@@ -67,16 +67,16 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="circle">Круг</SelectItem>
-              <SelectItem value="rounded">Скруглённый</SelectItem>
-              <SelectItem value="square">Квадрат</SelectItem>
+              <SelectItem value="circle">{t('shapes.circle', 'Circle')}</SelectItem>
+              <SelectItem value="rounded">{t('shapes.rounded', 'Rounded')}</SelectItem>
+              <SelectItem value="square">{t('shapes.square', 'Square')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label>Тень</Label>
+        <Label>{t('fields.shadow', 'Shadow')}</Label>
         <Select
           value={formData.shadow || 'soft'}
           onValueChange={(value: 'none' | 'soft' | 'medium' | 'strong' | 'glow') => onChange({ shadow: value })}
@@ -85,17 +85,17 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">Без тени</SelectItem>
-            <SelectItem value="soft">Мягкая</SelectItem>
-            <SelectItem value="medium">Средняя</SelectItem>
-            <SelectItem value="strong">Сильная</SelectItem>
-            <SelectItem value="glow">Свечение</SelectItem>
+            <SelectItem value="none">{t('shadows.none', 'No Shadow')}</SelectItem>
+            <SelectItem value="soft">{t('shadows.soft', 'Soft')}</SelectItem>
+            <SelectItem value="medium">{t('shadows.medium', 'Medium')}</SelectItem>
+            <SelectItem value="strong">{t('shadows.strong', 'Strong')}</SelectItem>
+            <SelectItem value="glow">{t('shadows.glow', 'Glow')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="flex items-center justify-between">
-        <Label>Рамка</Label>
+        <Label>{t('fields.border', 'Border')}</Label>
         <Switch
           checked={formData.border || false}
           onCheckedChange={(checked) => onChange({ border: checked })}
@@ -103,7 +103,7 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
       </div>
 
       <div className="space-y-2">
-        <Label>Выравнивание</Label>
+        <Label>{t('fields.alignment', 'Alignment')}</Label>
         <Select
           value={formData.alignment || 'center'}
           onValueChange={(value: 'left' | 'center' | 'right') => onChange({ alignment: value })}
@@ -112,9 +112,9 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="left">Слева</SelectItem>
-            <SelectItem value="center">По центру</SelectItem>
-            <SelectItem value="right">Справа</SelectItem>
+            <SelectItem value="left">{t('fields.left', 'Left')}</SelectItem>
+            <SelectItem value="center">{t('fields.center', 'Center')}</SelectItem>
+            <SelectItem value="right">{t('fields.right', 'Right')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -127,11 +127,11 @@ export const AvatarBlockEditor = withBlockEditor(
   {
     validate: (data) => {
       if (!data.imageUrl || data.imageUrl.trim() === '') {
-        return 'URL изображения обязателен';
+        return 'Image URL is required';
       }
       const nameStr = typeof data.name === 'string' ? data.name : data.name?.ru || '';
       if (!nameStr || nameStr.trim() === '') {
-        return 'Имя обязательно';
+        return 'Name is required';
       }
       return null;
     }
