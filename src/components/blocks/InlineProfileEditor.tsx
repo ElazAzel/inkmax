@@ -34,10 +34,12 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
   const [editedName, setEditedName] = useState(name);
   const [editedBio, setEditedBio] = useState(bio);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
   
   const nameInputRef = useRef<HTMLInputElement>(null);
   const bioInputRef = useRef<HTMLTextAreaElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setEditedName(name);
@@ -151,6 +153,59 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
     }
   };
 
+  const handleCoverClick = () => {
+    coverInputRef.current?.click();
+  };
+
+  const handleCoverUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!user) {
+      toast.error(t('auth.required', 'Please sign in to upload'));
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error(t('upload.fileTooLarge', 'File size must be less than 10MB'));
+      return;
+    }
+
+    setIsUploadingCover(true);
+
+    try {
+      let processedFile = file;
+      if (file.type.startsWith('image/') && file.type !== 'image/gif') {
+        processedFile = await compressImage(file);
+      }
+
+      const fileExt = processedFile.name.split('.').pop();
+      const fileName = `cover-${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('user-media')
+        .upload(filePath, processedFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('user-media')
+        .getPublicUrl(filePath);
+
+      onUpdate({ coverImage: publicUrl });
+      toast.success(t('upload.coverSuccess', 'Cover updated'));
+    } catch (error) {
+      console.error('Cover upload error:', error);
+      toast.error(t('upload.error', 'Failed to upload cover'));
+    } finally {
+      setIsUploadingCover(false);
+      if (coverInputRef.current) {
+        coverInputRef.current.value = '';
+      }
+    }
+  };
+
   const initials = name
     .split(' ')
     .map(n => n[0])
@@ -248,18 +303,53 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
 
   return (
     <div className={`relative flex flex-col ${getPositionClass()}`}>
-      {block.coverImage && (
-        <div className={`relative w-full ${getCoverHeight()} overflow-hidden`}>
-          <img 
-            src={block.coverImage} 
-            alt="Cover" 
-            className="w-full h-full object-cover"
-          />
-          {block.coverGradient !== 'none' && (
-            <div className={`absolute inset-0 ${getCoverGradient()}`} />
+      {/* Hidden file input for cover upload */}
+      <input
+        ref={coverInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleCoverUpload}
+        className="hidden"
+      />
+      
+      {/* Cover image area - clickable */}
+      <div 
+        className={`relative w-full ${getCoverHeight()} overflow-hidden cursor-pointer group/cover ${!block.coverImage ? 'bg-muted border-2 border-dashed border-border' : ''}`}
+        onClick={handleCoverClick}
+        title={t('profile.clickToChangeCover', 'Click to add/change cover')}
+      >
+        {block.coverImage ? (
+          <>
+            <img 
+              src={block.coverImage} 
+              alt="Cover" 
+              className="w-full h-full object-cover"
+            />
+            {block.coverGradient !== 'none' && (
+              <div className={`absolute inset-0 ${getCoverGradient()}`} />
+            )}
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center text-muted-foreground">
+              <Camera className="h-8 w-8 mx-auto mb-2" />
+              <span className="text-sm">{t('profile.addCover', 'Add cover image')}</span>
+            </div>
+          </div>
+        )}
+        
+        {/* Upload overlay */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/cover:opacity-100 transition-opacity">
+          {isUploadingCover ? (
+            <Loader2 className="h-10 w-10 text-white animate-spin" />
+          ) : (
+            <div className="text-center text-white">
+              <Camera className="h-10 w-10 mx-auto mb-2" />
+              <span className="text-sm font-medium">{block.coverImage ? t('profile.changeCover', 'Change cover') : t('profile.addCover', 'Add cover')}</span>
+            </div>
           )}
         </div>
-      )}
+      </div>
       
       <div className={`flex flex-col ${getPositionClass()} gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
         {/* Hidden file input for avatar upload */}
