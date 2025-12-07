@@ -23,8 +23,21 @@ export function getTranslatedString(
   // If it's a plain string, return it
   if (typeof value === 'string') return value;
   
-  // If it's a multilingual object, get the translation
-  return value[language] || value[fallbackLanguage] || value.ru || Object.values(value)[0] || '';
+  // If it's a multilingual object, get the translation with proper fallback chain
+  const translation = value[language];
+  if (translation && translation.trim() !== '') return translation;
+  
+  // Fallback chain: requested language -> fallback language -> ru -> en -> kk -> first non-empty value
+  const fallbackValue = value[fallbackLanguage];
+  if (fallbackValue && fallbackValue.trim() !== '') return fallbackValue;
+  
+  if (value.ru && value.ru.trim() !== '') return value.ru;
+  if (value.en && value.en.trim() !== '') return value.en;
+  if (value.kk && value.kk.trim() !== '') return value.kk;
+  
+  // Return first non-empty value
+  const nonEmpty = Object.values(value).find(v => v && v.trim() !== '');
+  return nonEmpty || '';
 }
 
 /**
@@ -46,10 +59,11 @@ export function isMultilingualString(value: any): value is MultilingualString {
 }
 
 /**
- * Convert old string to multilingual format
+ * Convert old string to multilingual format, preserving original in all fields initially
  */
 export function migrateToMultilingual(value: string | MultilingualString | undefined): MultilingualString {
   if (!value) return createMultilingualString();
   if (isMultilingualString(value)) return value;
-  return { ru: value, en: '', kk: '' };
+  // Put the original value in all language fields so it shows regardless of selected language
+  return { ru: value, en: value, kk: value };
 }
