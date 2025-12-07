@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { Upload, X, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { compressImage, getCompressionStats } from '@/lib/image-compression';
 
 interface MediaUploadProps {
   value: string;
@@ -27,6 +28,8 @@ export function MediaUpload({
   const { t } = useTranslation();
   const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
+  const [compressionInfo, setCompressionInfo] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>(value ? 'url' : 'upload');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,22 +42,38 @@ export function MediaUpload({
       return;
     }
 
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error(t('upload.fileTooLarge', 'File size must be less than 5MB'));
+    // Validate file size (10MB limit before compression)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error(t('upload.fileTooLarge', 'File size must be less than 10MB'));
       return;
     }
 
-    setUploading(true);
+    setCompressing(true);
+    setCompressionInfo(null);
 
     try {
-      const fileExt = file.name.split('.').pop();
+      // Compress image if it's an image file
+      let processedFile = file;
+      if (file.type.startsWith('image/') && file.type !== 'image/gif') {
+        const originalSize = file.size;
+        processedFile = await compressImage(file);
+        
+        if (processedFile.size < originalSize) {
+          const stats = getCompressionStats(originalSize, processedFile.size);
+          setCompressionInfo(`${stats.percentage}% ${t('upload.compressed', 'compressed')}`);
+        }
+      }
+
+      setCompressing(false);
+      setUploading(true);
+
+      const fileExt = processedFile.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('user-media')
-        .upload(filePath, file);
+        .upload(filePath, processedFile);
 
       if (uploadError) {
         throw uploadError;
@@ -69,7 +88,9 @@ export function MediaUpload({
     } catch (error: any) {
       console.error('Upload error:', error);
       toast.error(t('upload.error', 'Failed to upload file'));
+      setCompressionInfo(null);
     } finally {
+      setCompressing(false);
       setUploading(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -79,7 +100,10 @@ export function MediaUpload({
 
   const handleRemove = () => {
     onChange('');
+    setCompressionInfo(null);
   };
+
+  const isProcessing = uploading || compressing;
 
   return (
     <div className="space-y-2">
@@ -124,6 +148,12 @@ export function MediaUpload({
               >
                 <X className="h-4 w-4" />
               </Button>
+              {compressionInfo && (
+                <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-primary/90 text-primary-foreground text-xs px-2 py-1 rounded">
+                  <CheckCircle className="h-3 w-3" />
+                  {compressionInfo}
+                </div>
+              )}
             </div>
           ) : (
             <Button
@@ -131,9 +161,14 @@ export function MediaUpload({
               variant="outline"
               className="w-full h-32 flex flex-col gap-2"
               onClick={() => fileInputRef.current?.click()}
-              disabled={uploading || !user}
+              disabled={isProcessing || !user}
             >
-              {uploading ? (
+              {compressing ? (
+                <>
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <span>{t('upload.compressing', 'Compressing...')}</span>
+                </>
+              ) : uploading ? (
                 <>
                   <Loader2 className="h-6 w-6 animate-spin" />
                   <span>{t('upload.uploading', 'Uploading...')}</span>
@@ -143,7 +178,7 @@ export function MediaUpload({
                   <Upload className="h-6 w-6" />
                   <span>{t('upload.click', 'Click to upload')}</span>
                   <span className="text-xs text-muted-foreground">
-                    {t('upload.maxSize', 'Max 5MB')}
+                    {t('upload.autoCompress', 'Auto-compressed, max 10MB')}
                   </span>
                 </>
               )}
