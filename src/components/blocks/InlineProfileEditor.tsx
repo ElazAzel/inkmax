@@ -4,9 +4,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle2, Check, X } from 'lucide-react';
+import { CheckCircle2, Check, X, Camera, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { compressImage } from '@/lib/image-compression';
+import { toast } from 'sonner';
 import type { ProfileBlock as ProfileBlockType } from '@/types/page';
 
 interface InlineProfileEditorProps {
@@ -18,7 +22,8 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
   block, 
   onUpdate 
 }: InlineProfileEditorProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
   const currentLang = i18n.language as SupportedLanguage;
   
   const name = getTranslatedString(block.name, currentLang);
@@ -28,9 +33,11 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [editedName, setEditedName] = useState(name);
   const [editedBio, setEditedBio] = useState(bio);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   
   const nameInputRef = useRef<HTMLInputElement>(null);
   const bioInputRef = useRef<HTMLTextAreaElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setEditedName(name);
@@ -87,6 +94,60 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
   const handleBioKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleCancelBio();
+    }
+  };
+
+  const handleAvatarClick = () => {
+    avatarInputRef.current?.click();
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!user) {
+      toast.error(t('auth.required', 'Please sign in to upload'));
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error(t('upload.fileTooLarge', 'File size must be less than 10MB'));
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+
+    try {
+      // Compress the image
+      let processedFile = file;
+      if (file.type.startsWith('image/') && file.type !== 'image/gif') {
+        processedFile = await compressImage(file);
+      }
+
+      const fileExt = processedFile.name.split('.').pop();
+      const fileName = `avatar-${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('user-media')
+        .upload(filePath, processedFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('user-media')
+        .getPublicUrl(filePath);
+
+      onUpdate({ avatar: publicUrl });
+      toast.success(t('upload.success', 'Avatar updated'));
+    } catch (error) {
+      console.error('Avatar upload error:', error);
+      toast.error(t('upload.error', 'Failed to upload avatar'));
+    } finally {
+      setIsUploadingAvatar(false);
+      if (avatarInputRef.current) {
+        avatarInputRef.current.value = '';
+      }
     }
   };
 
@@ -201,13 +262,36 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
       )}
       
       <div className={`flex flex-col ${getPositionClass()} gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
-        <div className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()}`}>
+        {/* Hidden file input for avatar upload */}
+        <input
+          ref={avatarInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleAvatarUpload}
+          className="hidden"
+        />
+        
+        {/* Clickable Avatar */}
+        <div 
+          className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()} relative cursor-pointer group/avatar`}
+          onClick={handleAvatarClick}
+          title={t('profile.clickToChangeAvatar', 'Click to change avatar')}
+        >
           <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
             <AvatarImage src={block.avatar} alt={name} />
             <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
               {initials}
             </AvatarFallback>
           </Avatar>
+          
+          {/* Upload overlay */}
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover/avatar:opacity-100 transition-opacity">
+            {isUploadingAvatar ? (
+              <Loader2 className="h-8 w-8 text-white animate-spin" />
+            ) : (
+              <Camera className="h-8 w-8 text-white" />
+            )}
+          </div>
         </div>
         
         <div className="text-center space-y-2 w-full max-w-md">
