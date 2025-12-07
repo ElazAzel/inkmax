@@ -4,8 +4,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle2, Check, X, Camera, Loader2 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { CheckCircle2, Check, X, Camera, Loader2, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -330,20 +343,79 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
               <div className={`absolute inset-0 ${getCoverGradient()} pointer-events-none`} />
             )}
             
-            {/* Delete button */}
-            <Button
-              size="icon"
-              variant="destructive"
-              className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover/cover:opacity-100 transition-opacity z-10"
-              onClick={(e) => {
-                e.stopPropagation();
-                onUpdate({ coverImage: '' });
-                toast.success(t('profile.coverRemoved', 'Cover removed'));
-              }}
-              title={t('profile.removeCover', 'Remove cover')}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            {/* Cover controls */}
+            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover/cover:opacity-100 transition-opacity z-10">
+              {/* Settings popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className="h-8 w-8"
+                    onClick={(e) => e.stopPropagation()}
+                    title={t('profile.coverSettings', 'Cover settings')}
+                  >
+                    <Settings2 className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-56" align="end" onClick={(e) => e.stopPropagation()}>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs">{t('profile.coverHeight', 'Height')}</Label>
+                      <Select
+                        value={block.coverHeight || 'medium'}
+                        onValueChange={(value) => onUpdate({ coverHeight: value as 'small' | 'medium' | 'large' })}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="small">{t('profile.small', 'Small')}</SelectItem>
+                          <SelectItem value="medium">{t('profile.medium', 'Medium')}</SelectItem>
+                          <SelectItem value="large">{t('profile.large', 'Large')}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-xs">{t('profile.coverGradient', 'Gradient overlay')}</Label>
+                      <Select
+                        value={block.coverGradient || 'none'}
+                        onValueChange={(value) => onUpdate({ coverGradient: value as 'none' | 'dark' | 'light' | 'primary' | 'sunset' | 'ocean' | 'purple' })}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">{t('profile.none', 'None')}</SelectItem>
+                          <SelectItem value="dark">{t('profile.dark', 'Dark')}</SelectItem>
+                          <SelectItem value="light">{t('profile.light', 'Light')}</SelectItem>
+                          <SelectItem value="primary">{t('profile.primary', 'Primary')}</SelectItem>
+                          <SelectItem value="sunset">{t('profile.sunset', 'Sunset')}</SelectItem>
+                          <SelectItem value="ocean">{t('profile.ocean', 'Ocean')}</SelectItem>
+                          <SelectItem value="purple">{t('profile.purple', 'Purple')}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
+              {/* Delete button */}
+              <Button
+                size="icon"
+                variant="destructive"
+                className="h-8 w-8"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpdate({ coverImage: '' });
+                  toast.success(t('profile.coverRemoved', 'Cover removed'));
+                }}
+                title={t('profile.removeCover', 'Remove cover')}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </>
         ) : (
           <div className="flex items-center justify-center h-full">
