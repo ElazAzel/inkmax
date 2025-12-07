@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing';
 
 // Multilingual string support
 import type { MultilingualString } from '@/lib/i18n-helpers';
@@ -331,7 +331,73 @@ export interface CatalogBlock {
   blockStyle?: BlockStyle;
 }
 
-export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock;
+// Before/After comparison block
+export interface BeforeAfterBlock {
+  id: string;
+  type: 'before_after';
+  title?: string | MultilingualString;
+  beforeImage: string;
+  afterImage: string;
+  beforeLabel?: string | MultilingualString;
+  afterLabel?: string | MultilingualString;
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
+// FAQ Block
+export interface FAQItem {
+  id: string;
+  question: string | MultilingualString;
+  answer: string | MultilingualString;
+}
+
+export interface FAQBlock {
+  id: string;
+  type: 'faq';
+  title?: string | MultilingualString;
+  items: FAQItem[];
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
+// Countdown Timer Block
+export interface CountdownBlock {
+  id: string;
+  type: 'countdown';
+  title?: string | MultilingualString;
+  targetDate: string; // ISO date string
+  expiredText?: string | MultilingualString;
+  showDays?: boolean;
+  showHours?: boolean;
+  showMinutes?: boolean;
+  showSeconds?: boolean;
+  isPremium: true;
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
+// Pricing Block
+export interface PricingItem {
+  id: string;
+  name: string | MultilingualString;
+  description?: string | MultilingualString;
+  price: number;
+  currency?: Currency;
+  period?: string | MultilingualString; // e.g., "per hour", "per session"
+  featured?: boolean;
+}
+
+export interface PricingBlock {
+  id: string;
+  type: 'pricing';
+  title?: string | MultilingualString;
+  items: PricingItem[];
+  currency?: Currency;
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
+export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock;
 
 export interface PageTheme {
   backgroundColor: string;

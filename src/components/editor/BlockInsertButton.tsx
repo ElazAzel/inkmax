@@ -45,10 +45,13 @@ const ALL_BLOCKS = [
   { type: 'avatar', label: 'Avatar', icon: '👤', category: 'Content', premium: false },
   { type: 'separator', label: 'Separator', icon: '➖', category: 'Content', premium: false },
   { type: 'map', label: 'Map', icon: '🗺️', category: 'Content', premium: false },
+  { type: 'before_after', label: 'Before/After', icon: '🔄', category: 'Content', premium: false },
+  { type: 'faq', label: 'FAQ', icon: '❓', category: 'Content', premium: false },
   
   // Shop & Products
   { type: 'product', label: 'Product', icon: '🛍️', category: 'Shop', premium: false },
   { type: 'catalog', label: 'Catalog', icon: '📋', category: 'Shop', premium: true },
+  { type: 'pricing', label: 'Pricing', icon: '💰', category: 'Shop', premium: false },
   { type: 'download', label: 'Download', icon: '📥', category: 'Shop', premium: true },
   
   // Forms & Communication
@@ -60,6 +63,7 @@ const ALL_BLOCKS = [
   { type: 'testimonial', label: 'Testimonials', icon: '⭐', category: 'Interactive', premium: true },
   { type: 'scratch', label: 'Scratch Card', icon: '🎁', category: 'Interactive', premium: true },
   { type: 'search', label: 'AI Search', icon: '🔍', category: 'Interactive', premium: true },
+  { type: 'countdown', label: 'Countdown', icon: '⏰', category: 'Interactive', premium: true },
   
   // Advanced
   { type: 'custom_code', label: 'Custom Code', icon: '💻', category: 'Advanced', premium: true },

@@ -44,7 +44,10 @@ const MapBlockEditor = lazy(() => import('./block-editors/MapBlockEditor').then(
 const AvatarBlockEditor = lazy(() => import('./block-editors/AvatarBlockEditor').then(m => ({ default: m.AvatarBlockEditor })));
 const SeparatorBlockEditor = lazy(() => import('./block-editors/SeparatorBlockEditor').then(m => ({ default: m.SeparatorBlockEditor })));
 const CatalogBlockEditor = lazy(() => import('./block-editors/CatalogBlockEditor').then(m => ({ default: m.CatalogBlockEditor })));
-
+const BeforeAfterBlockEditor = lazy(() => import('./block-editors/BeforeAfterBlockEditor').then(m => ({ default: m.BeforeAfterBlockEditor })));
+const FAQBlockEditor = lazy(() => import('./block-editors/FAQBlockEditor').then(m => ({ default: m.FAQBlockEditor })));
+const CountdownBlockEditor = lazy(() => import('./block-editors/CountdownBlockEditor').then(m => ({ default: m.CountdownBlockEditor })));
+const PricingBlockEditor = lazy(() => import('./block-editors/PricingBlockEditor').then(m => ({ default: m.PricingBlockEditor })));
 interface BlockEditorProps {
   block: Block | null;
   isOpen: boolean;
@@ -231,6 +234,34 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <Suspense fallback={<EditorFallback />}>
             <CatalogBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'before_after':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <BeforeAfterBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'faq':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <FAQBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'countdown':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <CountdownBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'pricing':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <PricingBlockEditor {...commonProps} />
           </Suspense>
         );
       
