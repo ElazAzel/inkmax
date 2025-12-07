@@ -1,11 +1,14 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateCarouselBlock } from '@/lib/block-validators';
-import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
-import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
+import { useTranslation } from 'react-i18next';
+import { Trash2 } from 'lucide-react';
 
 function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
   const images = formData.images || [];
 
   const addImage = () => {
@@ -31,42 +34,52 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
   return (
     <div className="space-y-4">
       <div>
-        <Label>Title (optional)</Label>
+        <Label>{t('fields.title', 'Title')} ({t('fields.optional', 'optional')})</Label>
         <Input
           value={formData.title || ''}
           onChange={(e) => onChange({ ...formData, title: e.target.value })}
         />
       </div>
 
-      <ArrayFieldList label="Images" items={images} onAdd={addImage}>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label>{t('fields.images', 'Images')}</Label>
+          <Button type="button" variant="outline" size="sm" onClick={addImage}>
+            {t('actions.addImage', 'Add Image')}
+          </Button>
+        </div>
+
         {images.map((image: any, index: number) => (
-          <ArrayFieldItem
-            key={index}
-            index={index}
-            label="Image"
-            onRemove={() => removeImage(index)}
-          >
-            <div>
-              <Label className="text-xs">Image URL</Label>
-              <Input
-                type="url"
-                value={image.url}
-                onChange={(e) => updateImage(index, 'url', e.target.value)}
-                placeholder="https://example.com/image.jpg"
-              />
+          <div key={index} className="border rounded-lg p-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">{t('fields.image', 'Image')} {index + 1}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeImage(index)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
 
+            <MediaUpload
+              value={image.url}
+              onChange={(url) => updateImage(index, 'url', url)}
+              accept="image/*"
+            />
+
             <div>
-              <Label className="text-xs">Alt Text</Label>
+              <Label className="text-xs">{t('fields.altText', 'Alt Text')}</Label>
               <Input
                 value={image.alt}
                 onChange={(e) => updateImage(index, 'alt', e.target.value)}
-                placeholder="Image description"
+                placeholder={t('fields.imageDescription', 'Image description')}
               />
             </div>
 
             <div>
-              <Label className="text-xs">Link (optional)</Label>
+              <Label className="text-xs">{t('fields.link', 'Link')} ({t('fields.optional', 'optional')})</Label>
               <Input
                 type="url"
                 value={image.link || ''}
@@ -74,9 +87,9 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
                 placeholder="https://example.com"
               />
             </div>
-          </ArrayFieldItem>
+          </div>
         ))}
-      </ArrayFieldList>
+      </div>
 
       <div className="flex items-center gap-2">
         <input
@@ -86,12 +99,12 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
           onChange={(e) => onChange({ ...formData, autoPlay: e.target.checked })}
           className="h-4 w-4"
         />
-        <Label htmlFor="autoPlay" className="cursor-pointer">Auto-play</Label>
+        <Label htmlFor="autoPlay" className="cursor-pointer">{t('fields.autoPlay', 'Auto-play')}</Label>
       </div>
 
       {formData.autoPlay && (
         <div>
-          <Label>Interval (ms)</Label>
+          <Label>{t('fields.interval', 'Interval')} (ms)</Label>
           <Input
             type="number"
             value={formData.interval || 3000}

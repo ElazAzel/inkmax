@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
+import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { generateSalesCopy } from '@/lib/ai-helpers';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateProductBlock } from '@/lib/block-validators';
@@ -26,7 +27,6 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         price: formData.price,
         currency: formData.currency || 'KZT',
       });
-      // Set generated description for current language
       const currentDesc = migrateToMultilingual(formData.description);
       onChange({ 
         ...formData, 
@@ -45,7 +45,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
   return (
     <div className="space-y-4">
       <MultilingualInput
-        label={t('fields.productName')}
+        label={t('fields.productName', 'Product Name')}
         value={migrateToMultilingual(formData.name)}
         onChange={(value) => onChange({ ...formData, name: value })}
         placeholder="Product Name"
@@ -54,7 +54,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <Label>{t('fields.price')}</Label>
+          <Label>{t('fields.price', 'Price')}</Label>
           <Input
             type="number"
             value={formData.price || ''}
@@ -62,7 +62,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
           />
         </div>
         <div>
-          <Label>{t('fields.currency')}</Label>
+          <Label>{t('fields.currency', 'Currency')}</Label>
           <CurrencySelect
             value={formData.currency || 'KZT'}
             onValueChange={(value) => onChange({ ...formData, currency: value })}
@@ -72,7 +72,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       
       <div>
         <MultilingualInput
-          label={t('fields.description')}
+          label={t('fields.description', 'Description')}
           value={migrateToMultilingual(formData.description)}
           onChange={(value) => onChange({ ...formData, description: value })}
           type="textarea"
@@ -89,17 +89,15 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         </div>
       </div>
       
-      <div>
-        <Label>{t('fields.imageUrl')} {t('fields.optional')}</Label>
-        <Input
-          type="url"
-          value={formData.image || ''}
-          onChange={(e) => onChange({ ...formData, image: e.target.value })}
-        />
-      </div>
+      <MediaUpload
+        label={t('fields.productImage', 'Product Image') + ` (${t('fields.optional', 'optional')})`}
+        value={formData.image || ''}
+        onChange={(image) => onChange({ ...formData, image })}
+        accept="image/*"
+      />
       
       <div>
-        <Label>{t('fields.buyLink')} {t('fields.optional')}</Label>
+        <Label>{t('fields.buyLink', 'Buy Link')} ({t('fields.optional', 'optional')})</Label>
         <Input
           type="url"
           value={formData.buyLink || ''}
@@ -108,7 +106,7 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
 
       <div>
-        <Label>{t('fields.alignment')}</Label>
+        <Label>{t('fields.alignment', 'Alignment')}</Label>
         <Select
           value={formData.alignment || 'center'}
           onValueChange={(value) => onChange({ ...formData, alignment: value })}
@@ -117,9 +115,9 @@ function ProductBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="left">{t('fields.left')}</SelectItem>
-            <SelectItem value="center">{t('fields.center')}</SelectItem>
-            <SelectItem value="right">{t('fields.right')}</SelectItem>
+            <SelectItem value="left">{t('fields.left', 'Left')}</SelectItem>
+            <SelectItem value="center">{t('fields.center', 'Center')}</SelectItem>
+            <SelectItem value="right">{t('fields.right', 'Right')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
