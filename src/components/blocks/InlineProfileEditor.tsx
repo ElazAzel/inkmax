@@ -449,27 +449,110 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
           className="hidden"
         />
         
-        {/* Clickable Avatar */}
-        <div 
-          className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()} relative cursor-pointer group/avatar`}
-          onClick={handleAvatarClick}
-          title={t('profile.clickToChangeAvatar', 'Click to change avatar')}
-        >
-          <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
-            <AvatarImage src={block.avatar} alt={name} />
-            <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          
-          {/* Upload overlay */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover/avatar:opacity-100 transition-opacity">
-            {isUploadingAvatar ? (
-              <Loader2 className="h-8 w-8 text-white animate-spin" />
-            ) : (
-              <Camera className="h-8 w-8 text-white" />
-            )}
+        {/* Avatar with settings */}
+        <div className="relative group/avatar-container">
+          {/* Clickable Avatar */}
+          <div 
+            className={`${isGradientFrame ? getAvatarFrameClass() : ''} ${getShadowClass()} relative cursor-pointer group/avatar`}
+            onClick={handleAvatarClick}
+            title={t('profile.clickToChangeAvatar', 'Click to change avatar')}
+          >
+            <Avatar className={`${getAvatarSize()} ${!isGradientFrame ? getAvatarFrameClass() : ''}`}>
+              <AvatarImage src={block.avatar} alt={name} />
+              <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            
+            {/* Upload overlay */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover/avatar:opacity-100 transition-opacity">
+              {isUploadingAvatar ? (
+                <Loader2 className="h-8 w-8 text-white animate-spin" />
+              ) : (
+                <Camera className="h-8 w-8 text-white" />
+              )}
+            </div>
           </div>
+          
+          {/* Avatar settings button */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                size="icon"
+                variant="secondary"
+                className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full opacity-0 group-hover/avatar-container:opacity-100 transition-opacity z-10 shadow-md"
+                onClick={(e) => e.stopPropagation()}
+                title={t('profile.avatarSettings', 'Avatar settings')}
+              >
+                <Settings2 className="h-3.5 w-3.5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56" align="center" onClick={(e) => e.stopPropagation()}>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-xs">{t('profile.avatarSize', 'Size')}</Label>
+                  <Select
+                    value={block.avatarSize || 'large'}
+                    onValueChange={(value) => onUpdate({ avatarSize: value as 'small' | 'medium' | 'large' | 'xlarge' })}
+                  >
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">{t('profile.small', 'Small')}</SelectItem>
+                      <SelectItem value="medium">{t('profile.medium', 'Medium')}</SelectItem>
+                      <SelectItem value="large">{t('profile.large', 'Large')}</SelectItem>
+                      <SelectItem value="xlarge">{t('profile.xlarge', 'Extra Large')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-xs">{t('profile.avatarFrame', 'Frame style')}</Label>
+                  <Select
+                    value={block.avatarFrame || 'default'}
+                    onValueChange={(value) => onUpdate({ avatarFrame: value as 'default' | 'neon' | 'glitch' | 'aura' | 'gradient' | 'pulse' | 'rainbow' | 'double' | 'spinning' | 'dash' | 'wave' })}
+                  >
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">{t('profile.default', 'Default')}</SelectItem>
+                      <SelectItem value="neon">{t('profile.neon', 'Neon')}</SelectItem>
+                      <SelectItem value="glitch">{t('profile.glitch', 'Glitch')}</SelectItem>
+                      <SelectItem value="aura">{t('profile.aura', 'Aura')}</SelectItem>
+                      <SelectItem value="gradient">{t('profile.gradient', 'Gradient')}</SelectItem>
+                      <SelectItem value="pulse">{t('profile.pulse', 'Pulse')}</SelectItem>
+                      <SelectItem value="rainbow">{t('profile.rainbow', 'Rainbow')}</SelectItem>
+                      <SelectItem value="double">{t('profile.double', 'Double')}</SelectItem>
+                      <SelectItem value="spinning">{t('profile.spinning', 'Spinning')}</SelectItem>
+                      <SelectItem value="dash">{t('profile.dash', 'Dash')}</SelectItem>
+                      <SelectItem value="wave">{t('profile.wave', 'Wave')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-xs">{t('profile.shadowStyle', 'Shadow')}</Label>
+                  <Select
+                    value={block.shadowStyle || 'soft'}
+                    onValueChange={(value) => onUpdate({ shadowStyle: value as 'none' | 'soft' | 'medium' | 'strong' | 'glow' })}
+                  >
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{t('profile.none', 'None')}</SelectItem>
+                      <SelectItem value="soft">{t('profile.soft', 'Soft')}</SelectItem>
+                      <SelectItem value="medium">{t('profile.medium', 'Medium')}</SelectItem>
+                      <SelectItem value="strong">{t('profile.strong', 'Strong')}</SelectItem>
+                      <SelectItem value="glow">{t('profile.glow', 'Glow')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
         
         <div className="text-center space-y-2 w-full max-w-md">
