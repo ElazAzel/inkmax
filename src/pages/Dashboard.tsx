@@ -24,6 +24,7 @@ import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import { useBlockHints } from '@/hooks/useBlockHints';
 import { useAchievements } from '@/hooks/useAchievements';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { BlockEditor } from '@/components/BlockEditor';
@@ -50,6 +51,7 @@ export default function Dashboard() {
   const blockHints = useBlockHints();
   const achievements = useAchievements();
   const userProfile = useUserProfile(user?.id);
+  const { playAdd, playDelete, playError } = useSoundEffects();
   const {
     pageData,
     chatbotContext,
@@ -137,16 +139,19 @@ export default function Dashboard() {
       const premiumBlocks = ['video', 'carousel', 'custom_code', 'form', 'newsletter', 'testimonial', 'scratch', 'search'];
       if (premiumBlocks.includes(blockType) && !isPremium) {
         toast.error('This block requires Premium');
+        playError();
         return;
       }
 
       addBlock(newBlock);
+      playAdd();
       toast.success('Block added');
       
       // Показываем подсказку при первом использовании блока
       blockHints.showHint(blockType, newBlock.id);
     } catch (error) {
       toast.error('Failed to add block');
+      playError();
       console.error(error);
     }
   };

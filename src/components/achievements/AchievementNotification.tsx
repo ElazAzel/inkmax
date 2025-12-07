@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 import type { Achievement } from '@/types/achievements';
 import { RARITY_LABELS } from '@/types/achievements';
 
@@ -13,8 +14,12 @@ interface AchievementNotificationProps {
 export function AchievementNotification({ achievement, onDismiss }: AchievementNotificationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const { playAchievement } = useSoundEffects();
 
   useEffect(() => {
+    // Play achievement sound
+    playAchievement();
+    
     // Show notification with animation
     const showTimer = setTimeout(() => setIsVisible(true), 100);
 
@@ -27,7 +32,7 @@ export function AchievementNotification({ achievement, onDismiss }: AchievementN
       clearTimeout(showTimer);
       clearTimeout(dismissTimer);
     };
-  }, []);
+  }, [playAchievement]);
 
   const handleDismiss = () => {
     setIsExiting(true);

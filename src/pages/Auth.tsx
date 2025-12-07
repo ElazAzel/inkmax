@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 import { Sparkles } from 'lucide-react';
 import { z } from 'zod';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -30,6 +31,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, signUp, signIn } = useAuth();
+  const { playSuccess, playError } = useSoundEffects();
   const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already logged in
@@ -53,6 +55,7 @@ export default function Auth() {
     if (!validation.success) {
       const firstError = validation.error.errors[0];
       toast.error(firstError.message);
+      playError();
       setIsLoading(false);
       return;
     }
@@ -62,10 +65,12 @@ export default function Auth() {
     if (error) {
       console.error('Signup error:', error);
       toast.error(error.message || t('messages.failedToSignUp'));
+      playError();
       setIsLoading(false);
       return;
     }
 
+    playSuccess();
     toast.success(t('messages.accountCreated'));
     // Auth state change will trigger redirect
   };
@@ -84,6 +89,7 @@ export default function Auth() {
     if (!validation.success) {
       const firstError = validation.error.errors[0];
       toast.error(firstError.message);
+      playError();
       setIsLoading(false);
       return;
     }
@@ -93,10 +99,12 @@ export default function Auth() {
     if (error) {
       console.error('Signin error:', error);
       toast.error(error.message || t('messages.failedToSignIn'));
+      playError();
       setIsLoading(false);
       return;
     }
 
+    playSuccess();
     toast.success(t('auth.welcomeBack'));
     // Auth state change will trigger redirect
   };
