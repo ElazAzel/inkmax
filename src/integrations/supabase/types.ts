@@ -234,6 +234,38 @@ export type Database = {
         }
         Relationships: []
       }
+      private_page_data: {
+        Row: {
+          chatbot_context: string | null
+          created_at: string
+          id: string
+          page_id: string
+          updated_at: string
+        }
+        Insert: {
+          chatbot_context?: string | null
+          created_at?: string
+          id?: string
+          page_id: string
+          updated_at?: string
+        }
+        Update: {
+          chatbot_context?: string | null
+          created_at?: string
+          id?: string
+          page_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "private_page_data_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: true
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rate_limits: {
         Row: {
           created_at: string

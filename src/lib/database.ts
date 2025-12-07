@@ -77,7 +77,6 @@ export async function savePage(
       avatar_style: profileBlock?.avatarStyle || { type: 'default', color: '#000000' },
       theme_settings: pageData.theme as any,
       seo_meta: pageData.seo as any,
-      chatbot_context: chatbotContext || null,
       is_published: false,
       updated_at: new Date().toISOString(),
     };
@@ -127,6 +126,17 @@ export async function savePage(
         console.error('Error inserting blocks:', blocksError);
         return { data: null, error: blocksError };
       }
+    }
+
+    // Save chatbot context to private_page_data table
+    if (chatbotContext) {
+      await supabase
+        .from('private_page_data')
+        .upsert({
+          page_id: page.id,
+          chatbot_context: chatbotContext,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'page_id' });
     }
 
     return { data: page, error: null };
@@ -180,7 +190,7 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
   try {
     const { data: page, error: pageError } = await supabase
       .from('pages')
-      .select('*, blocks(*)')
+      .select('*, blocks(*), private_page_data(*)')
       .eq('user_id', userId)
       .maybeSingle();
 
@@ -258,7 +268,13 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
       isPremium: (page.blocks as DbBlock[]).some(b => b.is_premium),
     };
 
-    return { data: pageData, chatbotContext: page.chatbot_context, error: null };
+    // Get chatbot context from private_page_data
+    const privateData = page.private_page_data as any;
+    const chatbotContext = Array.isArray(privateData) 
+      ? privateData[0]?.chatbot_context 
+      : privateData?.chatbot_context;
+
+    return { data: pageData, chatbotContext: chatbotContext || null, error: null };
   } catch (error) {
     console.error('Error loading user page:', error);
     return { data: null, chatbotContext: null, error };
