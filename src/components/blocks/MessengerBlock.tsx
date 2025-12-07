@@ -1,8 +1,10 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessageCircle, Send } from 'lucide-react';
 import type { MessengerBlock as MessengerBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 interface MessengerBlockProps {
   block: MessengerBlockType;
@@ -10,6 +12,9 @@ interface MessengerBlockProps {
 }
 
 export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId }: MessengerBlockProps) {
+  const { i18n } = useTranslation();
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+
   const getMessengerIcon = (platform: string) => {
     const icons: Record<string, string> = {
       whatsapp: '🟢',
@@ -42,7 +47,6 @@ export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId 
   };
 
   const handleMessengerClick = async (platform: string, username: string, message?: string) => {
-    // Create lead if pageOwnerId is available
     if (pageOwnerId) {
       try {
         await supabase.functions.invoke('create-lead', {
@@ -59,17 +63,16 @@ export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId 
       }
     }
     
-    // Open the messenger link
     const url = getMessengerUrl(platform, username, message);
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <Card className="p-6">
-      {block.title && (
+      {title && (
         <div className="flex items-center gap-2 mb-4">
           <MessageCircle className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold text-lg">{block.title}</h3>
+          <h3 className="font-semibold text-lg">{title}</h3>
         </div>
       )}
       <div className="grid gap-3">

@@ -1,5 +1,7 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Instagram, Send, Youtube, Music, Twitter, Github, Linkedin, Facebook, Globe } from 'lucide-react';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { SocialsBlock as SocialsBlockType } from '@/types/page';
 
 interface SocialsBlockProps {
@@ -20,6 +22,9 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export const SocialsBlock = memo(function SocialsBlockComponent({ block }: SocialsBlockProps) {
+  const { i18n } = useTranslation();
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+
   const handleClick = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
@@ -30,9 +35,9 @@ export const SocialsBlock = memo(function SocialsBlockComponent({ block }: Socia
 
   return (
     <div className="w-full">
-      {block.title && (
+      {title && (
         <h3 className={`text-sm font-medium text-muted-foreground mb-4 ${block.alignment === 'center' ? 'text-center' : block.alignment === 'right' ? 'text-right' : 'text-left'}`}>
-          {block.title}
+          {title}
         </h3>
       )}
       <div className={`flex items-center ${justifyClass} gap-4 flex-wrap`}>

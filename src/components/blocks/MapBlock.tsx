@@ -1,13 +1,19 @@
+import { useTranslation } from 'react-i18next';
 import type { MapBlock as MapBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 import { MapPin } from 'lucide-react';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 interface MapBlockProps {
   block: MapBlockType;
 }
 
 export function MapBlock({ block }: MapBlockProps) {
+  const { i18n } = useTranslation();
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+  const address = getTranslatedString(block.address, i18n.language as SupportedLanguage);
+
   const heightClasses = {
     small: 'h-48',
     medium: 'h-64',
@@ -29,15 +35,15 @@ export function MapBlock({ block }: MapBlockProps) {
       )}
       style={getAnimationStyle(block.blockStyle)}
     >
-      {block.title && (
+      {title && (
         <div className="flex items-center gap-2">
           <MapPin className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold">{block.title}</h3>
+          <h3 className="text-lg font-semibold">{title}</h3>
         </div>
       )}
       
-      {block.address && (
-        <p className="text-sm text-muted-foreground">{block.address}</p>
+      {address && (
+        <p className="text-sm text-muted-foreground">{address}</p>
       )}
 
       <div 
@@ -54,7 +60,7 @@ export function MapBlock({ block }: MapBlockProps) {
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title={block.title || 'Map'}
+          title={title || 'Map'}
         />
       </div>
     </div>

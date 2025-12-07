@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Carousel,
@@ -9,12 +10,16 @@ import {
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import type { CarouselBlock as CarouselBlockType } from '@/types/page';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 interface CarouselBlockProps {
   block: CarouselBlockType;
 }
 
 export const CarouselBlock = memo(function CarouselBlockComponent({ block }: CarouselBlockProps) {
+  const { i18n, t } = useTranslation();
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+
   const autoplayPlugin = block.autoPlay
     ? Autoplay({ delay: block.interval || 3000, stopOnInteraction: true })
     : undefined;
@@ -30,7 +35,7 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block }: Car
       <Card>
         <CardContent className="p-6">
           <p className="text-sm text-muted-foreground text-center">
-            No images added to carousel
+            {t('blocks.carousel.empty', 'No images added to carousel')}
           </p>
         </CardContent>
       </Card>
@@ -39,9 +44,9 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block }: Car
 
   return (
     <Card className="overflow-hidden">
-      {block.title && (
+      {title && (
         <CardHeader>
-          <CardTitle>{block.title}</CardTitle>
+          <CardTitle>{title}</CardTitle>
         </CardHeader>
       )}
       <CardContent className="p-0">

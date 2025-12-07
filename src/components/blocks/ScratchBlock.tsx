@@ -1,16 +1,22 @@
 import { memo, useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Crown } from 'lucide-react';
 import type { ScratchBlock as ScratchBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 interface ScratchBlockProps {
   block: ScratchBlockType;
 }
 
 export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockProps) {
+  const { i18n } = useTranslation();
   const [isRevealed, setIsRevealed] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isScratching, setIsScratching] = useState(false);
+
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+  const revealText = getTranslatedString(block.revealText, i18n.language as SupportedLanguage);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,15 +25,12 @@ export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockPr
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 
-    // Draw scratch layer
     ctx.fillStyle = block.backgroundColor || '#C0C0C0';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Add scratch texture
     ctx.fillStyle = '#A0A0A0';
     for (let i = 0; i < 100; i++) {
       const x = Math.random() * canvas.width;
@@ -35,7 +38,6 @@ export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockPr
       ctx.fillRect(x, y, 2, 2);
     }
 
-    // Add text hint
     ctx.fillStyle = '#808080';
     ctx.font = 'bold 16px sans-serif';
     ctx.textAlign = 'center';
@@ -65,7 +67,6 @@ export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockPr
     ctx.arc(x, y, 20, 0, Math.PI * 2);
     ctx.fill();
 
-    // Check if enough is scratched
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const pixels = imageData.data;
     let transparent = 0;
@@ -82,25 +83,23 @@ export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockPr
 
   return (
     <Card className="p-6">
-      {block.title && (
+      {title && (
         <div className="flex items-center gap-2 mb-4">
-          <h3 className="font-semibold text-lg">{block.title}</h3>
+          <h3 className="font-semibold text-lg">{title}</h3>
           <Crown className="h-4 w-4 text-primary" />
         </div>
       )}
       <div className="relative w-full h-48 rounded-lg overflow-hidden border-2 border-border">
-        {/* Hidden content */}
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10">
           <div className="text-center p-6">
             <div className={`text-2xl font-bold transition-all duration-500 ${
               isRevealed ? 'scale-110 opacity-100' : 'scale-90 opacity-50'
             }`}>
-              {block.revealText}
+              {revealText}
             </div>
           </div>
         </div>
         
-        {/* Scratch layer */}
         {!isRevealed && (
           <canvas
             ref={canvasRef}
