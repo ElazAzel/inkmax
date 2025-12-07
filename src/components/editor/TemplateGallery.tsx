@@ -24,6 +24,12 @@ interface Template {
   blocks: Block[];
 }
 
+const createBlock = (type: string, overrides: Record<string, unknown> = {}): Block => {
+  const baseId = `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const base = { id: baseId, type };
+  return { ...base, ...overrides } as Block;
+};
+
 const TEMPLATES: Template[] = [
   // Creator
   {
@@ -33,11 +39,11 @@ const TEMPLATES: Template[] = [
     category: 'Креаторы',
     preview: '👤',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Имя блогера', bio: 'Создаю контент о lifestyle и путешествиях ✨' },
-      { id: 'link-1', type: 'link', title: 'YouTube канал', url: 'https://youtube.com', icon: 'youtube', style: 'rounded' },
-      { id: 'link-2', type: 'link', title: 'Instagram', url: 'https://instagram.com', icon: 'instagram', style: 'rounded' },
-      { id: 'link-3', type: 'link', title: 'TikTok', url: 'https://tiktok.com', icon: 'globe', style: 'rounded' },
-      { id: 'socials-1', type: 'socials', title: 'Мои соцсети', platforms: [] },
+      createBlock('profile', { name: 'Имя блогера', bio: 'Создаю контент о lifestyle и путешествиях ✨' }),
+      createBlock('link', { title: 'YouTube канал', url: 'https://youtube.com', icon: 'youtube', style: 'rounded' }),
+      createBlock('link', { title: 'Instagram', url: 'https://instagram.com', icon: 'instagram', style: 'rounded' }),
+      createBlock('link', { title: 'TikTok', url: 'https://tiktok.com', icon: 'globe', style: 'rounded' }),
+      createBlock('socials', { title: 'Мои соцсети', platforms: [] }),
     ],
   },
   {
@@ -47,11 +53,11 @@ const TEMPLATES: Template[] = [
     category: 'Креаторы',
     preview: '🎵',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Artist Name', bio: '🎤 Музыкант • Автор песен' },
-      { id: 'link-1', type: 'link', title: 'Spotify', url: 'https://spotify.com', icon: 'globe', style: 'rounded' },
-      { id: 'link-2', type: 'link', title: 'Apple Music', url: 'https://music.apple.com', icon: 'globe', style: 'rounded' },
-      { id: 'link-3', type: 'link', title: 'YouTube Music', url: 'https://youtube.com', icon: 'youtube', style: 'rounded' },
-      { id: 'video-1', type: 'video', url: 'https://youtube.com/watch?v=dQw4w9WgXcQ', title: 'Новый клип', platform: 'youtube' },
+      createBlock('profile', { name: 'Artist Name', bio: '🎤 Музыкант • Автор песен' }),
+      createBlock('link', { title: 'Spotify', url: 'https://spotify.com', icon: 'globe', style: 'rounded' }),
+      createBlock('link', { title: 'Apple Music', url: 'https://music.apple.com', icon: 'globe', style: 'rounded' }),
+      createBlock('link', { title: 'YouTube Music', url: 'https://youtube.com', icon: 'youtube', style: 'rounded' }),
+      createBlock('video', { url: 'https://youtube.com/watch?v=dQw4w9WgXcQ', title: 'Новый клип', platform: 'youtube' }),
     ],
   },
   // Business
@@ -62,12 +68,12 @@ const TEMPLATES: Template[] = [
     category: 'Бизнес',
     preview: '💈',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Барбершоп', bio: '✂️ Мужские стрижки • Бороды • Укладки' },
-      { id: 'text-1', type: 'text', content: '📍 Алматы, ул. Абая 123', style: 'paragraph' },
-      { id: 'product-1', type: 'product', name: 'Стрижка', description: 'Классическая мужская стрижка', price: 3000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Стрижка + Борода', description: 'Комплекс услуг', price: 5000, currency: 'KZT' },
-      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }, { platform: 'telegram', username: '' }] },
-      { id: 'map-1', type: 'map', provider: 'google', embedUrl: '', address: 'Алматы' },
+      createBlock('profile', { name: 'Барбершоп', bio: '✂️ Мужские стрижки • Бороды • Укладки' }),
+      createBlock('text', { content: '📍 Алматы, ул. Абая 123', style: 'paragraph' }),
+      createBlock('product', { name: 'Стрижка', description: 'Классическая мужская стрижка', price: 3000, currency: 'KZT' }),
+      createBlock('product', { name: 'Стрижка + Борода', description: 'Комплекс услуг', price: 5000, currency: 'KZT' }),
+      createBlock('messenger', { messengers: [{ platform: 'whatsapp', username: '' }, { platform: 'telegram', username: '' }] }),
+      createBlock('map', { provider: 'google', embedUrl: '', address: 'Алматы' }),
     ],
   },
   {
@@ -77,11 +83,11 @@ const TEMPLATES: Template[] = [
     category: 'Бизнес',
     preview: '📷',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Фотограф', bio: '📸 Портреты • Свадьбы • Репортажи' },
-      { id: 'carousel-1', type: 'carousel', images: [], title: 'Портфолио' },
-      { id: 'product-1', type: 'product', name: 'Портретная съемка', description: '1 час, 10 фото в обработке', price: 25000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Свадебная съемка', description: 'Полный день, 100+ фото', price: 150000, currency: 'KZT' },
-      { id: 'link-1', type: 'link', title: 'Записаться', url: '#', icon: 'calendar', style: 'pill' },
+      createBlock('profile', { name: 'Фотограф', bio: '📸 Портреты • Свадьбы • Репортажи' }),
+      createBlock('carousel', { images: [], title: 'Портфолио' }),
+      createBlock('product', { name: 'Портретная съемка', description: '1 час, 10 фото в обработке', price: 25000, currency: 'KZT' }),
+      createBlock('product', { name: 'Свадебная съемка', description: 'Полный день, 100+ фото', price: 150000, currency: 'KZT' }),
+      createBlock('link', { title: 'Записаться', url: '#', icon: 'calendar', style: 'pill' }),
     ],
   },
   {
@@ -91,11 +97,11 @@ const TEMPLATES: Template[] = [
     category: 'Бизнес',
     preview: '💪',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Фитнес Тренер', bio: '🏋️ Персональные тренировки • Онлайн-программы' },
-      { id: 'product-1', type: 'product', name: 'Персональная тренировка', description: '60 минут с тренером', price: 8000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Онлайн-программа', description: '4 недели тренировок + питание', price: 30000, currency: 'KZT' },
-      { id: 'video-1', type: 'video', url: '', title: 'Тренировка дня', platform: 'youtube' },
-      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }] },
+      createBlock('profile', { name: 'Фитнес Тренер', bio: '🏋️ Персональные тренировки • Онлайн-программы' }),
+      createBlock('product', { name: 'Персональная тренировка', description: '60 минут с тренером', price: 8000, currency: 'KZT' }),
+      createBlock('product', { name: 'Онлайн-программа', description: '4 недели тренировок + питание', price: 30000, currency: 'KZT' }),
+      createBlock('video', { url: '', title: 'Тренировка дня', platform: 'youtube' }),
+      createBlock('messenger', { messengers: [{ platform: 'whatsapp', username: '' }] }),
     ],
   },
   {
@@ -105,11 +111,11 @@ const TEMPLATES: Template[] = [
     category: 'Эксперты',
     preview: '🧠',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Психолог', bio: '🎓 Клинический психолог • Семейная терапия' },
-      { id: 'text-1', type: 'text', content: 'Помогаю разобраться в себе и наладить отношения', style: 'paragraph' },
-      { id: 'product-1', type: 'product', name: 'Консультация', description: '50 минут онлайн/офлайн', price: 15000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Пакет 4 сессии', description: 'Экономия 10%', price: 54000, currency: 'KZT' },
-      { id: 'link-1', type: 'link', title: 'Записаться на консультацию', url: '#', icon: 'calendar', style: 'pill' },
+      createBlock('profile', { name: 'Психолог', bio: '🎓 Клинический психолог • Семейная терапия' }),
+      createBlock('text', { content: 'Помогаю разобраться в себе и наладить отношения', style: 'paragraph' }),
+      createBlock('product', { name: 'Консультация', description: '50 минут онлайн/офлайн', price: 15000, currency: 'KZT' }),
+      createBlock('product', { name: 'Пакет 4 сессии', description: 'Экономия 10%', price: 54000, currency: 'KZT' }),
+      createBlock('link', { title: 'Записаться на консультацию', url: '#', icon: 'calendar', style: 'pill' }),
     ],
   },
   {
@@ -119,11 +125,11 @@ const TEMPLATES: Template[] = [
     category: 'Эксперты',
     preview: '📚',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Репетитор', bio: '📖 Английский язык • IELTS • Разговорный' },
-      { id: 'text-1', type: 'text', content: 'Опыт преподавания 10+ лет', style: 'heading' },
-      { id: 'product-1', type: 'product', name: 'Индивидуальный урок', description: '60 минут онлайн', price: 6000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Курс подготовки к IELTS', description: '12 занятий', price: 60000, currency: 'KZT' },
-      { id: 'testimonial-1', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Студент', text: 'Сдал IELTS на 7.5!', rating: 5 }] },
+      createBlock('profile', { name: 'Репетитор', bio: '📖 Английский язык • IELTS • Разговорный' }),
+      createBlock('text', { content: 'Опыт преподавания 10+ лет', style: 'heading' }),
+      createBlock('product', { name: 'Индивидуальный урок', description: '60 минут онлайн', price: 6000, currency: 'KZT' }),
+      createBlock('product', { name: 'Курс подготовки к IELTS', description: '12 занятий', price: 60000, currency: 'KZT' }),
+      createBlock('testimonial', { isPremium: true, testimonials: [{ name: 'Студент', text: 'Сдал IELTS на 7.5!', rating: 5 }] }),
     ],
   },
   {
@@ -133,11 +139,11 @@ const TEMPLATES: Template[] = [
     category: 'Бизнес',
     preview: '💅',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Beauty Studio', bio: '✨ Маникюр • Педикюр • Наращивание' },
-      { id: 'carousel-1', type: 'carousel', images: [], title: 'Наши работы' },
-      { id: 'product-1', type: 'product', name: 'Маникюр с покрытием', description: 'Гель-лак', price: 5000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Комплекс руки + ноги', description: 'Маникюр + педикюр', price: 9000, currency: 'KZT' },
-      { id: 'map-1', type: 'map', provider: 'google', embedUrl: '', address: 'Алматы' },
+      createBlock('profile', { name: 'Beauty Studio', bio: '✨ Маникюр • Педикюр • Наращивание' }),
+      createBlock('carousel', { images: [], title: 'Наши работы' }),
+      createBlock('product', { name: 'Маникюр с покрытием', description: 'Гель-лак', price: 5000, currency: 'KZT' }),
+      createBlock('product', { name: 'Комплекс руки + ноги', description: 'Маникюр + педикюр', price: 9000, currency: 'KZT' }),
+      createBlock('map', { provider: 'google', embedUrl: '', address: 'Алматы' }),
     ],
   },
   {
@@ -147,11 +153,11 @@ const TEMPLATES: Template[] = [
     category: 'Бизнес',
     preview: '🛍️',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Shop Name', bio: '🛒 Доставка по всему Казахстану' },
-      { id: 'product-1', type: 'product', name: 'Товар 1', description: 'Описание товара', price: 10000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Товар 2', description: 'Описание товара', price: 15000, currency: 'KZT' },
-      { id: 'product-3', type: 'product', name: 'Товар 3', description: 'Описание товара', price: 20000, currency: 'KZT' },
-      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }, { platform: 'telegram', username: '' }] },
+      createBlock('profile', { name: 'Shop Name', bio: '🛒 Доставка по всему Казахстану' }),
+      createBlock('product', { name: 'Товар 1', description: 'Описание товара', price: 10000, currency: 'KZT' }),
+      createBlock('product', { name: 'Товар 2', description: 'Описание товара', price: 15000, currency: 'KZT' }),
+      createBlock('product', { name: 'Товар 3', description: 'Описание товара', price: 20000, currency: 'KZT' }),
+      createBlock('messenger', { messengers: [{ platform: 'whatsapp', username: '' }, { platform: 'telegram', username: '' }] }),
     ],
   },
   {
@@ -161,11 +167,11 @@ const TEMPLATES: Template[] = [
     category: 'Эксперты',
     preview: '📊',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Digital Маркетолог', bio: '📈 SMM • Таргет • Контент-стратегия' },
-      { id: 'text-1', type: 'text', content: '100+ успешных проектов', style: 'heading' },
-      { id: 'product-1', type: 'product', name: 'Аудит соцсетей', description: 'Анализ + рекомендации', price: 25000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Ведение Instagram', description: 'Полный пакет на месяц', price: 150000, currency: 'KZT' },
-      { id: 'link-1', type: 'link', title: 'Кейсы', url: '#', icon: 'folder', style: 'rounded' },
+      createBlock('profile', { name: 'Digital Маркетолог', bio: '📈 SMM • Таргет • Контент-стратегия' }),
+      createBlock('text', { content: '100+ успешных проектов', style: 'heading' }),
+      createBlock('product', { name: 'Аудит соцсетей', description: 'Анализ + рекомендации', price: 25000, currency: 'KZT' }),
+      createBlock('product', { name: 'Ведение Instagram', description: 'Полный пакет на месяц', price: 150000, currency: 'KZT' }),
+      createBlock('link', { title: 'Кейсы', url: '#', icon: 'folder', style: 'rounded' }),
     ],
   },
   {
@@ -175,11 +181,11 @@ const TEMPLATES: Template[] = [
     category: 'Креаторы',
     preview: '🎨',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Дизайнер', bio: '🎨 UI/UX • Брендинг • Иллюстрации' },
-      { id: 'carousel-1', type: 'carousel', images: [], title: 'Портфолио' },
-      { id: 'product-1', type: 'product', name: 'Логотип', description: '3 варианта + исходники', price: 50000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Фирменный стиль', description: 'Полный брендбук', price: 200000, currency: 'KZT' },
-      { id: 'link-1', type: 'link', title: 'Behance', url: 'https://behance.net', icon: 'globe', style: 'rounded' },
+      createBlock('profile', { name: 'Дизайнер', bio: '🎨 UI/UX • Брендинг • Иллюстрации' }),
+      createBlock('carousel', { images: [], title: 'Портфолио' }),
+      createBlock('product', { name: 'Логотип', description: '3 варианта + исходники', price: 50000, currency: 'KZT' }),
+      createBlock('product', { name: 'Фирменный стиль', description: 'Полный брендбук', price: 200000, currency: 'KZT' }),
+      createBlock('link', { title: 'Behance', url: 'https://behance.net', icon: 'globe', style: 'rounded' }),
     ],
   },
   {
@@ -189,11 +195,11 @@ const TEMPLATES: Template[] = [
     category: 'Бизнес',
     preview: '👨‍🍳',
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Домашняя кухня', bio: '🍰 Торты на заказ • Десерты • Выпечка' },
-      { id: 'carousel-1', type: 'carousel', images: [], title: 'Меню' },
-      { id: 'product-1', type: 'product', name: 'Торт на заказ', description: 'от 2 кг', price: 8000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Капкейки', description: 'Набор 6 шт', price: 4500, currency: 'KZT' },
-      { id: 'messenger-1', type: 'messenger', messengers: [{ platform: 'whatsapp', username: '' }] },
+      createBlock('profile', { name: 'Домашняя кухня', bio: '🍰 Торты на заказ • Десерты • Выпечка' }),
+      createBlock('carousel', { images: [], title: 'Меню' }),
+      createBlock('product', { name: 'Торт на заказ', description: 'от 2 кг', price: 8000, currency: 'KZT' }),
+      createBlock('product', { name: 'Капкейки', description: 'Набор 6 шт', price: 4500, currency: 'KZT' }),
+      createBlock('messenger', { messengers: [{ platform: 'whatsapp', username: '' }] }),
     ],
   },
   // Premium templates
@@ -205,13 +211,13 @@ const TEMPLATES: Template[] = [
     preview: '🚀',
     isPremium: true,
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Agency Name', bio: '🚀 Digital-агентство полного цикла' },
-      { id: 'text-1', type: 'text', content: 'Разработка • Дизайн • Маркетинг', style: 'heading' },
-      { id: 'carousel-1', type: 'carousel', images: [], title: 'Кейсы' },
-      { id: 'product-1', type: 'product', name: 'Лендинг', description: 'Под ключ за 7 дней', price: 300000, currency: 'KZT' },
-      { id: 'product-2', type: 'product', name: 'Интернет-магазин', description: 'Полная разработка', price: 800000, currency: 'KZT' },
-      { id: 'testimonial-1', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Клиент', text: 'Отличная работа!', rating: 5 }] },
-      { id: 'form-1', type: 'form', title: 'Оставить заявку', fields: [], submitEmail: '', buttonText: 'Отправить', isPremium: true },
+      createBlock('profile', { name: 'Agency Name', bio: '🚀 Digital-агентство полного цикла' }),
+      createBlock('text', { content: 'Разработка • Дизайн • Маркетинг', style: 'heading' }),
+      createBlock('carousel', { images: [], title: 'Кейсы' }),
+      createBlock('product', { name: 'Лендинг', description: 'Под ключ за 7 дней', price: 300000, currency: 'KZT' }),
+      createBlock('product', { name: 'Интернет-магазин', description: 'Полная разработка', price: 800000, currency: 'KZT' }),
+      createBlock('testimonial', { isPremium: true, testimonials: [{ name: 'Клиент', text: 'Отличная работа!', rating: 5 }] }),
+      createBlock('form', { title: 'Оставить заявку', fields: [], submitEmail: '', buttonText: 'Отправить', isPremium: true }),
     ],
   },
   {
@@ -222,13 +228,13 @@ const TEMPLATES: Template[] = [
     preview: '💼',
     isPremium: true,
     blocks: [
-      { id: 'profile-1', type: 'profile', name: 'Имя Фамилия', bio: '💼 Профессионал своего дела' },
-      { id: 'video-1', type: 'video', url: '', title: 'Видео-визитка', platform: 'youtube' },
-      { id: 'carousel-1', type: 'carousel', images: [], title: 'Проекты' },
-      { id: 'testimonial-1', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Клиент 1', text: 'Рекомендую!', rating: 5 }] },
-      { id: 'testimonial-2', type: 'testimonial', isPremium: true, testimonials: [{ name: 'Клиент 2', text: 'Супер работа!', rating: 5 }] },
-      { id: 'link-1', type: 'link', title: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin', style: 'rounded' },
-      { id: 'download-1', type: 'download', title: 'Скачать резюме', fileName: 'resume.pdf', fileUrl: '' },
+      createBlock('profile', { name: 'Имя Фамилия', bio: '💼 Профессионал своего дела' }),
+      createBlock('video', { url: '', title: 'Видео-визитка', platform: 'youtube' }),
+      createBlock('carousel', { images: [], title: 'Проекты' }),
+      createBlock('testimonial', { isPremium: true, testimonials: [{ name: 'Клиент 1', text: 'Рекомендую!', rating: 5 }] }),
+      createBlock('testimonial', { isPremium: true, testimonials: [{ name: 'Клиент 2', text: 'Супер работа!', rating: 5 }] }),
+      createBlock('link', { title: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin', style: 'rounded' }),
+      createBlock('download', { title: 'Скачать резюме', fileName: 'resume.pdf', fileUrl: '' }),
     ],
   },
   // Blank
