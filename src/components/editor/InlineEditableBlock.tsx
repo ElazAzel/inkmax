@@ -29,7 +29,19 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   isLast = false,
 }: InlineEditableBlockProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const isProfileBlock = block.type === 'profile';
+
+  const handleTouchStart = () => {
+    setIsTouched(true);
+  };
+
+  const handleTouchEnd = () => {
+    // Keep visible for a moment after touch ends
+    setTimeout(() => setIsTouched(false), 3000);
+  };
+
+  const showControls = isHovered || isTouched;
 
   return (
     <div
@@ -39,62 +51,64 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       data-onboarding={isProfileBlock ? 'profile-block' : 'block-edit'}
     >
-      {/* Hover overlay with controls */}
-      {isHovered && !isDragging && (
-        <div className="absolute inset-0 bg-primary/5 border-2 border-primary/30 rounded-2xl pointer-events-none z-10" />
+      {/* Hover/Touch overlay with controls */}
+      {showControls && !isDragging && (
+        <div className="absolute inset-0 bg-primary/5 border-2 border-primary/30 rounded-xl pointer-events-none z-10" />
       )}
 
-      {/* Control buttons - Mobile Optimized with Arrow buttons */}
-      {isHovered && !isDragging && (
-        <div className="absolute -top-2 sm:-top-3 right-1 sm:right-2 flex gap-1 z-20">
+      {/* Control buttons - Optimized for both mobile and desktop */}
+      {showControls && !isDragging && (
+        <div className="absolute -top-2 right-1 flex gap-1 z-20">
           {/* Arrow controls for reordering - only for non-profile blocks */}
           {!isProfileBlock && onMoveUp && onMoveDown && (
-            <div className="flex flex-col gap-0.5 bg-background rounded shadow-lg">
+            <div className="flex gap-0.5 bg-background rounded-lg shadow-lg p-0.5">
               <Button
                 variant="secondary"
                 size="sm"
-                className="h-4 sm:h-5 w-6 sm:w-7 p-0 rounded-b-none"
+                className="h-7 w-7 p-0"
                 onClick={() => onMoveUp(block.id)}
                 disabled={isFirst}
-                title="Переместить вверх"
+                title="Move up"
               >
-                <ChevronUp className="h-3 w-3" />
+                <ChevronUp className="h-4 w-4" />
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
-                className="h-4 sm:h-5 w-6 sm:w-7 p-0 rounded-t-none"
+                className="h-7 w-7 p-0"
                 onClick={() => onMoveDown(block.id)}
                 disabled={isLast}
-                title="Переместить вниз"
+                title="Move down"
               >
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown className="h-4 w-4" />
               </Button>
             </div>
           )}
           
-          {/* Drag handle - only for non-profile blocks */}
+          {/* Drag handle - desktop only */}
           {!isProfileBlock && (
             <Button
               variant="secondary"
               size="sm"
-              className="h-6 sm:h-7 shadow-lg hidden sm:inline-flex"
+              className="h-7 w-7 p-0 shadow-lg hidden md:inline-flex"
               {...dragHandleProps}
             >
-              <GripVertical className="h-3 w-3" />
+              <GripVertical className="h-4 w-4" />
             </Button>
           )}
           
-          {/* Edit button - for all blocks including profile */}
+          {/* Edit button */}
           <Button
             variant="secondary"
             size="sm"
-            className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
+            className="h-7 w-7 p-0 shadow-lg"
             onClick={() => onEdit(block)}
           >
-            <Pencil className="h-3 w-3" />
+            <Pencil className="h-3.5 w-3.5" />
           </Button>
           
           {/* Delete button - only for non-profile blocks */}
@@ -102,10 +116,10 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
             <Button
               variant="destructive"
               size="sm"
-              className="h-6 sm:h-7 w-6 sm:w-auto shadow-lg p-0 sm:px-3"
+              className="h-7 w-7 p-0 shadow-lg"
               onClick={() => onDelete(block.id)}
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="h-3.5 w-3.5" />
             </Button>
           )}
         </div>
