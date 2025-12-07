@@ -39,22 +39,27 @@ export const FormBlock = memo(function FormBlock({ block, pageOwnerId }: FormBlo
     setIsSubmitting(true);
     
     try {
-      // Create lead in CRM if page owner is known
+      // Create lead via edge function (bypasses RLS for anonymous visitors)
       if (pageOwnerId) {
         const name = formData['name'] || formData['Name'] || formData['Имя'] || formData['имя'] || 'Unknown';
         const email = formData['email'] || formData['Email'] || formData['Почта'] || formData['почта'] || null;
         const phone = formData['phone'] || formData['Phone'] || formData['Телефон'] || formData['телефон'] || null;
         
-        await supabase.from('leads').insert({
-          user_id: pageOwnerId,
-          name: name,
-          email: email,
-          phone: phone,
-          source: 'form' as const,
-          status: 'new' as const,
-          notes: title ? `Form: ${title}` : 'Form submission',
-          metadata: formData,
+        const { error } = await supabase.functions.invoke('create-lead', {
+          body: {
+            pageOwnerId,
+            name,
+            email,
+            phone,
+            source: 'form',
+            notes: title ? `Form: ${title}` : 'Form submission',
+            metadata: formData,
+          },
         });
+
+        if (error) {
+          console.error('Error creating lead:', error);
+        }
       }
 
       toast.success(t('form.success', 'Form submitted successfully!'));
