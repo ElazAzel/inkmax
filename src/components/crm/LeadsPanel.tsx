@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Sheet, 
   SheetContent, 
@@ -22,11 +23,13 @@ import {
   Mail, 
   Calendar,
   Crown,
-  Download
+  Download,
+  BarChart3
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AddLeadDialog } from './AddLeadDialog';
 import { LeadDetails } from './LeadDetails';
+import { AnalyticsPanel } from './AnalyticsPanel';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { Lead } from '@/hooks/useLeads';
 
@@ -51,6 +54,7 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [activeTab, setActiveTab] = useState<'leads' | 'analytics'>('leads');
 
   const stats = getLeadStats();
 
@@ -151,13 +155,35 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
         <SheetContent className="w-full sm:max-w-lg p-0">
           <SheetHeader className="p-4 border-b">
             <SheetTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              {t('crm.title', 'CRM')}
+              {activeTab === 'leads' ? <Users className="h-5 w-5" /> : <BarChart3 className="h-5 w-5" />}
+              {activeTab === 'leads' ? t('crm.title', 'CRM') : t('analytics.title', 'Analytics')}
             </SheetTitle>
             <SheetDescription>
-              {t('crm.description', 'Manage your leads and interactions')}
+              {activeTab === 'leads' 
+                ? t('crm.description', 'Manage your leads and interactions')
+                : t('analytics.description', 'Track your page performance')
+              }
             </SheetDescription>
           </SheetHeader>
+          
+          {/* Tabs for Leads / Analytics */}
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'leads' | 'analytics')} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mx-0 rounded-none border-b">
+              <TabsTrigger value="leads" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                <Users className="h-4 w-4 mr-2" />
+                {t('crm.leads', 'Leads')}
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                {t('analytics.title', 'Analytics')}
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="analytics" className="mt-0">
+              <AnalyticsPanel />
+            </TabsContent>
+            
+            <TabsContent value="leads" className="mt-0">
 
           {/* Stats */}
           <div className="grid grid-cols-5 gap-2 p-4 border-b">
@@ -249,7 +275,9 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
                 ))}
               </div>
             )}
-          </ScrollArea>
+              </ScrollArea>
+            </TabsContent>
+          </Tabs>
         </SheetContent>
       </Sheet>
 
