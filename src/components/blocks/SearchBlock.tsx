@@ -20,12 +20,20 @@ export const SearchBlock = memo(function SearchBlockComponent({ block }: SearchB
     
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('ai-search', {
-        body: { query }
+      const { data, error } = await supabase.functions.invoke('ai-content-generator', {
+        body: { 
+          type: 'search',
+          prompt: query 
+        }
       });
 
       if (error) throw error;
-      setResult(data);
+      
+      if (data?.content) {
+        setResult({ answer: data.content, sources: data.sources });
+      } else {
+        setResult({ answer: 'Не удалось получить ответ. Попробуйте другой запрос.' });
+      }
     } catch (error) {
       console.error('Search error:', error);
       setResult({ answer: 'Произошла ошибка при поиске. Попробуйте еще раз.' });

@@ -78,9 +78,9 @@ export function SeparatorBlock({ block }: SeparatorBlockProps) {
         className={cn(
           variantClasses[variant],
           thicknessClasses[block.thickness || 'thin'],
-          widthClasses[block.width || 'full'],
-          block.color && `bg-[${block.color}]`
+          widthClasses[block.width || 'full']
         )}
+        style={block.color ? { backgroundColor: block.color } : undefined}
       />
     </div>
   );
