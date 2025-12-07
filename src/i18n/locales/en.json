@@ -109,6 +109,37 @@
     },
     "footer": {
       "copyright": "© 2025 LinkMAX. All rights reserved."
+    },
+    "pricing": {
+      "badge": "Simple Pricing",
+      "title": "Choose Your Plan",
+      "subtitle": "Start free, upgrade when you need more power",
+      "month": "month",
+      "popular": "Most Popular",
+      "free": {
+        "title": "Free",
+        "description": "Perfect to get started",
+        "cta": "Get Started Free"
+      },
+      "premium": {
+        "title": "Premium",
+        "description": "For professionals and businesses",
+        "cta": "Upgrade to Premium"
+      },
+      "features": {
+        "blocks5": "Up to 5 blocks",
+        "basicBlocks": "Basic block types",
+        "ai3": "3 AI requests per day",
+        "themes": "All themes",
+        "unlimitedBlocks": "Unlimited blocks",
+        "allBlocks": "All block types",
+        "premiumBlocks": "Premium blocks",
+        "analytics": "Analytics dashboard",
+        "crm": "Mini-CRM",
+        "noWatermark": "No watermark",
+        "unlimitedAI": "Unlimited AI",
+        "priority": "Priority support"
+      }
     }
   },
   "auth": {
