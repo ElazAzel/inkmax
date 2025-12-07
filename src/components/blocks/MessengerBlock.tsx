@@ -2,12 +2,14 @@ import { memo } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
 import type { MessengerBlock as MessengerBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MessengerBlockProps {
   block: MessengerBlockType;
+  pageOwnerId?: string;
 }
 
-export const MessengerBlock = memo(function MessengerBlock({ block }: MessengerBlockProps) {
+export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId }: MessengerBlockProps) {
   const getMessengerIcon = (platform: string) => {
     const icons: Record<string, string> = {
       whatsapp: '🟢',
@@ -39,6 +41,29 @@ export const MessengerBlock = memo(function MessengerBlock({ block }: MessengerB
     return names[platform] || platform;
   };
 
+  const handleMessengerClick = async (platform: string, username: string, message?: string) => {
+    // Create lead if pageOwnerId is available
+    if (pageOwnerId) {
+      try {
+        await supabase.functions.invoke('create-lead', {
+          body: {
+            pageOwnerId,
+            name: `${getPlatformName(platform)} Contact`,
+            source: 'messenger',
+            notes: `Clicked ${getPlatformName(platform)} link: @${username}`,
+            metadata: { platform, username }
+          }
+        });
+      } catch (error) {
+        console.error('Failed to create lead from messenger click:', error);
+      }
+    }
+    
+    // Open the messenger link
+    const url = getMessengerUrl(platform, username, message);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <Card className="p-6">
       {block.title && (
@@ -49,12 +74,10 @@ export const MessengerBlock = memo(function MessengerBlock({ block }: MessengerB
       )}
       <div className="grid gap-3">
         {block.messengers.map((messenger, index) => (
-          <a
+          <button
             key={index}
-            href={getMessengerUrl(messenger.platform, messenger.username, messenger.message)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary transition-all hover:shadow-md bg-card"
+            onClick={() => handleMessengerClick(messenger.platform, messenger.username, messenger.message)}
+            className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary transition-all hover:shadow-md bg-card text-left w-full"
           >
             <span className="text-2xl">{getMessengerIcon(messenger.platform)}</span>
             <div className="flex-1">
@@ -62,7 +85,7 @@ export const MessengerBlock = memo(function MessengerBlock({ block }: MessengerB
               <div className="text-sm text-muted-foreground">@{messenger.username}</div>
             </div>
             <Send className="h-4 w-4 text-muted-foreground" />
-          </a>
+          </button>
         ))}
       </div>
     </Card>
