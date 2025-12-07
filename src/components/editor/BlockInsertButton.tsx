@@ -48,10 +48,11 @@ const ALL_BLOCKS = [
   
   // Shop & Products
   { type: 'product', label: 'Product', icon: '🛍️', category: 'Shop', premium: false },
+  { type: 'catalog', label: 'Catalog', icon: '📋', category: 'Shop', premium: true },
   { type: 'download', label: 'Download', icon: '📥', category: 'Shop', premium: true },
   
   // Forms & Communication
-  { type: 'form', label: 'Form', icon: '📋', category: 'Forms', premium: true },
+  { type: 'form', label: 'Form', icon: '📝', category: 'Forms', premium: true },
   { type: 'newsletter', label: 'Newsletter', icon: '✉️', category: 'Forms', premium: true },
   { type: 'messenger', label: 'Messengers', icon: '💬', category: 'Forms', premium: true },
   

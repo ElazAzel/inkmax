@@ -44,6 +44,7 @@ const ScratchBlock = lazy(() => import('./blocks/ScratchBlock').then(m => ({ def
 const MapBlock = lazy(() => import('./blocks/MapBlock').then(m => ({ default: m.MapBlock })));
 const AvatarBlock = lazy(() => import('./blocks/AvatarBlock').then(m => ({ default: m.AvatarBlock })));
 const SeparatorBlock = lazy(() => import('./blocks/SeparatorBlock').then(m => ({ default: m.SeparatorBlock })));
+const CatalogBlock = lazy(() => import('./blocks/CatalogBlock').then(m => ({ default: m.CatalogBlock })));
 
 interface BlockRendererProps {
   block: Block;
@@ -224,6 +225,14 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
             <SeparatorBlock block={block} />
+          </Suspense>
+        </div>
+      );
+    case 'catalog':
+      return (
+        <div className={animationClass} style={animationStyle}>
+          <Suspense fallback={<BlockSkeleton />}>
+            <CatalogBlock block={block} />
           </Suspense>
         </div>
       );

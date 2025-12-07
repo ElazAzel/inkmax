@@ -222,6 +222,7 @@
     "map": "Edit Map",
     "avatar": "Edit Avatar",
     "separator": "Edit Separator",
+    "catalog": "Edit Catalog",
     "description": "Configure all block settings. Changes are saved automatically.",
     "notAvailable": "Editor for this block type is not available."
   },
