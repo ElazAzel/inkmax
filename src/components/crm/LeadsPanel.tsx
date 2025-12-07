@@ -27,6 +27,7 @@ import {
 import { toast } from 'sonner';
 import { AddLeadDialog } from './AddLeadDialog';
 import { LeadDetails } from './LeadDetails';
+import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { Lead } from '@/hooks/useLeads';
 
 interface LeadsPanelProps {
@@ -134,7 +135,7 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
             <p className="text-muted-foreground mb-4">
               {t('crm.premiumDescription', 'Upgrade to Premium to access CRM and track your leads')}
             </p>
-            <Button>
+            <Button onClick={openPremiumPurchase}>
               <Crown className="h-4 w-4 mr-2" />
               {t('freemium.upgradeToPremium', 'Upgrade to Premium')}
             </Button>

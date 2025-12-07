@@ -21,6 +21,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { FREE_LIMITS } from '@/hooks/useFreemiumLimits';
+import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { toast } from 'sonner';
 
 interface BlockInsertButtonProps {
@@ -140,12 +141,15 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             />
           </div>
           {isAtBlockLimit && (
-            <div className="mt-2 p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+            <button
+              onClick={openPremiumPurchase}
+              className="mt-2 p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg w-full text-left hover:bg-amber-500/20 transition-colors"
+            >
               <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
                 <Crown className="h-3.5 w-3.5" />
                 Перейдите на Premium для неограниченных блоков
               </p>
-            </div>
+            </button>
           )}
         </SheetHeader>
         
