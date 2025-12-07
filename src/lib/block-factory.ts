@@ -227,6 +227,18 @@ export function createBlock(type: string): Block {
         spacing: 'md',
       };
     
+    case 'catalog':
+      return {
+        id: `catalog-${timestamp}`,
+        type: 'catalog',
+        title: 'Каталог',
+        items: [],
+        layout: 'list',
+        showPrices: true,
+        currency: 'KZT',
+        isPremium: true,
+      };
+    
     default:
       throw new Error(`Unknown block type: ${type}`);
   }

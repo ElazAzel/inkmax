@@ -43,6 +43,7 @@ const SearchBlockEditor = lazy(() => import('./block-editors/SearchBlockEditor')
 const MapBlockEditor = lazy(() => import('./block-editors/MapBlockEditor').then(m => ({ default: m.MapBlockEditor })));
 const AvatarBlockEditor = lazy(() => import('./block-editors/AvatarBlockEditor').then(m => ({ default: m.AvatarBlockEditor })));
 const SeparatorBlockEditor = lazy(() => import('./block-editors/SeparatorBlockEditor').then(m => ({ default: m.SeparatorBlockEditor })));
+const CatalogBlockEditor = lazy(() => import('./block-editors/CatalogBlockEditor').then(m => ({ default: m.CatalogBlockEditor })));
 
 interface BlockEditorProps {
   block: Block | null;
@@ -223,6 +224,13 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <Suspense fallback={<EditorFallback />}>
             <SeparatorBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'catalog':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <CatalogBlockEditor {...commonProps} />
           </Suspense>
         );
       

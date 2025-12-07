@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog';
 
 // Multilingual string support
 import type { MultilingualString } from '@/lib/i18n-helpers';
@@ -302,7 +302,29 @@ export interface SeparatorBlock {
   blockStyle?: BlockStyle;
 }
 
-export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock;
+export interface CatalogItem {
+  id: string;
+  name: string | MultilingualString;
+  description?: string | MultilingualString;
+  price?: number;
+  currency?: Currency;
+  image?: string;
+}
+
+export interface CatalogBlock {
+  id: string;
+  type: 'catalog';
+  title?: string | MultilingualString;
+  items: CatalogItem[];
+  layout?: 'list' | 'grid';
+  showPrices?: boolean;
+  currency?: Currency;
+  isPremium: true;
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
+export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock;
 
 export interface PageTheme {
   backgroundColor: string;
