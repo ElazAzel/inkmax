@@ -314,20 +314,36 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
       
       {/* Cover image area - clickable */}
       <div 
-        className={`relative w-full ${getCoverHeight()} overflow-hidden cursor-pointer group/cover ${!block.coverImage ? 'bg-muted border-2 border-dashed border-border' : ''}`}
-        onClick={handleCoverClick}
-        title={t('profile.clickToChangeCover', 'Click to add/change cover')}
+        className={`relative w-full ${getCoverHeight()} overflow-hidden group/cover ${!block.coverImage ? 'bg-muted border-2 border-dashed border-border cursor-pointer' : ''}`}
+        onClick={!block.coverImage ? handleCoverClick : undefined}
+        title={!block.coverImage ? t('profile.clickToChangeCover', 'Click to add cover') : undefined}
       >
         {block.coverImage ? (
           <>
             <img 
               src={block.coverImage} 
               alt="Cover" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover cursor-pointer"
+              onClick={handleCoverClick}
             />
             {block.coverGradient !== 'none' && (
-              <div className={`absolute inset-0 ${getCoverGradient()}`} />
+              <div className={`absolute inset-0 ${getCoverGradient()} pointer-events-none`} />
             )}
+            
+            {/* Delete button */}
+            <Button
+              size="icon"
+              variant="destructive"
+              className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover/cover:opacity-100 transition-opacity z-10"
+              onClick={(e) => {
+                e.stopPropagation();
+                onUpdate({ coverImage: '' });
+                toast.success(t('profile.coverRemoved', 'Cover removed'));
+              }}
+              title={t('profile.removeCover', 'Remove cover')}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </>
         ) : (
           <div className="flex items-center justify-center h-full">
@@ -339,7 +355,7 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
         )}
         
         {/* Upload overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/cover:opacity-100 transition-opacity">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover/cover:opacity-100 transition-opacity pointer-events-none">
           {isUploadingCover ? (
             <Loader2 className="h-10 w-10 text-white animate-spin" />
           ) : (
