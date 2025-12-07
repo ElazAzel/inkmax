@@ -50,7 +50,7 @@ export function useCloudPageState() {
   }, [user, pageData, chatbotContext, savePageMutation, publishPageMutation]);
 
   const addBlock = useCallback((block: Block, position?: number) => {
-    if (!pageData || !user) return;
+    if (!pageData) return;
     
     let newBlocks: Block[];
     if (typeof position === 'number') {
@@ -72,17 +72,20 @@ export function useCloudPageState() {
       blocks: newBlocks,
     };
     setPageData(newPageData);
-    // Auto-save after adding block
-    setTimeout(() => {
-      savePageMutation.mutate({ 
-        pageData: newPageData, 
-        chatbotContext 
-      });
-    }, 500);
+    
+    // Auto-save after adding block - only if user is authenticated
+    if (user) {
+      setTimeout(() => {
+        savePageMutation.mutate({ 
+          pageData: newPageData, 
+          chatbotContext 
+        });
+      }, 500);
+    }
   }, [pageData, user, chatbotContext, savePageMutation]);
 
   const updateBlock = useCallback((id: string, updates: Partial<Block>) => {
-    if (!pageData || !user) return;
+    if (!pageData) return;
     const newPageData = {
       ...pageData,
       blocks: pageData.blocks.map(block =>
@@ -90,29 +93,35 @@ export function useCloudPageState() {
       ),
     };
     setPageData(newPageData);
-    // Auto-save after updating block
-    setTimeout(() => {
-      savePageMutation.mutate({ 
-        pageData: newPageData, 
-        chatbotContext 
-      });
-    }, 1000);
+    
+    // Auto-save after updating block - only if user is authenticated
+    if (user) {
+      setTimeout(() => {
+        savePageMutation.mutate({ 
+          pageData: newPageData, 
+          chatbotContext 
+        });
+      }, 1000);
+    }
   }, [pageData, user, chatbotContext, savePageMutation]);
 
   const deleteBlock = useCallback((id: string) => {
-    if (!pageData || !user) return;
+    if (!pageData) return;
     const newPageData = {
       ...pageData,
       blocks: pageData.blocks.filter(block => block.id !== id),
     };
     setPageData(newPageData);
-    // Auto-save after deleting block
-    setTimeout(() => {
-      savePageMutation.mutate({ 
-        pageData: newPageData, 
-        chatbotContext 
-      });
-    }, 500);
+    
+    // Auto-save after deleting block - only if user is authenticated
+    if (user) {
+      setTimeout(() => {
+        savePageMutation.mutate({ 
+          pageData: newPageData, 
+          chatbotContext 
+        });
+      }, 500);
+    }
   }, [pageData, user, chatbotContext, savePageMutation]);
 
   const reorderBlocks = useCallback((blocks: Block[]) => {
@@ -124,19 +133,22 @@ export function useCloudPageState() {
   }, [pageData]);
 
   const updateTheme = useCallback((theme: Partial<PageData['theme']>) => {
-    if (!pageData || !user) return;
+    if (!pageData) return;
     const newPageData = {
       ...pageData,
       theme: { ...pageData.theme, ...theme },
     };
     setPageData(newPageData);
-    // Auto-save after updating theme
-    setTimeout(() => {
-      savePageMutation.mutate({ 
-        pageData: newPageData, 
-        chatbotContext 
-      });
-    }, 1000);
+    
+    // Auto-save after updating theme - only if user is authenticated
+    if (user) {
+      setTimeout(() => {
+        savePageMutation.mutate({ 
+          pageData: newPageData, 
+          chatbotContext 
+        });
+      }, 1000);
+    }
   }, [pageData, user, chatbotContext, savePageMutation]);
 
   const refresh = useCallback(async () => {
