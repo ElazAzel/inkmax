@@ -159,7 +159,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
       return (
         <div className={animationClass} style={animationStyle}>
           <Suspense fallback={<BlockSkeleton />}>
-            <MessengerBlock block={block} />
+            <MessengerBlock block={block} pageOwnerId={pageOwnerId} />
           </Suspense>
         </div>
       );
