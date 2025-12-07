@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useHapticFeedback } from '@/hooks/useHapticFeedback';
 import type { Block } from '@/types/page';
 
 interface InlineEditableBlockProps {
@@ -30,6 +31,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   isLast = false,
 }: InlineEditableBlockProps) {
   const isMobile = useIsMobile();
+  const haptic = useHapticFeedback();
   const [isHovered, setIsHovered] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const isProfileBlock = block.type === 'profile';
@@ -37,6 +39,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   // Swipe state
   const [offsetX, setOffsetX] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [hasTriggeredHaptic, setHasTriggeredHaptic] = useState(false);
   const startXRef = useRef(0);
   const startYRef = useRef(0);
   const isSwipingRef = useRef(false);
@@ -56,6 +59,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
     isSwipingRef.current = false;
     isVerticalScrollRef.current = false;
     setIsTransitioning(false);
+    setHasTriggeredHaptic(false);
   }, [isProfileBlock]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
@@ -72,6 +76,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       }
       if (Math.abs(diffX) > 15) {
         isSwipingRef.current = true;
+        haptic.lightTap(); // Initial swipe feedback
       }
     }
     
@@ -81,8 +86,16 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       // Clamp the offset
       const clampedDiff = Math.max(-maxSwipe, Math.min(maxSwipe, diffX));
       setOffsetX(clampedDiff);
+      
+      // Haptic feedback when crossing threshold
+      if (!hasTriggeredHaptic && Math.abs(clampedDiff) >= threshold) {
+        haptic.mediumTap();
+        setHasTriggeredHaptic(true);
+      } else if (hasTriggeredHaptic && Math.abs(clampedDiff) < threshold) {
+        setHasTriggeredHaptic(false);
+      }
     }
-  }, [isProfileBlock, isMobile]);
+  }, [isProfileBlock, isMobile, hasTriggeredHaptic, haptic, threshold]);
 
   const handleTouchEnd = useCallback(() => {
     if (isProfileBlock) {
@@ -99,6 +112,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
     
     if (offsetX < -threshold) {
       // Swipe left - Delete action
+      haptic.warning(); // Warning haptic for delete
       setOffsetX(-maxSwipe);
       setTimeout(() => {
         onDelete(block.id);
@@ -107,6 +121,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       }, 200);
     } else if (offsetX > threshold) {
       // Swipe right - Edit action
+      haptic.success(); // Success haptic for edit
       setOffsetX(maxSwipe);
       setTimeout(() => {
         onEdit(block);
@@ -120,7 +135,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
     }
     
     isSwipingRef.current = false;
-  }, [isProfileBlock, isMobile, offsetX, threshold, maxSwipe, block, onDelete, onEdit]);
+  }, [isProfileBlock, isMobile, offsetX, threshold, maxSwipe, block, onDelete, onEdit, haptic]);
 
   const showControls = isHovered || isTouched;
   
@@ -128,6 +143,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   const showDeleteAction = offsetX < -20 && isMobile && !isProfileBlock;
   const showEditAction = offsetX > 20 && isMobile && !isProfileBlock;
   const actionOpacity = Math.min(1, Math.abs(offsetX) / threshold);
+  const isAtThreshold = Math.abs(offsetX) >= threshold;
 
   return (
     <div className="relative overflow-hidden rounded-xl">
@@ -135,12 +151,16 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       {isMobile && !isProfileBlock && (
         <div 
           className={cn(
-            "absolute inset-y-0 right-0 flex items-center justify-end px-6 bg-destructive transition-opacity rounded-xl",
-            showDeleteAction ? "opacity-100" : "opacity-0 pointer-events-none"
+            "absolute inset-y-0 right-0 flex items-center justify-end px-6 transition-all rounded-xl",
+            showDeleteAction ? "opacity-100" : "opacity-0 pointer-events-none",
+            isAtThreshold && offsetX < 0 ? "bg-destructive" : "bg-destructive/70"
           )}
           style={{ opacity: showDeleteAction ? actionOpacity : 0, width: maxSwipe + 20 }}
         >
-          <div className="flex flex-col items-center gap-1 text-destructive-foreground">
+          <div className={cn(
+            "flex flex-col items-center gap-1 text-destructive-foreground transition-transform",
+            isAtThreshold && offsetX < 0 && "scale-110"
+          )}>
             <Trash2 className="h-5 w-5" />
             <span className="text-[10px] font-medium">Delete</span>
           </div>
@@ -151,12 +171,16 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       {isMobile && !isProfileBlock && (
         <div 
           className={cn(
-            "absolute inset-y-0 left-0 flex items-center justify-start px-6 bg-primary transition-opacity rounded-xl",
-            showEditAction ? "opacity-100" : "opacity-0 pointer-events-none"
+            "absolute inset-y-0 left-0 flex items-center justify-start px-6 transition-all rounded-xl",
+            showEditAction ? "opacity-100" : "opacity-0 pointer-events-none",
+            isAtThreshold && offsetX > 0 ? "bg-primary" : "bg-primary/70"
           )}
           style={{ opacity: showEditAction ? actionOpacity : 0, width: maxSwipe + 20 }}
         >
-          <div className="flex flex-col items-center gap-1 text-primary-foreground">
+          <div className={cn(
+            "flex flex-col items-center gap-1 text-primary-foreground transition-transform",
+            isAtThreshold && offsetX > 0 && "scale-110"
+          )}>
             <Pencil className="h-5 w-5" />
             <span className="text-[10px] font-medium">Edit</span>
           </div>
@@ -195,7 +219,10 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
                   variant="secondary"
                   size="sm"
                   className="h-7 w-7 p-0"
-                  onClick={() => onMoveUp(block.id)}
+                  onClick={() => {
+                    haptic.lightTap();
+                    onMoveUp(block.id);
+                  }}
                   disabled={isFirst}
                   title="Move up"
                 >
@@ -205,7 +232,10 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
                   variant="secondary"
                   size="sm"
                   className="h-7 w-7 p-0"
-                  onClick={() => onMoveDown(block.id)}
+                  onClick={() => {
+                    haptic.lightTap();
+                    onMoveDown(block.id);
+                  }}
                   disabled={isLast}
                   title="Move down"
                 >
@@ -231,7 +261,10 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
               variant="secondary"
               size="sm"
               className="h-7 w-7 p-0 shadow-lg"
-              onClick={() => onEdit(block)}
+              onClick={() => {
+                haptic.lightTap();
+                onEdit(block);
+              }}
             >
               <Pencil className="h-3.5 w-3.5" />
             </Button>
@@ -242,7 +275,10 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
                 variant="destructive"
                 size="sm"
                 className="h-7 w-7 p-0 shadow-lg"
-                onClick={() => onDelete(block.id)}
+                onClick={() => {
+                  haptic.warning();
+                  onDelete(block.id);
+                }}
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
