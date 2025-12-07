@@ -1,5 +1,5 @@
 // WhatsApp number and message for premium purchases
-const WHATSAPP_NUMBER = '87051097664';
+const WHATSAPP_NUMBER = '77051097664';
 const PREMIUM_MESSAGE = 'Hi, I want to purchase a premium LinkMax';
 
 export function openPremiumPurchase(): void {
