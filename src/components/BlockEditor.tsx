@@ -9,7 +9,17 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+} from '@/components/ui/drawer';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { X } from 'lucide-react';
 import type { Block } from '@/types/page';
 
 // Lazy load all block editors for code splitting
@@ -43,6 +53,7 @@ interface BlockEditorProps {
 
 export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const [formData, setFormData] = useState<any>(() => block ? { ...block } : {});
 
   // Update formData when block changes
@@ -224,14 +235,60 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
     }
   };
 
+  // Mobile: Full-screen Drawer
+  if (isMobile) {
+    return (
+      <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <DrawerContent className="h-[95vh] max-h-[95vh]">
+          <div className="flex flex-col h-full">
+            {/* Header */}
+            <DrawerHeader className="flex-shrink-0 border-b px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <DrawerTitle className="text-lg">
+                    {t(`blockEditor.${block.type}`)}
+                  </DrawerTitle>
+                  <DrawerDescription className="text-sm">
+                    {t('blockEditor.description')}
+                  </DrawerDescription>
+                </div>
+                <Button variant="ghost" size="icon" onClick={onClose}>
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+            </DrawerHeader>
+            
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto px-4 py-4">
+              {renderEditor()}
+            </div>
+            
+            {/* Fixed Footer */}
+            <DrawerFooter className="flex-shrink-0 border-t px-4 py-3 pb-safe">
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={onClose} className="flex-1">
+                  {t('editor.cancel')}
+                </Button>
+                <Button onClick={handleSave} className="flex-1">
+                  {t('editor.save')}
+                </Button>
+              </div>
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  // Desktop: Dialog
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto p-4 sm:p-6">
-        <DialogHeader className="space-y-2">
-          <DialogTitle className="text-lg sm:text-xl">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-xl">
             {t(`blockEditor.${block.type}`)}
           </DialogTitle>
-          <DialogDescription className="text-sm">
+          <DialogDescription>
             {t('blockEditor.description')}
           </DialogDescription>
         </DialogHeader>
@@ -240,11 +297,11 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
           {renderEditor()}
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
-          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
+        <DialogFooter className="gap-2">
+          <Button variant="outline" onClick={onClose}>
             {t('editor.cancel')}
           </Button>
-          <Button onClick={handleSave} className="w-full sm:w-auto">
+          <Button onClick={handleSave}>
             {t('editor.save')}
           </Button>
         </DialogFooter>

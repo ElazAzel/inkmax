@@ -1,8 +1,9 @@
-import { memo, useState } from 'react';
+import { memo, useState, useRef, useCallback, TouchEvent } from 'react';
 import { Pencil, Trash2, GripVertical, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { Block } from '@/types/page';
 
 interface InlineEditableBlockProps {
@@ -28,105 +29,237 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   isFirst = false,
   isLast = false,
 }: InlineEditableBlockProps) {
+  const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const isProfileBlock = block.type === 'profile';
 
-  const handleTouchStart = () => {
-    setIsTouched(true);
-  };
+  // Swipe state
+  const [offsetX, setOffsetX] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const isSwipingRef = useRef(false);
+  const isVerticalScrollRef = useRef(false);
 
-  const handleTouchEnd = () => {
-    // Keep visible for a moment after touch ends
-    setTimeout(() => setIsTouched(false), 3000);
-  };
+  const threshold = 60;
+  const maxSwipe = 100;
+
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    if (isProfileBlock) {
+      setIsTouched(true);
+      return;
+    }
+    
+    startXRef.current = e.touches[0].clientX;
+    startYRef.current = e.touches[0].clientY;
+    isSwipingRef.current = false;
+    isVerticalScrollRef.current = false;
+    setIsTransitioning(false);
+  }, [isProfileBlock]);
+
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (isProfileBlock) return;
+    
+    const diffX = e.touches[0].clientX - startXRef.current;
+    const diffY = e.touches[0].clientY - startYRef.current;
+    
+    // Determine if this is a vertical scroll or horizontal swipe
+    if (!isSwipingRef.current && !isVerticalScrollRef.current) {
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
+        isVerticalScrollRef.current = true;
+        return;
+      }
+      if (Math.abs(diffX) > 15) {
+        isSwipingRef.current = true;
+      }
+    }
+    
+    if (isVerticalScrollRef.current) return;
+    
+    if (isSwipingRef.current && isMobile) {
+      // Clamp the offset
+      const clampedDiff = Math.max(-maxSwipe, Math.min(maxSwipe, diffX));
+      setOffsetX(clampedDiff);
+    }
+  }, [isProfileBlock, isMobile]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (isProfileBlock) {
+      setTimeout(() => setIsTouched(false), 3000);
+      return;
+    }
+    
+    if (!isSwipingRef.current || !isMobile) {
+      setOffsetX(0);
+      return;
+    }
+    
+    setIsTransitioning(true);
+    
+    if (offsetX < -threshold) {
+      // Swipe left - Delete action
+      setOffsetX(-maxSwipe);
+      setTimeout(() => {
+        onDelete(block.id);
+        setOffsetX(0);
+        setIsTransitioning(false);
+      }, 200);
+    } else if (offsetX > threshold) {
+      // Swipe right - Edit action
+      setOffsetX(maxSwipe);
+      setTimeout(() => {
+        onEdit(block);
+        setOffsetX(0);
+        setIsTransitioning(false);
+      }, 200);
+    } else {
+      // Reset
+      setOffsetX(0);
+      setTimeout(() => setIsTransitioning(false), 200);
+    }
+    
+    isSwipingRef.current = false;
+  }, [isProfileBlock, isMobile, offsetX, threshold, maxSwipe, block, onDelete, onEdit]);
 
   const showControls = isHovered || isTouched;
+  
+  // Calculate action visibility based on swipe direction
+  const showDeleteAction = offsetX < -20 && isMobile && !isProfileBlock;
+  const showEditAction = offsetX > 20 && isMobile && !isProfileBlock;
+  const actionOpacity = Math.min(1, Math.abs(offsetX) / threshold);
 
   return (
-    <div
-      className={cn(
-        "relative group transition-all duration-200",
-        isDragging && "opacity-50 scale-95"
-      )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      data-onboarding={isProfileBlock ? 'profile-block' : 'block-edit'}
-    >
-      {/* Hover/Touch overlay with controls */}
-      {showControls && !isDragging && (
-        <div className="absolute inset-0 bg-primary/5 border-2 border-primary/30 rounded-xl pointer-events-none z-10" />
-      )}
-
-      {/* Control buttons - Optimized for both mobile and desktop */}
-      {showControls && !isDragging && (
-        <div className="absolute -top-2 right-1 flex gap-1 z-20">
-          {/* Arrow controls for reordering - only for non-profile blocks */}
-          {!isProfileBlock && onMoveUp && onMoveDown && (
-            <div className="flex gap-0.5 bg-background rounded-lg shadow-lg p-0.5">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="h-7 w-7 p-0"
-                onClick={() => onMoveUp(block.id)}
-                disabled={isFirst}
-                title="Move up"
-              >
-                <ChevronUp className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="h-7 w-7 p-0"
-                onClick={() => onMoveDown(block.id)}
-                disabled={isLast}
-                title="Move down"
-              >
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </div>
+    <div className="relative overflow-hidden rounded-xl">
+      {/* Delete action background (swipe left) */}
+      {isMobile && !isProfileBlock && (
+        <div 
+          className={cn(
+            "absolute inset-y-0 right-0 flex items-center justify-end px-6 bg-destructive transition-opacity rounded-xl",
+            showDeleteAction ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
-          
-          {/* Drag handle - desktop only */}
-          {!isProfileBlock && (
+          style={{ opacity: showDeleteAction ? actionOpacity : 0, width: maxSwipe + 20 }}
+        >
+          <div className="flex flex-col items-center gap-1 text-destructive-foreground">
+            <Trash2 className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Delete</span>
+          </div>
+        </div>
+      )}
+      
+      {/* Edit action background (swipe right) */}
+      {isMobile && !isProfileBlock && (
+        <div 
+          className={cn(
+            "absolute inset-y-0 left-0 flex items-center justify-start px-6 bg-primary transition-opacity rounded-xl",
+            showEditAction ? "opacity-100" : "opacity-0 pointer-events-none"
+          )}
+          style={{ opacity: showEditAction ? actionOpacity : 0, width: maxSwipe + 20 }}
+        >
+          <div className="flex flex-col items-center gap-1 text-primary-foreground">
+            <Pencil className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Edit</span>
+          </div>
+        </div>
+      )}
+      
+      {/* Main content wrapper */}
+      <div
+        className={cn(
+          "relative group transition-all duration-200 bg-background rounded-xl",
+          isDragging && "opacity-50 scale-95",
+          isTransitioning && "transition-transform duration-200 ease-out"
+        )}
+        style={{ 
+          transform: isMobile && !isProfileBlock ? `translateX(${offsetX}px)` : undefined,
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        data-onboarding={isProfileBlock ? 'profile-block' : 'block-edit'}
+      >
+        {/* Hover/Touch overlay with controls */}
+        {showControls && !isDragging && (
+          <div className="absolute inset-0 bg-primary/5 border-2 border-primary/30 rounded-xl pointer-events-none z-10" />
+        )}
+
+        {/* Control buttons - Optimized for both mobile and desktop */}
+        {showControls && !isDragging && (
+          <div className="absolute -top-2 right-1 flex gap-1 z-20">
+            {/* Arrow controls for reordering - only for non-profile blocks */}
+            {!isProfileBlock && onMoveUp && onMoveDown && (
+              <div className="flex gap-0.5 bg-background rounded-lg shadow-lg p-0.5">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  onClick={() => onMoveUp(block.id)}
+                  disabled={isFirst}
+                  title="Move up"
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  onClick={() => onMoveDown(block.id)}
+                  disabled={isLast}
+                  title="Move down"
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            
+            {/* Drag handle - desktop only */}
+            {!isProfileBlock && (
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-7 w-7 p-0 shadow-lg hidden md:inline-flex"
+                {...dragHandleProps}
+              >
+                <GripVertical className="h-4 w-4" />
+              </Button>
+            )}
+            
+            {/* Edit button */}
             <Button
               variant="secondary"
               size="sm"
-              className="h-7 w-7 p-0 shadow-lg hidden md:inline-flex"
-              {...dragHandleProps}
-            >
-              <GripVertical className="h-4 w-4" />
-            </Button>
-          )}
-          
-          {/* Edit button */}
-          <Button
-            variant="secondary"
-            size="sm"
-            className="h-7 w-7 p-0 shadow-lg"
-            onClick={() => onEdit(block)}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-          </Button>
-          
-          {/* Delete button - only for non-profile blocks */}
-          {!isProfileBlock && (
-            <Button
-              variant="destructive"
-              size="sm"
               className="h-7 w-7 p-0 shadow-lg"
-              onClick={() => onDelete(block.id)}
+              onClick={() => onEdit(block)}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Pencil className="h-3.5 w-3.5" />
             </Button>
-          )}
-        </div>
-      )}
+            
+            {/* Delete button - only for non-profile blocks */}
+            {!isProfileBlock && (
+              <Button
+                variant="destructive"
+                size="sm"
+                className="h-7 w-7 p-0 shadow-lg"
+                onClick={() => onDelete(block.id)}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            )}
+          </div>
+        )}
 
-      {/* The actual block */}
-      <BlockRenderer block={block} isPreview={false} />
+        {/* The actual block */}
+        <BlockRenderer block={block} isPreview={false} />
+        
+        {/* Swipe hint for mobile (shown on first touch) */}
+        {isMobile && !isProfileBlock && isTouched && offsetX === 0 && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-background/90 rounded-full text-[10px] text-muted-foreground shadow-lg animate-fade-in">
+            ← Swipe to edit or delete →
+          </div>
+        )}
+      </div>
     </div>
   );
 });
