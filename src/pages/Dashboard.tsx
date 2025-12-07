@@ -33,6 +33,7 @@ import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { MobileToolbar } from '@/components/editor/MobileToolbar';
 import { MobileSettingsSheet } from '@/components/editor/MobileSettingsSheet';
+import { PullToRefresh } from '@/components/editor/PullToRefresh';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -79,6 +80,7 @@ export default function Dashboard() {
     deleteBlock,
     reorderBlocks,
     updateTheme,
+    refresh,
   } = useCloudPageState();
 
   const [migrationKey, setMigrationKey] = useState(0);
@@ -657,21 +659,31 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Preview Editor */}
+        {/* Preview Editor with Pull to Refresh */}
         <div className={`transition-all duration-300 ${showSettings && !isMobile ? 'md:ml-80' : ''}`}>
-          <div className="py-4 pb-24 md:pb-8">
-            <PreviewEditor
-              blocks={pageData.blocks}
-              isPremium={isPremium}
-              onInsertBlock={handleInsertBlock}
-              onEditBlock={handleEditBlock}
-              onDeleteBlock={handleDeleteBlock}
-              onReorderBlocks={reorderBlocks}
-              onUpdateBlock={updateBlock}
-              activeBlockHint={blockHints.activeHint}
-              onDismissHint={blockHints.dismissHint}
-            />
-          </div>
+          <PullToRefresh
+            onRefresh={async () => {
+              if (refresh) {
+                await refresh();
+                toast.success('Page refreshed');
+              }
+            }}
+            disabled={loading || saving}
+          >
+            <div className="py-4 pb-24 md:pb-8">
+              <PreviewEditor
+                blocks={pageData.blocks}
+                isPremium={isPremium}
+                onInsertBlock={handleInsertBlock}
+                onEditBlock={handleEditBlock}
+                onDeleteBlock={handleDeleteBlock}
+                onReorderBlocks={reorderBlocks}
+                onUpdateBlock={updateBlock}
+                activeBlockHint={blockHints.activeHint}
+                onDismissHint={blockHints.dismissHint}
+              />
+            </div>
+          </PullToRefresh>
         </div>
       </div>
 
