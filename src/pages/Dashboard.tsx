@@ -134,7 +134,7 @@ export default function Dashboard() {
     }
   }, [user, loading, navigate]);
 
-  const handleInsertBlock = (blockType: string, _position: number) => {
+  const handleInsertBlock = (blockType: string, position: number) => {
     try {
       const newBlock = createBlock(blockType);
       
@@ -146,7 +146,7 @@ export default function Dashboard() {
         return;
       }
 
-      addBlock(newBlock);
+      addBlock(newBlock, position);
       playAdd();
       toast.success('Block added');
       
@@ -575,6 +575,7 @@ export default function Dashboard() {
               onEditBlock={handleEditBlock}
               onDeleteBlock={deleteBlock}
               onReorderBlocks={reorderBlocks}
+              onUpdateBlock={updateBlock}
               activeBlockHint={blockHints.activeHint}
               onDismissHint={blockHints.dismissHint}
             />

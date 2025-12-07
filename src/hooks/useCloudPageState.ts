@@ -47,11 +47,27 @@ export function useCloudPageState() {
     return slug;
   }, [user, pageData, chatbotContext, savePageMutation, publishPageMutation]);
 
-  const addBlock = useCallback((block: Block) => {
+  const addBlock = useCallback((block: Block, position?: number) => {
     if (!pageData || !user) return;
+    
+    let newBlocks: Block[];
+    if (typeof position === 'number') {
+      // Find the profile block index (always at position 0)
+      const profileIndex = pageData.blocks.findIndex(b => b.type === 'profile');
+      // Calculate actual insertion index (after profile + position in content blocks)
+      const insertIndex = profileIndex >= 0 ? profileIndex + 1 + position : position;
+      newBlocks = [
+        ...pageData.blocks.slice(0, insertIndex),
+        block,
+        ...pageData.blocks.slice(insertIndex),
+      ];
+    } else {
+      newBlocks = [...pageData.blocks, block];
+    }
+    
     const newPageData = {
       ...pageData,
-      blocks: [...pageData.blocks, block],
+      blocks: newBlocks,
     };
     setPageData(newPageData);
     // Auto-save after adding block
