@@ -73,7 +73,36 @@
         "description": "Your data stays secure with enterprise-grade protection"
       }
     },
+    "stats": {
+      "minutes": "Minutes",
+      "minutesSuffix": " min",
+      "blocks": "Block Types",
+      "possibilities": "Possibilities"
+    },
+    "benefits": {
+      "ai": "AI Content Generation",
+      "design": "Premium Design",
+      "analytics": "Analytics Dashboard",
+      "crm": "Mini-CRM"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Create your page in 3 simple steps",
+      "step1": {
+        "title": "Choose Your Niche",
+        "desc": "Select your profession and AI will generate a perfect page"
+      },
+      "step2": {
+        "title": "Customize",
+        "desc": "Add blocks, edit content, and adjust the design"
+      },
+      "step3": {
+        "title": "Publish & Share",
+        "desc": "Get your unique link and share it everywhere"
+      }
+    },
     "cta": {
+      "badge": "Start for Free",
       "title": "Ready to Build Your Link?",
       "subtitle": "Join thousands of creators, influencers, and entrepreneurs who trust LinkMAX",
       "button": "Start Creating Now"
