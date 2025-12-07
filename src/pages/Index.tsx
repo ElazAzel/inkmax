@@ -24,6 +24,7 @@ import {
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { useEffect, useRef, useState } from 'react';
+import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
 
 // Intersection Observer hook for scroll animations
 function useScrollAnimation() {
@@ -461,8 +462,11 @@ export default function Index() {
         </div>
       </section>
 
+      {/* Interactive Demo */}
+      <InteractiveDemo />
+
       {/* How it works */}
-      <section ref={howItWorksSection.ref} className="py-20 sm:py-28 px-4">
+      <section ref={howItWorksSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12 sm:mb-16 space-y-4">
             <h2 
