@@ -18,9 +18,10 @@ import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BlockInsertButton } from './BlockInsertButton';
 import { InlineEditableBlock } from './InlineEditableBlock';
+import { InlineProfileEditor } from '../blocks/InlineProfileEditor';
 import { BlockHint } from '../onboarding/BlockHint';
 import { useIsMobile } from '@/hooks/use-mobile';
-import type { Block } from '@/types/page';
+import type { Block, ProfileBlock } from '@/types/page';
 
 interface PreviewEditorProps {
   blocks: Block[];
@@ -29,6 +30,7 @@ interface PreviewEditorProps {
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
   onReorderBlocks: (blocks: Block[]) => void;
+  onUpdateBlock: (id: string, updates: Partial<Block>) => void;
   activeBlockHint?: { blockType: string; blockId: string } | null;
   onDismissHint?: () => void;
 }
@@ -127,6 +129,7 @@ export const PreviewEditor = memo(function PreviewEditor({
   onEditBlock,
   onDeleteBlock,
   onReorderBlocks,
+  onUpdateBlock,
   activeBlockHint,
   onDismissHint,
 }: PreviewEditorProps) {
@@ -173,13 +176,12 @@ export const PreviewEditor = memo(function PreviewEditor({
   return (
     <>
       <div className="max-w-lg mx-auto px-3 sm:px-4 py-2 space-y-3 sm:space-y-4 pb-24">
-        {/* Profile block (not draggable) */}
+        {/* Profile block with inline editing */}
         {profileBlock && (
-          <>
-            <InlineEditableBlock
-              block={profileBlock}
-              onEdit={onEditBlock}
-              onDelete={onDeleteBlock}
+          <div className="relative group" data-onboarding="profile-block">
+            <InlineProfileEditor
+              block={profileBlock as ProfileBlock}
+              onUpdate={(updates) => onUpdateBlock(profileBlock.id, updates)}
             />
             <BlockInsertButton
               onInsert={(type) => onInsertBlock(type, 0)}
@@ -187,7 +189,7 @@ export const PreviewEditor = memo(function PreviewEditor({
               currentBlockCount={blocks.length}
               className="my-4"
             />
-          </>
+          </div>
         )}
 
         {/* Draggable content blocks */}
