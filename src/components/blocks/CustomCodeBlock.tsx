@@ -1,18 +1,21 @@
 import { memo, useEffect, useRef, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Crown } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import type { CustomCodeBlock as CustomCodeBlockType } from '@/types/page';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 
 interface CustomCodeBlockProps {
   block: CustomCodeBlockType;
 }
 
 export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }: CustomCodeBlockProps) {
+  const { i18n } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
+  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
 
-  // Sanitize HTML to prevent XSS attacks
   const sanitizedHtml = useMemo(() => {
     return DOMPurify.sanitize(block.html || '', {
       ALLOWED_TAGS: ['div', 'span', 'p', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
@@ -31,10 +34,8 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
     });
   }, [block.html]);
 
-  // Sanitize CSS to prevent CSS injection attacks
   const sanitizedCss = useMemo(() => {
     if (!block.css) return '';
-    // Remove potentially dangerous CSS patterns
     return block.css
       .replace(/@import/gi, '')
       .replace(/javascript:/gi, '')
@@ -46,7 +47,6 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
   useEffect(() => {
     if (!containerRef.current || !sanitizedCss) return;
 
-    // Inject sanitized CSS
     const styleId = `custom-style-${block.id}`;
     let styleElement = document.getElementById(styleId) as HTMLStyleElement;
     
@@ -58,7 +58,6 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
     
     styleElement.textContent = sanitizedCss;
 
-    // Cleanup on unmount
     return () => {
       const el = document.getElementById(styleId);
       if (el) el.remove();
@@ -67,10 +66,10 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
 
   return (
     <Card className="overflow-hidden border-primary/20">
-      {block.title && (
+      {title && (
         <CardHeader className="bg-primary/5">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm">{block.title}</CardTitle>
+            <CardTitle className="text-sm">{title}</CardTitle>
             <Badge variant="secondary" className="gap-1">
               <Crown className="h-3 w-3" />
               Premium
