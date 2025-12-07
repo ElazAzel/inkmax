@@ -19,7 +19,30 @@ import {
   BarChart3,
   Palette,
   Bot,
-  Globe
+  Globe,
+  Clock,
+  DollarSign,
+  AlertCircle,
+  UserX,
+  Frown,
+  LineChart,
+  Wand2,
+  Rocket,
+  PenTool,
+  MessageSquare,
+  Briefcase,
+  Scissors,
+  Camera,
+  Dumbbell,
+  GraduationCap,
+  Heart,
+  Brain,
+  Coffee,
+  ShoppingBag,
+  Building2,
+  Stethoscope,
+  School,
+  Wrench
 } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
@@ -80,54 +103,54 @@ export default function Index() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const problems = [
+    { icon: Clock, title: t('landing.problems.noTime.title'), description: t('landing.problems.noTime.description'), color: 'from-red-500 to-orange-500' },
+    { icon: DollarSign, title: t('landing.problems.expensive.title'), description: t('landing.problems.expensive.description'), color: 'from-amber-500 to-yellow-500' },
+    { icon: AlertCircle, title: t('landing.problems.oneLink.title'), description: t('landing.problems.oneLink.description'), color: 'from-blue-500 to-cyan-500' },
+    { icon: UserX, title: t('landing.problems.noLeads.title'), description: t('landing.problems.noLeads.description'), color: 'from-purple-500 to-violet-500' },
+    { icon: Frown, title: t('landing.problems.oldDesign.title'), description: t('landing.problems.oldDesign.description'), color: 'from-pink-500 to-rose-500' },
+    { icon: LineChart, title: t('landing.problems.noAnalytics.title'), description: t('landing.problems.noAnalytics.description'), color: 'from-emerald-500 to-teal-500' }
+  ];
+
+  const solutions = [
+    { icon: Wand2, title: t('landing.solutions.ai.title'), description: t('landing.solutions.ai.description'), gradient: 'from-violet-500 to-purple-600' },
+    { icon: Rocket, title: t('landing.solutions.speed.title'), description: t('landing.solutions.speed.description'), gradient: 'from-blue-500 to-cyan-500' },
+    { icon: PenTool, title: t('landing.solutions.design.title'), description: t('landing.solutions.design.description'), gradient: 'from-pink-500 to-rose-500' },
+    { icon: MessageSquare, title: t('landing.solutions.crm.title'), description: t('landing.solutions.crm.description'), gradient: 'from-emerald-500 to-teal-500' },
+    { icon: BarChart3, title: t('landing.solutions.analytics.title'), description: t('landing.solutions.analytics.description'), gradient: 'from-amber-500 to-orange-500' },
+    { icon: Smartphone, title: t('landing.solutions.mobile.title'), description: t('landing.solutions.mobile.description'), gradient: 'from-indigo-500 to-blue-500' }
+  ];
+
+  const b2cAudiences = [
+    { icon: Scissors, label: t('landing.audiences.b2c.items.barber') },
+    { icon: Camera, label: t('landing.audiences.b2c.items.photographer') },
+    { icon: Dumbbell, label: t('landing.audiences.b2c.items.coach') },
+    { icon: GraduationCap, label: t('landing.audiences.b2c.items.tutor') },
+    { icon: Heart, label: t('landing.audiences.b2c.items.beauty') },
+    { icon: Brain, label: t('landing.audiences.b2c.items.psychologist') }
+  ];
+
+  const b2bAudiences = [
+    { icon: Coffee, label: t('landing.audiences.b2b.items.cafe') },
+    { icon: ShoppingBag, label: t('landing.audiences.b2b.items.shop') },
+    { icon: Building2, label: t('landing.audiences.b2b.items.agency') },
+    { icon: Stethoscope, label: t('landing.audiences.b2b.items.clinic') },
+    { icon: School, label: t('landing.audiences.b2b.items.school') },
+    { icon: Wrench, label: t('landing.audiences.b2b.items.service') }
+  ];
+
   const features = [
-    {
-      icon: Sparkles,
-      title: t('landing.features.aiGeneration.title'),
-      description: t('landing.features.aiGeneration.description'),
-      gradient: 'from-violet-500 to-purple-600',
-      delay: '0ms'
-    },
-    {
-      icon: Link2,
-      title: t('landing.features.magicLinks.title'),
-      description: t('landing.features.magicLinks.description'),
-      gradient: 'from-blue-500 to-cyan-500',
-      delay: '100ms'
-    },
-    {
-      icon: Zap,
-      title: t('landing.features.fast.title'),
-      description: t('landing.features.fast.description'),
-      gradient: 'from-amber-500 to-orange-500',
-      delay: '200ms'
-    },
-    {
-      icon: Smartphone,
-      title: t('landing.features.mobile.title'),
-      description: t('landing.features.mobile.description'),
-      gradient: 'from-emerald-500 to-teal-500',
-      delay: '300ms'
-    },
-    {
-      icon: Share2,
-      title: t('landing.features.sharing.title'),
-      description: t('landing.features.sharing.description'),
-      gradient: 'from-pink-500 to-rose-500',
-      delay: '400ms'
-    },
-    {
-      icon: Shield,
-      title: t('landing.features.privacy.title'),
-      description: t('landing.features.privacy.description'),
-      gradient: 'from-slate-500 to-zinc-600',
-      delay: '500ms'
-    }
+    { icon: Sparkles, title: t('landing.features.aiGeneration.title'), description: t('landing.features.aiGeneration.description'), gradient: 'from-violet-500 to-purple-600', delay: '0ms' },
+    { icon: Link2, title: t('landing.features.magicLinks.title'), description: t('landing.features.magicLinks.description'), gradient: 'from-blue-500 to-cyan-500', delay: '100ms' },
+    { icon: Zap, title: t('landing.features.fast.title'), description: t('landing.features.fast.description'), gradient: 'from-amber-500 to-orange-500', delay: '200ms' },
+    { icon: Smartphone, title: t('landing.features.mobile.title'), description: t('landing.features.mobile.description'), gradient: 'from-emerald-500 to-teal-500', delay: '300ms' },
+    { icon: Share2, title: t('landing.features.sharing.title'), description: t('landing.features.sharing.description'), gradient: 'from-pink-500 to-rose-500', delay: '400ms' },
+    { icon: Shield, title: t('landing.features.privacy.title'), description: t('landing.features.privacy.description'), gradient: 'from-slate-500 to-zinc-600', delay: '500ms' }
   ];
 
   const stats = [
     { value: 2, label: t('landing.stats.minutes'), suffix: t('landing.stats.minutesSuffix') },
-    { value: '15+', label: t('landing.stats.blocks') },
+    { value: '20+', label: t('landing.stats.blocks') },
     { value: '∞', label: t('landing.stats.possibilities') }
   ];
 
@@ -154,14 +177,17 @@ export default function Index() {
   };
 
   const showcaseFeatures = [
-    { icon: Bot, label: 'AI Builder' },
-    { icon: Palette, label: 'Themes' },
-    { icon: BarChart3, label: 'Analytics' },
+    { icon: Bot, label: t('landing.benefits.ai') },
+    { icon: Palette, label: t('landing.benefits.design') },
+    { icon: BarChart3, label: t('landing.benefits.analytics') },
     { icon: Globe, label: 'Multi-lang' },
-    { icon: Users, label: 'CRM' }
+    { icon: Users, label: t('landing.benefits.crm') }
   ];
 
   const heroSection = useScrollAnimation();
+  const problemsSection = useScrollAnimation();
+  const solutionsSection = useScrollAnimation();
+  const audiencesSection = useScrollAnimation();
   const featuresSection = useScrollAnimation();
   const howItWorksSection = useScrollAnimation();
   const pricingSection = useScrollAnimation();
@@ -422,8 +448,151 @@ export default function Index() {
         </div>
       </section>
 
+      {/* Problems Section */}
+      <section ref={problemsSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 sm:mb-16 space-y-4">
+            <h2 
+              className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${problemsSection.isVisible ? 'animate-blur-in' : ''}`}
+            >
+              {t('landing.problems.title')}
+            </h2>
+            <p 
+              className={`text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 ${problemsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              style={{ animationDelay: '200ms' }}
+            >
+              {t('landing.problems.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {problems.map((problem, index) => (
+              <div 
+                key={index}
+                className={`group relative p-6 rounded-2xl bg-card border border-destructive/20 hover:border-destructive/40 transition-all duration-300 opacity-0 ${problemsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${problem.color} flex items-center justify-center mb-4 opacity-80`}>
+                  <problem.icon className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{problem.title}</h3>
+                <p className="text-muted-foreground text-sm">{problem.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Solutions Section */}
+      <section ref={solutionsSection.ref} className="py-20 sm:py-28 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 sm:mb-16 space-y-4">
+            <div 
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in' : ''}`}
+            >
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-primary">LinkMAX</span>
+            </div>
+            <h2 
+              className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${solutionsSection.isVisible ? 'animate-blur-in' : ''}`}
+              style={{ animationDelay: '150ms' }}
+            >
+              {t('landing.solutions.title')}
+            </h2>
+            <p 
+              className={`text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              style={{ animationDelay: '300ms' }}
+            >
+              {t('landing.solutions.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {solutions.map((solution, index) => (
+              <div 
+                key={index}
+                className={`group relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:-translate-y-2 opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${solution.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                  <solution.icon className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">{solution.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{solution.description}</p>
+                <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${solution.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Audiences Section - B2B & B2C */}
+      <section ref={audiencesSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 sm:mb-16 space-y-4">
+            <h2 
+              className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${audiencesSection.isVisible ? 'animate-blur-in' : ''}`}
+            >
+              {t('landing.audiences.title')}
+            </h2>
+            <p 
+              className={`text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 ${audiencesSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              style={{ animationDelay: '200ms' }}
+            >
+              {t('landing.audiences.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-6 lg:gap-8">
+            {/* B2C Card */}
+            <div 
+              className={`relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 opacity-0 ${audiencesSection.isVisible ? 'animate-slide-in-left' : ''}`}
+              style={{ animationDelay: '300ms' }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 text-sm font-medium mb-4">
+                <Users className="h-4 w-4" />
+                {t('landing.audiences.b2c.badge')}
+              </div>
+              <h3 className="text-2xl font-bold mb-6">{t('landing.audiences.b2c.title')}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {b2cAudiences.map((item, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
+                    <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <item.icon className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* B2B Card */}
+            <div 
+              className={`relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 opacity-0 ${audiencesSection.isVisible ? 'animate-slide-in-right' : ''}`}
+              style={{ animationDelay: '400ms' }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-sm font-medium mb-4">
+                <Briefcase className="h-4 w-4" />
+                {t('landing.audiences.b2b.badge')}
+              </div>
+              <h3 className="text-2xl font-bold mb-6">{t('landing.audiences.b2b.title')}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {b2bAudiences.map((item, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
+                    <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                      <item.icon className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Grid */}
-      <section ref={featuresSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
+      <section ref={featuresSection.ref} className="py-20 sm:py-28 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12 sm:mb-16 space-y-4">
             <h2 
