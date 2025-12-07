@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import {
   Trophy,
   Users,
   X,
+  Undo2,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
@@ -27,6 +28,7 @@ import { useAchievements } from '@/hooks/useAchievements';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useHapticFeedback } from '@/hooks/useHapticFeedback';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { MobileToolbar } from '@/components/editor/MobileToolbar';
@@ -48,6 +50,11 @@ import { toast } from 'sonner';
 import type { Block, ProfileBlock } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
 
+interface DeletedBlockInfo {
+  block: Block;
+  position: number;
+}
+
 export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -58,6 +65,7 @@ export default function Dashboard() {
   const userProfile = useUserProfile(user?.id);
   const { playAdd, playDelete, playError } = useSoundEffects();
   const isMobile = useIsMobile();
+  const haptic = useHapticFeedback();
   const {
     pageData,
     chatbotContext,
@@ -88,6 +96,86 @@ export default function Dashboard() {
   const [usernameInput, setUsernameInput] = useState('');
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState('');
+  
+  // Undo functionality
+  const [lastDeletedBlock, setLastDeletedBlock] = useState<DeletedBlockInfo | null>(null);
+  const undoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle undo - restore deleted block
+  const handleUndo = useCallback(() => {
+    if (!lastDeletedBlock || !pageData) return;
+    
+    haptic.success();
+    addBlock(lastDeletedBlock.block, lastDeletedBlock.position);
+    setLastDeletedBlock(null);
+    
+    if (undoTimeoutRef.current) {
+      clearTimeout(undoTimeoutRef.current);
+      undoTimeoutRef.current = null;
+    }
+    
+    toast.success('Block restored');
+  }, [lastDeletedBlock, pageData, addBlock, haptic]);
+
+  // Handle delete with undo capability
+  const handleDeleteBlock = useCallback((blockId: string) => {
+    if (!pageData) return;
+    
+    const blockIndex = pageData.blocks.findIndex(b => b.id === blockId);
+    const block = pageData.blocks.find(b => b.id === blockId);
+    
+    if (!block || block.type === 'profile') return;
+    
+    // Store for undo
+    setLastDeletedBlock({ block, position: blockIndex });
+    
+    // Clear previous timeout
+    if (undoTimeoutRef.current) {
+      clearTimeout(undoTimeoutRef.current);
+    }
+    
+    // Set timeout to clear undo option
+    undoTimeoutRef.current = setTimeout(() => {
+      setLastDeletedBlock(null);
+      undoTimeoutRef.current = null;
+    }, 5000);
+    
+    // Delete the block
+    deleteBlock(blockId);
+    playDelete();
+    
+    // Show toast with undo button
+    toast(
+      <div className="flex items-center gap-3">
+        <span>Block deleted</span>
+        <Button 
+          size="sm" 
+          variant="outline"
+          className="h-7 px-2 gap-1"
+          onClick={(e) => {
+            e.stopPropagation();
+            // Trigger undo
+            if (block) {
+              haptic.success();
+              addBlock(block, blockIndex);
+              setLastDeletedBlock(null);
+              if (undoTimeoutRef.current) {
+                clearTimeout(undoTimeoutRef.current);
+                undoTimeoutRef.current = null;
+              }
+              toast.success('Block restored');
+            }
+          }}
+        >
+          <Undo2 className="h-3.5 w-3.5" />
+          Undo
+        </Button>
+      </div>,
+      {
+        duration: 5000,
+      }
+    );
+  }, [pageData, deleteBlock, playDelete, addBlock, haptic]);
 
   // Check achievements whenever blocks or features change
   useEffect(() => {
@@ -577,7 +665,7 @@ export default function Dashboard() {
               isPremium={isPremium}
               onInsertBlock={handleInsertBlock}
               onEditBlock={handleEditBlock}
-              onDeleteBlock={deleteBlock}
+              onDeleteBlock={handleDeleteBlock}
               onReorderBlocks={reorderBlocks}
               onUpdateBlock={updateBlock}
               activeBlockHint={blockHints.activeHint}
