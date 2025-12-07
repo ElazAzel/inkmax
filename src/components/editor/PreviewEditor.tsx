@@ -175,7 +175,7 @@ export const PreviewEditor = memo(function PreviewEditor({
 
   return (
     <>
-      <div className="max-w-lg mx-auto px-3 sm:px-4 py-2 space-y-3 sm:space-y-4 pb-24">
+      <div className="max-w-lg mx-auto px-3 py-2 space-y-3 pb-32 md:pb-24">
         {/* Profile block with inline editing */}
         {profileBlock && (
           <div className="relative group" data-onboarding="profile-block">
@@ -187,7 +187,7 @@ export const PreviewEditor = memo(function PreviewEditor({
               onInsert={(type) => onInsertBlock(type, 0)}
               isPremium={isPremium}
               currentBlockCount={blocks.length}
-              className="my-4"
+              className="my-3"
             />
           </div>
         )}
@@ -222,9 +222,9 @@ export const PreviewEditor = memo(function PreviewEditor({
             </SortableContext>
           </DndContext>
         ) : (
-          <div className="text-center py-8 sm:py-12 border-2 border-dashed border-border rounded-xl sm:rounded-2xl mx-2">
-            <p className="text-sm sm:text-base text-muted-foreground mb-4 px-4">
-              Click the + button above to add your first block
+          <div className="text-center py-8 border-2 border-dashed border-border rounded-xl mx-2">
+            <p className="text-sm text-muted-foreground mb-4 px-4">
+              Click the + button to add your first block
             </p>
           </div>
         )}
@@ -232,7 +232,7 @@ export const PreviewEditor = memo(function PreviewEditor({
 
       {/* Mobile FAB for quick block insertion */}
       {isMobile && (
-        <div className="fixed bottom-6 right-6 z-40">
+        <div className="fixed bottom-20 right-4 z-40">
           <BlockInsertButton
             onInsert={(type) => onInsertBlock(type, contentBlocks.length)}
             isPremium={isPremium}

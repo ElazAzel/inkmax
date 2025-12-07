@@ -16,7 +16,8 @@ import {
   MessageCircle,
   LayoutTemplate,
   Trophy,
-  Users
+  Users,
+  X,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
@@ -25,8 +26,11 @@ import { useBlockHints } from '@/hooks/useBlockHints';
 import { useAchievements } from '@/hooks/useAchievements';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
+import { MobileToolbar } from '@/components/editor/MobileToolbar';
+import { MobileSettingsSheet } from '@/components/editor/MobileSettingsSheet';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -41,7 +45,7 @@ import { Card } from '@/components/ui/card';
 import { createBlock } from '@/lib/block-factory';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { toast } from 'sonner';
-import type { Block } from '@/types/page';
+import type { Block, ProfileBlock } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
 
 export default function Dashboard() {
@@ -53,6 +57,7 @@ export default function Dashboard() {
   const achievements = useAchievements();
   const userProfile = useUserProfile(user?.id);
   const { playAdd, playDelete, playError } = useSoundEffects();
+  const isMobile = useIsMobile();
   const {
     pageData,
     chatbotContext,
@@ -75,6 +80,7 @@ export default function Dashboard() {
   const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
   const [aiGeneratorType, setAiGeneratorType] = useState<'magic-title' | 'sales-copy' | 'seo' | 'ai-builder'>('ai-builder');
   const [showSettings, setShowSettings] = useState(false);
+  const [showMobileSettings, setShowMobileSettings] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showNicheOnboarding, setShowNicheOnboarding] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
@@ -99,8 +105,8 @@ export default function Dashboard() {
       blocksUsed,
       totalBlocks: pageData.blocks.length,
       featuresUsed,
-      pageViews: 0, // Will be fetched from database in future
-      published: false, // Will be fetched from database in future
+      pageViews: 0,
+      published: false,
     };
 
     achievements.checkAchievements(stats);
@@ -119,10 +125,8 @@ export default function Dashboard() {
     const hasCompletedOnboarding = localStorage.getItem('linkmax_onboarding_completed');
     
     if (!hasCompletedNicheOnboarding && user && pageData) {
-      // Show niche onboarding for new users
       setTimeout(() => setShowNicheOnboarding(true), 500);
     } else if (!hasCompletedOnboarding && user && pageData) {
-      // Show regular onboarding after niche onboarding
       setTimeout(() => setShowOnboarding(true), 1000);
     }
   }, [user, pageData]);
@@ -138,7 +142,6 @@ export default function Dashboard() {
     try {
       const newBlock = createBlock(blockType);
       
-      // Check premium status for premium blocks
       const premiumBlocks = ['video', 'carousel', 'custom_code', 'form', 'newsletter', 'testimonial', 'scratch', 'search'];
       if (premiumBlocks.includes(blockType) && !isPremium) {
         toast.error('This block requires Premium');
@@ -150,7 +153,6 @@ export default function Dashboard() {
       playAdd();
       toast.success('Block added');
       
-      // Показываем подсказку при первом использовании блока
       blockHints.showHint(blockType, newBlock.id);
     } catch (error) {
       toast.error('Failed to add block');
@@ -220,7 +222,6 @@ export default function Dashboard() {
       navigator.clipboard.writeText(url);
       toast.success('Link copied to clipboard!');
       
-      // Show install prompt after first publish
       const hasSeenInstallPrompt = localStorage.getItem('linkmax_install_prompt_shown');
       if (!hasSeenInstallPrompt) {
         setPublishedUrl(url);
@@ -255,7 +256,6 @@ export default function Dashboard() {
   };
 
   const handleNicheOnboardingComplete = (profile: { name: string; bio: string }, blocks: Block[]) => {
-    // Update profile block
     const profileBlock = pageData?.blocks.find(b => b.type === 'profile');
     if (profile && profileBlock) {
       updateBlock(profileBlock.id, { 
@@ -264,13 +264,11 @@ export default function Dashboard() {
       });
     }
     
-    // Add generated blocks
     blocks.forEach((block) => {
       addBlock(block);
     });
     
     setShowNicheOnboarding(false);
-    // Show regular onboarding after niche onboarding
     setTimeout(() => setShowOnboarding(true), 500);
   };
 
@@ -295,7 +293,7 @@ export default function Dashboard() {
     );
   }
 
-  const profileBlock = pageData.blocks.find(b => b.type === 'profile');
+  const profileBlock = pageData.blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
 
   return (
     <div className="min-h-screen bg-background">
@@ -311,16 +309,16 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Top Toolbar - Mobile Optimized */}
-      <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 h-14 flex items-center justify-between gap-2">
+      {/* Desktop Header - Hidden on Mobile */}
+      <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm hidden md:block">
+        <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 animate-fade-in">
             <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8 animate-scale-in hover-scale" />
-            <h1 className="text-lg sm:text-xl font-bold text-primary">LinkMAX</h1>
+            <h1 className="text-xl font-bold text-primary">LinkMAX</h1>
           </div>
           
-          <div className="flex items-center gap-1 sm:gap-2">
-            {/* AI Tools - Hidden on mobile */}
+          <div className="flex items-center gap-2">
+            {/* AI Tools */}
             <Button 
               variant="ghost" 
               size="sm"
@@ -328,37 +326,32 @@ export default function Dashboard() {
                 setAiGeneratorType('ai-builder');
                 setAiGeneratorOpen(true);
               }}
-              className="hidden md:inline-flex"
             >
               <Wand2 className="h-4 w-4 mr-2" />
               AI Builder
             </Button>
 
-            {/* Templates - Hidden on mobile */}
+            {/* Templates */}
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setTemplateGalleryOpen(true)}
-              className="hidden md:inline-flex"
             >
               <LayoutTemplate className="h-4 w-4 mr-2" />
-              {t('editor.settings')}
+              Templates
             </Button>
 
-            {/* Language Switcher - Desktop Only */}
-            <div className="hidden md:block">
-              <LanguageSwitcher />
-            </div>
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
             {/* Settings Toggle */}
             <Button 
               variant={showSettings ? "default" : "ghost"} 
               size="sm"
               onClick={() => setShowSettings(!showSettings)}
-              className="hidden sm:inline-flex"
             >
-              <MessageCircle className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Settings</span>
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Settings
             </Button>
 
             {/* CRM Button */}
@@ -367,19 +360,19 @@ export default function Dashboard() {
               size="sm"
               onClick={() => setShowLeads(true)}
             >
-              <Users className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">CRM</span>
+              <Users className="h-4 w-4 mr-2" />
+              CRM
             </Button>
 
-            {/* Achievements Button - Mobile Optimized */}
+            {/* Achievements Button */}
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setShowAchievements(true)}
               className="relative"
             >
-              <Trophy className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Достижения</span>
+              <Trophy className="h-4 w-4 mr-2" />
+              Achievements
               {achievements.getProgress().unlocked > 0 && (
                 <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-bold flex items-center justify-center text-primary-foreground">
                   {achievements.getProgress().unlocked}
@@ -387,7 +380,7 @@ export default function Dashboard() {
               )}
             </Button>
 
-            <div className="h-6 w-px bg-border hidden sm:block" />
+            <div className="h-6 w-px bg-border" />
 
             {/* Save */}
             <Button 
@@ -396,16 +389,15 @@ export default function Dashboard() {
               onClick={save} 
               disabled={saving}
             >
-              <Save className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save'}</span>
+              <Save className="h-4 w-4 mr-2" />
+              {saving ? 'Saving...' : 'Save'}
             </Button>
 
-            {/* Preview - Hidden on mobile */}
+            {/* Preview */}
             <Button 
               variant="outline" 
               size="sm" 
               onClick={handlePreview}
-              className="hidden sm:inline-flex"
             >
               <Eye className="h-4 w-4 mr-2" />
               Preview
@@ -413,11 +405,11 @@ export default function Dashboard() {
 
             {/* Publish/Share */}
             <Button size="sm" onClick={handleShare} data-onboarding="share-button">
-              <Upload className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Share</span>
+              <Upload className="h-4 w-4 mr-2" />
+              Share
             </Button>
 
-            <div className="h-6 w-px bg-border hidden sm:block" />
+            <div className="h-6 w-px bg-border" />
 
             {/* Sign Out */}
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
@@ -427,12 +419,32 @@ export default function Dashboard() {
         </div>
       </header>
 
+      {/* Mobile Header - Simplified */}
+      <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm md:hidden">
+        <div className="px-4 h-12 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-7 w-7" />
+            <h1 className="text-lg font-bold text-primary">LinkMAX</h1>
+          </div>
+          <Button variant="ghost" size="icon" onClick={handleSignOut}>
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
+      </header>
+
       {/* Main Content */}
       <div className="relative">
-        {/* Settings Sidebar - Mobile Optimized */}
-        {showSettings && (
-          <div className="fixed left-0 top-14 bottom-0 w-full sm:w-80 bg-card border-r shadow-lg z-40 overflow-y-auto">
+        {/* Desktop Settings Sidebar */}
+        {showSettings && !isMobile && (
+          <div className="fixed left-0 top-14 bottom-0 w-80 bg-card border-r shadow-lg z-40 overflow-y-auto hidden md:block">
             <div className="p-6 space-y-6">
+              {/* Close Button */}
+              <div className="flex justify-end">
+                <Button variant="ghost" size="icon" onClick={() => setShowSettings(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
               {/* Username Settings */}
               <Card className="p-4">
                 <h3 className="font-semibold mb-4">Your Link</h3>
@@ -452,7 +464,7 @@ export default function Dashboard() {
                         onClick={handleUpdateUsername}
                         disabled={userProfile.saving || !usernameInput.trim()}
                       >
-                        {userProfile.saving ? 'Saving...' : 'Save'}
+                        {userProfile.saving ? '...' : 'Save'}
                       </Button>
                     </div>
                     {usernameInput && (
@@ -460,9 +472,6 @@ export default function Dashboard() {
                         Your link: {window.location.origin}/{usernameInput}
                       </p>
                     )}
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Only lowercase letters, numbers, hyphens, and underscores (3-30 characters)
-                    </p>
                   </div>
                 </div>
               </Card>
@@ -530,13 +539,10 @@ export default function Dashboard() {
                     value={chatbotContext}
                     onChange={(e) => setChatbotContext(e.target.value)}
                     onBlur={save}
-                    placeholder="Add context for the AI chatbot (pricing, services, availability, etc.)"
+                    placeholder="Add context for the AI chatbot..."
                     rows={6}
                     className="text-sm"
                   />
-                  <p className="text-xs text-muted-foreground">
-                    This helps the AI answer visitor questions accurately
-                  </p>
                 </div>
               </Card>
 
@@ -546,28 +552,26 @@ export default function Dashboard() {
                   <Sparkles className="h-4 w-4 text-primary" />
                   <h3 className="font-semibold">AI Tools</h3>
                 </div>
-                <div className="space-y-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      setAiGeneratorType('seo');
-                      setAiGeneratorOpen(true);
-                    }}
-                  >
-                    <Sparkles className="h-3 w-3 mr-2" />
-                    SEO Generator
-                  </Button>
-                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setAiGeneratorType('seo');
+                    setAiGeneratorOpen(true);
+                  }}
+                >
+                  <Sparkles className="h-3 w-3 mr-2" />
+                  SEO Generator
+                </Button>
               </Card>
             </div>
           </div>
         )}
 
-        {/* Preview Editor - Mobile Optimized */}
-        <div className={`transition-all duration-300 ${showSettings ? 'sm:ml-80' : ''}`}>
-          <div className="py-4 sm:py-8">
+        {/* Preview Editor */}
+        <div className={`transition-all duration-300 ${showSettings && !isMobile ? 'md:ml-80' : ''}`}>
+          <div className="py-4 pb-24 md:pb-8">
             <PreviewEditor
               blocks={pageData.blocks}
               isPremium={isPremium}
@@ -582,6 +586,51 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Bottom Toolbar */}
+      {isMobile && (
+        <MobileToolbar
+          saving={saving}
+          onSave={save}
+          onPreview={handlePreview}
+          onShare={handleShare}
+          onOpenSettings={() => setShowMobileSettings(true)}
+          onOpenAIBuilder={() => {
+            setAiGeneratorType('ai-builder');
+            setAiGeneratorOpen(true);
+          }}
+          onOpenTemplates={() => setTemplateGalleryOpen(true)}
+          onOpenAchievements={() => setShowAchievements(true)}
+          onOpenCRM={() => setShowLeads(true)}
+          achievementCount={achievements.getProgress().unlocked}
+        />
+      )}
+
+      {/* Mobile Settings Sheet */}
+      <MobileSettingsSheet
+        open={showMobileSettings}
+        onOpenChange={setShowMobileSettings}
+        usernameInput={usernameInput}
+        onUsernameChange={setUsernameInput}
+        onUpdateUsername={handleUpdateUsername}
+        usernameSaving={userProfile.saving}
+        profileBlock={profileBlock}
+        onUpdateProfile={(updates) => {
+          if (profileBlock) {
+            updateBlock(profileBlock.id, updates);
+          }
+        }}
+        isPremium={isPremium}
+        premiumLoading={premiumLoading}
+        chatbotContext={chatbotContext}
+        onChatbotContextChange={setChatbotContext}
+        onSave={save}
+        onOpenSEOGenerator={() => {
+          setAiGeneratorType('seo');
+          setAiGeneratorOpen(true);
+        }}
+        onSignOut={handleSignOut}
+      />
 
       {/* Modals */}
       {editingBlock && (
@@ -608,7 +657,7 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Niche Onboarding (shown first for new users) */}
+      {/* Niche Onboarding */}
       {showNicheOnboarding && (
         <NicheOnboarding
           isOpen={showNicheOnboarding}
