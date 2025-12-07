@@ -22,8 +22,9 @@ import {
   Mail, 
   Calendar,
   Crown,
-  X
+  Download
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { AddLeadDialog } from './AddLeadDialog';
 import { LeadDetails } from './LeadDetails';
 import type { Lead } from '@/hooks/useLeads';
@@ -44,13 +45,29 @@ const statusColors: Record<LeadStatus, string> = {
 export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
   const { t } = useTranslation();
   const { isPremium } = usePremiumStatus();
-  const { leads, loading, getLeadStats } = useLeads();
+  const { leads, loading, getLeadStats, refreshLeads } = useLeads();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   const stats = getLeadStats();
+
+  // Refresh leads when panel opens
+  const handleOpenChange = (isOpen: boolean) => {
+    if (isOpen) {
+      refreshLeads();
+    }
+    onOpenChange(isOpen);
+  };
+
+  // Refresh leads when lead details closes
+  const handleLeadDetailsClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      setSelectedLead(null);
+      refreshLeads();
+    }
+  };
 
   const filteredLeads = leads.filter(lead => {
     const matchesSearch = lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -69,9 +86,41 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
     });
   };
 
+  const exportToCSV = () => {
+    if (filteredLeads.length === 0) {
+      toast.error(t('crm.noLeadsToExport', 'No leads to export'));
+      return;
+    }
+
+    const headers = ['Name', 'Email', 'Phone', 'Status', 'Source', 'Notes', 'Created'];
+    const rows = filteredLeads.map(lead => [
+      lead.name,
+      lead.email || '',
+      lead.phone || '',
+      lead.status,
+      lead.source,
+      lead.notes || '',
+      new Date(lead.created_at).toISOString().split('T')[0],
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `leads-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    
+    toast.success(t('crm.exportSuccess', 'Leads exported successfully'));
+  };
+
   if (!isPremium) {
     return (
-      <Sheet open={open} onOpenChange={onOpenChange}>
+      <Sheet open={open} onOpenChange={handleOpenChange}>
         <SheetContent className="w-full sm:max-w-lg">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
@@ -97,7 +146,7 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
 
   return (
     <>
-      <Sheet open={open} onOpenChange={onOpenChange}>
+      <Sheet open={open} onOpenChange={handleOpenChange}>
         <SheetContent className="w-full sm:max-w-lg p-0">
           <SheetHeader className="p-4 border-b">
             <SheetTitle className="flex items-center gap-2">
@@ -127,7 +176,7 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
             ))}
           </div>
 
-          {/* Search & Add */}
+          {/* Search, Export & Add */}
           <div className="p-4 border-b flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -138,6 +187,9 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
                 className="pl-9"
               />
             </div>
+            <Button variant="outline" onClick={exportToCSV} title={t('crm.export', 'Export CSV')}>
+              <Download className="h-4 w-4" />
+            </Button>
             <Button onClick={() => setAddDialogOpen(true)}>
               <Plus className="h-4 w-4" />
             </Button>
@@ -200,13 +252,19 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
         </SheetContent>
       </Sheet>
 
-      <AddLeadDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
+      <AddLeadDialog 
+        open={addDialogOpen} 
+        onOpenChange={(isOpen) => {
+          setAddDialogOpen(isOpen);
+          if (!isOpen) refreshLeads();
+        }} 
+      />
       
       {selectedLead && (
         <LeadDetails 
           lead={selectedLead} 
           open={!!selectedLead} 
-          onOpenChange={(open) => !open && setSelectedLead(null)} 
+          onOpenChange={handleLeadDetailsClose} 
         />
       )}
     </>
