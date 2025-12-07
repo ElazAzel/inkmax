@@ -314,6 +314,7 @@
   "crm": {
     "title": "CRM",
     "description": "Лидтерді және өзара әрекеттесулерді басқарыңыз",
+    "leads": "Лидтер",
     "premiumRequired": "Premium мүмкіндік",
     "premiumDescription": "CRM-ге қол жеткізу үшін Premium-ға көшіңіз",
     "addLead": "Лид қосу",
@@ -356,5 +357,23 @@
       "message": "Хабарлама",
       "meeting": "Кездесу"
     }
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "description": "Бет тиімділігін бақылаңыз",
+    "noData": "Аналитика деректері жоқ",
+    "today": "Бүгін",
+    "week": "Апта",
+    "month": "Ай",
+    "all": "Барлық уақыт",
+    "views": "Қаралымдар",
+    "clicks": "Басулар",
+    "shares": "Бөлісулер",
+    "visitors": "Келушілер",
+    "avgPerDay": "Күніне орташа",
+    "viewsPerDay": "қаралымдар / күн",
+    "activityChart": "Белсенділік",
+    "topBlocks": "Танымал мазмұн",
+    "clicksByBlock": "Блоктар бойынша басулар"
   }
 }
