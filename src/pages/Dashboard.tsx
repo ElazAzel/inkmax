@@ -34,6 +34,7 @@ import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 import { NicheOnboarding } from '@/components/onboarding/NicheOnboarding';
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
+import { InstallPromptDialog } from '@/components/InstallPromptDialog';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { Card } from '@/components/ui/card';
@@ -79,6 +80,8 @@ export default function Dashboard() {
   const [showAchievements, setShowAchievements] = useState(false);
   const [showLeads, setShowLeads] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [publishedUrl, setPublishedUrl] = useState('');
 
   // Check achievements whenever blocks or features change
   useEffect(() => {
@@ -216,6 +219,14 @@ export default function Dashboard() {
       const url = `${window.location.origin}/${slug}`;
       navigator.clipboard.writeText(url);
       toast.success('Link copied to clipboard!');
+      
+      // Show install prompt after first publish
+      const hasSeenInstallPrompt = localStorage.getItem('linkmax_install_prompt_shown');
+      if (!hasSeenInstallPrompt) {
+        setPublishedUrl(url);
+        setTimeout(() => setShowInstallPrompt(true), 1000);
+        localStorage.setItem('linkmax_install_prompt_shown', 'true');
+      }
     }
   };
 
@@ -631,6 +642,13 @@ export default function Dashboard() {
 
       {/* Leads Panel (CRM) */}
       <LeadsPanel open={showLeads} onOpenChange={setShowLeads} />
+
+      {/* Install Prompt Dialog */}
+      <InstallPromptDialog
+        open={showInstallPrompt}
+        onClose={() => setShowInstallPrompt(false)}
+        pageUrl={publishedUrl}
+      />
     </div>
   );
 }
