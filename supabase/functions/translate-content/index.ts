@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,12 +12,66 @@ const LANGUAGE_NAMES: Record<string, string> = {
   kk: "Kazakh",
 };
 
+// Rate limiting: 15 requests per minute per IP
+async function checkRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<boolean> {
+  const windowStart = new Date(Date.now() - 60000).toISOString();
+  
+  const { data: existingLimit } = await supabase
+    .from('rate_limits')
+    .select('*')
+    .eq('ip_address', ipAddress)
+    .eq('endpoint', endpoint)
+    .gte('window_start', windowStart)
+    .single();
+
+  if (existingLimit) {
+    if (existingLimit.request_count >= 15) {
+      return false;
+    }
+    await supabase
+      .from('rate_limits')
+      .update({ request_count: existingLimit.request_count + 1 })
+      .eq('id', existingLimit.id);
+  } else {
+    await supabase
+      .from('rate_limits')
+      .insert({
+        ip_address: ipAddress,
+        endpoint: endpoint,
+        request_count: 1,
+        window_start: new Date().toISOString()
+      });
+  }
+  
+  return true;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Get client IP for rate limiting
+    const ipAddress = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                      req.headers.get('x-real-ip') || 
+                      'unknown';
+
+    // Initialize Supabase client for rate limiting
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Check rate limit
+    const withinLimit = await checkRateLimit(supabase, ipAddress, 'translate-content');
+    if (!withinLimit) {
+      console.log(`Rate limit exceeded for IP: ${ipAddress}`);
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded, please try again later" }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const { text, sourceLanguage, targetLanguages } = await req.json();
 
     if (!text || !sourceLanguage || !targetLanguages?.length) {
