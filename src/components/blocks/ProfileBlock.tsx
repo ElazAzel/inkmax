@@ -12,7 +12,7 @@ interface ProfileBlockProps {
 }
 
 export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview }: ProfileBlockProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
   const bio = getTranslatedString(block.bio, i18n.language as SupportedLanguage);
   
@@ -142,7 +142,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
             {block.verified && (
               <Badge variant="secondary" className="gap-1">
                 <CheckCircle2 className="h-3 w-3" />
-                Verified
+                {t('profile.verified', 'Verified')}
               </Badge>
             )}
           </div>
