@@ -1,4 +1,6 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { ImageBlock as ImageBlockType } from '@/types/page';
 
 interface ImageBlockProps {
@@ -6,6 +8,10 @@ interface ImageBlockProps {
 }
 
 export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBlockProps) {
+  const { i18n } = useTranslation();
+  const alt = getTranslatedString(block.alt, i18n.language as SupportedLanguage);
+  const caption = getTranslatedString(block.caption, i18n.language as SupportedLanguage);
+
   const getImageClass = () => {
     switch (block.style) {
       case 'polaroid':
@@ -28,13 +34,13 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
       <div className={`overflow-hidden max-w-md ${getImageClass()}`}>
         <img
           src={block.url}
-          alt={block.alt}
+          alt={alt}
           className="w-full h-auto object-cover"
         />
       </div>
-      {block.caption && (
+      {caption && (
         <p className={`text-sm text-muted-foreground mt-4 ${block.alignment === 'center' ? 'text-center' : block.alignment === 'right' ? 'text-right' : 'text-left'}`}>
-          {block.caption}
+          {caption}
         </p>
       )}
     </div>
