@@ -54,6 +54,13 @@ export type Database = {
             referencedRelation: "pages"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "analytics_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
         ]
       }
       blocks: {
@@ -102,6 +109,13 @@ export type Database = {
             columns: ["page_id"]
             isOneToOne: false
             referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blocks_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
             referencedColumns: ["id"]
           },
         ]
@@ -261,6 +275,13 @@ export type Database = {
             referencedRelation: "pages"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "private_page_data_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: true
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
         ]
       }
       rate_limits: {
@@ -352,7 +373,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_pages: {
+        Row: {
+          avatar_style: Json | null
+          avatar_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          is_published: boolean | null
+          seo_meta: Json | null
+          slug: string | null
+          theme_settings: Json | null
+          title: string | null
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          avatar_style?: Json | null
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_published?: boolean | null
+          seo_meta?: Json | null
+          slug?: string | null
+          theme_settings?: Json | null
+          title?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          avatar_style?: Json | null
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_published?: boolean | null
+          seo_meta?: Json | null
+          slug?: string | null
+          theme_settings?: Json | null
+          title?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
