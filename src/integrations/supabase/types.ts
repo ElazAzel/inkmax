@@ -362,6 +362,23 @@ export type Database = {
         Returns: undefined
       }
       increment_view_count: { Args: { page_slug: string }; Returns: undefined }
+      save_page_blocks: {
+        Args: { p_blocks: Json; p_is_premium?: boolean; p_page_id: string }
+        Returns: undefined
+      }
+      upsert_user_page: {
+        Args: {
+          p_avatar_style: Json
+          p_avatar_url: string
+          p_description: string
+          p_seo_meta: Json
+          p_slug: string
+          p_theme_settings: Json
+          p_title: string
+          p_user_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       interaction_type: "note" | "call" | "email" | "message" | "meeting"

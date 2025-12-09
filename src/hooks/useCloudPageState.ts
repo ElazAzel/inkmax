@@ -47,16 +47,34 @@ export function useCloudPageState() {
       clearTimeout(autoSaveTimerRef.current);
     }
     
-    // Debounce auto-save and publish
+    // Debounce auto-save and publish with longer delay for stability
     autoSaveTimerRef.current = setTimeout(async () => {
       try {
         setSaveStatus('saving');
         
-        // Save first
-        await savePageMutation.mutateAsync({ 
-          pageData: data, 
-          chatbotContext: context 
-        });
+        // Save first with retry logic
+        let retries = 2;
+        let lastError: any = null;
+        
+        while (retries > 0) {
+          try {
+            await savePageMutation.mutateAsync({ 
+              pageData: data, 
+              chatbotContext: context 
+            });
+            break;
+          } catch (err) {
+            lastError = err;
+            retries--;
+            if (retries > 0) {
+              await new Promise(r => setTimeout(r, 500));
+            }
+          }
+        }
+        
+        if (retries === 0 && lastError) {
+          throw lastError;
+        }
         
         // Then auto-publish
         await publishPageMutation.mutateAsync();
@@ -65,8 +83,10 @@ export function useCloudPageState() {
       } catch (error) {
         console.error('Auto-save/publish error:', error);
         setSaveStatus('error');
+        // Reset to idle after error display
+        setTimeout(() => setSaveStatus('idle'), 3000);
       }
-    }, 1500);
+    }, 2000);
   }, [user, savePageMutation, publishPageMutation]);
 
   const save = useCallback(async () => {

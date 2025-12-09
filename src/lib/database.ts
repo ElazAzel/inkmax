@@ -47,112 +47,110 @@ export interface DbBlock {
   created_at: string;
 }
 
-// Save page to database
+// Save page to database with atomic operations
 export async function savePage(
   pageData: PageData, 
   userId: string, 
   chatbotContext?: string
 ): Promise<{ data: DbPage | null; error: any }> {
   try {
-    // Проверяем, есть ли уже страница у пользователя
-    const { data: existingPage } = await supabase
-      .from('pages')
-      .select('id, slug')
-      .eq('user_id', userId)
-      .maybeSingle();
-
-    // Получаем username из профиля
+    // Получаем username из профиля для slug
     const { data: profile } = await supabase
       .from('user_profiles')
       .select('username')
       .eq('id', userId)
       .maybeSingle();
 
-    let slug = existingPage?.slug;
-    
-    // Если есть username, используем его как slug
+    // Определяем slug
+    let slug: string;
     if (profile?.username) {
       slug = profile.username;
-    } else if (!slug) {
-      // Если нет ни username, ни slug, генерируем новый
-      const baseSlug = `user-${userId.slice(0, 8)}`;
-      const { data: generatedSlug } = await supabase.rpc('generate_unique_slug', { 
-        base_slug: baseSlug.toLowerCase().replace(/[^a-z0-9]/g, '') 
-      });
-      slug = generatedSlug;
-    }
-
-    // Сохраняем или обновляем страницу
-    const profileBlock = pageData.blocks.find(b => b.type === 'profile') as any;
-    const pageUpdate: any = {
-      user_id: userId,
-      slug: slug!,
-      title: profileBlock?.name || 'My Page',
-      description: profileBlock?.bio,
-      avatar_url: profileBlock?.avatar,
-      avatar_style: profileBlock?.avatarStyle || { type: 'default', color: '#000000' },
-      theme_settings: pageData.theme as any,
-      seo_meta: pageData.seo as any,
-      is_published: false,
-      updated_at: new Date().toISOString(),
-    };
-
-    if (existingPage?.id) {
-      pageUpdate.id = existingPage.id;
-    }
-
-    const { data: page, error: pageError } = await supabase
-      .from('pages')
-      .upsert(pageUpdate)
-      .select()
-      .single();
-
-    if (pageError) return { data: null, error: pageError };
-
-    // Удаляем старые блоки
-    const { error: deleteError } = await supabase
-      .from('blocks')
-      .delete()
-      .eq('page_id', page.id);
-
-    if (deleteError) {
-      console.error('Error deleting old blocks:', deleteError);
-      return { data: null, error: deleteError };
-    }
-
-    // Сохраняем блоки
-    const blocksToInsert: any[] = pageData.blocks.map((block, index) => ({
-      page_id: page.id,
-      type: block.type,
-      position: index,
-      title: 'title' in block ? block.title : null,
-      content: block as any,
-      style: {} as any,
-      is_premium: pageData.isPremium || false,
-      schedule: 'schedule' in block ? block.schedule : null,
-      click_count: 0,
-    }));
-
-    if (blocksToInsert.length > 0) {
-      const { error: blocksError } = await supabase
-        .from('blocks')
-        .insert(blocksToInsert);
-
-      if (blocksError) {
-        console.error('Error inserting blocks:', blocksError);
-        return { data: null, error: blocksError };
+    } else {
+      // Получаем существующий slug или генерируем новый
+      const { data: existingPage } = await supabase
+        .from('pages')
+        .select('slug')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (existingPage?.slug) {
+        slug = existingPage.slug;
+      } else {
+        const baseSlug = `user-${userId.slice(0, 8)}`;
+        const { data: generatedSlug } = await supabase.rpc('generate_unique_slug', { 
+          base_slug: baseSlug.toLowerCase().replace(/[^a-z0-9]/g, '') 
+        });
+        slug = generatedSlug || baseSlug;
       }
     }
 
-    // Save chatbot context to private_page_data table
-    if (chatbotContext) {
-      await supabase
+    // Извлекаем данные из профильного блока
+    const profileBlock = pageData.blocks.find(b => b.type === 'profile') as any;
+
+    // Атомарно создаём/обновляем страницу через функцию БД
+    const { data: pageId, error: upsertError } = await supabase.rpc('upsert_user_page', {
+      p_user_id: userId,
+      p_slug: slug,
+      p_title: profileBlock?.name || 'My Page',
+      p_description: profileBlock?.bio || null,
+      p_avatar_url: profileBlock?.avatar || null,
+      p_avatar_style: profileBlock?.avatarStyle || { type: 'default', color: '#000000' },
+      p_theme_settings: pageData.theme as any,
+      p_seo_meta: pageData.seo as any,
+    });
+
+    if (upsertError) {
+      console.error('Error upserting page:', upsertError);
+      return { data: null, error: upsertError };
+    }
+
+    // Подготавливаем блоки для атомарного сохранения
+    const blocksData = pageData.blocks.map((block, index) => ({
+      type: block.type,
+      position: index,
+      title: 'title' in block ? block.title : null,
+      content: JSON.parse(JSON.stringify(block)),
+      style: {},
+      schedule: 'schedule' in block ? block.schedule : null,
+    }));
+
+    // Атомарно сохраняем блоки через функцию БД
+    const { error: blocksError } = await supabase.rpc('save_page_blocks', {
+      p_page_id: pageId,
+      p_blocks: JSON.parse(JSON.stringify(blocksData)),
+      p_is_premium: pageData.isPremium || false,
+    });
+
+    if (blocksError) {
+      console.error('Error saving blocks:', blocksError);
+      return { data: null, error: blocksError };
+    }
+
+    // Сохраняем chatbot context
+    if (chatbotContext !== undefined) {
+      const { error: contextError } = await supabase
         .from('private_page_data')
         .upsert({
-          page_id: page.id,
-          chatbot_context: chatbotContext,
+          page_id: pageId,
+          chatbot_context: chatbotContext || null,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'page_id' });
+      
+      if (contextError) {
+        console.error('Error saving chatbot context:', contextError);
+      }
+    }
+
+    // Возвращаем данные страницы
+    const { data: page, error: fetchError } = await supabase
+      .from('pages')
+      .select('*')
+      .eq('id', pageId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching page after save:', fetchError);
+      return { data: null, error: fetchError };
     }
 
     return { data: page, error: null };
