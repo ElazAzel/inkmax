@@ -42,9 +42,9 @@ export function MediaUpload({
       return;
     }
 
-    // Validate file size (10MB limit before compression)
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error(t('upload.fileTooLarge', 'File size must be less than 10MB'));
+    // Validate file size (15MB limit before compression)
+    if (file.size > 15 * 1024 * 1024) {
+      toast.error(t('upload.fileTooLarge', 'File size must be less than 15MB'));
       return;
     }
 
@@ -178,7 +178,7 @@ export function MediaUpload({
                   <Upload className="h-6 w-6" />
                   <span>{t('upload.click', 'Click to upload')}</span>
                   <span className="text-xs text-muted-foreground">
-                    {t('upload.autoCompress', 'Auto-compressed, max 10MB')}
+                    {t('upload.autoCompress', 'Auto-compressed, max 15MB')}
                   </span>
                 </>
               )}
