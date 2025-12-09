@@ -46,11 +46,15 @@ export const ButtonBlock = memo(function ButtonBlockComponent({ block }: ButtonB
   const hasCustomBackground = block.background && block.background.value;
   const buttonStyle = getButtonStyle();
 
+  const widthClass = block.width === 'full' ? 'w-full' 
+    : block.width === 'small' ? 'w-auto min-w-[120px]' 
+    : 'w-full sm:w-auto sm:min-w-[280px] sm:max-w-md';
+
   return (
     <div className={`flex ${alignmentClass}`}>
       <button
         onClick={handleClick}
-        className={`max-w-full sm:max-w-md relative overflow-hidden rounded-2xl px-8 py-4 text-base font-semibold shadow-glass-lg backdrop-blur-xl ${getHoverClass(block.hoverEffect)} transition-all duration-300 hover:shadow-glass-xl hover:scale-[1.02] active:scale-[0.98] ${hasCustomBackground ? 'text-white drop-shadow-md' : 'bg-primary text-primary-foreground border border-primary/20'}`}
+        className={`${widthClass} relative overflow-hidden rounded-2xl px-8 py-4 text-base font-semibold shadow-glass-lg backdrop-blur-xl ${getHoverClass(block.hoverEffect)} transition-all duration-300 hover:shadow-glass-xl hover:scale-[1.02] active:scale-[0.98] ${hasCustomBackground ? 'text-white drop-shadow-md' : 'bg-primary text-primary-foreground border border-primary/20'}`}
         style={buttonStyle}
       >
         <span className="relative z-10">{title}</span>

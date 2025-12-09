@@ -141,6 +141,23 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
       )}
 
       <div>
+        <Label>{t('fields.width', 'Width')}</Label>
+        <Select
+          value={formData.width || 'medium'}
+          onValueChange={(value) => onChange({ ...formData, width: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="full">{t('fields.fullWidth', 'Full Width')}</SelectItem>
+            <SelectItem value="medium">{t('fields.mediumWidth', 'Medium')}</SelectItem>
+            <SelectItem value="small">{t('fields.smallWidth', 'Small')}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
         <Label>{t('fields.alignment', 'Alignment')}</Label>
         <Select
           value={formData.alignment || 'center'}
