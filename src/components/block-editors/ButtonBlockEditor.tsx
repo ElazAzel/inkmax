@@ -6,6 +6,7 @@ import { validateButtonBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { MediaUpload } from '@/components/form-fields/MediaUpload';
 
 function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
@@ -126,20 +127,17 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
       )}
 
       {formData.background?.type === 'image' && (
-        <div>
-          <Label>{t('fields.backgroundImageUrl', 'Background Image URL')}</Label>
-          <Input
-            type="url"
-            value={formData.background?.value || ''}
-            onChange={(e) =>
-              onChange({
-                ...formData,
-                background: { ...formData.background, value: e.target.value },
-              })
-            }
-            placeholder="https://example.com/image.jpg"
-          />
-        </div>
+        <MediaUpload
+          label={t('fields.backgroundImage', 'Background Image')}
+          value={formData.background?.value || ''}
+          onChange={(value) =>
+            onChange({
+              ...formData,
+              background: { ...formData.background, value },
+            })
+          }
+          accept="image/*"
+        />
       )}
 
       <div>
