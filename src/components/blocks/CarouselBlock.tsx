@@ -59,20 +59,23 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block }: Car
           className="w-full"
         >
           <CarouselContent>
-            {block.images.map((image, index) => (
-              <CarouselItem key={index}>
-                <div
-                  className="aspect-video overflow-hidden bg-muted cursor-pointer"
-                  onClick={() => handleImageClick(image.link)}
-                >
-                  <img
-                    src={image.url}
-                    alt={image.alt || `Slide ${index + 1}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              </CarouselItem>
-            ))}
+          {block.images.map((image, index) => {
+              const alt = getTranslatedString(image.alt, i18n.language as SupportedLanguage) || `Slide ${index + 1}`;
+              return (
+                <CarouselItem key={index}>
+                  <div
+                    className="aspect-video overflow-hidden bg-muted cursor-pointer"
+                    onClick={() => handleImageClick(image.link)}
+                  >
+                    <img
+                      src={image.url}
+                      alt={alt}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </CarouselItem>
+              );
+            })}
           </CarouselContent>
           {block.images.length > 1 && (
             <>

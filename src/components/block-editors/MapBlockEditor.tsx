@@ -6,6 +6,9 @@ import type { MapBlock } from '@/types/page';
 import { withBlockEditor } from './BlockEditorWrapper';
 import { Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { getTranslatedString, type SupportedLanguage, type MultilingualString } from '@/lib/i18n-helpers';
+import { useTranslation } from 'react-i18next';
 
 interface MapBlockEditorProps {
   formData: MapBlock;
@@ -13,6 +16,8 @@ interface MapBlockEditorProps {
 }
 
 function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
+  const { i18n } = useTranslation();
+  
   const getPlaceholderUrl = () => {
     if (formData.provider === 'google') {
       return 'https://www.google.com/maps/embed?pb=...';
@@ -31,10 +36,10 @@ function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>Заголовок (опционально)</Label>
-        <Input
+        <MultilingualInput
+          value={formData.title as MultilingualString || { ru: '', en: '', kk: '' }}
+          onChange={(value) => onChange({ title: value })}
           placeholder="Наш офис"
-          value={formData.title || ''}
-          onChange={(e) => onChange({ title: e.target.value })}
         />
       </div>
 
@@ -74,10 +79,10 @@ function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
 
       <div className="space-y-2">
         <Label>Адрес (опционально)</Label>
-        <Input
-          placeholder="ул. Примерная, 123, Москва"
-          value={formData.address || ''}
-          onChange={(e) => onChange({ address: e.target.value })}
+        <MultilingualInput
+          value={formData.address as MultilingualString || { ru: '', en: '', kk: '' }}
+          onChange={(value) => onChange({ address: value })}
+          placeholder="ул. Примерная, 123"
         />
       </div>
 
