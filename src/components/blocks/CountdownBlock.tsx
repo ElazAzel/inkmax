@@ -61,7 +61,7 @@ export const CountdownBlock = React.memo(function CountdownBlock({ block }: Coun
 
   if (!block.targetDate) {
     return (
-      <Card className="w-full">
+      <Card className="w-full bg-card border-border shadow-sm">
         <CardContent className="p-6 text-center text-muted-foreground">
           {t('blocks.countdown.noDate', 'Укажите дату')}
         </CardContent>
@@ -71,7 +71,7 @@ export const CountdownBlock = React.memo(function CountdownBlock({ block }: Coun
 
   const TimeUnit = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center">
-      <div className="bg-primary/10 rounded-lg p-3 min-w-[60px]">
+      <div className="bg-card border border-border shadow-sm rounded-lg p-3 min-w-[60px]">
         <span className="text-2xl md:text-3xl font-bold text-primary">
           {value.toString().padStart(2, '0')}
         </span>

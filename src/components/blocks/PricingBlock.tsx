@@ -44,7 +44,7 @@ export const PricingBlock = React.memo(function PricingBlock({ block }: PricingB
 
   if (!block.items || block.items.length === 0) {
     return (
-      <Card className="w-full">
+      <Card className="w-full bg-card border-border shadow-sm">
         <CardContent className="p-6 text-center text-muted-foreground">
           {t('blocks.pricing.empty', 'Добавьте услуги')}
         </CardContent>
@@ -72,7 +72,7 @@ export const PricingBlock = React.memo(function PricingBlock({ block }: PricingB
             <Card 
               key={item.id} 
               className={cn(
-                'transition-all',
+                'transition-all bg-card border-border shadow-sm',
                 item.featured && 'ring-2 ring-primary bg-primary/5'
               )}
             >

@@ -40,7 +40,7 @@ export const TestimonialBlock = memo(function TestimonialBlock({ block }: Testim
       )}
       <div className="grid gap-4">
         {block.testimonials.map((testimonial, index) => (
-          <Card key={index} className="p-6">
+          <Card key={index} className="p-6 bg-card border-border shadow-sm">
             <div className="flex items-start gap-4">
               <Avatar className="h-12 w-12">
                 <AvatarImage src={testimonial.avatar} alt={testimonial.name} />

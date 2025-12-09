@@ -9,13 +9,13 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
   const getImageClass = () => {
     switch (block.style) {
       case 'polaroid':
-        return 'p-4 bg-white shadow-xl rotate-[-2deg] hover:rotate-0 transition-transform duration-300';
+        return 'p-4 bg-card border border-border shadow-md rotate-[-2deg] hover:rotate-0 transition-transform duration-300';
       case 'vignette':
-        return 'relative after:absolute after:inset-0 after:shadow-[inset_0_0_100px_rgba(0,0,0,0.3)] after:pointer-events-none';
+        return 'relative rounded-2xl shadow-sm after:absolute after:inset-0 after:shadow-[inset_0_0_100px_rgba(0,0,0,0.3)] after:pointer-events-none after:rounded-2xl';
       case 'circle':
-        return 'rounded-full aspect-square object-cover';
+        return 'rounded-full aspect-square object-cover shadow-sm';
       default:
-        return 'rounded-2xl';
+        return 'rounded-2xl shadow-sm';
     }
   };
 

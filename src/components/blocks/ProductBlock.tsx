@@ -50,7 +50,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
 
   return (
     <div className={`flex ${block.alignment === 'left' ? 'justify-start' : block.alignment === 'right' ? 'justify-end' : 'justify-center'}`}>
-      <Card className={`${alignmentClass} max-w-sm overflow-hidden hover:shadow-lg transition-shadow`}>
+      <Card className={`${alignmentClass} max-w-sm overflow-hidden bg-card border-border shadow-sm hover:shadow-md transition-shadow`}>
         {block.image && (
           <div className="aspect-square overflow-hidden bg-muted">
             <img
