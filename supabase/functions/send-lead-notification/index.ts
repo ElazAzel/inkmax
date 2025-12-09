@@ -15,6 +15,19 @@ interface LeadNotificationRequest {
   source: string;
 }
 
+// HTML encode user input to prevent XSS in emails
+function escapeHtml(text: string | null | undefined): string {
+  if (!text) return '';
+  const entities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  };
+  return text.replace(/[&<>"']/g, char => entities[char] || char);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -22,6 +35,11 @@ serve(async (req) => {
 
   try {
     const { leadId, pageOwnerId, leadName, leadEmail, leadPhone, source }: LeadNotificationRequest = await req.json();
+    
+    // Sanitize all user inputs
+    const safeName = escapeHtml(leadName);
+    const safeEmail = escapeHtml(leadEmail);
+    const safePhone = escapeHtml(leadPhone);
 
     console.log(`Sending lead notification for lead ${leadId} to owner ${pageOwnerId}`);
 
@@ -89,25 +107,25 @@ serve(async (req) => {
                               <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #e4e4e7;">
                                   <span style="color: #71717a; font-size: 14px;">Name</span>
-                                  <div style="color: #18181b; font-size: 16px; font-weight: 500; margin-top: 4px;">${leadName}</div>
+                                  <div style="color: #18181b; font-size: 16px; font-weight: 500; margin-top: 4px;">${safeName}</div>
                                 </td>
                               </tr>
-                              ${leadEmail ? `
+                              ${safeEmail ? `
                               <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #e4e4e7;">
                                   <span style="color: #71717a; font-size: 14px;">Email</span>
                                   <div style="color: #18181b; font-size: 16px; font-weight: 500; margin-top: 4px;">
-                                    <a href="mailto:${leadEmail}" style="color: #2563eb; text-decoration: none;">${leadEmail}</a>
+                                    <a href="mailto:${safeEmail}" style="color: #2563eb; text-decoration: none;">${safeEmail}</a>
                                   </div>
                                 </td>
                               </tr>
                               ` : ''}
-                              ${leadPhone ? `
+                              ${safePhone ? `
                               <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #e4e4e7;">
                                   <span style="color: #71717a; font-size: 14px;">Phone</span>
                                   <div style="color: #18181b; font-size: 16px; font-weight: 500; margin-top: 4px;">
-                                    <a href="tel:${leadPhone}" style="color: #2563eb; text-decoration: none;">${leadPhone}</a>
+                                    <a href="tel:${safePhone}" style="color: #2563eb; text-decoration: none;">${safePhone}</a>
                                   </div>
                                 </td>
                               </tr>
@@ -153,7 +171,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "LinkMAX <onboarding@resend.dev>",
         to: [ownerEmail],
-        subject: `🎉 New Lead: ${leadName}`,
+        subject: `🎉 New Lead: ${safeName}`,
         html: emailHtml,
       }),
     });
