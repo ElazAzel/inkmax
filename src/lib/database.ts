@@ -30,7 +30,6 @@ export interface DbPage {
   seo_meta: any;
   is_published: boolean;
   view_count: number;
-  chatbot_context: string | null;
   created_at: string;
   updated_at: string;
 }
