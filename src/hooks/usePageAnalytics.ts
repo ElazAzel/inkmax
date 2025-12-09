@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { startOfDay, startOfWeek, startOfMonth, subDays, subWeeks, subMonths, format, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval } from 'date-fns';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { useTranslation } from 'react-i18next';
 
 export interface AnalyticsEvent {
   id: string;
@@ -46,6 +48,7 @@ export type TimePeriod = 'day' | 'week' | 'month' | 'all';
 
 export function usePageAnalytics() {
   const { user } = useAuth();
+  const { i18n } = useTranslation();
   const [pageId, setPageId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
@@ -152,12 +155,19 @@ export function usePageAnalytics() {
       const blockStatsMap = new Map<string, BlockStats>();
       
       if (blocks) {
+        const currentLang = i18n.language as SupportedLanguage;
         blocks.forEach(block => {
           const content = block.content as any;
+          // Use getTranslatedString to handle MultilingualString objects
+          const rawTitle = block.title || content?.title || content?.name || block.type;
+          const blockTitle = typeof rawTitle === 'object' 
+            ? getTranslatedString(rawTitle, currentLang) 
+            : rawTitle;
+          
           blockStatsMap.set(block.id, {
             blockId: block.id,
             blockType: block.type,
-            blockTitle: block.title || content?.title || content?.name || block.type,
+            blockTitle,
             clicks: block.click_count || 0,
             views: 0,
             ctr: 0,
@@ -206,7 +216,7 @@ export function usePageAnalytics() {
     } finally {
       setLoading(false);
     }
-  }, [user, pageId, period]);
+  }, [user, pageId, period, i18n.language]);
 
   useEffect(() => {
     if (pageId) {
