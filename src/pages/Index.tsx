@@ -46,8 +46,11 @@ import {
 } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
+
+// Lazy load 3D component for better performance
+const Hero3D = lazy(() => import('@/components/landing/Hero3D').then(m => ({ default: m.Hero3D })));
 
 // Intersection Observer hook for scroll animations
 function useScrollAnimation() {
@@ -262,6 +265,12 @@ export default function Index() {
 
       {/* Hero Section */}
       <section ref={heroSection.ref} className="relative pt-28 sm:pt-36 pb-16 sm:pb-24 px-4">
+        {/* 3D Background - Hidden on mobile for performance */}
+        <div className="hidden lg:block">
+          <Suspense fallback={null}>
+            <Hero3D />
+          </Suspense>
+        </div>
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Text content */}

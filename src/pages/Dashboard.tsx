@@ -366,8 +366,13 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
+        {/* Mesh gradient background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[120px] animate-morph" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-[100px] animate-morph" style={{ animationDelay: '-5s' }} />
+        </div>
+        <div className="relative text-center p-8 rounded-3xl bg-card/40 backdrop-blur-2xl border border-border/30 shadow-glass-lg">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading your page...</p>
         </div>
@@ -377,8 +382,11 @@ export default function Dashboard() {
 
   if (!pageData) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-destructive/10 to-transparent rounded-full blur-[100px]" />
+        </div>
+        <div className="relative text-center p-8 rounded-3xl bg-card/40 backdrop-blur-2xl border border-border/30 shadow-glass">
           <p className="text-muted-foreground">Failed to load page</p>
         </div>
       </div>
@@ -388,7 +396,14 @@ export default function Dashboard() {
   const profileBlock = pageData.blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Liquid Glass Mesh Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute -top-40 -right-40 w-[700px] h-[700px] bg-gradient-to-bl from-primary/15 via-violet-500/10 to-transparent rounded-full blur-[130px] animate-morph" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-blue-500/10 via-cyan-500/5 to-transparent rounded-full blur-[120px] animate-morph" style={{ animationDelay: '-7s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-transparent rounded-full blur-[100px] animate-float-slow" />
+      </div>
+
       {/* Migration Notice */}
       {user && (
         <LocalStorageMigration 
@@ -401,16 +416,21 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Desktop Header - Hidden on Mobile */}
-      <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm hidden md:block">
-        <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-3 animate-fade-in">
-            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8 animate-scale-in hover-scale" />
-            <h1 className="text-xl font-bold text-primary">LinkMAX</h1>
-            <AutoSaveIndicator status={saveStatus} />
-          </div>
+      {/* Desktop Header - Liquid Glass Style */}
+      <header className="sticky top-0 z-50 hidden md:block">
+        <div className="mx-4 mt-3">
+          <div className="backdrop-blur-2xl bg-card/50 border border-border/30 rounded-2xl shadow-glass-lg">
+            <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-3 animate-fade-in">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg" />
+                  <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="relative h-8 w-8 animate-scale-in hover-scale rounded-xl" />
+                </div>
+                <h1 className="text-xl font-bold text-primary">LinkMAX</h1>
+                <AutoSaveIndicator status={saveStatus} />
+              </div>
           
-          <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
             {/* AI Tools */}
             <Button 
               variant="ghost" 
@@ -473,7 +493,7 @@ export default function Dashboard() {
               )}
             </Button>
 
-            <div className="h-6 w-px bg-border" />
+            <div className="h-6 w-px bg-border/50" />
 
             {/* Save */}
             <Button 
@@ -502,44 +522,51 @@ export default function Dashboard() {
               Share
             </Button>
 
-            <div className="h-6 w-px bg-border" />
+            <div className="h-6 w-px bg-border/50" />
 
             {/* Sign Out */}
-            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+            <Button variant="ghost" size="sm" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive">
+              <LogOut className="h-4 w-4" />
+            </Button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </header>
+
+      {/* Mobile Header - Liquid Glass */}
+      <header className="sticky top-0 z-50 md:hidden">
+        <div className="mx-3 mt-2">
+          <div className="backdrop-blur-2xl bg-card/50 border border-border/30 rounded-2xl shadow-glass px-4 h-12 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/20 rounded-lg blur-md" />
+                <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="relative h-7 w-7 rounded-lg" />
+              </div>
+              <h1 className="text-lg font-bold text-primary">LinkMAX</h1>
+            </div>
+            <Button variant="ghost" size="icon" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive">
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Header - Simplified */}
-      <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm md:hidden">
-        <div className="px-4 h-12 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-7 w-7" />
-            <h1 className="text-lg font-bold text-primary">LinkMAX</h1>
-          </div>
-          <Button variant="ghost" size="icon" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
-      </header>
-
       {/* Main Content */}
       <div className="relative">
-        {/* Desktop Settings Sidebar */}
+        {/* Desktop Settings Sidebar - Liquid Glass */}
         {showSettings && !isMobile && (
-          <div className="fixed left-0 top-14 bottom-0 w-80 bg-card border-r shadow-lg z-40 overflow-y-auto hidden md:block">
+          <div className="fixed left-4 top-20 bottom-4 w-80 bg-card/50 backdrop-blur-2xl border border-border/30 rounded-2xl shadow-glass-lg z-40 overflow-y-auto hidden md:block">
             <div className="p-6 space-y-6">
               {/* Close Button */}
               <div className="flex justify-end">
-                <Button variant="ghost" size="icon" onClick={() => setShowSettings(false)}>
+                <Button variant="ghost" size="icon" onClick={() => setShowSettings(false)} className="hover:bg-foreground/5">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
 
               {/* Username Settings */}
-              <Card className="p-4">
+              <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
                 <h3 className="font-semibold mb-4">Your Link</h3>
                 <div className="space-y-3">
                   <div>
@@ -551,6 +578,7 @@ export default function Dashboard() {
                         placeholder="username"
                         maxLength={30}
                         disabled={userProfile.saving}
+                        className="bg-background/50"
                       />
                       <Button 
                         size="sm" 
@@ -571,7 +599,7 @@ export default function Dashboard() {
 
               {/* Profile Settings */}
               {profileBlock && (
-                <Card className="p-4">
+                <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
                   <h3 className="font-semibold mb-4">Profile</h3>
                   <div className="space-y-3">
                     <div>
@@ -579,6 +607,7 @@ export default function Dashboard() {
                       <Input
                         value={typeof profileBlock.name === 'string' ? profileBlock.name : profileBlock.name?.ru || ''}
                         onChange={(e) => updateBlock(profileBlock.id, { name: e.target.value })}
+                        className="bg-background/50"
                       />
                     </div>
                     <div>
@@ -587,6 +616,7 @@ export default function Dashboard() {
                         value={typeof profileBlock.bio === 'string' ? profileBlock.bio : profileBlock.bio?.ru || ''}
                         onChange={(e) => updateBlock(profileBlock.id, { bio: e.target.value })}
                         rows={3}
+                        className="bg-background/50"
                       />
                     </div>
                   </div>
@@ -595,9 +625,11 @@ export default function Dashboard() {
 
               {/* Premium Status */}
               {!premiumLoading && (
-                <Card className="p-4">
+                <Card className={`p-4 backdrop-blur-xl border-border/30 ${isPremium ? 'bg-primary/10' : 'bg-card/60'}`}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Crown className={`h-4 w-4 ${isPremium ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <div className={`p-1.5 rounded-lg ${isPremium ? 'bg-primary/20' : 'bg-muted'}`}>
+                      <Crown className={`h-4 w-4 ${isPremium ? 'text-primary' : 'text-muted-foreground'}`} />
+                    </div>
                     <span className="font-semibold">
                       {isPremium ? 'Premium Active' : 'Free Plan'}
                     </span>
@@ -610,7 +642,7 @@ export default function Dashboard() {
                       <Button 
                         size="sm" 
                         onClick={openPremiumPurchase}
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/25"
                       >
                         <Crown className="h-3.5 w-3.5 mr-1.5" />
                         Upgrade to Premium
@@ -621,9 +653,11 @@ export default function Dashboard() {
               )}
 
               {/* Chatbot Settings */}
-              <Card className="p-4">
+              <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
                 <div className="flex items-center gap-2 mb-3">
-                  <MessageCircle className="h-4 w-4" />
+                  <div className="p-1.5 rounded-lg bg-blue-500/10">
+                    <MessageCircle className="h-4 w-4 text-blue-500" />
+                  </div>
                   <h3 className="font-semibold">AI Chatbot Context</h3>
                 </div>
                 <div className="space-y-2">
@@ -634,21 +668,23 @@ export default function Dashboard() {
                     onBlur={save}
                     placeholder="Add context for the AI chatbot..."
                     rows={6}
-                    className="text-sm"
+                    className="text-sm bg-background/50"
                   />
                 </div>
               </Card>
 
               {/* AI Tools */}
-              <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10">
+              <Card className="p-4 bg-gradient-to-br from-primary/10 via-violet-500/5 to-blue-500/10 backdrop-blur-xl border-primary/20">
                 <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-4 w-4 text-primary" />
+                  <div className="p-1.5 rounded-lg bg-primary/20">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                  </div>
                   <h3 className="font-semibold">AI Tools</h3>
                 </div>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="w-full justify-start"
+                  className="w-full justify-start bg-background/50 hover:bg-background/70"
                   onClick={() => {
                     setAiGeneratorType('seo');
                     setAiGeneratorOpen(true);
