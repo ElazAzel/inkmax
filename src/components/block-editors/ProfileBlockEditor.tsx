@@ -16,6 +16,7 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         value={formData.avatar || ''}
         onChange={(avatar) => onChange({ ...formData, avatar })}
         accept="image/*"
+        allowGif={true}
       />
       
       <MultilingualInput
@@ -39,6 +40,7 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
           value={formData.coverImage || ''}
           onChange={(coverImage) => onChange({ ...formData, coverImage })}
           accept="image/*"
+          allowGif={true}
         />
 
         <div>
