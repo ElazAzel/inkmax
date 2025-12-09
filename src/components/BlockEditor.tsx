@@ -278,37 +278,37 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
   if (isMobile) {
     return (
       <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DrawerContent className="h-[95vh] max-h-[95vh]">
+        <DrawerContent className="h-[95vh] max-h-[95vh] bg-card/80 backdrop-blur-2xl border-t border-border/30">
           <div className="flex flex-col h-full">
             {/* Header */}
-            <DrawerHeader className="flex-shrink-0 border-b px-4 py-3">
+            <DrawerHeader className="flex-shrink-0 border-b border-border/30 px-4 py-4 bg-card/50 backdrop-blur-xl">
               <div className="flex items-center justify-between">
                 <div>
-                  <DrawerTitle className="text-lg">
+                  <DrawerTitle className="text-lg font-semibold">
                     {t(`blockEditor.${block.type}`)}
                   </DrawerTitle>
-                  <DrawerDescription className="text-sm">
+                  <DrawerDescription className="text-sm text-muted-foreground">
                     {t('blockEditor.description')}
                   </DrawerDescription>
                 </div>
-                <Button variant="ghost" size="icon" onClick={onClose}>
+                <Button variant="glass" size="icon" onClick={onClose} className="rounded-xl">
                   <X className="h-5 w-5" />
                 </Button>
               </div>
             </DrawerHeader>
             
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto px-4 py-4">
+            <div className="flex-1 overflow-y-auto px-4 py-6">
               {renderEditor()}
             </div>
             
             {/* Fixed Footer */}
-            <DrawerFooter className="flex-shrink-0 border-t px-4 py-3 pb-safe">
+            <DrawerFooter className="flex-shrink-0 border-t border-border/30 px-4 py-4 pb-safe bg-card/50 backdrop-blur-xl">
               <div className="flex gap-3">
-                <Button variant="outline" onClick={onClose} className="flex-1">
+                <Button variant="outline" onClick={onClose} className="flex-1 rounded-xl backdrop-blur-xl">
                   {t('editor.cancel')}
                 </Button>
-                <Button onClick={handleSave} className="flex-1">
+                <Button onClick={handleSave} className="flex-1 rounded-xl shadow-glass">
                   {t('editor.save')}
                 </Button>
               </div>
@@ -322,12 +322,12 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
   // Desktop: Dialog
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-card/80 backdrop-blur-2xl border border-border/30 shadow-glass-xl rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">
+          <DialogTitle className="text-xl font-semibold">
             {t(`blockEditor.${block.type}`)}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-muted-foreground">
             {t('blockEditor.description')}
           </DialogDescription>
         </DialogHeader>
@@ -336,11 +336,11 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
           {renderEditor()}
         </div>
 
-        <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="gap-3">
+          <Button variant="outline" onClick={onClose} className="rounded-xl backdrop-blur-xl">
             {t('editor.cancel')}
           </Button>
-          <Button onClick={handleSave}>
+          <Button onClick={handleSave} className="rounded-xl shadow-glass">
             {t('editor.save')}
           </Button>
         </DialogFooter>
