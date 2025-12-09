@@ -195,52 +195,73 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* Animated background */}
+      {/* Liquid Glass Mesh Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] animate-float-slow" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] animate-float-slow" style={{ animationDelay: '-3s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-primary/5 rounded-full animate-spin-slow opacity-30" />
+        {/* Primary mesh gradient orbs */}
+        <div className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[150px] animate-morph" />
+        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-[120px] animate-morph" style={{ animationDelay: '-5s' }} />
+        <div className="absolute bottom-0 left-1/4 w-[700px] h-[700px] bg-gradient-to-tr from-purple-500/15 via-pink-500/10 to-transparent rounded-full blur-[130px] animate-morph" style={{ animationDelay: '-10s' }} />
+        <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-gradient-to-l from-emerald-500/10 via-teal-500/5 to-transparent rounded-full blur-[100px] animate-float-slow" />
+        
+        {/* Subtle grid pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px'
+          }}
+        />
+        
+        {/* Floating glass orbs */}
+        <div className="absolute top-20 left-[15%] w-4 h-4 bg-primary/30 rounded-full blur-sm animate-float" style={{ animationDelay: '0s' }} />
+        <div className="absolute top-40 right-[20%] w-3 h-3 bg-blue-400/30 rounded-full blur-sm animate-float" style={{ animationDelay: '-2s' }} />
+        <div className="absolute bottom-32 left-[30%] w-5 h-5 bg-purple-400/25 rounded-full blur-sm animate-float" style={{ animationDelay: '-4s' }} />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50 animate-fade-in">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="relative">
-              <img 
-                src="/pwa-maskable-512x512.png" 
-                alt="LinkMAX" 
-                className="h-9 w-9 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300" 
-              />
-              <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full animate-pulse-glow" />
+      {/* Liquid Glass Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 animate-fade-in">
+        <div className="mx-4 sm:mx-6 mt-4">
+          <div className="backdrop-blur-2xl bg-card/60 border border-border/30 rounded-2xl shadow-glass-lg">
+            <div className="container mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+              <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:blur-xl transition-all" />
+                  <img 
+                    src="/pwa-maskable-512x512.png" 
+                    alt="LinkMAX" 
+                    className="relative h-9 w-9 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300" 
+                  />
+                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full animate-glow-pulse shadow-lg shadow-primary/50" />
+                </div>
+                <span className="text-xl font-bold tracking-tight text-foreground">
+                  Link<span className="text-gradient">MAX</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <LanguageSwitcher />
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/auth')}
+                  className="hidden sm:inline-flex font-medium hover:bg-foreground/5 backdrop-blur-sm"
+                  size="sm"
+                >
+                  {t('landing.nav.signIn')}
+                </Button>
+                <Button 
+                  onClick={() => navigate('/auth')}
+                  className="rounded-xl font-medium shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 bg-primary/90 backdrop-blur-sm"
+                  size="sm"
+                >
+                  {t('landing.nav.getStarted')}
+                </Button>
+              </div>
             </div>
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              Link<span className="text-gradient">MAX</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher />
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/auth')}
-              className="hidden sm:inline-flex font-medium hover:bg-primary/10"
-              size="sm"
-            >
-              {t('landing.nav.signIn')}
-            </Button>
-            <Button 
-              onClick={() => navigate('/auth')}
-              className="rounded-xl font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300"
-              size="sm"
-            >
-              {t('landing.nav.getStarted')}
-            </Button>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section ref={heroSection.ref} className="relative pt-24 sm:pt-32 pb-16 sm:pb-24 px-4">
+      <section ref={heroSection.ref} className="relative pt-28 sm:pt-36 pb-16 sm:pb-24 px-4">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Text content */}
@@ -356,13 +377,13 @@ export default function Index() {
                   </div>
                 </div>
 
-                {/* Phone frame */}
-                <div className="relative w-[280px] sm:w-[320px] h-[560px] sm:h-[640px] bg-foreground rounded-[3rem] p-3 shadow-2xl">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-foreground rounded-b-2xl z-10" />
+                {/* Phone frame with glass effect */}
+                <div className="relative w-[280px] sm:w-[320px] h-[560px] sm:h-[640px] bg-foreground/90 backdrop-blur-xl rounded-[3rem] p-3 shadow-2xl border border-foreground/20">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-foreground/90 rounded-b-2xl z-10" />
                   
-                  <div className="relative h-full w-full bg-background rounded-[2.25rem] overflow-hidden">
+                  <div className="relative h-full w-full bg-background/80 backdrop-blur-xl rounded-[2.25rem] overflow-hidden border border-border/20">
                     {/* Shimmer effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-[shimmer_2s_infinite] opacity-50" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent animate-[shimmer_2s_infinite] opacity-50" />
                     
                     <div className="p-4 space-y-4">
                       <div className="pt-10 flex flex-col items-center space-y-3">
@@ -416,9 +437,9 @@ export default function Index() {
             {showcaseFeatures.map((feature, index) => (
               <div 
                 key={index}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/30 hover:bg-card transition-all duration-300 cursor-default"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/40 backdrop-blur-xl border border-border/30 hover:border-primary/40 hover:bg-card/60 hover:shadow-glass transition-all duration-300 cursor-default group"
               >
-                <feature.icon className="h-4 w-4 text-primary" />
+                <feature.icon className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
                 <span className="text-sm font-medium">{feature.label}</span>
               </div>
             ))}
@@ -432,9 +453,9 @@ export default function Index() {
             {stats.map((stat, index) => (
               <div 
                 key={index}
-                className="text-center p-4 sm:p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                className="text-center p-4 sm:p-6 rounded-2xl bg-card/40 backdrop-blur-2xl border border-border/30 hover:border-primary/40 hover:shadow-glass-lg transition-all duration-500 group"
               >
-                <div className="text-3xl sm:text-4xl font-bold text-primary">
+                <div className="text-3xl sm:text-4xl font-bold text-primary group-hover:scale-110 transition-transform">
                   {typeof stat.value === 'number' ? (
                     <AnimatedCounter end={stat.value} suffix={stat.suffix} />
                   ) : (
@@ -449,8 +470,11 @@ export default function Index() {
       </section>
 
       {/* Problems Section */}
-      <section ref={problemsSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-6xl">
+      <section ref={problemsSection.ref} className="py-20 sm:py-28 px-4 relative">
+        {/* Section mesh gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/30 via-background to-muted/30 pointer-events-none" />
+        
+        <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-12 sm:mb-16 space-y-4">
             <h2 
               className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${problemsSection.isVisible ? 'animate-blur-in' : ''}`}
@@ -469,14 +493,15 @@ export default function Index() {
             {problems.map((problem, index) => (
               <div 
                 key={index}
-                className={`group relative p-6 rounded-2xl bg-card border border-destructive/20 hover:border-destructive/40 transition-all duration-300 opacity-0 ${problemsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                className={`group relative p-6 rounded-2xl bg-card/50 backdrop-blur-xl border border-destructive/20 hover:border-destructive/40 hover:bg-card/70 hover:shadow-glass transition-all duration-500 opacity-0 ${problemsSection.isVisible ? 'animate-fade-in-up' : ''}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${problem.color} flex items-center justify-center mb-4 opacity-80`}>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-destructive/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className={`relative h-12 w-12 rounded-xl bg-gradient-to-br ${problem.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
                   <problem.icon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{problem.title}</h3>
-                <p className="text-muted-foreground text-sm">{problem.description}</p>
+                <h3 className="relative text-lg font-semibold mb-2">{problem.title}</h3>
+                <p className="relative text-muted-foreground text-sm">{problem.description}</p>
               </div>
             ))}
           </div>
@@ -511,11 +536,15 @@ export default function Index() {
             {solutions.map((solution, index) => (
               <div 
                 key={index}
-                className={`group relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:-translate-y-2 opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                className={`group relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-primary/40 transition-all duration-500 hover:shadow-glass-lg hover:-translate-y-2 opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${solution.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <solution.icon className="h-7 w-7 text-white" />
+                {/* Glass highlight */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
+                
+                <div className={`relative h-14 w-14 rounded-2xl bg-gradient-to-br ${solution.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                  <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <solution.icon className="relative h-7 w-7 text-white" />
                 </div>
                 <h3 className="text-lg sm:text-xl font-semibold mb-2">{solution.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{solution.description}</p>
@@ -527,8 +556,14 @@ export default function Index() {
       </section>
 
       {/* Audiences Section - B2B & B2C */}
-      <section ref={audiencesSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-6xl">
+      <section ref={audiencesSection.ref} className="py-20 sm:py-28 px-4 relative">
+        {/* Section mesh gradient */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-500/10 via-transparent to-transparent rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-500/10 via-transparent to-transparent rounded-full blur-[100px]" />
+        </div>
+        
+        <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-12 sm:mb-16 space-y-4">
             <h2 
               className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${audiencesSection.isVisible ? 'animate-blur-in' : ''}`}
@@ -546,18 +581,19 @@ export default function Index() {
           <div className="grid sm:grid-cols-2 gap-6 lg:gap-8">
             {/* B2C Card */}
             <div 
-              className={`relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 opacity-0 ${audiencesSection.isVisible ? 'animate-slide-in-left' : ''}`}
+              className={`relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-blue-500/40 transition-all duration-500 hover:shadow-glass-lg opacity-0 ${audiencesSection.isVisible ? 'animate-slide-in-left' : ''}`}
               style={{ animationDelay: '300ms' }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 text-sm font-medium mb-4">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 backdrop-blur-sm text-blue-600 text-sm font-medium mb-4 border border-blue-500/20">
                 <Users className="h-4 w-4" />
                 {t('landing.audiences.b2c.badge')}
               </div>
               <h3 className="text-2xl font-bold mb-6">{t('landing.audiences.b2c.title')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 {b2cAudiences.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
-                    <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <div key={index} className="group flex items-center gap-3 p-3 rounded-xl bg-muted/30 backdrop-blur-sm hover:bg-blue-500/10 border border-transparent hover:border-blue-500/20 transition-all duration-300">
+                    <div className="h-10 w-10 rounded-lg bg-blue-500/15 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
                       <item.icon className="h-5 w-5 text-blue-600" />
                     </div>
                     <span className="text-sm font-medium">{item.label}</span>
@@ -568,18 +604,19 @@ export default function Index() {
 
             {/* B2B Card */}
             <div 
-              className={`relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 opacity-0 ${audiencesSection.isVisible ? 'animate-slide-in-right' : ''}`}
+              className={`relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-emerald-500/40 transition-all duration-500 hover:shadow-glass-lg opacity-0 ${audiencesSection.isVisible ? 'animate-slide-in-right' : ''}`}
               style={{ animationDelay: '400ms' }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-sm font-medium mb-4">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 backdrop-blur-sm text-emerald-600 text-sm font-medium mb-4 border border-emerald-500/20">
                 <Briefcase className="h-4 w-4" />
                 {t('landing.audiences.b2b.badge')}
               </div>
               <h3 className="text-2xl font-bold mb-6">{t('landing.audiences.b2b.title')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 {b2bAudiences.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
-                    <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <div key={index} className="group flex items-center gap-3 p-3 rounded-xl bg-muted/30 backdrop-blur-sm hover:bg-emerald-500/10 border border-transparent hover:border-emerald-500/20 transition-all duration-300">
+                    <div className="h-10 w-10 rounded-lg bg-emerald-500/15 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
                       <item.icon className="h-5 w-5 text-emerald-600" />
                     </div>
                     <span className="text-sm font-medium">{item.label}</span>
@@ -612,15 +649,22 @@ export default function Index() {
             {features.map((feature, index) => (
               <div 
                 key={index}
-                className={`group relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:-translate-y-2 opacity-0 ${featuresSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                className={`group relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-primary/40 transition-all duration-500 hover:shadow-glass-lg hover:-translate-y-2 opacity-0 overflow-hidden ${featuresSection.isVisible ? 'animate-fade-in-up' : ''}`}
                 style={{ animationDelay: feature.delay }}
               >
-                <div className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <feature.icon className="h-7 w-7 text-white" />
+                {/* Glass highlight */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
+                
+                {/* Hover glow effect */}
+                <div className={`absolute -inset-px rounded-3xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500 pointer-events-none`} />
+                
+                <div className={`relative h-14 w-14 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                  <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <feature.icon className="relative h-7 w-7 text-white" />
                 </div>
                 
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="relative text-lg sm:text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="relative text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
 
@@ -635,8 +679,9 @@ export default function Index() {
       <InteractiveDemo />
 
       {/* How it works */}
-      <section ref={howItWorksSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-4xl">
+      <section ref={howItWorksSection.ref} className="py-20 sm:py-28 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background pointer-events-none" />
+        <div className="container mx-auto max-w-4xl relative z-10">
           <div className="text-center mb-12 sm:mb-16 space-y-4">
             <h2 
               className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${howItWorksSection.isVisible ? 'animate-blur-in' : ''}`}
@@ -659,11 +704,12 @@ export default function Index() {
             ].map((item, index) => (
               <div 
                 key={index} 
-                className={`flex flex-col items-center text-center gap-4 opacity-0 ${howItWorksSection.isVisible ? 'animate-scale-in' : ''}`}
+                className={`group flex flex-col items-center text-center gap-4 opacity-0 ${howItWorksSection.isVisible ? 'animate-scale-in' : ''}`}
                 style={{ animationDelay: item.delay }}
               >
                 <div className="relative">
-                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary text-primary-foreground text-2xl sm:text-3xl font-bold flex items-center justify-center shadow-lg shadow-primary/25 group-hover:scale-110 transition-transform">
+                  <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:blur-2xl transition-all" />
+                  <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-2xl sm:text-3xl font-bold flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform border border-primary/50">
                     {item.step}
                   </div>
                   {index < 2 && (
@@ -681,8 +727,13 @@ export default function Index() {
       </section>
 
       {/* Pricing Section */}
-      <section ref={pricingSection.ref} className="py-20 sm:py-28 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-5xl">
+      <section ref={pricingSection.ref} className="py-20 sm:py-28 px-4 relative">
+        {/* Section mesh gradient */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-r from-primary/10 via-transparent to-transparent rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-gradient-to-l from-blue-500/10 via-transparent to-transparent rounded-full blur-[100px]" />
+        </div>
+        <div className="container mx-auto max-w-5xl relative z-10">
           <div className="text-center mb-12 sm:mb-16 space-y-4">
             <div 
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${pricingSection.isVisible ? 'animate-fade-in' : ''}`}
@@ -707,9 +758,10 @@ export default function Index() {
           <div className="grid sm:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
             {/* Free Plan */}
             <div 
-              className={`relative p-6 sm:p-8 rounded-3xl bg-card border border-border/50 hover:border-border transition-all duration-300 hover:shadow-lg opacity-0 ${pricingSection.isVisible ? 'animate-slide-in-left' : ''}`}
+              className={`relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-border/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 ${pricingSection.isVisible ? 'animate-slide-in-left' : ''}`}
               style={{ animationDelay: '400ms' }}
             >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
               <div className="space-y-6">
                 <div>
                   <h3 className="text-2xl font-bold">{t('landing.pricing.free.title')}</h3>
@@ -753,14 +805,18 @@ export default function Index() {
 
             {/* Premium Plan */}
             <div 
-              className={`relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-primary/5 via-primary/10 to-blue-500/5 border-2 border-primary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-xl opacity-0 ${pricingSection.isVisible ? 'animate-slide-in-right' : ''}`}
+              className={`relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border-2 border-primary/30 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 overflow-hidden ${pricingSection.isVisible ? 'animate-slide-in-right' : ''}`}
               style={{ animationDelay: '500ms' }}
             >
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium shadow-lg animate-pulse-glow">
+              {/* Premium glow effects */}
+              <div className="absolute -inset-px bg-gradient-to-br from-primary/20 via-blue-500/10 to-purple-500/20 rounded-3xl opacity-50" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+              
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-sm font-medium shadow-lg shadow-primary/30 animate-glow-pulse border border-primary/50">
                 {t('landing.pricing.popular')}
               </div>
 
-              <div className="space-y-6">
+              <div className="relative space-y-6">
                 <div>
                   <h3 className="text-2xl font-bold flex items-center gap-2">
                     {t('landing.pricing.premium.title')}
@@ -843,15 +899,19 @@ export default function Index() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 py-12 px-4">
-        <div className="container mx-auto">
+      <footer className="border-t border-border/30 py-12 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-muted/20 to-transparent pointer-events-none" />
+        <div className="container mx-auto relative z-10">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <img 
-                src="/pwa-maskable-512x512.png" 
-                alt="LinkMAX" 
-                className="h-8 w-8 rounded-xl group-hover:scale-110 transition-transform" 
-              />
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:blur-xl transition-all" />
+                <img 
+                  src="/pwa-maskable-512x512.png" 
+                  alt="LinkMAX" 
+                  className="relative h-8 w-8 rounded-xl group-hover:scale-110 transition-transform" 
+                />
+              </div>
               <span className="text-xl font-bold">
                 Link<span className="text-primary">MAX</span>
               </span>
