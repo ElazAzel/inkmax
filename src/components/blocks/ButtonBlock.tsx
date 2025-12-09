@@ -46,22 +46,16 @@ export const ButtonBlock = memo(function ButtonBlockComponent({ block }: ButtonB
   const hasCustomBackground = block.background && block.background.value;
   const buttonStyle = getButtonStyle();
 
-  // Determine text color based on background type
-  const getTextColorClass = () => {
-    if (!hasCustomBackground) return 'text-primary-foreground';
-    // For custom backgrounds, use contrasting text
-    if (block.background?.type === 'image') return 'text-white drop-shadow-sm';
-    return 'text-primary-foreground';
-  };
-
   return (
     <div className={`flex ${alignmentClass}`}>
       <button
         onClick={handleClick}
-        className={`max-w-full sm:max-w-md relative overflow-hidden rounded-2xl px-8 py-4 text-base font-semibold shadow-md ${getHoverClass(block.hoverEffect)} transition-all duration-200 hover:shadow-lg ${hasCustomBackground ? getTextColorClass() : 'bg-primary text-primary-foreground'}`}
+        className={`max-w-full sm:max-w-md relative overflow-hidden rounded-2xl px-8 py-4 text-base font-semibold shadow-glass-lg backdrop-blur-xl ${getHoverClass(block.hoverEffect)} transition-all duration-300 hover:shadow-glass-xl hover:scale-[1.02] active:scale-[0.98] ${hasCustomBackground ? 'text-white drop-shadow-md' : 'bg-primary text-primary-foreground border border-primary/20'}`}
         style={buttonStyle}
       >
         <span className="relative z-10">{title}</span>
+        {/* Glass reflection overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
       </button>
     </div>
   );
