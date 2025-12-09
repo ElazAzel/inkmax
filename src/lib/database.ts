@@ -180,16 +180,27 @@ export async function loadPageBySlug(slug: string): Promise<{ data: PageData | n
     // Increment view count
     await supabase.rpc('increment_view_count', { page_slug: slug });
 
-    // Convert to PageData format
+    // Convert to PageData format with deduplication
+    const sortedBlocks = (page.blocks as DbBlock[]).sort((a, b) => a.position - b.position);
+    
+    // Deduplicate blocks by id (keep first occurrence)
+    const seenIds = new Set<string>();
+    const uniqueBlocks = sortedBlocks.filter(block => {
+      const blockId = (block.content as any)?.id;
+      if (blockId && seenIds.has(blockId)) {
+        return false;
+      }
+      if (blockId) seenIds.add(blockId);
+      return true;
+    });
+
     const pageData: PageData = {
       id: page.id,
       userId: page.user_id,
-      blocks: (page.blocks as DbBlock[])
-        .sort((a, b) => a.position - b.position)
-        .map(block => block.content as Block),
+      blocks: uniqueBlocks.map(block => block.content as Block),
       theme: page.theme_settings as any,
       seo: page.seo_meta as any,
-      isPremium: (page.blocks as DbBlock[]).some(b => b.is_premium),
+      isPremium: uniqueBlocks.some(b => b.is_premium),
     };
 
     return { data: pageData, error: null };
@@ -256,15 +267,26 @@ export async function loadUserPage(userId: string): Promise<{ data: PageData | n
       };
     }
 
-    // Convert to PageData format
+    // Convert to PageData format with deduplication
+    const sortedBlocks = (page.blocks as DbBlock[]).sort((a, b) => a.position - b.position);
+    
+    // Deduplicate blocks by id (keep first occurrence)
+    const seenIds = new Set<string>();
+    const uniqueBlocks = sortedBlocks.filter(block => {
+      const blockId = (block.content as any)?.id;
+      if (blockId && seenIds.has(blockId)) {
+        return false;
+      }
+      if (blockId) seenIds.add(blockId);
+      return true;
+    });
+
     const pageData: PageData = {
       id: page.id,
-      blocks: (page.blocks as DbBlock[])
-        .sort((a, b) => a.position - b.position)
-        .map(block => block.content as Block),
+      blocks: uniqueBlocks.map(block => block.content as Block),
       theme: page.theme_settings as any,
       seo: page.seo_meta as any,
-      isPremium: (page.blocks as DbBlock[]).some(b => b.is_premium),
+      isPremium: uniqueBlocks.some(b => b.is_premium),
     };
 
     // Get chatbot context from private_page_data
