@@ -94,7 +94,7 @@ export const FormBlock = memo(function FormBlock({ block, pageOwnerId }: FormBlo
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 bg-card border-border shadow-sm">
       <div className="flex items-center gap-2 mb-4">
         <h3 className="font-semibold text-lg">{title}</h3>
         <Crown className="h-4 w-4 text-primary" />

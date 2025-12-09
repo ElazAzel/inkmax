@@ -32,7 +32,7 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block }: Car
 
   if (!block.images || block.images.length === 0) {
     return (
-      <Card>
+      <Card className="bg-card border-border shadow-sm">
         <CardContent className="p-6">
           <p className="text-sm text-muted-foreground text-center">
             {t('blocks.carousel.empty', 'No images added to carousel')}
@@ -43,7 +43,7 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block }: Car
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden bg-card border-border shadow-sm">
       {title && (
         <CardHeader>
           <CardTitle>{title}</CardTitle>

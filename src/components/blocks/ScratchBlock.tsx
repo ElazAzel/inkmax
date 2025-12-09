@@ -82,7 +82,7 @@ export const ScratchBlock = memo(function ScratchBlock({ block }: ScratchBlockPr
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 bg-card border-border shadow-sm">
       {title && (
         <div className="flex items-center gap-2 mb-4">
           <h3 className="font-semibold text-lg">{title}</h3>

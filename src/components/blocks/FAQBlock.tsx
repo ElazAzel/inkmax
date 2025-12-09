@@ -17,7 +17,7 @@ export const FAQBlock = React.memo(function FAQBlock({ block }: FAQBlockProps) {
 
   if (!block.items || block.items.length === 0) {
     return (
-      <Card className="w-full">
+      <Card className="w-full bg-card border-border shadow-sm">
         <CardContent className="p-6 text-center text-muted-foreground">
           {t('blocks.faq.empty', 'Добавьте вопросы и ответы')}
         </CardContent>
@@ -40,7 +40,7 @@ export const FAQBlock = React.memo(function FAQBlock({ block }: FAQBlockProps) {
             <AccordionItem 
               key={item.id} 
               value={item.id}
-              className="bg-card border rounded-lg px-4"
+              className="bg-card border border-border rounded-lg px-4 shadow-sm"
             >
               <AccordionTrigger className="text-left font-medium hover:no-underline">
                 {question}

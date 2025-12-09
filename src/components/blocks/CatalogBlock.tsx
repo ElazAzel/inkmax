@@ -75,7 +75,7 @@ export const CatalogBlock = React.memo(function CatalogBlock({ block }: CatalogB
 
   if (!block.items || block.items.length === 0) {
     return (
-      <Card className="w-full">
+      <Card className="w-full bg-card border-border shadow-sm">
         <CardContent className="p-6 text-center text-muted-foreground">
           {t('blocks.catalog.empty', 'Каталог пуст')}
         </CardContent>
@@ -90,7 +90,7 @@ export const CatalogBlock = React.memo(function CatalogBlock({ block }: CatalogB
       : '';
 
     return (
-      <Card key={item.id} className="overflow-hidden">
+      <Card key={item.id} className="overflow-hidden bg-card border-border shadow-sm">
         {item.image && (
           <div className={cn(
             'overflow-hidden',
