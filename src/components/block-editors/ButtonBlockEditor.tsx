@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
-
+import { Maximize2, Square, Minus } from 'lucide-react';
 function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
   
@@ -150,9 +150,24 @@ function ButtonBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="full">{t('fields.fullWidth', 'Full Width')}</SelectItem>
-            <SelectItem value="medium">{t('fields.mediumWidth', 'Medium')}</SelectItem>
-            <SelectItem value="small">{t('fields.smallWidth', 'Small')}</SelectItem>
+            <SelectItem value="full">
+              <span className="flex items-center gap-2">
+                <Maximize2 className="h-4 w-4" />
+                {t('fields.fullWidth', 'Full Width')}
+              </span>
+            </SelectItem>
+            <SelectItem value="medium">
+              <span className="flex items-center gap-2">
+                <Square className="h-4 w-4" />
+                {t('fields.mediumWidth', 'Medium')}
+              </span>
+            </SelectItem>
+            <SelectItem value="small">
+              <span className="flex items-center gap-2">
+                <Minus className="h-4 w-4" />
+                {t('fields.smallWidth', 'Small')}
+              </span>
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
