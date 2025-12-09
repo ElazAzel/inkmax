@@ -131,28 +131,37 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gradient-to-bl from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[150px] animate-morph" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-[120px] animate-morph" style={{ animationDelay: '-7s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/10 via-pink-500/5 to-transparent rounded-full blur-[100px] animate-float-slow" />
+      </div>
+      
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
         <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-2 animate-fade-in">
-            <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-12 w-12 animate-scale-in" />
+          <div className="flex items-center justify-center gap-2 mb-3 animate-fade-in">
+            <div className="h-16 w-16 rounded-2xl bg-card/60 backdrop-blur-2xl border border-border/30 shadow-glass-lg flex items-center justify-center animate-scale-in">
+              <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-10 w-10" />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-primary animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-primary to-violet-500 bg-clip-text text-transparent animate-fade-in" style={{ animationDelay: '0.1s' }}>
             {t('auth.title')}
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
             {t('auth.subtitle')}
           </p>
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4 flex justify-center animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <LanguageSwitcher />
           </div>
         </div>
 
-        {/* Auth Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('auth.getStarted')}</CardTitle>
+        {/* Auth Card - Liquid Glass */}
+        <Card className="bg-card/60 backdrop-blur-2xl border border-border/30 rounded-3xl shadow-glass-xl animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl">{t('auth.getStarted')}</CardTitle>
             <CardDescription>
               {t('auth.signInToAccount')}
             </CardDescription>
@@ -163,7 +172,7 @@ export default function Auth() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full gap-2"
+                className="w-full gap-2 h-12 rounded-2xl bg-card/40 backdrop-blur-xl border-border/30 hover:bg-card/60 hover:border-border/50 transition-all duration-300"
                 onClick={handleGoogleSignIn}
                 disabled={isOAuthLoading !== null || isLoading}
               >
@@ -183,7 +192,7 @@ export default function Auth() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full gap-2"
+                className="w-full gap-2 h-12 rounded-2xl bg-card/40 backdrop-blur-xl border-border/30 hover:bg-card/60 hover:border-border/50 transition-all duration-300"
                 onClick={handleAppleSignIn}
                 disabled={isOAuthLoading !== null || isLoading}
               >
@@ -199,75 +208,79 @@ export default function Auth() {
             </div>
 
             {/* Divider */}
-            <div className="relative">
+            <div className="relative py-2">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-border/30" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">{t('auth.orContinueWith')}</span>
+                <span className="bg-transparent backdrop-blur-xl px-3 text-muted-foreground">{t('auth.orContinueWith')}</span>
               </div>
             </div>
 
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">{t('auth.signIn')}</TabsTrigger>
-                <TabsTrigger value="signup">{t('auth.signUp')}</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 h-12 bg-muted/30 backdrop-blur-xl rounded-2xl p-1">
+                <TabsTrigger value="signin" className="rounded-xl data-[state=active]:bg-card/80 data-[state=active]:backdrop-blur-xl data-[state=active]:shadow-glass">{t('auth.signIn')}</TabsTrigger>
+                <TabsTrigger value="signup" className="rounded-xl data-[state=active]:bg-card/80 data-[state=active]:backdrop-blur-xl data-[state=active]:shadow-glass">{t('auth.signUp')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
+                <form onSubmit={handleSignIn} className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">{t('auth.email')}</Label>
+                    <Label htmlFor="signin-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
                     <Input
                       id="signin-email"
                       name="signin-email"
                       type="email"
                       placeholder="your@email.com"
                       required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">{t('auth.password')}</Label>
+                    <Label htmlFor="signin-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
                     <Input
                       id="signin-password"
                       name="signin-password"
                       type="password"
                       placeholder="••••••••"
                       required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading || isOAuthLoading !== null}>
+                  <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
                     {isLoading ? t('auth.signingIn') : t('auth.signIn')}
                   </Button>
                 </form>
               </TabsContent>
 
               <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
+                <form onSubmit={handleSignUp} className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">{t('auth.email')}</Label>
+                    <Label htmlFor="signup-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
                     <Input
                       id="signup-email"
                       name="signup-email"
                       type="email"
                       placeholder="your@email.com"
                       required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">{t('auth.password')}</Label>
+                    <Label htmlFor="signup-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
                     <Input
                       id="signup-password"
                       name="signup-password"
                       type="password"
                       placeholder="••••••••"
                       required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
                     />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-2 bg-muted/20 backdrop-blur-xl p-2 rounded-lg">
                       {t('auth.passwordHint')}
                     </p>
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading || isOAuthLoading !== null}>
+                  <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
                     {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
                   </Button>
                 </form>
@@ -277,8 +290,8 @@ export default function Auth() {
         </Card>
 
         {/* Back to home */}
-        <div className="text-center">
-          <Button variant="ghost" onClick={() => navigate('/')}>
+        <div className="text-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <Button variant="ghost" onClick={() => navigate('/')} className="rounded-xl hover:bg-card/40 backdrop-blur-xl">
             {t('auth.backToHome')}
           </Button>
         </div>

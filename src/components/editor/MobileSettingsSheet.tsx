@@ -76,11 +76,11 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85vh] p-0 rounded-t-3xl">
-        <SheetHeader className="p-4 pb-2 border-b sticky top-0 bg-background z-10">
+      <SheetContent side="bottom" className="h-[85vh] p-0 rounded-t-[2rem] bg-card/80 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl">
+        <SheetHeader className="p-5 pb-3 border-b border-border/20 sticky top-0 bg-card/60 backdrop-blur-xl z-10">
           <div className="flex items-center justify-between">
-            <SheetTitle>Settings</SheetTitle>
-            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+            <SheetTitle className="text-lg font-semibold">Settings</SheetTitle>
+            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="rounded-full hover:bg-card/60">
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -89,20 +89,20 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
         
         <div className="overflow-y-auto h-full pb-24">
           <Tabs defaultValue="link" className="w-full">
-            <TabsList className="w-full sticky top-0 bg-background z-10 h-12 rounded-none border-b p-1">
-              <TabsTrigger value="link" className="flex-1 gap-1.5">
+            <TabsList className="w-full sticky top-0 bg-card/60 backdrop-blur-xl z-10 h-14 rounded-none border-b border-border/20 p-1.5 gap-1">
+              <TabsTrigger value="link" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
                 <Link2 className="h-4 w-4" />
                 <span className="hidden xs:inline">Link</span>
               </TabsTrigger>
-              <TabsTrigger value="profile" className="flex-1 gap-1.5">
+              <TabsTrigger value="profile" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
                 <User className="h-4 w-4" />
                 <span className="hidden xs:inline">Profile</span>
               </TabsTrigger>
-              <TabsTrigger value="chatbot" className="flex-1 gap-1.5">
+              <TabsTrigger value="chatbot" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
                 <MessageCircle className="h-4 w-4" />
                 <span className="hidden xs:inline">AI</span>
               </TabsTrigger>
-              <TabsTrigger value="premium" className="flex-1 gap-1.5">
+              <TabsTrigger value="premium" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
                 <Crown className="h-4 w-4" />
                 <span className="hidden xs:inline">Plan</span>
               </TabsTrigger>
@@ -110,32 +110,36 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
             
             {/* Link Tab */}
             <TabsContent value="link" className="p-4 space-y-4 mt-0">
-              <Card className="p-4">
+              <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <Link2 className="h-4 w-4" />
+                  <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Link2 className="h-4 w-4 text-primary" />
+                  </div>
                   Your Link
                 </h3>
                 <div className="space-y-3">
                   <div>
-                    <Label>Username</Label>
-                    <div className="flex gap-2 mt-1">
+                    <Label className="text-sm text-muted-foreground">Username</Label>
+                    <div className="flex gap-2 mt-2">
                       <Input
                         value={usernameInput}
                         onChange={(e) => onUsernameChange(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
                         placeholder="username"
                         maxLength={30}
                         disabled={usernameSaving}
+                        className="bg-card/60 backdrop-blur-xl border-border/30 rounded-xl"
                       />
                       <Button 
                         size="sm" 
                         onClick={onUpdateUsername}
                         disabled={usernameSaving || !usernameInput.trim()}
+                        className="rounded-xl shadow-glass"
                       >
                         {usernameSaving ? '...' : 'Save'}
                       </Button>
                     </div>
                     {usernameInput && (
-                      <p className="text-xs text-muted-foreground mt-2 break-all">
+                      <p className="text-xs text-muted-foreground mt-3 break-all bg-muted/30 backdrop-blur-xl p-2 rounded-lg">
                         {window.location.origin}/{usernameInput}
                       </p>
                     )}
@@ -147,27 +151,29 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
             {/* Profile Tab */}
             <TabsContent value="profile" className="p-4 space-y-4 mt-0">
               {profileBlock && (
-                <Card className="p-4">
+                <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
                   <h3 className="font-semibold mb-4 flex items-center gap-2">
-                    <User className="h-4 w-4" />
+                    <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
                     Profile Info
                   </h3>
                   <div className="space-y-4">
                     <div>
-                      <Label>Name</Label>
+                      <Label className="text-sm text-muted-foreground">Name</Label>
                       <Input
                         value={typeof profileBlock.name === 'string' ? profileBlock.name : profileBlock.name?.ru || ''}
                         onChange={(e) => onUpdateProfile({ name: e.target.value })}
-                        className="mt-1"
+                        className="mt-2 bg-card/60 backdrop-blur-xl border-border/30 rounded-xl"
                       />
                     </div>
                     <div>
-                      <Label>Bio</Label>
+                      <Label className="text-sm text-muted-foreground">Bio</Label>
                       <Textarea
                         value={typeof profileBlock.bio === 'string' ? profileBlock.bio : profileBlock.bio?.ru || ''}
                         onChange={(e) => onUpdateProfile({ bio: e.target.value })}
                         rows={3}
-                        className="mt-1"
+                        className="mt-2 bg-card/60 backdrop-blur-xl border-border/30 rounded-xl"
                       />
                     </div>
                   </div>
@@ -177,9 +183,11 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
             
             {/* Chatbot Tab */}
             <TabsContent value="chatbot" className="p-4 space-y-4 mt-0">
-              <Card className="p-4">
+              <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <MessageCircle className="h-4 w-4" />
+                  <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <MessageCircle className="h-4 w-4 text-primary" />
+                  </div>
                   AI Chatbot Context
                 </h3>
                 <div className="space-y-3">
@@ -189,7 +197,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                     onBlur={onSave}
                     placeholder="Add hidden context for the AI chatbot (pricing, services, availability...)"
                     rows={6}
-                    className="text-sm"
+                    className="text-sm bg-card/60 backdrop-blur-xl border-border/30 rounded-xl"
                   />
                   <p className="text-xs text-muted-foreground">
                     This helps the AI answer visitor questions accurately
@@ -197,21 +205,23 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                 </div>
               </Card>
               
-              <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-primary" />
+              <Card className="p-5 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent backdrop-blur-xl border border-primary/20 rounded-2xl shadow-glass">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-xl bg-primary/20 flex items-center justify-center">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                  </div>
                   AI Tools
                 </h3>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="w-full justify-start"
+                  className="w-full justify-start rounded-xl bg-card/40 backdrop-blur-xl border-border/30 hover:bg-card/60"
                   onClick={() => {
                     onOpenChange(false);
                     onOpenSEOGenerator();
                   }}
                 >
-                  <Sparkles className="h-3 w-3 mr-2" />
+                  <Sparkles className="h-4 w-4 mr-2 text-primary" />
                   SEO Generator
                 </Button>
               </Card>
@@ -220,17 +230,17 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
             {/* Premium Tab */}
             <TabsContent value="premium" className="p-4 space-y-4 mt-0">
               {!premiumLoading && (
-                <Card className="p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${isPremium ? 'bg-primary/10' : 'bg-muted'}`}>
-                      <Crown className={`h-5 w-5 ${isPremium ? 'text-primary' : 'text-muted-foreground'}`} />
+                <Card className={`p-5 backdrop-blur-xl border rounded-2xl shadow-glass ${isPremium ? 'bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-transparent border-amber-500/30' : 'bg-card/40 border-border/20'}`}>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className={`h-12 w-12 rounded-2xl flex items-center justify-center backdrop-blur-xl ${isPremium ? 'bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30' : 'bg-muted/50'}`}>
+                      <Crown className={`h-6 w-6 ${isPremium ? 'text-amber-500' : 'text-muted-foreground'}`} />
                     </div>
                     <div>
-                      <h3 className="font-semibold">
+                      <h3 className="font-semibold text-lg">
                         {isPremium ? 'Premium Active' : 'Free Plan'}
                       </h3>
                       {!isPremium && (
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                           Upgrade to unlock all features
                         </p>
                       )}
@@ -239,7 +249,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                   {!isPremium && (
                     <Button 
                       onClick={openPremiumPurchase}
-                      className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                      className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-glass-lg transition-all duration-300 hover:scale-[1.02]"
                     >
                       <Crown className="h-4 w-4 mr-2" />
                       Upgrade to Premium
@@ -249,11 +259,11 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
               )}
               
               {/* Sign Out */}
-              <Card className="p-4">
+              <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
                 <Button 
                   variant="outline" 
                   onClick={onSignOut}
-                  className="w-full text-destructive hover:text-destructive"
+                  className="w-full text-destructive hover:text-destructive rounded-xl bg-destructive/5 border-destructive/20 hover:bg-destructive/10"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
