@@ -128,6 +128,7 @@ export interface ButtonBlock {
   };
   hoverEffect?: 'glow' | 'scale' | 'shadow' | 'none';
   alignment?: 'left' | 'center' | 'right';
+  width?: 'full' | 'medium' | 'small';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
