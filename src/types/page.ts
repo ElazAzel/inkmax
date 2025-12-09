@@ -93,7 +93,7 @@ export interface ProductBlock {
 export interface VideoBlock {
   id: string;
   type: 'video';
-  title: string;
+  title: string | MultilingualString;
   url: string;
   platform: 'youtube' | 'vimeo';
   aspectRatio?: '16:9' | '4:3' | '1:1';
@@ -104,10 +104,10 @@ export interface VideoBlock {
 export interface CarouselBlock {
   id: string;
   type: 'carousel';
-  title?: string;
+  title?: string | MultilingualString;
   images: Array<{
     url: string;
-    alt: string;
+    alt: string | MultilingualString;
     link?: string;
   }>;
   autoPlay?: boolean;
@@ -161,8 +161,8 @@ export interface ImageBlock {
 export interface SearchBlock {
   id: string;
   type: 'search';
-  title?: string;
-  placeholder?: string;
+  title?: string | MultilingualString;
+  placeholder?: string | MultilingualString;
   isPremium: true;
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
@@ -171,7 +171,7 @@ export interface SearchBlock {
 export interface CustomCodeBlock {
   id: string;
   type: 'custom_code';
-  title?: string;
+  title?: string | MultilingualString;
   html: string;
   css?: string;
   isPremium: true;
@@ -182,7 +182,7 @@ export interface CustomCodeBlock {
 export interface MessengerBlock {
   id: string;
   type: 'messenger';
-  title?: string;
+  title?: string | MultilingualString;
   messengers: Array<{
     platform: 'whatsapp' | 'telegram' | 'viber' | 'wechat';
     username: string;
@@ -195,14 +195,14 @@ export interface MessengerBlock {
 export interface FormBlock {
   id: string;
   type: 'form';
-  title: string;
+  title: string | MultilingualString;
   fields: Array<{
     name: string;
     type: 'text' | 'email' | 'phone' | 'textarea';
     required: boolean;
   }>;
   submitEmail: string;
-  buttonText: string;
+  buttonText: string | MultilingualString;
   isPremium: true;
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
@@ -211,8 +211,8 @@ export interface FormBlock {
 export interface DownloadBlock {
   id: string;
   type: 'download';
-  title: string;
-  description?: string;
+  title: string | MultilingualString;
+  description?: string | MultilingualString;
   fileUrl: string;
   fileName: string;
   fileSize?: string;
@@ -225,9 +225,9 @@ export interface DownloadBlock {
 export interface NewsletterBlock {
   id: string;
   type: 'newsletter';
-  title: string;
-  description?: string;
-  buttonText: string;
+  title: string | MultilingualString;
+  description?: string | MultilingualString;
+  buttonText: string | MultilingualString;
   apiEndpoint?: string;
   isPremium: true;
   schedule?: BlockSchedule;
@@ -237,13 +237,13 @@ export interface NewsletterBlock {
 export interface TestimonialBlock {
   id: string;
   type: 'testimonial';
-  title?: string;
+  title?: string | MultilingualString;
   testimonials: Array<{
-    name: string;
-    text: string;
+    name: string | MultilingualString;
+    text: string | MultilingualString;
     rating?: number;
     avatar?: string;
-    role?: string;
+    role?: string | MultilingualString;
   }>;
   isPremium: true;
   schedule?: BlockSchedule;
@@ -253,8 +253,8 @@ export interface TestimonialBlock {
 export interface ScratchBlock {
   id: string;
   type: 'scratch';
-  title?: string;
-  revealText: string;
+  title?: string | MultilingualString;
+  revealText: string | MultilingualString;
   scratchImage?: string;
   backgroundColor?: string;
   isPremium: true;
@@ -265,10 +265,10 @@ export interface ScratchBlock {
 export interface MapBlock {
   id: string;
   type: 'map';
-  title?: string;
+  title?: string | MultilingualString;
   provider: 'google' | 'yandex';
   embedUrl: string;
-  address?: string;
+  address?: string | MultilingualString;
   height?: 'small' | 'medium' | 'large';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
