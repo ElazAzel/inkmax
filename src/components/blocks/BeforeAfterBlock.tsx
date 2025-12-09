@@ -107,11 +107,11 @@ export const BeforeAfterBlock = React.memo(function BeforeAfterBlock({ block }: 
         
         {/* Slider Line */}
         <div 
-          className="absolute top-0 bottom-0 w-1 bg-white shadow-lg z-10"
+          className="absolute top-0 bottom-0 w-1 bg-background shadow-lg z-10"
           style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
         >
           {/* Handle */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-background rounded-full shadow-lg flex items-center justify-center border border-border">
             <div className="flex gap-0.5">
               <div className="w-0.5 h-4 bg-muted-foreground rounded" />
               <div className="w-0.5 h-4 bg-muted-foreground rounded" />
@@ -120,10 +120,10 @@ export const BeforeAfterBlock = React.memo(function BeforeAfterBlock({ block }: 
         </div>
         
         {/* Labels */}
-        <div className="absolute bottom-3 left-3 px-2 py-1 bg-black/60 text-white text-sm rounded">
+        <div className="absolute bottom-3 left-3 px-2 py-1 bg-background/80 backdrop-blur-sm text-foreground text-sm rounded border border-border">
           {beforeLabel}
         </div>
-        <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/60 text-white text-sm rounded">
+        <div className="absolute bottom-3 right-3 px-2 py-1 bg-background/80 backdrop-blur-sm text-foreground text-sm rounded border border-border">
           {afterLabel}
         </div>
       </div>

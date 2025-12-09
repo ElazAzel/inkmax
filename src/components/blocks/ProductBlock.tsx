@@ -11,7 +11,7 @@ interface ProductBlockProps {
 }
 
 export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
   const description = getTranslatedString(block.description, i18n.language as SupportedLanguage);
   
@@ -79,7 +79,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
         <CardFooter>
           <Button className="w-full gap-2" onClick={handleBuy}>
             <ShoppingCart className="h-4 w-4" />
-            Buy Now
+            {t('actions.buyNow', 'Buy Now')}
           </Button>
         </CardFooter>
       </Card>
