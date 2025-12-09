@@ -34,6 +34,7 @@ import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { MobileToolbar } from '@/components/editor/MobileToolbar';
 import { MobileSettingsSheet } from '@/components/editor/MobileSettingsSheet';
 import { PullToRefresh } from '@/components/editor/PullToRefresh';
+import { AutoSaveIndicator } from '@/components/editor/AutoSaveIndicator';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -73,6 +74,7 @@ export default function Dashboard() {
     setChatbotContext,
     loading,
     saving,
+    saveStatus,
     save,
     publish,
     addBlock,
@@ -402,9 +404,10 @@ export default function Dashboard() {
       {/* Desktop Header - Hidden on Mobile */}
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-sm shadow-sm hidden md:block">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 animate-fade-in">
+          <div className="flex items-center gap-3 animate-fade-in">
             <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="h-8 w-8 animate-scale-in hover-scale" />
             <h1 className="text-xl font-bold text-primary">LinkMAX</h1>
+            <AutoSaveIndicator status={saveStatus} />
           </div>
           
           <div className="flex items-center gap-2">
@@ -691,6 +694,7 @@ export default function Dashboard() {
       {isMobile && (
         <MobileToolbar
           saving={saving}
+          saveStatus={saveStatus}
           onSave={save}
           onPreview={handlePreview}
           onShare={handleShare}

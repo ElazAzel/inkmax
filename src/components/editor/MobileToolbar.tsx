@@ -22,10 +22,12 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { AutoSaveIndicator, type SaveStatus } from './AutoSaveIndicator';
 import { cn } from '@/lib/utils';
 
 interface MobileToolbarProps {
   saving: boolean;
+  saveStatus: SaveStatus;
   onSave: () => void;
   onPreview: () => void;
   onShare: () => void;
@@ -39,6 +41,7 @@ interface MobileToolbarProps {
 
 export const MobileToolbar = memo(function MobileToolbar({
   saving,
+  saveStatus,
   onSave,
   onPreview,
   onShare,
@@ -131,6 +134,10 @@ export const MobileToolbar = memo(function MobileToolbar({
     <>
       {/* Bottom Toolbar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-t shadow-lg safe-area-bottom">
+        {/* Auto-save indicator - top of toolbar */}
+        <div className="flex items-center justify-center py-1 border-b border-border/50">
+          <AutoSaveIndicator status={saveStatus} />
+        </div>
         <div className="flex items-center justify-around h-16 px-2">
           {mainActions.map((action) => (
             <Button
