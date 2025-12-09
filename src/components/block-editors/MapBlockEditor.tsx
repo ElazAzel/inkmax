@@ -1,5 +1,4 @@
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { MapBlock } from '@/types/page';
@@ -35,8 +34,8 @@ function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Заголовок (опционально)</Label>
         <MultilingualInput
+          label="Заголовок (опционально)"
           value={formData.title as MultilingualString || { ru: '', en: '', kk: '' }}
           onChange={(value) => onChange({ title: value })}
           placeholder="Наш офис"
@@ -78,8 +77,8 @@ function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Адрес (опционально)</Label>
         <MultilingualInput
+          label="Адрес (опционально)"
           value={formData.address as MultilingualString || { ru: '', en: '', kk: '' }}
           onChange={(value) => onChange({ address: value })}
           placeholder="ул. Примерная, 123"

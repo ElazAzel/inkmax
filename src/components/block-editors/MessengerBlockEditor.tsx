@@ -6,8 +6,12 @@ import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper
 import { validateMessengerBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
+import { useTranslation } from 'react-i18next';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 
 function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+  const { t } = useTranslation();
   const messengers = formData.messengers || [];
 
   const addMessenger = () => {
@@ -32,25 +36,23 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
 
   return (
     <div className="space-y-4">
-      <div>
-        <Label>Title (optional)</Label>
-        <Input
-          value={formData.title || ''}
-          onChange={(e) => onChange({ ...formData, title: e.target.value })}
-          placeholder="Contact me"
-        />
-      </div>
+      <MultilingualInput
+        label={`${t('fields.title', 'Title')} (${t('fields.optional', 'optional')})`}
+        value={migrateToMultilingual(formData.title)}
+        onChange={(value) => onChange({ ...formData, title: value })}
+        placeholder="Contact me"
+      />
 
-      <ArrayFieldList label="Messengers" items={messengers} onAdd={addMessenger}>
+      <ArrayFieldList label={t('fields.messengers', 'Messengers')} items={messengers} onAdd={addMessenger}>
         {messengers.map((messenger: any, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}
-            label="Messenger"
+            label={t('fields.messenger', 'Messenger')}
             onRemove={() => removeMessenger(index)}
           >
             <div>
-              <Label className="text-xs">Platform</Label>
+              <Label className="text-xs">{t('fields.platform', 'Platform')}</Label>
               <Select
                 value={messenger.platform}
                 onValueChange={(value) => updateMessenger(index, 'platform', value)}
@@ -68,7 +70,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
             </div>
 
             <div>
-              <Label className="text-xs">Username/Phone</Label>
+              <Label className="text-xs">{t('fields.usernamePhone', 'Username/Phone')}</Label>
               <Input
                 value={messenger.username}
                 onChange={(e) => updateMessenger(index, 'username', e.target.value)}
@@ -77,7 +79,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
             </div>
 
             <div>
-              <Label className="text-xs">Pre-filled Message (optional)</Label>
+              <Label className="text-xs">{t('fields.prefilledMessage', 'Pre-filled Message')} ({t('fields.optional', 'optional')})</Label>
               <Textarea
                 value={messenger.message || ''}
                 onChange={(e) => updateMessenger(index, 'message', e.target.value)}
