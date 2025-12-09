@@ -187,7 +187,6 @@ export type Database = {
         Row: {
           avatar_style: Json | null
           avatar_url: string | null
-          chatbot_context: string | null
           created_at: string | null
           description: string | null
           id: string
@@ -203,7 +202,6 @@ export type Database = {
         Insert: {
           avatar_style?: Json | null
           avatar_url?: string | null
-          chatbot_context?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
@@ -219,7 +217,6 @@ export type Database = {
         Update: {
           avatar_style?: Json | null
           avatar_url?: string | null
-          chatbot_context?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
