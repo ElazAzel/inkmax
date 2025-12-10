@@ -14,18 +14,19 @@ import {
   arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { BlockInsertButton } from './BlockInsertButton';
 import { InlineEditableBlock } from './InlineEditableBlock';
 import { InlineProfileEditor } from '../blocks/InlineProfileEditor';
 import { BlockHint } from '../onboarding/BlockHint';
+import { GridEditor } from './GridEditor';
 import { useIsMobile } from '@/hooks/use-mobile';
-import type { Block, ProfileBlock } from '@/types/page';
+import type { Block, ProfileBlock, EditorMode, GridConfig } from '@/types/page';
 
 interface PreviewEditorProps {
   blocks: Block[];
   isPremium: boolean;
+  editorMode?: EditorMode;
+  gridConfig?: GridConfig;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
@@ -125,6 +126,8 @@ function SortableBlockWrapper({
 export const PreviewEditor = memo(function PreviewEditor({
   blocks,
   isPremium,
+  editorMode = 'linear',
+  gridConfig,
   onInsertBlock,
   onEditBlock,
   onDeleteBlock,
@@ -135,7 +138,21 @@ export const PreviewEditor = memo(function PreviewEditor({
 }: PreviewEditorProps) {
   const sensors = useSensors(useSensor(PointerSensor));
   const isMobile = useIsMobile();
-  const [showMobileFAB, setShowMobileFAB] = useState(false);
+
+  // Use GridEditor for grid mode
+  if (editorMode === 'grid') {
+    return (
+      <GridEditor
+        blocks={blocks}
+        isPremium={isPremium}
+        gridConfig={gridConfig}
+        onInsertBlock={onInsertBlock}
+        onEditBlock={onEditBlock}
+        onDeleteBlock={onDeleteBlock}
+        onUpdateBlock={onUpdateBlock}
+      />
+    );
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
