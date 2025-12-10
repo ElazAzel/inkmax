@@ -61,6 +61,8 @@ export default function Dashboard() {
         saveStatus={dashboard.saveStatus}
         achievementCount={dashboard.achievements.getProgress().unlocked}
         showSettings={showSettings}
+        editorMode={dashboard.pageData?.editorMode || 'linear'}
+        onToggleEditorMode={dashboard.toggleEditorMode}
         onToggleSettings={() => setShowSettings(!showSettings)}
         onSave={dashboard.save}
         onPreview={dashboard.sharingState.handlePreview}

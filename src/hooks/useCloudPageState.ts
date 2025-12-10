@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from './useAuth';
 import { useUserPage, useSavePageMutation, usePublishPageMutation, pageQueryKeys } from '@/hooks/usePageCache';
-import type { PageData, Block } from '@/types/page';
+import type { PageData, Block, EditorMode } from '@/types/page';
 import { toast } from 'sonner';
 import type { SaveStatus } from '@/components/editor/AutoSaveIndicator';
 
@@ -213,6 +213,19 @@ export function useCloudPageState() {
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
 
+  const toggleEditorMode = useCallback(() => {
+    if (!pageData) return;
+    const newMode: EditorMode = pageData.editorMode === 'grid' ? 'linear' : 'grid';
+    const newPageData: PageData = {
+      ...pageData,
+      editorMode: newMode,
+    };
+    setPageData(newPageData);
+    
+    // Auto-save and publish
+    autoSaveAndPublish(newPageData, chatbotContext);
+  }, [pageData, chatbotContext, autoSaveAndPublish]);
+
   const refresh = useCallback(async () => {
     if (user?.id) {
       await queryClient.invalidateQueries({ 
@@ -236,6 +249,7 @@ export function useCloudPageState() {
     deleteBlock,
     reorderBlocks,
     updateTheme,
+    toggleEditorMode,
     refresh,
   };
 }

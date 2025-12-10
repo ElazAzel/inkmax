@@ -167,7 +167,8 @@ export default function Auth() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* OAuth Buttons */}
+            {/* OAuth Buttons - Hidden until configured */}
+            {/* TODO: Uncomment when Google/Apple OAuth is configured in Lovable Cloud
             <div className="space-y-3">
               <Button
                 type="button"
@@ -207,7 +208,6 @@ export default function Auth() {
               </Button>
             </div>
 
-            {/* Divider */}
             <div className="relative py-2">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border/30" />
@@ -216,6 +216,7 @@ export default function Auth() {
                 <span className="bg-transparent backdrop-blur-xl px-3 text-muted-foreground">{t('auth.orContinueWith')}</span>
               </div>
             </div>
+            */}
 
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2 h-12 bg-muted/30 backdrop-blur-xl rounded-2xl p-1">
