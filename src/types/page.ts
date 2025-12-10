@@ -398,7 +398,13 @@ export interface PricingBlock {
   blockStyle?: BlockStyle;
 }
 
-export type Block = ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock;
+// Base block type with optional grid layout
+interface BlockGridProps {
+  gridLayout?: GridLayoutData;
+  createdAt?: string;
+}
+
+export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock) & BlockGridProps;
 
 export interface PageTheme {
   backgroundColor: string;
@@ -416,6 +422,25 @@ export interface PageMetrics {
   tiktokPixel?: string;
 }
 
+// Grid layout data for blocks
+export interface GridLayoutData {
+  gridColumn?: number;    // starting column (1-based)
+  gridRow?: number;       // starting row (1-based)
+  gridWidth?: number;     // width in cells (1-4)
+  gridHeight?: number;    // height in cells (1-4)
+}
+
+// Grid configuration for pages
+export interface GridConfig {
+  columnsDesktop: number;   // 3-4 for desktop
+  columnsMobile: number;    // 2 for mobile
+  gapSize: number;          // gap between blocks in px
+  cellHeight: number;       // cell height in px
+}
+
+// Editor mode type
+export type EditorMode = 'linear' | 'grid';
+
 export interface PageData {
   id: string;
   userId?: string;
@@ -428,4 +453,6 @@ export interface PageData {
   };
   isPremium?: boolean;
   metrics?: PageMetrics;
+  editorMode?: EditorMode;
+  gridConfig?: GridConfig;
 }
