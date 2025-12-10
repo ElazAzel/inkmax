@@ -2,10 +2,12 @@
  * Page service - handles all page-related API operations
  */
 import { supabase } from '@/integrations/supabase/client';
-import type { PageData, Block } from '@/types/page';
+import type { PageData, Block, ProfileBlock, PageTheme } from '@/types/page';
 import { createDefaultPageData } from '@/lib/constants';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import type { Json } from '@/integrations/supabase/types';
 
-// ============= Types =============
+// ============= Types (exported for backward compatibility) =============
 export interface DbPage {
   id: string;
   user_id: string;
@@ -13,9 +15,9 @@ export interface DbPage {
   title: string | null;
   description: string | null;
   avatar_url: string | null;
-  avatar_style: any;
-  theme_settings: any;
-  seo_meta: any;
+  avatar_style: Json;
+  theme_settings: Json;
+  seo_meta: Json;
   is_published: boolean;
   view_count: number;
   created_at: string;
@@ -28,31 +30,48 @@ export interface DbBlock {
   type: string;
   position: number;
   title: string | null;
-  content: any;
-  style: any;
+  content: Json;
+  style: Json;
   is_premium: boolean;
   click_count: number;
   created_at: string;
-  schedule?: any;
+  schedule?: Json;
 }
 
 export interface SavePageResult {
   data: DbPage | null;
-  error: any;
+  error: Error | null;
 }
 
 export interface LoadPageResult {
   data: PageData | null;
-  error: any;
+  error: Error | null;
 }
 
 export interface LoadUserPageResult {
   data: PageData | null;
   chatbotContext: string | null;
-  error: any;
+  error: Error | null;
+}
+
+export interface PublishPageResult {
+  slug: string | null;
+  error: Error | null;
 }
 
 // ============= Helpers =============
+
+/**
+ * Wrap error in standard Error object
+ */
+function wrapError(error: unknown): Error {
+  if (error instanceof Error) return error;
+  if (typeof error === 'string') return new Error(error);
+  if (error && typeof error === 'object' && 'message' in error) {
+    return new Error(String((error as { message: unknown }).message));
+  }
+  return new Error('Unknown error');
+}
 
 /**
  * Get user's slug from their profile or generate one
@@ -95,7 +114,8 @@ async function getUserSlug(userId: string): Promise<string> {
 function deduplicateBlocks(blocks: DbBlock[]): DbBlock[] {
   const seenIds = new Set<string>();
   return blocks.filter((block) => {
-    const blockId = (block.content as any)?.id;
+    const content = block.content as unknown as Block | null;
+    const blockId = content?.id;
     if (blockId && seenIds.has(blockId)) {
       return false;
     }
@@ -110,7 +130,20 @@ function deduplicateBlocks(blocks: DbBlock[]): DbBlock[] {
 function convertDbBlocksToBlocks(dbBlocks: DbBlock[]): Block[] {
   const sorted = [...dbBlocks].sort((a, b) => a.position - b.position);
   const unique = deduplicateBlocks(sorted);
-  return unique.map((block) => block.content as Block);
+  return unique.map((block) => block.content as unknown as Block);
+}
+
+/**
+ * Extract title from block (handles multilingual strings)
+ */
+function extractBlockTitle(block: Block, lang: SupportedLanguage = 'ru'): string | null {
+  if (!('title' in block) && !('name' in block)) return null;
+  
+  const rawTitle = 'title' in block ? block.title : ('name' in block ? (block as ProfileBlock).name : null);
+  if (!rawTitle) return null;
+  
+  if (typeof rawTitle === 'string') return rawTitle;
+  return getTranslatedString(rawTitle, lang);
 }
 
 // ============= API Functions =============
@@ -127,30 +160,33 @@ export async function savePage(
     const slug = await getUserSlug(userId);
 
     // Extract profile block data
-    const profileBlock = pageData.blocks.find((b) => b.type === 'profile') as any;
+    const profileBlock = pageData.blocks.find((b) => b.type === 'profile') as ProfileBlock | undefined;
+    const profileName = profileBlock ? extractBlockTitle(profileBlock) : 'My Page';
+    const profileBio = profileBlock?.bio;
+    const bioText = typeof profileBio === 'string' ? profileBio : (profileBio ? getTranslatedString(profileBio, 'ru') : null);
 
     // Upsert page atomically
     const { data: pageId, error: upsertError } = await supabase.rpc('upsert_user_page', {
       p_user_id: userId,
       p_slug: slug,
-      p_title: profileBlock?.name || 'My Page',
-      p_description: profileBlock?.bio || null,
+      p_title: profileName || 'My Page',
+      p_description: bioText,
       p_avatar_url: profileBlock?.avatar || null,
-      p_avatar_style: profileBlock?.avatarStyle || { type: 'default', color: '#000000' },
-      p_theme_settings: pageData.theme as any,
-      p_seo_meta: pageData.seo as any,
+      p_avatar_style: { type: 'default', color: '#000000' } as unknown as Json,
+      p_theme_settings: pageData.theme as unknown as Json,
+      p_seo_meta: pageData.seo as unknown as Json,
     });
 
     if (upsertError) {
       console.error('Error upserting page:', upsertError);
-      return { data: null, error: upsertError };
+      return { data: null, error: wrapError(upsertError) };
     }
 
     // Prepare blocks for atomic save
     const blocksData = pageData.blocks.map((block, index) => ({
       type: block.type,
       position: index,
-      title: 'title' in block ? block.title : null,
+      title: extractBlockTitle(block),
       content: JSON.parse(JSON.stringify(block)),
       style: {},
       schedule: 'schedule' in block ? block.schedule : null,
@@ -159,18 +195,18 @@ export async function savePage(
     // Save blocks atomically
     const { error: blocksError } = await supabase.rpc('save_page_blocks', {
       p_page_id: pageId,
-      p_blocks: JSON.parse(JSON.stringify(blocksData)),
+      p_blocks: JSON.parse(JSON.stringify(blocksData)) as Json,
       p_is_premium: pageData.isPremium || false,
     });
 
     if (blocksError) {
       console.error('Error saving blocks:', blocksError);
-      return { data: null, error: blocksError };
+      return { data: null, error: wrapError(blocksError) };
     }
 
     // Save chatbot context if provided
     if (chatbotContext !== undefined) {
-      const { error: contextError } = await supabase.from('private_page_data').upsert(
+      await supabase.from('private_page_data').upsert(
         {
           page_id: pageId,
           chatbot_context: chatbotContext || null,
@@ -178,10 +214,6 @@ export async function savePage(
         },
         { onConflict: 'page_id' }
       );
-
-      if (contextError) {
-        console.error('Error saving chatbot context:', contextError);
-      }
     }
 
     // Fetch and return the saved page
@@ -192,14 +224,13 @@ export async function savePage(
       .single();
 
     if (fetchError) {
-      console.error('Error fetching page after save:', fetchError);
-      return { data: null, error: fetchError };
+      return { data: null, error: wrapError(fetchError) };
     }
 
-    return { data: page, error: null };
+    return { data: page as unknown as DbPage, error: null };
   } catch (error) {
     console.error('Error saving page:', error);
-    return { data: null, error };
+    return { data: null, error: wrapError(error) };
   }
 }
 
@@ -216,30 +247,29 @@ export async function loadPageBySlug(slug: string): Promise<LoadPageResult> {
       .maybeSingle();
 
     if (pageError) {
-      console.error('Error loading page by slug:', pageError);
-      return { data: null, error: pageError };
+      return { data: null, error: wrapError(pageError) };
     }
 
     if (!page) {
       return { data: null, error: new Error('Page not found') };
     }
 
-    // Increment view count
-    await supabase.rpc('increment_view_count', { page_slug: slug });
+    // Increment view count (fire and forget)
+    void supabase.rpc('increment_view_count', { page_slug: slug });
 
+    const blocks = page.blocks as unknown as DbBlock[];
     const pageData: PageData = {
       id: page.id,
       userId: page.user_id,
-      blocks: convertDbBlocksToBlocks(page.blocks as DbBlock[]),
-      theme: page.theme_settings as any,
-      seo: page.seo_meta as any,
-      isPremium: (page.blocks as DbBlock[]).some((b) => b.is_premium),
+      blocks: convertDbBlocksToBlocks(blocks),
+      theme: page.theme_settings as unknown as PageTheme,
+      seo: page.seo_meta as unknown as PageData['seo'],
+      isPremium: blocks.some((b) => b.is_premium),
     };
 
     return { data: pageData, error: null };
   } catch (error) {
-    console.error('Error loading page:', error);
-    return { data: null, error };
+    return { data: null, error: wrapError(error) };
   }
 }
 
@@ -262,7 +292,7 @@ export async function loadUserPage(userId: string): Promise<LoadUserPageResult> 
           error: null,
         };
       }
-      return { data: null, chatbotContext: null, error: pageError };
+      return { data: null, chatbotContext: null, error: wrapError(pageError) };
     }
 
     if (!page) {
@@ -273,31 +303,31 @@ export async function loadUserPage(userId: string): Promise<LoadUserPageResult> 
       };
     }
 
+    const blocks = page.blocks as unknown as DbBlock[];
     const pageData: PageData = {
       id: page.id,
-      blocks: convertDbBlocksToBlocks(page.blocks as DbBlock[]),
-      theme: page.theme_settings as any,
-      seo: page.seo_meta as any,
-      isPremium: (page.blocks as DbBlock[]).some((b) => b.is_premium),
+      blocks: convertDbBlocksToBlocks(blocks),
+      theme: page.theme_settings as unknown as PageTheme,
+      seo: page.seo_meta as unknown as PageData['seo'],
+      isPremium: blocks.some((b) => b.is_premium),
     };
 
     // Extract chatbot context
-    const privateData = page.private_page_data as any;
+    const privateData = page.private_page_data as unknown as { chatbot_context?: string }[] | { chatbot_context?: string } | null;
     const chatbotContext = Array.isArray(privateData)
       ? privateData[0]?.chatbot_context
       : privateData?.chatbot_context;
 
     return { data: pageData, chatbotContext: chatbotContext || null, error: null };
   } catch (error) {
-    console.error('Error loading user page:', error);
-    return { data: null, chatbotContext: null, error };
+    return { data: null, chatbotContext: null, error: wrapError(error) };
   }
 }
 
 /**
  * Publish user's page
  */
-export async function publishPage(userId: string): Promise<{ slug: string | null; error: any }> {
+export async function publishPage(userId: string): Promise<PublishPageResult> {
   try {
     const { data, error } = await supabase
       .from('pages')
@@ -306,13 +336,12 @@ export async function publishPage(userId: string): Promise<{ slug: string | null
       .select('slug')
       .maybeSingle();
 
-    if (error) return { slug: null, error };
+    if (error) return { slug: null, error: wrapError(error) };
     if (!data) return { slug: null, error: new Error('Page not found') };
 
     return { slug: data.slug, error: null };
   } catch (error) {
-    console.error('Error publishing page:', error);
-    return { slug: null, error };
+    return { slug: null, error: wrapError(error) };
   }
 }
 
@@ -323,16 +352,16 @@ export async function trackEvent(
   pageId: string,
   eventType: 'view' | 'click' | 'share',
   blockId?: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): Promise<void> {
   try {
     await supabase.from('analytics').insert({
       page_id: pageId,
       block_id: blockId || null,
       event_type: eventType,
-      metadata: metadata || {},
+      metadata: (metadata || {}) as Json,
     });
   } catch (error) {
-    console.error('Error tracking event:', error);
+    // Silent fail for analytics
   }
 }

@@ -4,13 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Undo2 } from 'lucide-react';
 import { createBlock } from '@/lib/block-factory';
 import { PREMIUM_BLOCK_TYPES, APP_CONFIG } from '@/lib/constants';
-import type { Block } from '@/types/page';
-
-interface DeletedBlockInfo {
-  block: Block;
-  position: number;
-  blockId: string;
-}
+import type { Block, BlockType } from '@/types/page';
+import type { DeletedBlockInfo, BlockInsertResult } from '@/types/blocks';
 
 interface UseBlockEditorOptions {
   isPremium: boolean;
@@ -27,6 +22,12 @@ interface UseBlockEditorOptions {
 
 /**
  * Hook to manage block editing operations with undo support
+ * 
+ * Provides:
+ * - Block insertion with premium checks
+ * - Block editing modal state
+ * - Block deletion with undo capability
+ * - Sound and haptic feedback integration
  */
 export function useBlockEditor({
   isPremium,
@@ -44,23 +45,27 @@ export function useBlockEditor({
   const [editorOpen, setEditorOpen] = useState(false);
   const [deletedBlocks, setDeletedBlocks] = useState<DeletedBlockInfo[]>([]);
 
-  // Check if block type is premium-only
+  /**
+   * Check if block type requires premium subscription
+   */
   const isPremiumBlock = useCallback(
     (blockType: string): boolean => {
-      return PREMIUM_BLOCK_TYPES.includes(blockType as any) && !isPremium;
+      return (PREMIUM_BLOCK_TYPES as readonly string[]).includes(blockType) && !isPremium;
     },
     [isPremium]
   );
 
-  // Insert a new block
+  /**
+   * Insert a new block at specified position
+   */
   const handleInsertBlock = useCallback(
-    (blockType: string, position: number) => {
+    (blockType: string, position: number): BlockInsertResult => {
       try {
         // Check premium requirement
         if (isPremiumBlock(blockType)) {
           toast.error('This block requires Premium');
           playError?.();
-          return false;
+          return { success: false, error: 'Premium required' };
         }
 
         const newBlock = createBlock(blockType);
@@ -68,24 +73,28 @@ export function useBlockEditor({
         playAdd?.();
         toast.success('Block added');
         onBlockHint?.(blockType, newBlock.id);
-        return true;
+        
+        return { success: true, blockId: newBlock.id };
       } catch (error) {
         toast.error('Failed to add block');
         playError?.();
-        console.error('Block insertion error:', error);
-        return false;
+        return { success: false, error: 'Block creation failed' };
       }
     },
     [isPremiumBlock, addBlock, playAdd, playError, onBlockHint]
   );
 
-  // Open block editor
+  /**
+   * Open block editor for a specific block
+   */
   const handleEditBlock = useCallback((block: Block) => {
     setEditingBlock(block);
     setEditorOpen(true);
   }, []);
 
-  // Save block changes
+  /**
+   * Save block changes and close editor
+   */
   const handleSaveBlock = useCallback(
     (updates: Partial<Block>) => {
       if (editingBlock) {
@@ -96,18 +105,24 @@ export function useBlockEditor({
     [editingBlock, updateBlock]
   );
 
-  // Close block editor
+  /**
+   * Close block editor without saving
+   */
   const closeEditor = useCallback(() => {
     setEditorOpen(false);
     setEditingBlock(null);
   }, []);
 
-  // Delete block with undo support
+  /**
+   * Delete block with undo support
+   * Profile blocks cannot be deleted
+   */
   const handleDeleteBlock = useCallback(
     (blockId: string) => {
       const blockIndex = blocks.findIndex((b) => b.id === blockId);
       const block = blocks.find((b) => b.id === blockId);
 
+      // Prevent profile block deletion
       if (!block || block.type === 'profile') return;
 
       // Store for undo
@@ -115,6 +130,7 @@ export function useBlockEditor({
         block,
         position: blockIndex,
         blockId: block.id,
+        deletedAt: Date.now(),
       };
 
       setDeletedBlocks((prev) => [...prev, deletedInfo]);
@@ -128,7 +144,7 @@ export function useBlockEditor({
       deleteBlock(blockId);
       playDelete?.();
 
-      // Show toast with undo
+      // Show toast with undo button
       toast(
         <div className="flex items-center gap-3">
           <span>Block deleted</span>
@@ -154,7 +170,9 @@ export function useBlockEditor({
     [blocks, deleteBlock, addBlock, playDelete, hapticSuccess]
   );
 
-  // Restore last deleted block
+  /**
+   * Restore last deleted block
+   */
   const undoLastDelete = useCallback(() => {
     const lastDeleted = deletedBlocks[deletedBlocks.length - 1];
     if (!lastDeleted) return;
