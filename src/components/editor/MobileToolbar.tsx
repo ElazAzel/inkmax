@@ -12,6 +12,8 @@ import {
   Globe,
   MoreHorizontal,
   X,
+  Grid3X3,
+  List,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,10 +26,12 @@ import {
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { AutoSaveIndicator, type SaveStatus } from './AutoSaveIndicator';
 import { cn } from '@/lib/utils';
+import type { EditorMode } from '@/types/page';
 
 interface MobileToolbarProps {
   saving: boolean;
   saveStatus: SaveStatus;
+  editorMode: EditorMode;
   onSave: () => void;
   onPreview: () => void;
   onShare: () => void;
@@ -36,12 +40,14 @@ interface MobileToolbarProps {
   onOpenTemplates: () => void;
   onOpenAchievements: () => void;
   onOpenCRM: () => void;
+  onToggleEditorMode: () => void;
   achievementCount: number;
 }
 
 export const MobileToolbar = memo(function MobileToolbar({
   saving,
   saveStatus,
+  editorMode,
   onSave,
   onPreview,
   onShare,
@@ -50,6 +56,7 @@ export const MobileToolbar = memo(function MobileToolbar({
   onOpenTemplates,
   onOpenAchievements,
   onOpenCRM,
+  onToggleEditorMode,
   achievementCount,
 }: MobileToolbarProps) {
   const { t } = useTranslation();
@@ -90,7 +97,18 @@ export const MobileToolbar = memo(function MobileToolbar({
     },
   ];
 
+  const isGridMode = editorMode === 'grid';
+
   const moreActions = [
+    {
+      icon: isGridMode ? List : Grid3X3,
+      label: isGridMode ? 'Linear Mode' : 'Grid Mode',
+      description: isGridMode ? 'Switch to linear layout' : 'Switch to grid layout',
+      onClick: () => {
+        setMoreOpen(false);
+        onToggleEditorMode();
+      },
+    },
     {
       icon: Wand2,
       label: 'AI Builder',

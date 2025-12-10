@@ -136,6 +136,7 @@ export default function Dashboard() {
         <MobileToolbar
           saving={dashboard.saving}
           saveStatus={dashboard.saveStatus}
+          editorMode={dashboard.editorMode}
           onSave={dashboard.save}
           onPreview={dashboard.sharingState.handlePreview}
           onShare={dashboard.sharingState.handleShare}
@@ -144,6 +145,7 @@ export default function Dashboard() {
           onOpenTemplates={() => setTemplateGalleryOpen(true)}
           onOpenAchievements={() => setShowAchievements(true)}
           onOpenCRM={() => setShowLeads(true)}
+          onToggleEditorMode={dashboard.toggleEditorMode}
           achievementCount={dashboard.achievements.getProgress().unlocked}
         />
       )}
