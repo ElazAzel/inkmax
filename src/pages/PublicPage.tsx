@@ -8,6 +8,8 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FreemiumWatermark } from '@/components/FreemiumWatermark';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
+import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
+import { trackShare } from '@/services/analytics';
 import { toast } from 'sonner';
 import type { PageData } from '@/types/page';
 import {
@@ -52,7 +54,12 @@ export default function PublicPage() {
     }
   }, [pageData]);
 
-  const handleShare = () => {
+  const handleShare = async () => {
+    // Track share event
+    if (pageData?.id) {
+      trackShare(pageData.id, navigator.share ? 'native' : 'clipboard');
+    }
+    
     if (navigator.share) {
       navigator.share({
         title: pageData?.seo.title || 'Check out my LinkMAX',
@@ -90,19 +97,20 @@ export default function PublicPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Language Switcher - Top Right */}
-      <div className="fixed top-4 right-4 z-50">
-        <LanguageSwitcher />
-      </div>
-
-      <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        {/* Content - Mobile Optimized */}
-        <div className="space-y-3 sm:space-y-4">
-          {pageData.blocks.map(block => (
-            <BlockRenderer key={block.id} block={block} pageOwnerId={pageData?.userId} />
-          ))}
+    <AnalyticsProvider pageId={pageData?.id} enabled={!!slug}>
+      <div className="min-h-screen bg-background">
+        {/* Language Switcher - Top Right */}
+        <div className="fixed top-4 right-4 z-50">
+          <LanguageSwitcher />
         </div>
+
+        <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+          {/* Content - Mobile Optimized */}
+          <div className="space-y-3 sm:space-y-4">
+            {pageData.blocks.map(block => (
+              <BlockRenderer key={block.id} block={block} pageOwnerId={pageData?.userId} />
+            ))}
+          </div>
 
         {/* Share Section - Mobile Optimized */}
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2 justify-center">
@@ -150,8 +158,9 @@ export default function PublicPage() {
         </DialogContent>
       </Dialog>
 
-      {/* AI Chatbot Widget */}
-      {slug && <ChatbotWidget pageSlug={slug} />}
-    </div>
+        {/* AI Chatbot Widget */}
+        {slug && <ChatbotWidget pageSlug={slug} />}
+      </div>
+    </AnalyticsProvider>
   );
 }

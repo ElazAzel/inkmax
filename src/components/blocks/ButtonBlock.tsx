@@ -6,11 +6,12 @@ import type { ButtonBlock as ButtonBlockType } from '@/types/page';
 
 interface ButtonBlockProps {
   block: ButtonBlockType;
+  onClick?: () => void;
 }
 
-export const ButtonBlock = memo(function ButtonBlockComponent({ block }: ButtonBlockProps) {
+export const ButtonBlock = memo(function ButtonBlockComponent({ block, onClick }: ButtonBlockProps) {
   const { i18n } = useTranslation();
-  const handleClick = createBlockClickHandler(block.url);
+  const handleClick = createBlockClickHandler(block.url, onClick);
   const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
 
   const alignmentClass = block.alignment === 'left' ? 'justify-start' 
