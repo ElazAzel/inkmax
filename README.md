@@ -218,16 +218,12 @@ Contributions are welcome! Please follow these guidelines:
 
 ## 📄 License
 
-This project is built with [Lovable](https://lovable.dev) and uses:
 - React (MIT License)
 - Tailwind CSS (MIT License)
 - Supabase (Apache 2.0 License)
 
 ## 🔗 Links
 
-- **Live Demo**: https://linkmax.lovable.app
-- **Documentation**: https://docs.lovable.dev
+- **Live Demo**: https://lnkmx.my
 
----
 
-**Built with ❤️ using [Lovable](https://lovable.dev)**
