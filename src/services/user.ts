@@ -2,6 +2,7 @@
  * User service - handles user profile and authentication-related operations
  */
 import { supabase } from '@/integrations/supabase/client';
+import type { DbUserProfile, PremiumStatusResult, ApiResult } from '@/types/api';
 
 // ============= Types =============
 export interface UserProfile {
@@ -25,6 +26,9 @@ const USERNAME_REGEX = /^[a-z0-9_-]+$/;
 const USERNAME_MIN_LENGTH = 3;
 const USERNAME_MAX_LENGTH = 30;
 
+/**
+ * Validate username format and length
+ */
 export function validateUsername(username: string): { valid: boolean; error?: string } {
   if (!username || username.trim().length === 0) {
     return { valid: false, error: 'Username is required' };
@@ -48,15 +52,26 @@ export function validateUsername(username: string): { valid: boolean; error?: st
   return { valid: true };
 }
 
+// ============= Helper Functions =============
+
+/**
+ * Wrap error in standard Error object
+ */
+function wrapError(error: unknown): Error {
+  if (error instanceof Error) return error;
+  if (typeof error === 'string') return new Error(error);
+  if (error && typeof error === 'object' && 'message' in error) {
+    return new Error(String((error as { message: unknown }).message));
+  }
+  return new Error('Unknown error');
+}
+
 // ============= API Functions =============
 
 /**
  * Load user profile by ID
  */
-export async function loadUserProfile(userId: string): Promise<{
-  data: UserProfile | null;
-  error: any;
-}> {
+export async function loadUserProfile(userId: string): Promise<ApiResult<UserProfile>> {
   try {
     const { data, error } = await supabase
       .from('user_profiles')
@@ -65,14 +80,12 @@ export async function loadUserProfile(userId: string): Promise<{
       .maybeSingle();
 
     if (error && error.code !== 'PGRST116') {
-      console.error('Error loading profile:', error);
-      return { data: null, error };
+      return { data: null, error: wrapError(error) };
     }
 
-    return { data, error: null };
+    return { data: data as UserProfile | null, error: null };
   } catch (error) {
-    console.error('Error loading profile:', error);
-    return { data: null, error };
+    return { data: null, error: wrapError(error) };
   }
 }
 
@@ -121,7 +134,6 @@ export async function updateUsername(
     });
 
     if (profileError) {
-      console.error('Error updating username:', profileError);
       return { success: false, error: 'Failed to update username' };
     }
 
@@ -130,7 +142,6 @@ export async function updateUsername(
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating username:', error);
     return { success: false, error: 'Failed to update username' };
   }
 }
@@ -138,11 +149,7 @@ export async function updateUsername(
 /**
  * Check user's premium status
  */
-export async function checkPremiumStatus(userId: string): Promise<{
-  isPremium: boolean;
-  trialEndsAt: string | null;
-  inTrial: boolean;
-}> {
+export async function checkPremiumStatus(userId: string): Promise<PremiumStatusResult> {
   try {
     const { data, error } = await supabase
       .from('user_profiles')
@@ -161,7 +168,6 @@ export async function checkPremiumStatus(userId: string): Promise<{
 
     return { isPremium, trialEndsAt: data.trial_ends_at, inTrial };
   } catch (error) {
-    console.error('Error checking premium status:', error);
     return { isPremium: false, trialEndsAt: null, inTrial: false };
   }
 }
