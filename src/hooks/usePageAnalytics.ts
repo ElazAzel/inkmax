@@ -42,6 +42,20 @@ export interface AnalyticsSummary {
   monthlyData: TimeSeriesData[];
   viewsChange: number; // % change from previous period
   clicksChange: number;
+  trafficSources: TrafficSource[];
+  deviceBreakdown: DeviceBreakdown;
+}
+
+export interface TrafficSource {
+  source: string;
+  count: number;
+  percentage: number;
+}
+
+export interface DeviceBreakdown {
+  mobile: number;
+  tablet: number;
+  desktop: number;
 }
 
 export type TimePeriod = 'day' | 'week' | 'month' | 'all';
@@ -198,6 +212,33 @@ export function usePageAnalytics() {
       const weeklyData = generateWeeklyData(events, subMonths(now, 3), now);
       const monthlyData = generateMonthlyData(events, subMonths(now, 12), now);
 
+      // Calculate traffic sources
+      const sourceMap = new Map<string, number>();
+      events.filter(e => e.event_type === 'view').forEach(e => {
+        const source = e.metadata?.source || 'direct';
+        sourceMap.set(source, (sourceMap.get(source) || 0) + 1);
+      });
+      const trafficSources: TrafficSource[] = Array.from(sourceMap.entries())
+        .map(([source, count]) => ({
+          source,
+          count,
+          percentage: totalViews > 0 ? (count / totalViews) * 100 : 0,
+        }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
+      // Calculate device breakdown
+      const deviceCounts = { mobile: 0, tablet: 0, desktop: 0 };
+      events.filter(e => e.event_type === 'view').forEach(e => {
+        const device = e.metadata?.device as 'mobile' | 'tablet' | 'desktop' | undefined;
+        if (device && device in deviceCounts) {
+          deviceCounts[device]++;
+        } else {
+          deviceCounts.desktop++; // Default to desktop if unknown
+        }
+      });
+      const deviceBreakdown: DeviceBreakdown = deviceCounts;
+
       setAnalytics({
         totalViews,
         totalClicks,
@@ -210,6 +251,8 @@ export function usePageAnalytics() {
         monthlyData,
         viewsChange,
         clicksChange,
+        trafficSources,
+        deviceBreakdown,
       });
     } catch (error) {
       console.error('Error fetching analytics:', error);

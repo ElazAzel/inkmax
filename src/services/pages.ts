@@ -345,23 +345,5 @@ export async function publishPage(userId: string): Promise<PublishPageResult> {
   }
 }
 
-/**
- * Track analytics event
- */
-export async function trackEvent(
-  pageId: string,
-  eventType: 'view' | 'click' | 'share',
-  blockId?: string,
-  metadata?: Record<string, unknown>
-): Promise<void> {
-  try {
-    await supabase.from('analytics').insert({
-      page_id: pageId,
-      block_id: blockId || null,
-      event_type: eventType,
-      metadata: (metadata || {}) as Json,
-    });
-  } catch (error) {
-    // Silent fail for analytics
-  }
-}
+// Note: trackEvent has been moved to src/services/analytics.ts
+// with enhanced functionality including visitor tracking and metadata enrichment
