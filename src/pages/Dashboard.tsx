@@ -2,24 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { 
-  LogOut, 
-  Save, 
-  Eye, 
-  Upload, 
-  Crown, 
-  Sparkles, 
-  Wand2, 
-  MessageCircle,
-  LayoutTemplate,
-  Trophy,
-  Users,
-  X,
-  Undo2,
-} from 'lucide-react';
+import { Undo2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCloudPageState } from '@/hooks/useCloudPageState';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
@@ -34,10 +17,8 @@ import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { MobileToolbar } from '@/components/editor/MobileToolbar';
 import { MobileSettingsSheet } from '@/components/editor/MobileSettingsSheet';
 import { PullToRefresh } from '@/components/editor/PullToRefresh';
-import { AutoSaveIndicator } from '@/components/editor/AutoSaveIndicator';
 import { BlockEditor } from '@/components/BlockEditor';
 import { AIGenerator } from '@/components/AIGenerator';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 import { NicheOnboarding } from '@/components/onboarding/NicheOnboarding';
@@ -45,12 +26,21 @@ import { AchievementNotification } from '@/components/achievements/AchievementNo
 import { InstallPromptDialog } from '@/components/InstallPromptDialog';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LeadsPanel } from '@/components/crm/LeadsPanel';
-import { Card } from '@/components/ui/card';
+import {
+  DashboardHeader,
+  MobileHeader,
+  SettingsSidebar,
+  LoadingState,
+  ErrorState,
+  BackgroundEffects,
+} from '@/components/dashboard';
 import { createBlock } from '@/lib/block-factory';
-import { openPremiumPurchase } from '@/lib/upgrade-utils';
+import { PREMIUM_BLOCK_TYPES, APP_CONFIG } from '@/lib/constants';
 import { toast } from 'sonner';
 import type { Block, ProfileBlock } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
+
+type AIGeneratorType = 'magic-title' | 'sales-copy' | 'seo' | 'ai-builder';
 
 interface DeletedBlockInfo {
   block: Block;
@@ -68,6 +58,7 @@ export default function Dashboard() {
   const { playAdd, playDelete, playError } = useSoundEffects();
   const isMobile = useIsMobile();
   const haptic = useHapticFeedback();
+
   const {
     pageData,
     chatbotContext,
@@ -81,16 +72,16 @@ export default function Dashboard() {
     updateBlock,
     deleteBlock,
     reorderBlocks,
-    updateTheme,
     refresh,
   } = useCloudPageState();
 
+  // UI State
   const [migrationKey, setMigrationKey] = useState(0);
   const [editingBlock, setEditingBlock] = useState<Block | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [templateGalleryOpen, setTemplateGalleryOpen] = useState(false);
   const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
-  const [aiGeneratorType, setAiGeneratorType] = useState<'magic-title' | 'sales-copy' | 'seo' | 'ai-builder'>('ai-builder');
+  const [aiGeneratorType, setAiGeneratorType] = useState<AIGeneratorType>('ai-builder');
   const [showSettings, setShowSettings] = useState(false);
   const [showMobileSettings, setShowMobileSettings] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -100,66 +91,49 @@ export default function Dashboard() {
   const [usernameInput, setUsernameInput] = useState('');
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState('');
-  
+
   // Undo functionality
   const [lastDeletedBlock, setLastDeletedBlock] = useState<DeletedBlockInfo | null>(null);
   const undoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Handle undo - restore deleted block
-  const handleUndo = useCallback(() => {
-    if (!lastDeletedBlock || !pageData) return;
-    
-    haptic.success();
-    addBlock(lastDeletedBlock.block, lastDeletedBlock.position);
-    setLastDeletedBlock(null);
-    
-    if (undoTimeoutRef.current) {
-      clearTimeout(undoTimeoutRef.current);
-      undoTimeoutRef.current = null;
-    }
-    
-    toast.success('Block restored');
-  }, [lastDeletedBlock, pageData, addBlock, haptic]);
-
   // Handle delete with undo capability
-  const handleDeleteBlock = useCallback((blockId: string) => {
-    if (!pageData) return;
-    
-    const blockIndex = pageData.blocks.findIndex(b => b.id === blockId);
-    const block = pageData.blocks.find(b => b.id === blockId);
-    
-    if (!block || block.type === 'profile') return;
-    
-    // Store for undo
-    setLastDeletedBlock({ block, position: blockIndex });
-    
-    // Clear previous timeout
-    if (undoTimeoutRef.current) {
-      clearTimeout(undoTimeoutRef.current);
-    }
-    
-    // Set timeout to clear undo option
-    undoTimeoutRef.current = setTimeout(() => {
-      setLastDeletedBlock(null);
-      undoTimeoutRef.current = null;
-    }, 5000);
-    
-    // Delete the block
-    deleteBlock(blockId);
-    playDelete();
-    
-    // Show toast with undo button
-    toast(
-      <div className="flex items-center gap-3">
-        <span>Block deleted</span>
-        <Button 
-          size="sm" 
-          variant="outline"
-          className="h-7 px-2 gap-1"
-          onClick={(e) => {
-            e.stopPropagation();
-            // Trigger undo
-            if (block) {
+  const handleDeleteBlock = useCallback(
+    (blockId: string) => {
+      if (!pageData) return;
+
+      const blockIndex = pageData.blocks.findIndex((b) => b.id === blockId);
+      const block = pageData.blocks.find((b) => b.id === blockId);
+
+      if (!block || block.type === 'profile') return;
+
+      // Store for undo
+      setLastDeletedBlock({ block, position: blockIndex });
+
+      // Clear previous timeout
+      if (undoTimeoutRef.current) {
+        clearTimeout(undoTimeoutRef.current);
+      }
+
+      // Set timeout to clear undo option
+      undoTimeoutRef.current = setTimeout(() => {
+        setLastDeletedBlock(null);
+        undoTimeoutRef.current = null;
+      }, APP_CONFIG.undoTimeout);
+
+      // Delete the block
+      deleteBlock(blockId);
+      playDelete();
+
+      // Show toast with undo button
+      toast(
+        <div className="flex items-center gap-3">
+          <span>Block deleted</span>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 px-2 gap-1"
+            onClick={(e) => {
+              e.stopPropagation();
               haptic.success();
               addBlock(block, blockIndex);
               setLastDeletedBlock(null);
@@ -168,27 +142,25 @@ export default function Dashboard() {
                 undoTimeoutRef.current = null;
               }
               toast.success('Block restored');
-            }
-          }}
-        >
-          <Undo2 className="h-3.5 w-3.5" />
-          Undo
-        </Button>
-      </div>,
-      {
-        duration: 5000,
-      }
-    );
-  }, [pageData, deleteBlock, playDelete, addBlock, haptic]);
+            }}
+          >
+            <Undo2 className="h-3.5 w-3.5" />
+            Undo
+          </Button>
+        </div>,
+        { duration: APP_CONFIG.undoTimeout }
+      );
+    },
+    [pageData, deleteBlock, playDelete, addBlock, haptic]
+  );
 
-  // Check achievements whenever blocks or features change
+  // Check achievements
   useEffect(() => {
     if (!pageData || achievements.loading || !user) return;
 
-    const blocksUsed = new Set(pageData.blocks.map(b => b.type));
+    const blocksUsed = new Set(pageData.blocks.map((b) => b.type));
     const featuresUsed = new Set<string>();
-    
-    // Track feature usage
+
     if (chatbotContext && chatbotContext.length > 0) {
       featuresUsed.add('chatbot');
     }
@@ -204,18 +176,18 @@ export default function Dashboard() {
     achievements.checkAchievements(stats);
   }, [pageData, chatbotContext, achievements, user]);
 
-  // Initialize username input
+  // Initialize username
   useEffect(() => {
     if (userProfile.profile?.username) {
       setUsernameInput(userProfile.profile.username);
     }
   }, [userProfile.profile]);
 
-  // Check if user has completed niche onboarding (show first for new users)
+  // Check onboarding
   useEffect(() => {
     const hasCompletedNicheOnboarding = localStorage.getItem('linkmax_niche_onboarding_completed');
     const hasCompletedOnboarding = localStorage.getItem('linkmax_onboarding_completed');
-    
+
     if (!hasCompletedNicheOnboarding && user && pageData) {
       setTimeout(() => setShowNicheOnboarding(true), 500);
     } else if (!hasCompletedOnboarding && user && pageData) {
@@ -223,79 +195,87 @@ export default function Dashboard() {
     }
   }, [user, pageData]);
 
-  // Redirect if not logged in
+  // Auth redirect
   useEffect(() => {
     if (!user && !loading) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
 
-  const handleInsertBlock = (blockType: string, position: number) => {
-    try {
-      const newBlock = createBlock(blockType);
-      
-      const premiumBlocks = ['video', 'carousel', 'custom_code', 'form', 'newsletter', 'testimonial', 'scratch', 'search'];
-      if (premiumBlocks.includes(blockType) && !isPremium) {
-        toast.error('This block requires Premium');
+  // Handlers
+  const handleInsertBlock = useCallback(
+    (blockType: string, position: number) => {
+      try {
+        const newBlock = createBlock(blockType);
+
+        if (PREMIUM_BLOCK_TYPES.includes(blockType as any) && !isPremium) {
+          toast.error('This block requires Premium');
+          playError();
+          return;
+        }
+
+        addBlock(newBlock, position);
+        playAdd();
+        toast.success('Block added');
+        blockHints.showHint(blockType, newBlock.id);
+      } catch (error) {
+        toast.error('Failed to add block');
         playError();
-        return;
+        console.error(error);
       }
+    },
+    [isPremium, addBlock, playAdd, playError, blockHints]
+  );
 
-      addBlock(newBlock, position);
-      playAdd();
-      toast.success('Block added');
-      
-      blockHints.showHint(blockType, newBlock.id);
-    } catch (error) {
-      toast.error('Failed to add block');
-      playError();
-      console.error(error);
-    }
-  };
-
-  const handleEditBlock = (block: Block) => {
+  const handleEditBlock = useCallback((block: Block) => {
     setEditingBlock(block);
     setEditorOpen(true);
-  };
+  }, []);
 
-  const handleSaveBlock = (updates: Partial<Block>) => {
-    if (editingBlock) {
-      updateBlock(editingBlock.id, updates);
-    }
-  };
-
-  const handleApplyTemplate = (blocks: Block[]) => {
-    blocks.forEach((block, index) => {
-      addBlock({ ...block, id: `${block.type}-${Date.now()}-${index}` });
-    });
-    toast.success(`Added ${blocks.length} blocks from template`);
-  };
-
-  const handleAIResult = (result: any) => {
-    if (aiGeneratorType === 'ai-builder') {
-      const { profile, blocks } = result;
-      
-      const profileBlock = pageData?.blocks.find(b => b.type === 'profile');
-      if (profile && profileBlock) {
-        updateBlock(profileBlock.id, { 
-          name: profile.name, 
-          bio: profile.bio 
-        });
+  const handleSaveBlock = useCallback(
+    (updates: Partial<Block>) => {
+      if (editingBlock) {
+        updateBlock(editingBlock.id, updates);
       }
-      
-      blocks.forEach((blockData: any, index: number) => {
-        const newBlock: Block = {
-          id: `${blockData.type}-${Date.now()}-${index}`,
-          ...blockData,
-        };
-        addBlock(newBlock);
-      });
-      
-      toast.success(`Added ${blocks.length} blocks from AI`);
-    }
-  };
+    },
+    [editingBlock, updateBlock]
+  );
 
-  const handleUpdateUsername = async () => {
+  const handleApplyTemplate = useCallback(
+    (blocks: Block[]) => {
+      blocks.forEach((block, index) => {
+        addBlock({ ...block, id: `${block.type}-${Date.now()}-${index}` });
+      });
+      toast.success(`Added ${blocks.length} blocks from template`);
+    },
+    [addBlock]
+  );
+
+  const handleAIResult = useCallback(
+    (result: any) => {
+      if (aiGeneratorType === 'ai-builder') {
+        const { profile, blocks } = result;
+
+        const profileBlock = pageData?.blocks.find((b) => b.type === 'profile');
+        if (profile && profileBlock) {
+          updateBlock(profileBlock.id, { name: profile.name, bio: profile.bio });
+        }
+
+        blocks.forEach((blockData: any, index: number) => {
+          const newBlock: Block = {
+            id: `${blockData.type}-${Date.now()}-${index}`,
+            ...blockData,
+          };
+          addBlock(newBlock);
+        });
+
+        toast.success(`Added ${blocks.length} blocks from AI`);
+      }
+    },
+    [aiGeneratorType, pageData, updateBlock, addBlock]
+  );
+
+  const handleUpdateUsername = useCallback(async () => {
     if (!usernameInput.trim()) {
       toast.error('Please enter a username');
       return;
@@ -305,15 +285,15 @@ export default function Dashboard() {
     if (success) {
       await save();
     }
-  };
+  }, [usernameInput, userProfile, save]);
 
-  const handleShare = async () => {
+  const handleShare = useCallback(async () => {
     const slug = await publish();
     if (slug) {
       const url = `${window.location.origin}/${slug}`;
       navigator.clipboard.writeText(url);
       toast.success('Link copied to clipboard!');
-      
+
       const hasSeenInstallPrompt = localStorage.getItem('linkmax_install_prompt_shown');
       if (!hasSeenInstallPrompt) {
         setPublishedUrl(url);
@@ -321,384 +301,129 @@ export default function Dashboard() {
         localStorage.setItem('linkmax_install_prompt_shown', 'true');
       }
     }
-  };
+  }, [publish]);
 
-  const handlePreview = async () => {
+  const handlePreview = useCallback(async () => {
     await save();
     const slug = await publish();
     if (slug) {
       window.open(`/${slug}`, '_blank');
     }
-  };
+  }, [save, publish]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
     navigate('/');
-  };
+  }, [signOut, navigate]);
 
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = useCallback(() => {
     localStorage.setItem('linkmax_onboarding_completed', 'true');
     setShowOnboarding(false);
     toast.success('Добро пожаловать! Начните создавать свою страницу.');
-  };
+  }, []);
 
-  const handleOnboardingSkip = () => {
+  const handleOnboardingSkip = useCallback(() => {
     localStorage.setItem('linkmax_onboarding_completed', 'true');
     setShowOnboarding(false);
-  };
+  }, []);
 
-  const handleNicheOnboardingComplete = (profile: { name: string; bio: string }, blocks: Block[]) => {
-    const profileBlock = pageData?.blocks.find(b => b.type === 'profile');
-    if (profile && profileBlock) {
-      updateBlock(profileBlock.id, { 
-        name: profile.name, 
-        bio: profile.bio 
-      });
-    }
-    
-    blocks.forEach((block) => {
-      addBlock(block);
-    });
-    
-    setShowNicheOnboarding(false);
-    setTimeout(() => setShowOnboarding(true), 500);
-  };
+  const handleNicheOnboardingComplete = useCallback(
+    (profile: { name: string; bio: string }, blocks: Block[]) => {
+      const profileBlock = pageData?.blocks.find((b) => b.type === 'profile');
+      if (profile && profileBlock) {
+        updateBlock(profileBlock.id, { name: profile.name, bio: profile.bio });
+      }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
-        {/* Mesh gradient background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[120px] animate-morph" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-[100px] animate-morph" style={{ animationDelay: '-5s' }} />
-        </div>
-        <div className="relative text-center p-8 rounded-3xl bg-card/40 backdrop-blur-2xl border border-border/30 shadow-glass-lg">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your page...</p>
-        </div>
-      </div>
-    );
-  }
+      blocks.forEach((block) => addBlock(block));
+      setShowNicheOnboarding(false);
+      setTimeout(() => setShowOnboarding(true), 500);
+    },
+    [pageData, updateBlock, addBlock]
+  );
 
-  if (!pageData) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-destructive/10 to-transparent rounded-full blur-[100px]" />
-        </div>
-        <div className="relative text-center p-8 rounded-3xl bg-card/40 backdrop-blur-2xl border border-border/30 shadow-glass">
-          <p className="text-muted-foreground">Failed to load page</p>
-        </div>
-      </div>
-    );
-  }
+  const handleUpdateProfile = useCallback(
+    (updates: Partial<ProfileBlock>) => {
+      const profileBlock = pageData?.blocks.find((b) => b.type === 'profile');
+      if (profileBlock) {
+        updateBlock(profileBlock.id, updates);
+      }
+    },
+    [pageData, updateBlock]
+  );
 
-  const profileBlock = pageData.blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
+  const openAIBuilder = useCallback(() => {
+    setAiGeneratorType('ai-builder');
+    setAiGeneratorOpen(true);
+  }, []);
+
+  const openSEOGenerator = useCallback(() => {
+    setAiGeneratorType('seo');
+    setAiGeneratorOpen(true);
+  }, []);
+
+  // Loading/Error states
+  if (loading) return <LoadingState />;
+  if (!pageData) return <ErrorState />;
+
+  const profileBlock = pageData.blocks.find((b) => b.type === 'profile') as ProfileBlock | undefined;
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Liquid Glass Mesh Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute -top-40 -right-40 w-[700px] h-[700px] bg-gradient-to-bl from-primary/15 via-violet-500/10 to-transparent rounded-full blur-[130px] animate-morph" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-blue-500/10 via-cyan-500/5 to-transparent rounded-full blur-[120px] animate-morph" style={{ animationDelay: '-7s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-transparent rounded-full blur-[100px] animate-float-slow" />
-      </div>
+      <BackgroundEffects />
 
       {/* Migration Notice */}
       {user && (
-        <LocalStorageMigration 
+        <LocalStorageMigration
           key={migrationKey}
-          userId={user.id} 
+          userId={user.id}
           onMigrated={() => {
-            setMigrationKey(prev => prev + 1);
+            setMigrationKey((prev) => prev + 1);
             window.location.reload();
           }}
         />
       )}
 
-      {/* Desktop Header - Liquid Glass Style */}
-      <header className="sticky top-0 z-50 hidden md:block">
-        <div className="mx-4 mt-3">
-          <div className="backdrop-blur-2xl bg-card/50 border border-border/30 rounded-2xl shadow-glass-lg">
-            <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-3 animate-fade-in">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg" />
-                  <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="relative h-8 w-8 animate-scale-in hover-scale rounded-xl" />
-                </div>
-                <h1 className="text-xl font-bold text-primary">LinkMAX</h1>
-                <AutoSaveIndicator status={saveStatus} />
-              </div>
-          
-              <div className="flex items-center gap-2">
-            {/* AI Tools */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => {
-                setAiGeneratorType('ai-builder');
-                setAiGeneratorOpen(true);
-              }}
-            >
-              <Wand2 className="h-4 w-4 mr-2" />
-              AI Builder
-            </Button>
+      {/* Desktop Header */}
+      <DashboardHeader
+        saving={saving}
+        saveStatus={saveStatus}
+        achievementCount={achievements.getProgress().unlocked}
+        showSettings={showSettings}
+        onToggleSettings={() => setShowSettings(!showSettings)}
+        onSave={save}
+        onPreview={handlePreview}
+        onShare={handleShare}
+        onSignOut={handleSignOut}
+        onOpenAIBuilder={openAIBuilder}
+        onOpenTemplates={() => setTemplateGalleryOpen(true)}
+        onOpenAchievements={() => setShowAchievements(true)}
+        onOpenCRM={() => setShowLeads(true)}
+      />
 
-            {/* Templates */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setTemplateGalleryOpen(true)}
-            >
-              <LayoutTemplate className="h-4 w-4 mr-2" />
-              Templates
-            </Button>
-
-            {/* Language Switcher */}
-            <LanguageSwitcher />
-
-            {/* Settings Toggle */}
-            <Button 
-              variant={showSettings ? "default" : "ghost"} 
-              size="sm"
-              onClick={() => setShowSettings(!showSettings)}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-
-            {/* CRM Button */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setShowLeads(true)}
-            >
-              <Users className="h-4 w-4 mr-2" />
-              CRM
-            </Button>
-
-            {/* Achievements Button */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setShowAchievements(true)}
-              className="relative"
-            >
-              <Trophy className="h-4 w-4 mr-2" />
-              Achievements
-              {achievements.getProgress().unlocked > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-bold flex items-center justify-center text-primary-foreground">
-                  {achievements.getProgress().unlocked}
-                </span>
-              )}
-            </Button>
-
-            <div className="h-6 w-px bg-border/50" />
-
-            {/* Save */}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={save} 
-              disabled={saving}
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {saving ? 'Saving...' : 'Save'}
-            </Button>
-
-            {/* Preview */}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handlePreview}
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              Preview
-            </Button>
-
-            {/* Publish/Share */}
-            <Button size="sm" onClick={handleShare} data-onboarding="share-button">
-              <Upload className="h-4 w-4 mr-2" />
-              Share
-            </Button>
-
-            <div className="h-6 w-px bg-border/50" />
-
-            {/* Sign Out */}
-            <Button variant="ghost" size="sm" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive">
-              <LogOut className="h-4 w-4" />
-            </Button>
-            </div>
-          </div>
-        </div>
-        </div>
-      </header>
-
-      {/* Mobile Header - Liquid Glass */}
-      <header className="sticky top-0 z-50 md:hidden">
-        <div className="mx-3 mt-2">
-          <div className="backdrop-blur-2xl bg-card/50 border border-border/30 rounded-2xl shadow-glass px-4 h-12 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 rounded-lg blur-md" />
-                <img src="/pwa-maskable-512x512.png" alt="LinkMAX" className="relative h-7 w-7 rounded-lg" />
-              </div>
-              <h1 className="text-lg font-bold text-primary">LinkMAX</h1>
-            </div>
-            <Button variant="ghost" size="icon" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive">
-              <LogOut className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Mobile Header */}
+      <MobileHeader onSignOut={handleSignOut} />
 
       {/* Main Content */}
       <div className="relative">
-        {/* Desktop Settings Sidebar - Liquid Glass */}
-        {showSettings && !isMobile && (
-          <div className="fixed left-4 top-20 bottom-4 w-80 bg-card/50 backdrop-blur-2xl border border-border/30 rounded-2xl shadow-glass-lg z-40 overflow-y-auto hidden md:block">
-            <div className="p-6 space-y-6">
-              {/* Close Button */}
-              <div className="flex justify-end">
-                <Button variant="ghost" size="icon" onClick={() => setShowSettings(false)} className="hover:bg-foreground/5">
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+        {/* Settings Sidebar */}
+        <SettingsSidebar
+          show={showSettings && !isMobile}
+          onClose={() => setShowSettings(false)}
+          usernameInput={usernameInput}
+          onUsernameChange={setUsernameInput}
+          onUpdateUsername={handleUpdateUsername}
+          usernameSaving={userProfile.saving}
+          profileBlock={profileBlock}
+          onUpdateProfile={handleUpdateProfile}
+          isPremium={isPremium}
+          premiumLoading={premiumLoading}
+          chatbotContext={chatbotContext}
+          onChatbotContextChange={setChatbotContext}
+          onSave={save}
+          onOpenSEOGenerator={openSEOGenerator}
+        />
 
-              {/* Username Settings */}
-              <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
-                <h3 className="font-semibold mb-4">Your Link</h3>
-                <div className="space-y-3">
-                  <div>
-                    <Label>Username</Label>
-                    <div className="flex gap-2 mt-1">
-                      <Input
-                        value={usernameInput}
-                        onChange={(e) => setUsernameInput(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
-                        placeholder="username"
-                        maxLength={30}
-                        disabled={userProfile.saving}
-                        className="bg-background/50"
-                      />
-                      <Button 
-                        size="sm" 
-                        onClick={handleUpdateUsername}
-                        disabled={userProfile.saving || !usernameInput.trim()}
-                      >
-                        {userProfile.saving ? '...' : 'Save'}
-                      </Button>
-                    </div>
-                    {usernameInput && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Your link: {window.location.origin}/{usernameInput}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </Card>
-
-              {/* Profile Settings */}
-              {profileBlock && (
-                <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
-                  <h3 className="font-semibold mb-4">Profile</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <Label>Name</Label>
-                      <Input
-                        value={typeof profileBlock.name === 'string' ? profileBlock.name : profileBlock.name?.ru || ''}
-                        onChange={(e) => updateBlock(profileBlock.id, { name: e.target.value })}
-                        className="bg-background/50"
-                      />
-                    </div>
-                    <div>
-                      <Label>Bio</Label>
-                      <Textarea
-                        value={typeof profileBlock.bio === 'string' ? profileBlock.bio : profileBlock.bio?.ru || ''}
-                        onChange={(e) => updateBlock(profileBlock.id, { bio: e.target.value })}
-                        rows={3}
-                        className="bg-background/50"
-                      />
-                    </div>
-                  </div>
-                </Card>
-              )}
-
-              {/* Premium Status */}
-              {!premiumLoading && (
-                <Card className={`p-4 backdrop-blur-xl border-border/30 ${isPremium ? 'bg-primary/10' : 'bg-card/60'}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className={`p-1.5 rounded-lg ${isPremium ? 'bg-primary/20' : 'bg-muted'}`}>
-                      <Crown className={`h-4 w-4 ${isPremium ? 'text-primary' : 'text-muted-foreground'}`} />
-                    </div>
-                    <span className="font-semibold">
-                      {isPremium ? 'Premium Active' : 'Free Plan'}
-                    </span>
-                  </div>
-                  {!isPremium && (
-                    <>
-                      <p className="text-xs text-muted-foreground mb-3">
-                        Upgrade to unlock all blocks and features
-                      </p>
-                      <Button 
-                        size="sm" 
-                        onClick={openPremiumPurchase}
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/25"
-                      >
-                        <Crown className="h-3.5 w-3.5 mr-1.5" />
-                        Upgrade to Premium
-                      </Button>
-                    </>
-                  )}
-                </Card>
-              )}
-
-              {/* Chatbot Settings */}
-              <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="p-1.5 rounded-lg bg-blue-500/10">
-                    <MessageCircle className="h-4 w-4 text-blue-500" />
-                  </div>
-                  <h3 className="font-semibold">AI Chatbot Context</h3>
-                </div>
-                <div className="space-y-2">
-                  <Label>Hidden Information</Label>
-                  <Textarea
-                    value={chatbotContext}
-                    onChange={(e) => setChatbotContext(e.target.value)}
-                    onBlur={save}
-                    placeholder="Add context for the AI chatbot..."
-                    rows={6}
-                    className="text-sm bg-background/50"
-                  />
-                </div>
-              </Card>
-
-              {/* AI Tools */}
-              <Card className="p-4 bg-gradient-to-br from-primary/10 via-violet-500/5 to-blue-500/10 backdrop-blur-xl border-primary/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="p-1.5 rounded-lg bg-primary/20">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">AI Tools</h3>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full justify-start bg-background/50 hover:bg-background/70"
-                  onClick={() => {
-                    setAiGeneratorType('seo');
-                    setAiGeneratorOpen(true);
-                  }}
-                >
-                  <Sparkles className="h-3 w-3 mr-2" />
-                  SEO Generator
-                </Button>
-              </Card>
-            </div>
-          </div>
-        )}
-
-        {/* Preview Editor with Pull to Refresh */}
+        {/* Preview Editor */}
         <div className={`transition-all duration-300 ${showSettings && !isMobile ? 'md:ml-80' : ''}`}>
           <PullToRefresh
             onRefresh={async () => {
@@ -735,10 +460,7 @@ export default function Dashboard() {
           onPreview={handlePreview}
           onShare={handleShare}
           onOpenSettings={() => setShowMobileSettings(true)}
-          onOpenAIBuilder={() => {
-            setAiGeneratorType('ai-builder');
-            setAiGeneratorOpen(true);
-          }}
+          onOpenAIBuilder={openAIBuilder}
           onOpenTemplates={() => setTemplateGalleryOpen(true)}
           onOpenAchievements={() => setShowAchievements(true)}
           onOpenCRM={() => setShowLeads(true)}
@@ -755,20 +477,13 @@ export default function Dashboard() {
         onUpdateUsername={handleUpdateUsername}
         usernameSaving={userProfile.saving}
         profileBlock={profileBlock}
-        onUpdateProfile={(updates) => {
-          if (profileBlock) {
-            updateBlock(profileBlock.id, updates);
-          }
-        }}
+        onUpdateProfile={handleUpdateProfile}
         isPremium={isPremium}
         premiumLoading={premiumLoading}
         chatbotContext={chatbotContext}
         onChatbotContextChange={setChatbotContext}
         onSave={save}
-        onOpenSEOGenerator={() => {
-          setAiGeneratorType('seo');
-          setAiGeneratorOpen(true);
-        }}
+        onOpenSEOGenerator={openSEOGenerator}
         onSignOut={handleSignOut}
       />
 
@@ -811,10 +526,7 @@ export default function Dashboard() {
 
       {/* Onboarding Tour */}
       {showOnboarding && (
-        <OnboardingTour
-          onComplete={handleOnboardingComplete}
-          onSkip={handleOnboardingSkip}
-        />
+        <OnboardingTour onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} />
       )}
 
       {/* Achievement Notification */}
@@ -826,9 +538,7 @@ export default function Dashboard() {
       )}
 
       {/* Achievements Panel */}
-      {showAchievements && (
-        <AchievementsPanel onClose={() => setShowAchievements(false)} />
-      )}
+      {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
 
       {/* Leads Panel (CRM) */}
       <LeadsPanel open={showLeads} onOpenChange={setShowLeads} />
