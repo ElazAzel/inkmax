@@ -198,61 +198,67 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* Liquid Glass Mesh Background */}
+      {/* Enhanced Liquid Glass Mesh Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Primary mesh gradient orbs */}
-        <div className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[150px] animate-morph" />
-        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-[120px] animate-morph" style={{ animationDelay: '-5s' }} />
-        <div className="absolute bottom-0 left-1/4 w-[700px] h-[700px] bg-gradient-to-tr from-purple-500/15 via-pink-500/10 to-transparent rounded-full blur-[130px] animate-morph" style={{ animationDelay: '-10s' }} />
-        <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-gradient-to-l from-emerald-500/10 via-teal-500/5 to-transparent rounded-full blur-[100px] animate-float-slow" />
+        {/* Primary mesh gradient orbs - larger and more vibrant */}
+        <div className="absolute -top-60 -left-60 w-[1000px] h-[1000px] bg-gradient-to-br from-primary/25 via-violet-500/15 to-transparent rounded-full blur-[180px] animate-morph" />
+        <div className="absolute top-1/4 -right-40 w-[800px] h-[800px] bg-gradient-to-bl from-blue-500/20 via-cyan-500/15 to-transparent rounded-full blur-[150px] animate-morph" style={{ animationDelay: '-5s' }} />
+        <div className="absolute -bottom-40 left-1/4 w-[900px] h-[900px] bg-gradient-to-tr from-purple-500/20 via-pink-500/15 to-transparent rounded-full blur-[160px] animate-morph" style={{ animationDelay: '-10s' }} />
+        <div className="absolute top-1/2 right-1/4 w-[600px] h-[600px] bg-gradient-to-l from-emerald-500/15 via-teal-500/10 to-transparent rounded-full blur-[120px] animate-float-slow" />
+        
+        {/* Additional accent orbs for depth */}
+        <div className="absolute top-[60%] left-[10%] w-[400px] h-[400px] bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-transparent rounded-full blur-[100px] animate-float" style={{ animationDelay: '-3s' }} />
+        <div className="absolute top-[20%] right-[5%] w-[300px] h-[300px] bg-gradient-to-l from-rose-500/10 via-pink-500/5 to-transparent rounded-full blur-[80px] animate-float" style={{ animationDelay: '-7s' }} />
         
         {/* Subtle grid pattern overlay */}
         <div 
-          className="absolute inset-0 opacity-[0.02]"
+          className="absolute inset-0 opacity-[0.015]"
           style={{
             backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
+            backgroundSize: '80px 80px'
           }}
         />
         
-        {/* Floating glass orbs */}
-        <div className="absolute top-20 left-[15%] w-4 h-4 bg-primary/30 rounded-full blur-sm animate-float" style={{ animationDelay: '0s' }} />
-        <div className="absolute top-40 right-[20%] w-3 h-3 bg-blue-400/30 rounded-full blur-sm animate-float" style={{ animationDelay: '-2s' }} />
-        <div className="absolute bottom-32 left-[30%] w-5 h-5 bg-purple-400/25 rounded-full blur-sm animate-float" style={{ animationDelay: '-4s' }} />
+        {/* Floating glass orbs - more scattered */}
+        <div className="absolute top-[15%] left-[10%] w-5 h-5 bg-primary/40 rounded-full blur-sm animate-float" style={{ animationDelay: '0s' }} />
+        <div className="absolute top-[25%] right-[15%] w-4 h-4 bg-blue-400/40 rounded-full blur-sm animate-float" style={{ animationDelay: '-2s' }} />
+        <div className="absolute bottom-[20%] left-[25%] w-6 h-6 bg-purple-400/35 rounded-full blur-sm animate-float" style={{ animationDelay: '-4s' }} />
+        <div className="absolute top-[45%] left-[5%] w-3 h-3 bg-emerald-400/30 rounded-full blur-sm animate-float" style={{ animationDelay: '-1s' }} />
+        <div className="absolute bottom-[35%] right-[10%] w-4 h-4 bg-pink-400/35 rounded-full blur-sm animate-float" style={{ animationDelay: '-5s' }} />
       </div>
 
-      {/* Liquid Glass Navigation */}
+      {/* Liquid Glass Navigation - more refined */}
       <nav className="fixed top-0 left-0 right-0 z-50 animate-fade-in">
-        <div className="mx-4 sm:mx-6 mt-4">
-          <div className="backdrop-blur-2xl bg-card/60 border border-border/30 rounded-2xl shadow-glass-lg">
-            <div className="container mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-              <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="mx-3 sm:mx-6 mt-3 sm:mt-4">
+          <div className="backdrop-blur-2xl bg-card/70 border border-border/40 rounded-2xl shadow-glass-lg">
+            <div className="container mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 sm:gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:blur-xl transition-all" />
+                  <div className="absolute inset-0 bg-primary/30 rounded-xl blur-lg group-hover:blur-xl group-hover:bg-primary/40 transition-all duration-500" />
                   <img 
                     src="/pwa-maskable-512x512.png" 
                     alt="LinkMAX" 
-                    className="relative h-9 w-9 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300" 
+                    className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300" 
                   />
-                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full animate-glow-pulse shadow-lg shadow-primary/50" />
+                  <div className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 bg-primary rounded-full animate-glow-pulse shadow-lg shadow-primary/50" />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-foreground">
+                <span className="text-lg sm:text-xl font-bold tracking-tight text-foreground">
                   Link<span className="text-gradient">MAX</span>
                 </span>
               </div>
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-1.5 sm:gap-3">
                 <LanguageSwitcher />
                 <Button 
                   variant="ghost" 
                   onClick={() => navigate('/auth')}
-                  className="hidden sm:inline-flex font-medium hover:bg-foreground/5 backdrop-blur-sm"
+                  className="hidden sm:inline-flex font-medium hover:bg-foreground/5 backdrop-blur-sm rounded-xl"
                   size="sm"
                 >
                   {t('landing.nav.signIn')}
                 </Button>
                 <Button 
                   onClick={() => navigate('/auth')}
-                  className="rounded-xl font-medium shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 bg-primary/90 backdrop-blur-sm"
+                  className="rounded-xl font-medium shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 bg-primary/90 backdrop-blur-sm text-sm sm:text-base px-3 sm:px-4"
                   size="sm"
                 >
                   {t('landing.nav.getStarted')}
@@ -263,83 +269,91 @@ export default function Index() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section ref={heroSection.ref} className="relative pt-28 sm:pt-36 pb-16 sm:pb-24 px-4">
+      {/* Hero Section - Enhanced */}
+      <section ref={heroSection.ref} className="relative pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24 px-4">
         {/* 3D Background - Hidden on mobile for performance */}
         <div className="hidden lg:block">
           <Suspense fallback={null}>
             <Hero3D />
           </Suspense>
         </div>
-        <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
             {/* Text content */}
-            <div className="text-center lg:text-left space-y-6 sm:space-y-8">
-              {/* Badge */}
+            <div className="text-center lg:text-left space-y-5 sm:space-y-7">
+              {/* Badge - more prominent */}
               <div 
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${heroSection.isVisible ? 'animate-fade-in' : ''}`}
+                className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/15 via-violet-500/10 to-primary/15 border border-primary/25 text-sm font-semibold opacity-0 ${heroSection.isVisible ? 'animate-fade-in' : ''}`}
               >
-                <Sparkles className="h-4 w-4 text-primary animate-wiggle" />
+                <div className="relative">
+                  <Sparkles className="h-4 w-4 text-primary animate-wiggle" />
+                  <div className="absolute inset-0 bg-primary/50 rounded-full blur-md" />
+                </div>
                 <span className="text-primary">{t('landing.hero.badge')}</span>
+                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
               </div>
               
-              {/* Main heading */}
+              {/* Main heading - bigger and bolder */}
               <h1 
-                className={`text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] opacity-0 ${heroSection.isVisible ? 'animate-blur-in' : ''}`}
+                className={`text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] opacity-0 ${heroSection.isVisible ? 'animate-blur-in' : ''}`}
                 style={{ animationDelay: '150ms' }}
               >
                 {t('landing.hero.title1')}
                 <br />
-                <span className="text-gradient bg-[length:200%_auto] animate-gradient-x">{t('landing.hero.title2')}</span>
+                <span className="text-gradient bg-[length:200%_auto] animate-gradient-x inline-block mt-1">{t('landing.hero.title2')}</span>
               </h1>
               
-              {/* Subtitle */}
+              {/* Subtitle - cleaner */}
               <p 
-                className={`text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                className={`text-lg sm:text-xl lg:text-2xl text-muted-foreground/90 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
                 style={{ animationDelay: '300ms' }}
               >
                 {t('landing.hero.subtitle')}
               </p>
               
-              {/* CTA Buttons */}
+              {/* CTA Buttons - larger with better effects */}
               <div 
-                className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-3 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
                 style={{ animationDelay: '450ms' }}
               >
                 <Button 
                   size="lg" 
                   onClick={() => navigate('/auth')} 
-                  className="text-lg px-8 py-6 rounded-2xl font-semibold shadow-xl shadow-primary/25 hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-1 group"
+                  className="text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 rounded-2xl font-bold shadow-2xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 hover:-translate-y-1.5 group relative overflow-hidden"
                 >
-                  {t('landing.hero.ctaMain')}
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-blue-500 to-primary bg-[length:200%_100%] animate-gradient-x opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="relative flex items-center">
+                    {t('landing.hero.ctaMain')}
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1.5" />
+                  </span>
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="text-lg px-8 py-6 rounded-2xl font-medium bg-background/50 backdrop-blur-sm hover:bg-accent transition-all duration-300 group"
+                  className="text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 rounded-2xl font-semibold bg-background/60 backdrop-blur-xl hover:bg-accent border-border/50 hover:border-primary/30 transition-all duration-300 group"
                   onClick={() => navigate('/dashboard')}
                 >
-                  <Play className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                  <Play className="mr-2 h-5 w-5 transition-transform group-hover:scale-125 group-hover:text-primary" />
                   {t('landing.hero.ctaDemo')}
                 </Button>
               </div>
 
-              {/* Trust badge */}
+              {/* Trust badge - enhanced */}
               <div 
-                className={`flex items-center justify-center lg:justify-start gap-3 text-sm text-muted-foreground pt-2 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                className={`flex items-center justify-center lg:justify-start gap-4 text-sm text-muted-foreground pt-3 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
                 style={{ animationDelay: '600ms' }}
               >
-                <div className="flex -space-x-1">
+                <div className="flex -space-x-0.5">
                   {[...Array(5)].map((_, i) => (
                     <Star 
                       key={i} 
-                      className="h-4 w-4 text-amber-400 fill-amber-400" 
+                      className="h-5 w-5 text-amber-400 fill-amber-400 drop-shadow-sm" 
                       style={{ animationDelay: `${700 + i * 100}ms` }}
                     />
                   ))}
                 </div>
-                <span>{t('landing.hero.trial')}</span>
+                <div className="h-5 w-px bg-border/50" />
+                <span className="font-medium">{t('landing.hero.trial')}</span>
               </div>
             </div>
 
@@ -349,129 +363,134 @@ export default function Index() {
               style={{ animationDelay: '300ms' }}
             >
               <div className="relative">
-                {/* Floating elements */}
-                <div className="absolute -top-6 -left-8 p-3 rounded-2xl bg-card border border-border/50 shadow-xl animate-float z-10">
-                  <div className="flex items-center gap-2">
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center animate-pulse-glow">
+                {/* Floating elements - enhanced */}
+                <div className="absolute -top-8 -left-10 p-3.5 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-10">
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
                       <Sparkles className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-semibold">AI Ready</span>
+                      <span className="text-sm font-bold">AI Ready</span>
                       <div className="text-xs text-muted-foreground">Auto-generate</div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="absolute -bottom-4 -left-10 p-3 rounded-2xl bg-card border border-border/50 shadow-xl animate-float z-10" style={{ animationDelay: '1s' }}>
-                  <div className="flex items-center gap-2">
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+                <div className="absolute -bottom-6 -left-12 p-3.5 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-10" style={{ animationDelay: '1s' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                       <TrendingUp className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-semibold text-emerald-500">+247%</span>
+                      <span className="text-sm font-bold text-emerald-500">+247%</span>
                       <div className="text-xs text-muted-foreground">Clicks</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute top-1/3 -right-6 p-3 rounded-2xl bg-card border border-border/50 shadow-xl animate-float z-10" style={{ animationDelay: '2s' }}>
-                  <div className="flex items-center gap-2">
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                <div className="absolute top-1/3 -right-8 p-3.5 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-10" style={{ animationDelay: '2s' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-lg shadow-pink-500/30">
                       <Users className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-semibold">1.2k</span>
+                      <span className="text-sm font-bold">1.2k</span>
                       <div className="text-xs text-muted-foreground">Visitors</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Phone frame with glass effect */}
-                <div className="relative w-[280px] sm:w-[320px] h-[560px] sm:h-[640px] bg-foreground/90 backdrop-blur-xl rounded-[3rem] p-3 shadow-2xl border border-foreground/20">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-foreground/90 rounded-b-2xl z-10" />
+                {/* Phone frame with glass effect - refined */}
+                <div className="relative w-[280px] sm:w-[340px] h-[560px] sm:h-[680px] bg-foreground/95 backdrop-blur-xl rounded-[3rem] p-2.5 sm:p-3 shadow-2xl border border-foreground/10">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 sm:w-32 h-6 sm:h-7 bg-foreground rounded-b-2xl z-10 flex items-center justify-center">
+                    <div className="w-16 h-1.5 bg-foreground/50 rounded-full" />
+                  </div>
                   
-                  <div className="relative h-full w-full bg-background/80 backdrop-blur-xl rounded-[2.25rem] overflow-hidden border border-border/20">
+                  <div className="relative h-full w-full bg-background rounded-[2.5rem] overflow-hidden border border-border/10">
                     {/* Shimmer effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent animate-[shimmer_2s_infinite] opacity-50" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-[shimmer_3s_infinite] opacity-60" />
                     
-                    <div className="p-4 space-y-4">
-                      <div className="pt-10 flex flex-col items-center space-y-3">
+                    <div className="p-5 space-y-4">
+                      <div className="pt-10 flex flex-col items-center space-y-4">
                         <div className="relative">
-                          <div className="h-20 w-20 rounded-full bg-gradient-to-br from-primary to-blue-600 p-0.5 animate-pulse-glow">
+                          <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary via-blue-500 to-primary p-0.5 animate-pulse-glow shadow-xl shadow-primary/30">
                             <div className="h-full w-full rounded-full bg-card flex items-center justify-center">
-                              <span className="text-2xl">👤</span>
+                              <span className="text-3xl">👤</span>
                             </div>
                           </div>
-                          <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                            <Check className="h-3 w-3 text-white" />
+                          <div className="absolute -bottom-1 -right-1 h-7 w-7 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/50 border-2 border-background">
+                            <Check className="h-3.5 w-3.5 text-white" />
                           </div>
                         </div>
-                        <div className="text-center">
-                          <h3 className="font-bold text-lg">Alex Creator</h3>
-                          <p className="text-sm text-muted-foreground">Digital Artist</p>
+                        <div className="text-center space-y-1">
+                          <h3 className="font-bold text-xl">Alex Creator</h3>
+                          <p className="text-sm text-muted-foreground font-medium">Digital Artist & Designer</p>
                         </div>
                       </div>
 
-                      <div className="space-y-3 pt-2">
-                        <div className="p-4 rounded-2xl bg-gradient-to-r from-primary to-blue-600 text-white text-center font-medium shadow-lg hover:scale-[1.02] transition-transform cursor-pointer">
+                      <div className="space-y-3 pt-3">
+                        <div className="p-4 rounded-2xl bg-gradient-to-r from-primary via-blue-500 to-primary text-white text-center font-semibold shadow-lg shadow-primary/30 hover:scale-[1.02] transition-transform cursor-pointer">
                           🎨 My Portfolio
                         </div>
-                        <div className="p-4 rounded-2xl bg-card border border-border text-center font-medium hover:border-primary/50 hover:scale-[1.02] transition-all cursor-pointer">
+                        <div className="p-4 rounded-2xl bg-card/80 backdrop-blur border border-border/50 text-center font-medium hover:border-primary/40 hover:scale-[1.02] transition-all cursor-pointer">
                           📸 Instagram
                         </div>
-                        <div className="p-4 rounded-2xl bg-card border border-border text-center font-medium hover:border-primary/50 hover:scale-[1.02] transition-all cursor-pointer">
+                        <div className="p-4 rounded-2xl bg-card/80 backdrop-blur border border-border/50 text-center font-medium hover:border-primary/40 hover:scale-[1.02] transition-all cursor-pointer">
                           🎥 YouTube
                         </div>
-                        <div className="grid grid-cols-3 gap-2">
-                          <div className="aspect-square rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white text-xl hover:scale-105 transition-transform cursor-pointer">📱</div>
-                          <div className="aspect-square rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xl hover:scale-105 transition-transform cursor-pointer">💬</div>
-                          <div className="aspect-square rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-xl hover:scale-105 transition-transform cursor-pointer">✉️</div>
+                        <div className="grid grid-cols-3 gap-2.5">
+                          <div className="aspect-square rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white text-xl hover:scale-110 transition-transform cursor-pointer shadow-md shadow-pink-500/20">📱</div>
+                          <div className="aspect-square rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xl hover:scale-110 transition-transform cursor-pointer shadow-md shadow-blue-500/20">💬</div>
+                          <div className="aspect-square rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-xl hover:scale-110 transition-transform cursor-pointer shadow-md shadow-violet-500/20">✉️</div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Glow effect */}
-                <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/30 via-blue-500/20 to-purple-500/30 rounded-[3rem] blur-3xl opacity-50 animate-pulse-glow" />
+                {/* Glow effect - enhanced */}
+                <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/40 via-blue-500/30 to-purple-500/40 rounded-[3rem] blur-[60px] opacity-60 animate-pulse-glow" />
               </div>
             </div>
           </div>
 
-          {/* Showcase features bar */}
+          {/* Showcase features bar - enhanced */}
           <div 
-            className={`flex flex-wrap justify-center gap-3 sm:gap-6 mt-16 sm:mt-20 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
+            className={`flex flex-wrap justify-center gap-2.5 sm:gap-4 mt-12 sm:mt-16 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
             style={{ animationDelay: '750ms' }}
           >
             {showcaseFeatures.map((feature, index) => (
               <div 
                 key={index}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/40 backdrop-blur-xl border border-border/30 hover:border-primary/40 hover:bg-card/60 hover:shadow-glass transition-all duration-300 cursor-default group"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-card/60 backdrop-blur-2xl border border-border/40 hover:border-primary/50 hover:bg-card/80 hover:shadow-glass transition-all duration-300 cursor-default group"
               >
-                <feature.icon className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium">{feature.label}</span>
+                <div className="relative">
+                  <feature.icon className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+                  <div className="absolute inset-0 bg-primary/30 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <span className="text-sm font-semibold">{feature.label}</span>
               </div>
             ))}
           </div>
 
-          {/* Stats */}
+          {/* Stats - enhanced with better cards */}
           <div 
-            className={`grid grid-cols-3 gap-4 max-w-lg mx-auto mt-12 sm:mt-16 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
+            className={`grid grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto mt-10 sm:mt-14 opacity-0 ${heroSection.isVisible ? 'animate-fade-in-up' : ''}`}
             style={{ animationDelay: '900ms' }}
           >
             {stats.map((stat, index) => (
               <div 
                 key={index}
-                className="text-center p-4 sm:p-6 rounded-2xl bg-card/40 backdrop-blur-2xl border border-border/30 hover:border-primary/40 hover:shadow-glass-lg transition-all duration-500 group"
+                className="text-center p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl bg-card/60 backdrop-blur-2xl border border-border/40 hover:border-primary/50 hover:shadow-glass-lg transition-all duration-500 group"
               >
-                <div className="text-3xl sm:text-4xl font-bold text-primary group-hover:scale-110 transition-transform">
+                <div className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gradient group-hover:scale-105 transition-transform">
                   {typeof stat.value === 'number' ? (
                     <AnimatedCounter end={stat.value} suffix={stat.suffix} />
                   ) : (
                     <>{stat.value}</>
                   )}
                 </div>
-                <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+                <div className="text-xs sm:text-sm font-medium text-muted-foreground mt-1.5">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -517,24 +536,29 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Solutions Section */}
-      <section ref={solutionsSection.ref} className="py-20 sm:py-28 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12 sm:mb-16 space-y-4">
+      {/* Solutions Section - Enhanced */}
+      <section ref={solutionsSection.ref} className="py-20 sm:py-32 px-4 relative">
+        {/* Background accent */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/5 via-transparent to-transparent rounded-full" />
+        </div>
+        
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <div className="text-center mb-12 sm:mb-20 space-y-5">
             <div 
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in' : ''}`}
+              className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/15 via-violet-500/10 to-primary/15 border border-primary/25 text-sm font-semibold opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in' : ''}`}
             >
-              <Sparkles className="h-4 w-4 text-primary" />
+              <Sparkles className="h-4 w-4 text-primary animate-wiggle" />
               <span className="text-primary">LinkMAX</span>
             </div>
             <h2 
-              className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${solutionsSection.isVisible ? 'animate-blur-in' : ''}`}
+              className={`text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight opacity-0 ${solutionsSection.isVisible ? 'animate-blur-in' : ''}`}
               style={{ animationDelay: '150ms' }}
             >
               {t('landing.solutions.title')}
             </h2>
             <p 
-              className={`text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              className={`text-lg sm:text-xl text-muted-foreground/90 max-w-2xl mx-auto font-medium opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
               style={{ animationDelay: '300ms' }}
             >
               {t('landing.solutions.subtitle')}
@@ -545,19 +569,21 @@ export default function Index() {
             {solutions.map((solution, index) => (
               <div 
                 key={index}
-                className={`group relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-primary/40 transition-all duration-500 hover:shadow-glass-lg hover:-translate-y-2 opacity-0 ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
+                className={`group relative p-6 sm:p-8 rounded-3xl bg-card/60 backdrop-blur-2xl border border-border/40 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-3 opacity-0 overflow-hidden ${solutionsSection.isVisible ? 'animate-fade-in-up' : ''}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Glass highlight */}
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/15 to-transparent" />
                 
-                <div className={`relative h-14 w-14 rounded-2xl bg-gradient-to-br ${solution.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                {/* Hover glow */}
+                <div className={`absolute -inset-px rounded-3xl bg-gradient-to-br ${solution.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                
+                <div className={`relative h-14 w-14 rounded-2xl bg-gradient-to-br ${solution.gradient} flex items-center justify-center mb-5 shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                   <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <solution.icon className="relative h-7 w-7 text-white" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">{solution.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{solution.description}</p>
-                <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${solution.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`} />
+                <h3 className="relative text-lg sm:text-xl font-bold mb-2">{solution.title}</h3>
+                <p className="relative text-muted-foreground leading-relaxed">{solution.description}</p>
               </div>
             ))}
           </div>
@@ -864,40 +890,47 @@ export default function Index() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section ref={ctaSection.ref} className="py-20 sm:py-28 px-4">
-        <div className="container mx-auto max-w-4xl">
+      {/* CTA Section - Enhanced */}
+      <section ref={ctaSection.ref} className="py-20 sm:py-32 px-4">
+        <div className="container mx-auto max-w-5xl">
           <div 
-            className={`relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-primary to-blue-600 p-8 sm:p-12 lg:p-16 text-center opacity-0 ${ctaSection.isVisible ? 'animate-scale-in' : ''}`}
+            className={`relative overflow-hidden rounded-[2.5rem] sm:rounded-[3rem] bg-gradient-to-br from-primary via-blue-500 to-violet-600 p-8 sm:p-12 lg:p-20 text-center opacity-0 ${ctaSection.isVisible ? 'animate-scale-in' : ''}`}
           >
             {/* Animated background pattern */}
-            <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0 opacity-10">
               <div className="absolute inset-0" style={{
-                backgroundImage: 'radial-gradient(circle at 20% 50%, white 2px, transparent 2px), radial-gradient(circle at 80% 50%, white 2px, transparent 2px)',
-                backgroundSize: '40px 40px'
+                backgroundImage: 'radial-gradient(circle at 20% 30%, white 1.5px, transparent 1.5px), radial-gradient(circle at 80% 70%, white 1.5px, transparent 1.5px)',
+                backgroundSize: '50px 50px'
               }} />
             </div>
             
-            {/* Floating orbs */}
-            <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-float" />
-            <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '-2s' }} />
+            {/* Animated mesh gradients */}
+            <div className="absolute top-0 left-0 w-full h-full">
+              <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-[80px] animate-morph" />
+              <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px] animate-morph" style={{ animationDelay: '-4s' }} />
+            </div>
             
-            <div className="relative z-10 space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 text-sm font-medium text-white">
+            {/* Floating orbs */}
+            <div className="absolute top-10 left-10 w-40 h-40 bg-white/15 rounded-full blur-2xl animate-float" />
+            <div className="absolute bottom-10 right-10 w-52 h-52 bg-white/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '-2s' }} />
+            <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white/10 rounded-full blur-xl animate-float" style={{ animationDelay: '-4s' }} />
+            
+            <div className="relative z-10 space-y-8">
+              <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/20 backdrop-blur-sm text-sm font-semibold text-white border border-white/20">
                 <TrendingUp className="h-4 w-4" />
                 <span>{t('landing.cta.badge')}</span>
               </div>
               
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight leading-tight">
                 {t('landing.cta.title')}
               </h2>
-              <p className="text-lg sm:text-xl text-white/80 max-w-xl mx-auto">
+              <p className="text-lg sm:text-xl lg:text-2xl text-white/85 max-w-2xl mx-auto font-medium">
                 {t('landing.cta.subtitle')}
               </p>
               <Button 
                 size="lg" 
                 onClick={() => navigate('/auth')} 
-                className="text-lg px-10 py-6 rounded-2xl font-semibold bg-white text-primary hover:bg-white/90 shadow-xl transition-all duration-300 hover:-translate-y-1 group"
+                className="text-base sm:text-lg px-10 sm:px-14 py-6 sm:py-7 rounded-2xl font-bold bg-white text-primary hover:bg-white/95 shadow-2xl shadow-black/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl group"
               >
                 {t('landing.cta.button')}
                 <Sparkles className="ml-2 h-5 w-5 group-hover:animate-wiggle" />
@@ -907,25 +940,25 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/30 py-12 px-4 relative">
-        <div className="absolute inset-0 bg-gradient-to-t from-muted/20 to-transparent pointer-events-none" />
-        <div className="container mx-auto relative z-10">
+      {/* Footer - Enhanced */}
+      <footer className="border-t border-border/40 py-12 sm:py-16 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-muted/30 to-transparent pointer-events-none" />
+        <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:blur-xl transition-all" />
+                <div className="absolute inset-0 bg-primary/30 rounded-xl blur-lg group-hover:blur-xl group-hover:bg-primary/40 transition-all duration-500" />
                 <img 
                   src="/pwa-maskable-512x512.png" 
                   alt="LinkMAX" 
-                  className="relative h-8 w-8 rounded-xl group-hover:scale-110 transition-transform" 
+                  className="relative h-9 w-9 rounded-xl group-hover:scale-110 transition-transform duration-300" 
                 />
               </div>
               <span className="text-xl font-bold">
-                Link<span className="text-primary">MAX</span>
+                Link<span className="text-gradient">MAX</span>
               </span>
             </div>
-            <p className="text-sm text-muted-foreground text-center sm:text-right">
+            <p className="text-sm text-muted-foreground text-center sm:text-right font-medium">
               {t('landing.footer.copyright')}
             </p>
           </div>
