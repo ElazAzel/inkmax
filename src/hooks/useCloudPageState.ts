@@ -213,12 +213,24 @@ export function useCloudPageState() {
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
 
-  const toggleEditorMode = useCallback(() => {
+  const updateEditorMode = useCallback((newMode: EditorMode, newBlocks?: Block[]) => {
     if (!pageData) return;
-    const newMode: EditorMode = pageData.editorMode === 'grid' ? 'linear' : 'grid';
     const newPageData: PageData = {
       ...pageData,
       editorMode: newMode,
+      blocks: newBlocks || pageData.blocks,
+    };
+    setPageData(newPageData);
+    
+    // Auto-save and publish
+    autoSaveAndPublish(newPageData, chatbotContext);
+  }, [pageData, chatbotContext, autoSaveAndPublish]);
+
+  const updatePageDataPartial = useCallback((updates: Partial<PageData>) => {
+    if (!pageData) return;
+    const newPageData: PageData = {
+      ...pageData,
+      ...updates,
     };
     setPageData(newPageData);
     
@@ -249,7 +261,8 @@ export function useCloudPageState() {
     deleteBlock,
     reorderBlocks,
     updateTheme,
-    toggleEditorMode,
+    updateEditorMode,
+    updatePageDataPartial,
     refresh,
   };
 }

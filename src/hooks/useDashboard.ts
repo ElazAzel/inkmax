@@ -15,7 +15,8 @@ import { useDashboardSharing } from '@/hooks/useDashboardSharing';
 import { useDashboardUsername } from '@/hooks/useDashboardUsername';
 import { useDashboardAI } from '@/hooks/useDashboardAI';
 import { useBlockEditor } from '@/hooks/useBlockEditor';
-import type { Block, ProfileBlock } from '@/types/page';
+import { useEditorModeToggle } from '@/hooks/useEditorModeToggle';
+import type { Block, ProfileBlock, PageData } from '@/types/page';
 
 /**
  * Main dashboard state hook - composes all dashboard-related hooks
@@ -80,6 +81,12 @@ export function useDashboard() {
     onBlockHint: blockHints.showHint,
   });
 
+  // Editor mode toggle (linear/grid)
+  const editorModeState = useEditorModeToggle({
+    pageData,
+    updatePageData: pageState.updatePageDataPartial,
+  });
+
   // Onboarding
   const onboardingState = useDashboardOnboarding({
     isUserReady: !!user,
@@ -137,6 +144,11 @@ export function useDashboard() {
 
     // Page operations
     ...pageState,
+
+    // Editor mode
+    editorMode: editorModeState.currentMode,
+    toggleEditorMode: editorModeState.toggleMode,
+    isGridMode: editorModeState.isGridMode,
 
     // User profile
     userProfile,

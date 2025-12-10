@@ -116,6 +116,8 @@ export default function Dashboard() {
               <PreviewEditor
                 blocks={dashboard.pageData.blocks}
                 isPremium={dashboard.isPremium}
+                editorMode={dashboard.pageData.editorMode || 'linear'}
+                gridConfig={dashboard.pageData.gridConfig}
                 onInsertBlock={dashboard.blockEditor.handleInsertBlock}
                 onEditBlock={dashboard.blockEditor.handleEditBlock}
                 onDeleteBlock={dashboard.blockEditor.handleDeleteBlock}

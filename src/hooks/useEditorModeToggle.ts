@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { Block, EditorMode, PageData } from '@/types/page';
+import type { Block, EditorMode, PageData, GridLayoutData } from '@/types/page';
 import { DEFAULT_GRID_CONFIG } from './useGridLayout';
 
 interface UseEditorModeToggleOptions {
@@ -11,39 +11,43 @@ interface UseEditorModeToggleOptions {
  * Hook to handle switching between linear and grid editor modes
  */
 export function useEditorModeToggle({ pageData, updatePageData }: UseEditorModeToggleOptions) {
-  const currentMode = pageData?.editorMode || 'linear';
+  const currentMode: EditorMode = pageData?.editorMode || 'linear';
 
   // Convert blocks to grid mode (vertical stack initially)
   const convertToGridMode = useCallback((blocks: Block[]): Block[] => {
     const columns = DEFAULT_GRID_CONFIG.columnsDesktop;
+    let currentRow = 1;
     
-    return blocks.map((block, index) => {
+    return blocks.map((block) => {
       // Profile block stays at top spanning full width
       if (block.type === 'profile') {
-        return {
+        const result = {
           ...block,
           gridLayout: {
             gridColumn: 1,
             gridRow: 1,
             gridWidth: columns,
             gridHeight: 1,
-          },
+          } as GridLayoutData,
           createdAt: block.createdAt || new Date().toISOString(),
-        } as Block;
+        };
+        currentRow = 2;
+        return result;
       }
       
       // Content blocks stack vertically in first column
-      const contentIndex = index - (blocks.some(b => b.type === 'profile') ? 1 : 0);
-      return {
+      const result = {
         ...block,
         gridLayout: {
           gridColumn: 1,
-          gridRow: contentIndex + 2, // After profile
+          gridRow: currentRow,
           gridWidth: 1,
           gridHeight: 1,
-        },
+        } as GridLayoutData,
         createdAt: block.createdAt || new Date().toISOString(),
-      } as Block;
+      };
+      currentRow++;
+      return result;
     });
   }, []);
 
@@ -61,14 +65,14 @@ export function useEditorModeToggle({ pageData, updatePageData }: UseEditorModeT
     });
     
     // Remove grid layout data
-    const cleanedBlocks = sortedContent.map(block => {
-      const { gridLayout, ...rest } = block;
+    const cleanedBlocks = sortedContent.map((block) => {
+      const { gridLayout, ...rest } = block as Block & { gridLayout?: GridLayoutData };
       return rest as Block;
     });
     
     // Profile always first
     if (profileBlock) {
-      const { gridLayout, ...cleanProfile } = profileBlock;
+      const { gridLayout, ...cleanProfile } = profileBlock as Block & { gridLayout?: GridLayoutData };
       return [cleanProfile as Block, ...cleanedBlocks];
     }
     
