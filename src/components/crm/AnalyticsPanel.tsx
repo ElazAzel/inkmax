@@ -11,7 +11,12 @@ import {
   TrendingUp, 
   TrendingDown,
   BarChart3,
-  Calendar
+  Calendar,
+  Globe,
+  Smartphone,
+  Tablet,
+  Monitor,
+  RefreshCw
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -22,16 +27,21 @@ import {
   Tooltip, 
   ResponsiveContainer,
   BarChart,
-  Bar
+  Bar,
+  PieChart,
+  Pie,
+  Cell
 } from 'recharts';
+import { Button } from '@/components/ui/button';
 
 export function AnalyticsPanel() {
   const { t } = useTranslation();
-  const { analytics, loading, period, setPeriod } = usePageAnalytics();
+  const { analytics, loading, period, setPeriod, refresh } = usePageAnalytics();
 
   if (loading) {
     return (
       <div className="p-8 text-center text-muted-foreground">
+        <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2" />
         {t('messages.loading', 'Loading...')}
       </div>
     );
@@ -50,6 +60,14 @@ export function AnalyticsPanel() {
     : period === 'week' 
       ? analytics.weeklyData 
       : analytics.dailyData;
+
+  const DEVICE_COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
+  
+  const deviceData = [
+    { name: 'Mobile', value: analytics.deviceBreakdown.mobile, icon: Smartphone },
+    { name: 'Tablet', value: analytics.deviceBreakdown.tablet, icon: Tablet },
+    { name: 'Desktop', value: analytics.deviceBreakdown.desktop, icon: Monitor },
+  ].filter(d => d.value > 0);
 
   return (
     <ScrollArea className="h-[calc(100vh-200px)]">
@@ -239,6 +257,100 @@ export function AnalyticsPanel() {
             </div>
           </Card>
         )}
+
+        {/* Traffic Sources */}
+        {analytics.trafficSources.length > 0 && (
+          <Card className="p-4">
+            <h3 className="text-sm font-medium mb-4 flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              {t('analytics.trafficSources', 'Traffic Sources')}
+            </h3>
+            <div className="space-y-3">
+              {analytics.trafficSources.slice(0, 6).map((source, index) => (
+                <div key={source.source} className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium capitalize">{source.source}</div>
+                    <div className="w-full bg-muted rounded-full h-1.5 mt-1">
+                      <div 
+                        className="bg-primary h-1.5 rounded-full transition-all" 
+                        style={{ width: `${Math.min(source.percentage, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-medium">{source.count}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {source.percentage.toFixed(1)}%
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Device Breakdown */}
+        {deviceData.length > 0 && (
+          <Card className="p-4">
+            <h3 className="text-sm font-medium mb-4 flex items-center gap-2">
+              <Monitor className="h-4 w-4" />
+              {t('analytics.devices', 'Devices')}
+            </h3>
+            <div className="flex items-center gap-4">
+              <div className="w-24 h-24">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={deviceData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={25}
+                      outerRadius={40}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {deviceData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={DEVICE_COLORS[index % DEVICE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex-1 space-y-2">
+                {deviceData.map((device, index) => {
+                  const Icon = device.icon;
+                  const total = analytics.deviceBreakdown.mobile + analytics.deviceBreakdown.tablet + analytics.deviceBreakdown.desktop;
+                  const percentage = total > 0 ? (device.value / total) * 100 : 0;
+                  return (
+                    <div key={device.name} className="flex items-center gap-2 text-sm">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: DEVICE_COLORS[index] }}
+                      />
+                      <Icon className="h-4 w-4 text-muted-foreground" />
+                      <span className="flex-1">{device.name}</span>
+                      <span className="font-medium">{percentage.toFixed(0)}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Refresh Button */}
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="w-full" 
+          onClick={refresh}
+        >
+          <RefreshCw className="h-4 w-4 mr-2" />
+          {t('analytics.refresh', 'Refresh')}
+        </Button>
       </div>
     </ScrollArea>
   );

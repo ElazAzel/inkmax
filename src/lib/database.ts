@@ -9,8 +9,10 @@ export {
   loadPageBySlug,
   loadUserPage,
   publishPage,
-  trackEvent,
 } from '@/services/pages';
+
+// Analytics
+export { trackEvent, trackPageView, trackBlockClick, trackShare } from '@/services/analytics';
 
 // Re-export types
 export type { DbPage, DbBlock, SavePageResult, LoadPageResult, LoadUserPageResult } from '@/services/pages';
