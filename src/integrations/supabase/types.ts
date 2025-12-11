@@ -203,6 +203,8 @@ export type Database = {
           avatar_url: string | null
           created_at: string | null
           description: string | null
+          editor_mode: string
+          grid_config: Json | null
           id: string
           is_published: boolean | null
           seo_meta: Json | null
@@ -218,6 +220,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string | null
           description?: string | null
+          editor_mode?: string
+          grid_config?: Json | null
           id?: string
           is_published?: boolean | null
           seo_meta?: Json | null
@@ -233,6 +237,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string | null
           description?: string | null
+          editor_mode?: string
+          grid_config?: Json | null
           id?: string
           is_published?: boolean | null
           seo_meta?: Json | null
@@ -431,19 +437,35 @@ export type Database = {
         Args: { p_blocks: Json; p_is_premium?: boolean; p_page_id: string }
         Returns: undefined
       }
-      upsert_user_page: {
-        Args: {
-          p_avatar_style: Json
-          p_avatar_url: string
-          p_description: string
-          p_seo_meta: Json
-          p_slug: string
-          p_theme_settings: Json
-          p_title: string
-          p_user_id: string
-        }
-        Returns: string
-      }
+      upsert_user_page:
+        | {
+            Args: {
+              p_avatar_style: Json
+              p_avatar_url: string
+              p_description: string
+              p_seo_meta: Json
+              p_slug: string
+              p_theme_settings: Json
+              p_title: string
+              p_user_id: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_avatar_style: Json
+              p_avatar_url: string
+              p_description: string
+              p_editor_mode?: string
+              p_grid_config?: Json
+              p_seo_meta: Json
+              p_slug: string
+              p_theme_settings: Json
+              p_title: string
+              p_user_id: string
+            }
+            Returns: string
+          }
     }
     Enums: {
       interaction_type: "note" | "call" | "email" | "message" | "meeting"
