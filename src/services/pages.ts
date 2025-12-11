@@ -2,7 +2,7 @@
  * Page service - handles all page-related API operations
  */
 import { supabase } from '@/integrations/supabase/client';
-import type { PageData, Block, ProfileBlock, PageTheme } from '@/types/page';
+import type { PageData, Block, ProfileBlock, PageTheme, EditorMode, GridConfig } from '@/types/page';
 import { createDefaultPageData } from '@/lib/constants';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { Json } from '@/integrations/supabase/types';
@@ -175,6 +175,8 @@ export async function savePage(
       p_avatar_style: { type: 'default', color: '#000000' } as unknown as Json,
       p_theme_settings: pageData.theme as unknown as Json,
       p_seo_meta: pageData.seo as unknown as Json,
+      p_editor_mode: pageData.editorMode || 'linear',
+      p_grid_config: (pageData.gridConfig || null) as unknown as Json,
     });
 
     if (upsertError) {
@@ -265,6 +267,8 @@ export async function loadPageBySlug(slug: string): Promise<LoadPageResult> {
       theme: page.theme_settings as unknown as PageTheme,
       seo: page.seo_meta as unknown as PageData['seo'],
       isPremium: blocks.some((b) => b.is_premium),
+      editorMode: (page as unknown as { editor_mode?: string }).editor_mode as EditorMode || 'linear',
+      gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
     };
 
     return { data: pageData, error: null };
@@ -310,6 +314,8 @@ export async function loadUserPage(userId: string): Promise<LoadUserPageResult> 
       theme: page.theme_settings as unknown as PageTheme,
       seo: page.seo_meta as unknown as PageData['seo'],
       isPremium: blocks.some((b) => b.is_premium),
+      editorMode: (page as unknown as { editor_mode?: string }).editor_mode as EditorMode || 'linear',
+      gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
     };
 
     // Extract chatbot context
