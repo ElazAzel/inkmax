@@ -173,6 +173,13 @@ export default function Dashboard() {
         onChatbotContextChange={dashboard.setChatbotContext}
         onSave={dashboard.save}
         onOpenSEOGenerator={dashboard.aiState.openSEOGenerator}
+        editorMode={dashboard.pageData?.editorMode}
+        gridConfig={dashboard.pageData?.gridConfig}
+        onGridConfigChange={(config) => {
+          dashboard.updatePageDataPartial({
+            gridConfig: { ...dashboard.pageData?.gridConfig, ...config },
+          });
+        }}
         onSignOut={dashboard.handleSignOut}
       />
 
