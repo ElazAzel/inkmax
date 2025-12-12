@@ -13,8 +13,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Crown, 
+  Grid3X3,
   MessageCircle, 
   Sparkles, 
   User, 
@@ -23,7 +25,7 @@ import {
   X,
 } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
-import type { ProfileBlock } from '@/types/page';
+import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
 
 interface MobileSettingsSheetProps {
   open: boolean;
@@ -51,6 +53,11 @@ interface MobileSettingsSheetProps {
   // AI Tools
   onOpenSEOGenerator: () => void;
   
+  // Grid settings
+  editorMode?: EditorMode;
+  gridConfig?: GridConfig;
+  onGridConfigChange?: (config: Partial<GridConfig>) => void;
+  
   // Sign out
   onSignOut: () => void;
 }
@@ -70,6 +77,9 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   onChatbotContextChange,
   onSave,
   onOpenSEOGenerator,
+  editorMode,
+  gridConfig,
+  onGridConfigChange,
   onSignOut,
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
@@ -146,6 +156,51 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                   </div>
                 </div>
               </Card>
+              
+              {/* Grid Settings - only show in grid mode */}
+              {editorMode === 'grid' && onGridConfigChange && (
+                <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Grid3X3 className="h-4 w-4 text-primary" />
+                    </div>
+                    Grid Settings
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Desktop Columns</Label>
+                      <Select
+                        value={String(gridConfig?.columnsDesktop || 3)}
+                        onValueChange={(val) => onGridConfigChange({ columnsDesktop: parseInt(val) })}
+                      >
+                        <SelectTrigger className="mt-2 bg-card/60 backdrop-blur-xl border-border/30 rounded-xl">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="2">2 columns</SelectItem>
+                          <SelectItem value="3">3 columns</SelectItem>
+                          <SelectItem value="4">4 columns</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Mobile Columns</Label>
+                      <Select
+                        value={String(gridConfig?.columnsMobile || 2)}
+                        onValueChange={(val) => onGridConfigChange({ columnsMobile: parseInt(val) })}
+                      >
+                        <SelectTrigger className="mt-2 bg-card/60 backdrop-blur-xl border-border/30 rounded-xl">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1 column</SelectItem>
+                          <SelectItem value="2">2 columns</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </Card>
+              )}
             </TabsContent>
             
             {/* Profile Tab */}
