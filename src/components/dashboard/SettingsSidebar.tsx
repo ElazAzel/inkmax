@@ -4,9 +4,10 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Crown, MessageCircle, Sparkles, X } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
-import type { ProfileBlock } from '@/types/page';
+import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 
 interface SettingsSidebarProps {
   show: boolean;
@@ -23,6 +24,9 @@ interface SettingsSidebarProps {
   onChatbotContextChange: (value: string) => void;
   onSave: () => void;
   onOpenSEOGenerator: () => void;
+  editorMode?: EditorMode;
+  gridConfig?: GridConfig;
+  onGridConfigChange?: (config: Partial<GridConfig>) => void;
 }
 
 export function SettingsSidebar({
@@ -40,6 +44,9 @@ export function SettingsSidebar({
   onChatbotContextChange,
   onSave,
   onOpenSEOGenerator,
+  editorMode,
+  gridConfig,
+  onGridConfigChange,
 }: SettingsSidebarProps) {
   if (!show) return null;
 
@@ -58,6 +65,51 @@ export function SettingsSidebar({
             <X className="h-4 w-4" />
           </Button>
         </div>
+
+        {/* Grid Settings - only show in grid mode */}
+        {editorMode === 'grid' && onGridConfigChange && (
+          <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <Grid3X3 className="h-4 w-4 text-primary" />
+              </div>
+              <h3 className="font-semibold">Grid Settings</h3>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-xs text-muted-foreground">Desktop Columns</Label>
+                <Select
+                  value={String(gridConfig?.columnsDesktop || 3)}
+                  onValueChange={(val) => onGridConfigChange({ columnsDesktop: parseInt(val) })}
+                >
+                  <SelectTrigger className="bg-background/50 mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="2">2 columns</SelectItem>
+                    <SelectItem value="3">3 columns</SelectItem>
+                    <SelectItem value="4">4 columns</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">Mobile Columns</Label>
+                <Select
+                  value={String(gridConfig?.columnsMobile || 2)}
+                  onValueChange={(val) => onGridConfigChange({ columnsMobile: parseInt(val) })}
+                >
+                  <SelectTrigger className="bg-background/50 mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 column</SelectItem>
+                    <SelectItem value="2">2 columns</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Username Settings */}
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
