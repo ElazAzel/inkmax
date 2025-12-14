@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
@@ -23,6 +24,7 @@ import {
   Link2,
   LogOut,
   X,
+  Bell,
 } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
@@ -58,6 +60,10 @@ interface MobileSettingsSheetProps {
   gridConfig?: GridConfig;
   onGridConfigChange?: (config: Partial<GridConfig>) => void;
   
+  // Email notifications
+  emailNotificationsEnabled?: boolean;
+  onEmailNotificationsChange?: (enabled: boolean) => void;
+  
   // Sign out
   onSignOut: () => void;
 }
@@ -80,6 +86,8 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   editorMode,
   gridConfig,
   onGridConfigChange,
+  emailNotificationsEnabled,
+  onEmailNotificationsChange,
   onSignOut,
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
@@ -312,6 +320,28 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                   )}
                 </Card>
               )}
+              
+              {/* Notifications */}
+              <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-xl bg-green-500/10 flex items-center justify-center">
+                    <Bell className="h-4 w-4 text-green-500" />
+                  </div>
+                  Notifications
+                </h3>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm">Email notifications</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Get notified about new leads
+                    </p>
+                  </div>
+                  <Switch
+                    checked={emailNotificationsEnabled ?? true}
+                    onCheckedChange={onEmailNotificationsChange}
+                  />
+                </div>
+              </Card>
               
               {/* Sign Out */}
               <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">

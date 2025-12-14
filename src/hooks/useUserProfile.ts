@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { loadUserProfile, type UserProfile } from '@/services/user';
+import { loadUserProfile, updateEmailNotifications, type UserProfile } from '@/services/user';
+import { toast } from 'sonner';
 
 export function useUserProfile(userId: string | undefined) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -28,6 +29,27 @@ export function useUserProfile(userId: string | undefined) {
     loadProfile();
   }, [loadProfile]);
 
+  const handleUpdateEmailNotifications = useCallback(async (enabled: boolean) => {
+    if (!userId) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await updateEmailNotifications(userId, enabled);
+      if (error) {
+        toast.error('Failed to update notification settings');
+        return;
+      }
+      
+      setProfile(prev => prev ? { ...prev, email_notifications_enabled: enabled } : null);
+      toast.success(enabled ? 'Email notifications enabled' : 'Email notifications disabled');
+    } catch (error) {
+      console.error('Error updating email notifications:', error);
+      toast.error('Failed to update notification settings');
+    } finally {
+      setSaving(false);
+    }
+  }, [userId]);
+
   return {
     profile,
     loading,
@@ -35,5 +57,6 @@ export function useUserProfile(userId: string | undefined) {
     setSaving,
     setProfile,
     refresh: loadProfile,
+    updateEmailNotifications: handleUpdateEmailNotifications,
   };
 }

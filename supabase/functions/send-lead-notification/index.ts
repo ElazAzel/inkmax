@@ -52,10 +52,30 @@ serve(async (req) => {
       );
     }
 
-    // Get owner's email from auth
+    // Get owner's email from auth and check notification preferences
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Check if user has email notifications enabled
+    const { data: profile, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('email_notifications_enabled')
+      .eq('id', pageOwnerId)
+      .maybeSingle();
+
+    if (profileError) {
+      console.error('Could not fetch user profile:', profileError);
+    }
+
+    // If notifications are disabled, skip sending email
+    if (profile?.email_notifications_enabled === false) {
+      console.log(`Email notifications disabled for user ${pageOwnerId}, skipping`);
+      return new Response(
+        JSON.stringify({ success: true, skipped: true, reason: 'notifications_disabled' }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     // Get user email from auth.users
     const { data: userData, error: userError } = await supabase.auth.admin.getUserById(pageOwnerId);

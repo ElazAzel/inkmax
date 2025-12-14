@@ -347,6 +347,7 @@ export type Database = {
           bio: string | null
           created_at: string | null
           display_name: string | null
+          email_notifications_enabled: boolean | null
           id: string
           is_premium: boolean | null
           trial_ends_at: string | null
@@ -358,6 +359,7 @@ export type Database = {
           bio?: string | null
           created_at?: string | null
           display_name?: string | null
+          email_notifications_enabled?: boolean | null
           id: string
           is_premium?: boolean | null
           trial_ends_at?: string | null
@@ -369,6 +371,7 @@ export type Database = {
           bio?: string | null
           created_at?: string | null
           display_name?: string | null
+          email_notifications_enabled?: boolean | null
           id?: string
           is_premium?: boolean | null
           trial_ends_at?: string | null
