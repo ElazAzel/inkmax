@@ -46,6 +46,22 @@ const statusColors: Record<LeadStatus, string> = {
   lost: 'bg-red-500/20 text-red-500 border-red-500/30',
 };
 
+const sourceColors: Record<string, string> = {
+  form: 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30',
+  messenger: 'bg-indigo-500/20 text-indigo-500 border-indigo-500/30',
+  manual: 'bg-slate-500/20 text-slate-500 border-slate-500/30',
+  page_view: 'bg-cyan-500/20 text-cyan-500 border-cyan-500/30',
+  other: 'bg-gray-500/20 text-gray-500 border-gray-500/30',
+};
+
+const sourceIcons: Record<string, string> = {
+  form: '📝',
+  messenger: '💬',
+  manual: '✏️',
+  page_view: '👁️',
+  other: '📌',
+};
+
 export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
   const { t } = useTranslation();
   const { isPremium } = usePremiumStatus();
@@ -55,6 +71,7 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [activeTab, setActiveTab] = useState<'leads' | 'analytics'>('leads');
+  const [sourceFilter, setSourceFilter] = useState<string>('all');
 
   const stats = getLeadStats();
 
@@ -77,12 +94,22 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
   const filteredLeads = leads.filter(lead => {
     const matchesSearch = lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (lead.email?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (lead.phone?.includes(searchQuery));
+      (lead.phone?.includes(searchQuery)) ||
+      (lead.notes?.toLowerCase().includes(searchQuery.toLowerCase()));
     
     const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
+    const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesSource;
   });
+
+  const sourceStats = {
+    form: leads.filter(l => l.source === 'form').length,
+    messenger: leads.filter(l => l.source === 'messenger').length,
+    manual: leads.filter(l => l.source === 'manual').length,
+    page_view: leads.filter(l => l.source === 'page_view').length,
+    other: leads.filter(l => l.source === 'other').length,
+  };
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('ru-RU', {
@@ -185,7 +212,7 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
             
             <TabsContent value="leads" className="mt-0">
 
-          {/* Stats */}
+          {/* Status Stats */}
           <div className="grid grid-cols-5 gap-2 p-4 border-b">
             {(['new', 'contacted', 'qualified', 'converted', 'lost'] as LeadStatus[]).map(status => (
               <button
@@ -200,6 +227,32 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
                   {t(`crm.status.${status}`, status)}
                 </div>
               </button>
+            ))}
+          </div>
+
+          {/* Source Filter */}
+          <div className="flex gap-2 p-4 border-b overflow-x-auto">
+            <button
+              onClick={() => setSourceFilter('all')}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                sourceFilter === 'all' ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
+              }`}
+            >
+              {t('crm.allSources', 'All')} ({stats.total})
+            </button>
+            {(['form', 'messenger', 'manual', 'page_view', 'other'] as const).map(source => (
+              sourceStats[source] > 0 && (
+                <button
+                  key={source}
+                  onClick={() => setSourceFilter(sourceFilter === source ? 'all' : source)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap flex items-center gap-1 ${
+                    sourceFilter === source ? 'ring-2 ring-primary' : ''
+                  } ${sourceColors[source]}`}
+                >
+                  <span>{sourceIcons[source]}</span>
+                  {t(`crm.source.${source}`, source)} ({sourceStats[source]})
+                </button>
+              )
             ))}
           </div>
 
@@ -245,7 +298,10 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <div className="font-medium truncate">{lead.name}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">{sourceIcons[lead.source]}</span>
+                          <span className="font-medium truncate">{lead.name}</span>
+                        </div>
                         <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
                           {lead.email && (
                             <span className="flex items-center gap-1 truncate">
@@ -260,10 +316,18 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
                             </span>
                           )}
                         </div>
+                        {lead.notes && (
+                          <div className="text-xs text-muted-foreground mt-1 truncate">
+                            {lead.notes}
+                          </div>
+                        )}
                       </div>
                       <div className="flex flex-col items-end gap-1">
                         <Badge variant="outline" className={statusColors[lead.status]}>
                           {t(`crm.status.${lead.status}`, lead.status)}
+                        </Badge>
+                        <Badge variant="outline" className={`text-[10px] ${sourceColors[lead.source]}`}>
+                          {t(`crm.source.${lead.source}`, lead.source)}
                         </Badge>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
