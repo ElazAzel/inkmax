@@ -11,6 +11,8 @@ export interface GalleryPage {
   view_count: number | null;
 }
 
+export type LeaderboardPeriod = 'week' | 'month' | 'all';
+
 export async function getGalleryPages(): Promise<GalleryPage[]> {
   const { data, error } = await supabase
     .from('pages')
@@ -22,6 +24,37 @@ export async function getGalleryPages(): Promise<GalleryPage[]> {
 
   if (error) {
     console.error('Error fetching gallery pages:', error);
+    return [];
+  }
+
+  return (data || []) as GalleryPage[];
+}
+
+export async function getLeaderboardPages(period: LeaderboardPeriod = 'week'): Promise<GalleryPage[]> {
+  let query = supabase
+    .from('pages')
+    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count')
+    .eq('is_in_gallery', true)
+    .eq('is_published', true);
+
+  // Filter by period
+  if (period === 'week') {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    query = query.gte('gallery_featured_at', weekAgo.toISOString());
+  } else if (period === 'month') {
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    query = query.gte('gallery_featured_at', monthAgo.toISOString());
+  }
+
+  const { data, error } = await query
+    .order('gallery_likes', { ascending: false })
+    .order('view_count', { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error('Error fetching leaderboard:', error);
     return [];
   }
 
