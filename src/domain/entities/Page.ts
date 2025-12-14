@@ -79,13 +79,60 @@ export const DEFAULT_GRID_CONFIG: GridConfig = {
   cellHeight: 100,
 };
 
+// ============= Factory Functions =============
+
+/**
+ * Create a default profile block
+ */
+function createDefaultProfileBlock(): BaseBlock {
+  return {
+    id: `profile-${Date.now()}`,
+    type: 'profile',
+  };
+}
+
+/**
+ * Create a default page for a user
+ */
+export function createDefaultPage<TBlock extends BaseBlock = BaseBlock>(
+  userId: string,
+  profileBlock?: TBlock
+): Page<TBlock> {
+  return {
+    id: '',
+    userId,
+    blocks: [profileBlock || createDefaultProfileBlock() as unknown as TBlock],
+    theme: { ...DEFAULT_THEME },
+    seo: { ...DEFAULT_SEO },
+    editorMode: 'linear',
+  };
+}
+
 // ============= Domain Logic =============
 
 /**
  * Check if page has premium content
  */
-export function hasPremiumContent(page: Page, isPremiumBlockType: (type: BlockType) => boolean): boolean {
-  return page.blocks.some(block => isPremiumBlockType(block.type));
+export function hasPremiumContent(page: Page): boolean {
+  const PREMIUM_TYPES: BlockType[] = ['video', 'carousel', 'custom_code', 'form', 'newsletter', 'testimonial', 'scratch', 'search', 'catalog', 'countdown'];
+  return page.blocks.some(block => PREMIUM_TYPES.includes(block.type));
+}
+
+/**
+ * Check if page has a profile block
+ */
+export function hasProfileBlock(page: Page): boolean {
+  return page.blocks.some(block => block.type === 'profile');
+}
+
+/**
+ * Count blocks in page
+ */
+export function countBlocks(page: Page, excludeProfile: boolean = false): number {
+  if (excludeProfile) {
+    return page.blocks.filter(block => block.type !== 'profile').length;
+  }
+  return page.blocks.length;
 }
 
 /**
@@ -140,20 +187,12 @@ export function canPublishPage(page: Page): { canPublish: boolean; reason?: stri
 export function validatePage(page: Page): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
   
-  if (!page.id) {
-    errors.push('Page ID is required');
+  if (!page.userId) {
+    errors.push('User ID is required');
   }
   
-  if (!page.theme) {
-    errors.push('Page theme is required');
-  }
-  
-  if (!page.seo) {
-    errors.push('Page SEO is required');
-  }
-  
-  if (!Array.isArray(page.blocks)) {
-    errors.push('Page blocks must be an array');
+  if (!page.blocks || page.blocks.length === 0) {
+    errors.push('Page must have at least one block');
   }
   
   return {
@@ -163,9 +202,39 @@ export function validatePage(page: Page): { valid: boolean; errors: string[] } {
 }
 
 /**
- * Reorder blocks by moving a block from one index to another
+ * Reorder blocks by new order of IDs
  */
 export function reorderBlocks<TBlock extends BaseBlock>(
+  page: Page<TBlock>,
+  newOrder: string[]
+): Page<TBlock> {
+  const blockMap = new Map(page.blocks.map(block => [block.id, block]));
+  const reorderedBlocks: TBlock[] = [];
+  
+  for (const id of newOrder) {
+    const block = blockMap.get(id);
+    if (block) {
+      reorderedBlocks.push(block);
+    }
+  }
+  
+  // Add any blocks not in the new order at the end
+  for (const block of page.blocks) {
+    if (!newOrder.includes(block.id)) {
+      reorderedBlocks.push(block);
+    }
+  }
+  
+  return {
+    ...page,
+    blocks: reorderedBlocks,
+  };
+}
+
+/**
+ * Reorder blocks by moving a block from one index to another
+ */
+export function reorderBlocksByIndex<TBlock extends BaseBlock>(
   blocks: TBlock[],
   fromIndex: number,
   toIndex: number
