@@ -414,12 +414,16 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string | null
+          current_streak: number | null
           display_name: string | null
           email_notifications_enabled: boolean | null
           id: string
           is_premium: boolean | null
+          last_active_date: string | null
+          longest_streak: number | null
           push_notifications_enabled: boolean | null
           push_subscription: Json | null
+          streak_bonus_days: number | null
           telegram_chat_id: string | null
           telegram_notifications_enabled: boolean | null
           trial_ends_at: string | null
@@ -430,12 +434,16 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
+          current_streak?: number | null
           display_name?: string | null
           email_notifications_enabled?: boolean | null
           id: string
           is_premium?: boolean | null
+          last_active_date?: string | null
+          longest_streak?: number | null
           push_notifications_enabled?: boolean | null
           push_subscription?: Json | null
+          streak_bonus_days?: number | null
           telegram_chat_id?: string | null
           telegram_notifications_enabled?: boolean | null
           trial_ends_at?: string | null
@@ -446,12 +454,16 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
+          current_streak?: number | null
           display_name?: string | null
           email_notifications_enabled?: boolean | null
           id?: string
           is_premium?: boolean | null
+          last_active_date?: string | null
+          longest_streak?: number | null
           push_notifications_enabled?: boolean | null
           push_subscription?: Json | null
+          streak_bonus_days?: number | null
           telegram_chat_id?: string | null
           telegram_notifications_enabled?: boolean | null
           trial_ends_at?: string | null
@@ -527,6 +539,7 @@ export type Database = {
         Returns: undefined
       }
       toggle_gallery_status: { Args: { p_user_id: string }; Returns: boolean }
+      update_user_streak: { Args: { p_user_id: string }; Returns: Json }
       upsert_user_page:
         | {
             Args: {
