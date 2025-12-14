@@ -38,7 +38,14 @@
 "landing": {
     "nav": {
       "signIn": "Sign In",
-      "getStarted": "Get Started"
+      "getStarted": "Get Started",
+      "gallery": "Gallery"
+    },
+    "featured": {
+      "badge": "Top Creators",
+      "title": "Featured Pages",
+      "subtitle": "Discover the most popular pages created with LinkMAX",
+      "viewAll": "View All Pages"
     },
     "hero": {
       "badge": "AI Platform for Business & Experts",

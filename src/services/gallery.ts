@@ -11,14 +11,16 @@ export interface GalleryPage {
   gallery_featured_at: string | null;
   view_count: number | null;
   niche: string | null;
+  is_premium?: boolean;
 }
 
 export type LeaderboardPeriod = 'week' | 'month' | 'all';
 
+// Fetch gallery pages with premium and popular pages first
 export async function getGalleryPages(niche?: Niche | null): Promise<GalleryPage[]> {
   let query = supabase
     .from('pages')
-    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
+    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche, user_id')
     .eq('is_in_gallery', true)
     .eq('is_published', true);
 
@@ -27,7 +29,8 @@ export async function getGalleryPages(niche?: Niche | null): Promise<GalleryPage
   }
 
   const { data, error } = await query
-    .order('gallery_featured_at', { ascending: false })
+    .order('view_count', { ascending: false, nullsFirst: false })
+    .order('gallery_likes', { ascending: false })
     .limit(100);
 
   if (error) {
@@ -35,7 +38,79 @@ export async function getGalleryPages(niche?: Niche | null): Promise<GalleryPage
     return [];
   }
 
-  return (data || []) as GalleryPage[];
+  // Get premium status for each page owner
+  const userIds = [...new Set((data || []).map(p => p.user_id))];
+  if (userIds.length === 0) return [];
+
+  const { data: profiles } = await supabase
+    .from('user_profiles')
+    .select('id, is_premium, trial_ends_at')
+    .in('id', userIds);
+  
+  const premiumMap = new Map<string, boolean>();
+  profiles?.forEach(p => {
+    const isPremium = p.is_premium || (p.trial_ends_at && new Date(p.trial_ends_at) > new Date());
+    premiumMap.set(p.id, isPremium);
+  });
+  
+  // Add premium flag and sort: premium first, then by views
+  const pagesWithPremium = (data || []).map(p => ({
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    avatar_url: p.avatar_url,
+    gallery_likes: p.gallery_likes,
+    gallery_featured_at: p.gallery_featured_at,
+    view_count: p.view_count,
+    niche: p.niche,
+    is_premium: premiumMap.get(p.user_id) || false
+  }));
+  
+  pagesWithPremium.sort((a, b) => {
+    // Premium pages first
+    if (a.is_premium && !b.is_premium) return -1;
+    if (!a.is_premium && b.is_premium) return 1;
+    // Then by views
+    if ((b.view_count || 0) !== (a.view_count || 0)) {
+      return (b.view_count || 0) - (a.view_count || 0);
+    }
+    // Then by likes
+    return (b.gallery_likes || 0) - (a.gallery_likes || 0);
+  });
+  
+  return pagesWithPremium;
+}
+
+// Fetch top premium pages with most views for landing page
+export async function getTopPremiumPages(limit: number = 5): Promise<GalleryPage[]> {
+  // First get premium users
+  const { data: premiumProfiles } = await supabase
+    .from('user_profiles')
+    .select('id')
+    .or('is_premium.eq.true,trial_ends_at.gt.now()');
+  
+  if (!premiumProfiles || premiumProfiles.length === 0) {
+    return [];
+  }
+  
+  const premiumUserIds = premiumProfiles.map(p => p.id);
+  
+  const { data, error } = await supabase
+    .from('pages')
+    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
+    .eq('is_in_gallery', true)
+    .eq('is_published', true)
+    .in('user_id', premiumUserIds)
+    .order('view_count', { ascending: false, nullsFirst: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching top premium pages:', error);
+    return [];
+  }
+
+  return (data || []).map(p => ({ ...p, is_premium: true }));
 }
 
 export async function getNicheCounts(): Promise<Record<string, number>> {
