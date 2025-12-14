@@ -28,6 +28,7 @@ import {
   Send,
 } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
+import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
 
 interface MobileSettingsSheetProps {
@@ -70,6 +71,9 @@ interface MobileSettingsSheetProps {
   telegramChatId?: string;
   onTelegramChange?: (enabled: boolean, chatId: string | null) => void;
   
+  // User ID for referral
+  userId?: string;
+  
   // Sign out
   onSignOut: () => void;
 }
@@ -97,6 +101,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   telegramEnabled,
   telegramChatId,
   onTelegramChange,
+  userId,
   onSignOut,
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
@@ -384,6 +389,9 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                   
                 </div>
               </Card>
+              
+              {/* Referral Program */}
+              <ReferralPanel userId={userId} />
               
               {/* Sign Out */}
               <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">

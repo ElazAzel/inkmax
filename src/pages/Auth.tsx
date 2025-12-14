@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,9 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Gift } from 'lucide-react';
 import { z } from 'zod';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { applyReferralCode } from '@/services/referral';
 
 const authSchema = z.object({
   email: z
@@ -29,18 +30,30 @@ const authSchema = z.object({
 
 export default function Auth() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const { user, signUp, signIn, signInWithGoogle, signInWithApple } = useAuth();
   const { playSuccess, playError } = useSoundEffects();
   const [isLoading, setIsLoading] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState<'google' | 'apple' | null>(null);
+  
+  // Get referral code from URL
+  const refCode = searchParams.get('ref');
 
-  // Redirect if already logged in
+  // Redirect if already logged in and apply referral
   useEffect(() => {
     if (user) {
+      // Apply referral code if present
+      if (refCode) {
+        applyReferralCode(refCode, user.id).then((result) => {
+          if (result.success) {
+            toast.success(`🎉 +${result.bonusDays} дней Premium за реферальный код!`);
+          }
+        });
+      }
       navigate('/dashboard');
     }
-  }, [user, navigate]);
+  }, [user, navigate, refCode]);
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -140,6 +153,23 @@ export default function Auth() {
       </div>
       
       <div className="w-full max-w-md space-y-6">
+        {/* Referral Banner */}
+        {refCode && (
+          <Card className="bg-gradient-to-r from-violet-500/20 to-purple-500/20 backdrop-blur-xl border-violet-500/30 rounded-2xl p-4 animate-fade-in">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-violet-500/30 flex items-center justify-center">
+                <Gift className="h-5 w-5 text-violet-400" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Вас пригласили!</p>
+                <p className="text-xs text-muted-foreground">
+                  Зарегистрируйтесь и получите +3 дня Premium
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Logo */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-3 animate-fade-in">
