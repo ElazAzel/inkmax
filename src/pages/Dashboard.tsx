@@ -109,6 +109,7 @@ export default function Dashboard() {
           telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
           telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
           onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
+          userId={dashboard.user?.id}
         />
 
         {/* Referral Panel in Settings Area */}

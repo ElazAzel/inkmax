@@ -250,6 +250,15 @@ export default function Index() {
                 <LanguageSwitcher />
                 <Button 
                   variant="ghost" 
+                  onClick={() => navigate('/gallery')}
+                  className="hidden sm:inline-flex font-medium hover:bg-foreground/5 backdrop-blur-sm rounded-xl"
+                  size="sm"
+                >
+                  <Users className="h-4 w-4 mr-1.5" />
+                  {t('landing.nav.gallery', 'Gallery')}
+                </Button>
+                <Button 
+                  variant="ghost" 
                   onClick={() => navigate('/auth')}
                   className="hidden sm:inline-flex font-medium hover:bg-foreground/5 backdrop-blur-sm rounded-xl"
                   size="sm"
