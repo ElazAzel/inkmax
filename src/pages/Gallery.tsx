@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CommunityGallery } from '@/components/gallery/CommunityGallery';
+import { Leaderboard } from '@/components/gallery/Leaderboard';
 
 export default function Gallery() {
   const { t } = useTranslation();
@@ -27,7 +28,22 @@ export default function Gallery() {
           </div>
         </div>
 
-        <CommunityGallery />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Leaderboard */}
+          <div className="lg:col-span-1 order-1 lg:order-2">
+            <div className="lg:sticky lg:top-8">
+              <Leaderboard />
+            </div>
+          </div>
+
+          {/* Gallery */}
+          <div className="lg:col-span-2 order-2 lg:order-1">
+            <h2 className="text-lg font-semibold mb-4">
+              {t('gallery.recent', 'Recent Pages')}
+            </h2>
+            <CommunityGallery />
+          </div>
+        </div>
       </div>
     </div>
   );
