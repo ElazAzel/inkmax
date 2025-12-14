@@ -14,6 +14,10 @@ export interface UserProfile {
   is_premium: boolean | null;
   trial_ends_at: string | null;
   email_notifications_enabled: boolean | null;
+  telegram_notifications_enabled: boolean | null;
+  telegram_chat_id: string | null;
+  whatsapp_notifications_enabled: boolean | null;
+  whatsapp_phone: string | null;
 }
 
 export interface UpdateUsernameResult {
@@ -184,6 +188,60 @@ export async function updateEmailNotifications(
     const { error } = await supabase
       .from('user_profiles')
       .update({ email_notifications_enabled: enabled })
+      .eq('id', userId);
+
+    if (error) {
+      return { data: null, error: wrapError(error) };
+    }
+
+    return { data: enabled, error: null };
+  } catch (error) {
+    return { data: null, error: wrapError(error) };
+  }
+}
+
+/**
+ * Update Telegram notification settings
+ */
+export async function updateTelegramNotifications(
+  userId: string,
+  enabled: boolean,
+  chatId: string | null
+): Promise<ApiResult<boolean>> {
+  try {
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ 
+        telegram_notifications_enabled: enabled,
+        telegram_chat_id: chatId
+      })
+      .eq('id', userId);
+
+    if (error) {
+      return { data: null, error: wrapError(error) };
+    }
+
+    return { data: enabled, error: null };
+  } catch (error) {
+    return { data: null, error: wrapError(error) };
+  }
+}
+
+/**
+ * Update WhatsApp notification settings
+ */
+export async function updateWhatsAppNotifications(
+  userId: string,
+  enabled: boolean,
+  phone: string | null
+): Promise<ApiResult<boolean>> {
+  try {
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ 
+        whatsapp_notifications_enabled: enabled,
+        whatsapp_phone: phone
+      })
       .eq('id', userId);
 
     if (error) {

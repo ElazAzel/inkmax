@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -6,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Phone } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 
@@ -30,6 +31,12 @@ interface SettingsSidebarProps {
   onGridConfigChange?: (config: Partial<GridConfig>) => void;
   emailNotificationsEnabled?: boolean;
   onEmailNotificationsChange?: (enabled: boolean) => void;
+  telegramEnabled?: boolean;
+  telegramChatId?: string;
+  onTelegramChange?: (enabled: boolean, chatId: string | null) => void;
+  whatsappEnabled?: boolean;
+  whatsappPhone?: string;
+  onWhatsAppChange?: (enabled: boolean, phone: string | null) => void;
 }
 
 export function SettingsSidebar({
@@ -52,7 +59,16 @@ export function SettingsSidebar({
   onGridConfigChange,
   emailNotificationsEnabled,
   onEmailNotificationsChange,
+  telegramEnabled,
+  telegramChatId,
+  onTelegramChange,
+  whatsappEnabled,
+  whatsappPhone,
+  onWhatsAppChange,
 }: SettingsSidebarProps) {
+  const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
+  const [localWhatsappPhone, setLocalWhatsappPhone] = useState(whatsappPhone || '');
+
   if (!show) return null;
 
   const getStringValue = (value: string | { ru?: string; en?: string; kk?: string } | undefined): string => {
@@ -217,17 +233,78 @@ export function SettingsSidebar({
             </div>
             <h3 className="font-semibold">Notifications</h3>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label className="text-sm">Email notifications</Label>
-              <p className="text-xs text-muted-foreground">
-                Get notified about new leads
-              </p>
+          <div className="space-y-4">
+            {/* Email */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label className="text-sm">Email</Label>
+                <p className="text-xs text-muted-foreground">Get notified via email</p>
+              </div>
+              <Switch
+                checked={emailNotificationsEnabled ?? true}
+                onCheckedChange={onEmailNotificationsChange}
+              />
             </div>
-            <Switch
-              checked={emailNotificationsEnabled ?? true}
-              onCheckedChange={onEmailNotificationsChange}
-            />
+            
+            {/* Telegram */}
+            <div className="space-y-2 pt-2 border-t border-border/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Send className="h-4 w-4 text-blue-500" />
+                  <Label className="text-sm">Telegram</Label>
+                </div>
+                <Switch
+                  checked={telegramEnabled ?? false}
+                  onCheckedChange={(enabled) => {
+                    onTelegramChange?.(enabled, enabled ? localTelegramChatId : null);
+                  }}
+                />
+              </div>
+              {telegramEnabled && (
+                <div className="space-y-1">
+                  <Input
+                    placeholder="Chat ID (from @userinfobot)"
+                    value={localTelegramChatId}
+                    onChange={(e) => setLocalTelegramChatId(e.target.value)}
+                    onBlur={() => onTelegramChange?.(true, localTelegramChatId)}
+                    className="bg-background/50 text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Send /start to @userinfobot to get your ID
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {/* WhatsApp */}
+            <div className="space-y-2 pt-2 border-t border-border/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-green-500" />
+                  <Label className="text-sm">WhatsApp</Label>
+                </div>
+                <Switch
+                  checked={whatsappEnabled ?? false}
+                  onCheckedChange={(enabled) => {
+                    onWhatsAppChange?.(enabled, enabled ? localWhatsappPhone : null);
+                  }}
+                />
+              </div>
+              {whatsappEnabled && (
+                <div className="space-y-1">
+                  <Input
+                    placeholder="+7 XXX XXX XX XX"
+                    value={localWhatsappPhone}
+                    onChange={(e) => setLocalWhatsappPhone(e.target.value)}
+                    onBlur={() => onWhatsAppChange?.(true, localWhatsappPhone)}
+                    className="bg-background/50 text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Phone number linked to WhatsApp
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </Card>
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
