@@ -49,6 +49,7 @@ import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
 import { LandingFeaturedPages } from '@/components/landing/LandingFeaturedPages';
+import { LandingGallerySection } from '@/components/landing/LandingGallerySection';
 
 // Lazy load 3D component for better performance
 const Hero3D = lazy(() => import('@/components/landing/Hero3D').then(m => ({ default: m.Hero3D })));
@@ -509,6 +510,9 @@ export default function Index() {
 
       {/* Featured Premium Pages */}
       <LandingFeaturedPages />
+
+      {/* Community Gallery Section */}
+      <LandingGallerySection />
 
       {/* Problems Section */}
       <section ref={problemsSection.ref} className="py-20 sm:py-28 px-4 relative">

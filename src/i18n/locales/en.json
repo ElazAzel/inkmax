@@ -47,6 +47,12 @@
       "subtitle": "Discover the most popular pages created with LinkMAX",
       "viewAll": "View All Pages"
     },
+    "gallery": {
+      "badge": "Community",
+      "title": "Page Gallery",
+      "subtitle": "Get inspired by pages created by our community",
+      "viewAll": "Explore All"
+    },
     "hero": {
       "badge": "AI Platform for Business & Experts",
       "title1": "Mini-website in 2 minutes",
@@ -511,6 +517,20 @@
     "all": "All",
     "allTime": "All Time",
     "empty": "No pages yet for this period"
+  },
+  "share": {
+    "published": "Page Published!",
+    "yourPageLink": "Your page link",
+    "linkCopied": "Link copied!",
+    "shareNow": "Share Now",
+    "title": "Check out my LinkMAX page!"
+  },
+  "referral": {
+    "inviteFriend": "Invite a friend",
+    "bothGetBonus": "You both get +3 days Premium!",
+    "shareReferralLink": "Share Referral Link",
+    "friendsInvited": "Friends invited",
+    "bonusEarned": "Bonus days earned"
   },
   "niches": {
     "beauty": "Beauty",
