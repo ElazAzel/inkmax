@@ -119,6 +119,8 @@ export default function Dashboard() {
           completedQuests={dashboard.dailyQuests.completedQuests}
           questsProgress={dashboard.dailyQuests.progress}
           questsLoading={dashboard.dailyQuests.loading}
+          niche={dashboard.pageData?.niche as any}
+          onNicheChange={dashboard.updateNiche}
         />
 
         {/* Referral Panel in Settings Area */}
@@ -210,6 +212,8 @@ export default function Dashboard() {
         telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
         onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
         userId={dashboard.user?.id}
+        niche={dashboard.pageData?.niche as any}
+        onNicheChange={dashboard.updateNiche}
         onSignOut={dashboard.handleSignOut}
       />
 

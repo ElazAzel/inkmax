@@ -26,10 +26,13 @@ import {
   X,
   Bell,
   Send,
+  Tag,
 } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
+import { NicheSelector } from '@/components/settings/NicheSelector';
 import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
+import type { Niche } from '@/lib/niches';
 
 interface MobileSettingsSheetProps {
   open: boolean;
@@ -74,6 +77,10 @@ interface MobileSettingsSheetProps {
   // User ID for referral
   userId?: string;
   
+  // Niche
+  niche?: Niche;
+  onNicheChange?: (niche: Niche) => void;
+  
   // Sign out
   onSignOut: () => void;
 }
@@ -102,6 +109,8 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   telegramChatId,
   onTelegramChange,
   userId,
+  niche,
+  onNicheChange,
   onSignOut,
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
@@ -255,6 +264,19 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                       />
                     </div>
                   </div>
+                </Card>
+              )}
+              
+              {/* Niche/Category */}
+              {onNicheChange && (
+                <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Tag className="h-4 w-4 text-primary" />
+                    </div>
+                    {t('settings.niche', 'Category')}
+                  </h3>
+                  <NicheSelector value={niche} onChange={onNicheChange} />
                 </Card>
               )}
             </TabsContent>

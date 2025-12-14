@@ -7,13 +7,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { DailyQuestsPanel } from '@/components/quests/DailyQuestsPanel';
+import { NicheSelector } from '@/components/settings/NicheSelector';
 import type { Quest } from '@/services/quests';
+import type { Niche } from '@/lib/niches';
 
 interface SettingsSidebarProps {
   show: boolean;
@@ -43,6 +45,8 @@ interface SettingsSidebarProps {
   completedQuests?: string[];
   questsProgress?: { completed: number; total: number; bonusEarned: number };
   questsLoading?: boolean;
+  niche?: Niche;
+  onNicheChange?: (niche: Niche) => void;
 }
 
 export function SettingsSidebar({
@@ -73,7 +77,10 @@ export function SettingsSidebar({
   completedQuests,
   questsProgress,
   questsLoading,
+  niche,
+  onNicheChange,
 }: SettingsSidebarProps) {
+  const { t } = useTranslation();
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
 
   if (!show) return null;
@@ -196,6 +203,19 @@ export function SettingsSidebar({
                 />
               </div>
             </div>
+          </Card>
+        )}
+
+        {/* Niche/Category */}
+        {onNicheChange && (
+          <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <Tag className="h-4 w-4 text-primary" />
+              </div>
+              <h3 className="font-semibold">{t('settings.niche', 'Category')}</h3>
+            </div>
+            <NicheSelector value={niche} onChange={onNicheChange} />
           </Card>
         )}
 
