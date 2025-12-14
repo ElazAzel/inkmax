@@ -12,9 +12,10 @@
  */
 
 // Page use cases
-export { getPageRepository } from '@/repositories/implementations/SupabasePageRepository';
-export { getUserRepository } from '@/repositories/implementations/SupabaseUserRepository';
-export { getAnalyticsRepository } from '@/repositories/implementations/SupabaseAnalyticsRepository';
+export * from './page';
+
+// User use cases
+export * from './user';
 
 // Re-export repository interfaces for dependency injection
 export type { IPageRepository } from '@/repositories/interfaces/IPageRepository';
