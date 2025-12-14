@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "niche": "Санат",
+    "nicheDescription": "Беттің санатын таңдаңыз"
+  },
   "niche": {
     "barber": "Шаштараз",
     "photographer": "Фотограф",

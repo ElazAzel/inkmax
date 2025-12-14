@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
+import type { Niche } from '@/lib/niches';
 
 const STORAGE_KEYS = {
   NICHE_COMPLETED: 'linkmax_niche_onboarding_completed',
@@ -15,7 +16,7 @@ interface OnboardingProfile {
 interface UseDashboardOnboardingOptions {
   isUserReady: boolean;
   isPageReady: boolean;
-  onNicheComplete: (profile: OnboardingProfile, blocks: Block[]) => void;
+  onNicheComplete: (profile: OnboardingProfile, blocks: Block[], niche: Niche) => void;
 }
 
 export function useDashboardOnboarding({
@@ -57,8 +58,8 @@ export function useDashboardOnboarding({
   }, []);
 
   const handleNicheOnboardingComplete = useCallback(
-    (profile: OnboardingProfile, blocks: Block[]) => {
-      onNicheComplete(profile, blocks);
+    (profile: OnboardingProfile, blocks: Block[], niche: Niche) => {
+      onNicheComplete(profile, blocks, niche);
       setShowNicheOnboarding(false);
       setTimeout(() => setShowOnboarding(true), 500);
     },

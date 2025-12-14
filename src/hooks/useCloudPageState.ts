@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from './useAuth';
 import { useUserPage, useSavePageMutation, usePublishPageMutation, pageQueryKeys } from '@/hooks/usePageCache';
+import { updatePageNiche } from '@/services/pages';
 import type { PageData, Block, EditorMode } from '@/types/page';
+import type { Niche } from '@/lib/niches';
 import { toast } from 'sonner';
 import type { SaveStatus } from '@/components/editor/AutoSaveIndicator';
 
@@ -238,6 +240,22 @@ export function useCloudPageState() {
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
 
+  const updateNiche = useCallback(async (niche: Niche) => {
+    if (!user || !pageData) return;
+    
+    // Update local state immediately
+    const newPageData = { ...pageData, niche };
+    setPageData(newPageData);
+    
+    // Save to database
+    const { error } = await updatePageNiche(user.id, niche);
+    if (error) {
+      toast.error('Failed to update category');
+      // Revert on error
+      setPageData(pageData);
+    }
+  }, [user, pageData]);
+
   const refresh = useCallback(async () => {
     if (user?.id) {
       await queryClient.invalidateQueries({ 
@@ -263,6 +281,7 @@ export function useCloudPageState() {
     updateTheme,
     updateEditorMode,
     updatePageDataPartial,
+    updateNiche,
     refresh,
   };
 }

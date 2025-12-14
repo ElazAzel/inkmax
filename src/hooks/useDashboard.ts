@@ -98,12 +98,14 @@ export function useDashboard() {
   const onboardingState = useDashboardOnboarding({
     isUserReady: !!user,
     isPageReady: !!pageData,
-    onNicheComplete: (profile, blocks) => {
+    onNicheComplete: (profile, blocks, niche) => {
       const profileBlock = pageData?.blocks.find((b) => b.type === 'profile');
       if (profile && profileBlock) {
         updateBlock(profileBlock.id, { name: profile.name, bio: profile.bio });
       }
       blocks.forEach((block) => addBlock(block));
+      // Save the selected niche
+      pageState.updateNiche(niche);
     },
   });
 
@@ -151,6 +153,7 @@ export function useDashboard() {
 
     // Page operations
     ...pageState,
+    updateNiche: pageState.updateNiche,
 
     // Editor mode
     editorMode: editorModeState.currentMode,

@@ -455,4 +455,5 @@ export interface PageData {
   metrics?: PageMetrics;
   editorMode?: EditorMode;
   gridConfig?: GridConfig;
+  niche?: string;
 }

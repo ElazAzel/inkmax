@@ -269,6 +269,7 @@ export async function loadPageBySlug(slug: string): Promise<LoadPageResult> {
       isPremium: blocks.some((b) => b.is_premium),
       editorMode: (page as unknown as { editor_mode?: string }).editor_mode as EditorMode || 'linear',
       gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
+      niche: (page as unknown as { niche?: string }).niche || 'other',
     };
 
     return { data: pageData, error: null };
@@ -316,6 +317,7 @@ export async function loadUserPage(userId: string): Promise<LoadUserPageResult> 
       isPremium: blocks.some((b) => b.is_premium),
       editorMode: (page as unknown as { editor_mode?: string }).editor_mode as EditorMode || 'linear',
       gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
+      niche: (page as unknown as { niche?: string }).niche || 'other',
     };
 
     // Extract chatbot context
@@ -348,6 +350,23 @@ export async function publishPage(userId: string): Promise<PublishPageResult> {
     return { slug: data.slug, error: null };
   } catch (error) {
     return { slug: null, error: wrapError(error) };
+  }
+}
+
+/**
+ * Update page niche
+ */
+export async function updatePageNiche(userId: string, niche: string): Promise<{ error: Error | null }> {
+  try {
+    const { error } = await supabase
+      .from('pages')
+      .update({ niche })
+      .eq('user_id', userId);
+
+    if (error) return { error: wrapError(error) };
+    return { error: null };
+  } catch (error) {
+    return { error: wrapError(error) };
   }
 }
 

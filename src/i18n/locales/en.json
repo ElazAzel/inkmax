@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "niche": "Category",
+    "nicheDescription": "Choose a category for your page"
+  },
   "niche": {
     "barber": "Barber",
     "photographer": "Photographer",
