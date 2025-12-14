@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { AutoSaveIndicator, SaveStatus } from '@/components/editor/AutoSaveIndicator';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { EditorModeToggle } from '@/components/editor/EditorModeToggle';
+import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import type { EditorMode } from '@/types/page';
 import {
   LogOut,
@@ -32,6 +33,7 @@ interface DashboardHeaderProps {
   onOpenTemplates: () => void;
   onOpenAchievements: () => void;
   onOpenCRM: () => void;
+  userId?: string;
 }
 
 export function DashboardHeader({
@@ -50,6 +52,7 @@ export function DashboardHeader({
   onOpenTemplates,
   onOpenAchievements,
   onOpenCRM,
+  userId,
 }: DashboardHeaderProps) {
   const { t } = useTranslation();
 
@@ -88,6 +91,9 @@ export function DashboardHeader({
                 currentMode={editorMode}
                 onToggle={onToggleEditorMode}
               />
+
+              {/* Compact Streak */}
+              <StreakDisplay userId={userId} compact />
 
               <LanguageSwitcher />
 

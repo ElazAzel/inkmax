@@ -74,6 +74,7 @@ export default function Dashboard() {
         onOpenTemplates={() => setTemplateGalleryOpen(true)}
         onOpenAchievements={() => setShowAchievements(true)}
         onOpenCRM={() => setShowLeads(true)}
+        userId={dashboard.user?.id}
       />
 
       {/* Mobile Header */}

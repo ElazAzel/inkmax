@@ -7,10 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Users } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
+import { StreakDisplay } from '@/components/streak/StreakDisplay';
 
 interface SettingsSidebarProps {
   show: boolean;
@@ -220,6 +221,9 @@ export function SettingsSidebar({
             )}
           </Card>
         )}
+
+        {/* Streak Display */}
+        <StreakDisplay userId={userId} />
 
         {/* Gallery Toggle */}
         <GalleryToggle userId={userId} />
