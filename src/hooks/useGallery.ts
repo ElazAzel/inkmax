@@ -2,27 +2,35 @@ import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { 
   getGalleryPages, 
+  getNicheCounts,
   toggleGalleryStatus, 
   likeGalleryPage,
   getMyGalleryStatus,
   type GalleryPage 
 } from '@/services/gallery';
+import type { Niche } from '@/lib/niches';
 
 export function useGallery() {
   const [pages, setPages] = useState<GalleryPage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedNiche, setSelectedNiche] = useState<Niche | null>(null);
+  const [nicheCounts, setNicheCounts] = useState<Record<string, number>>({});
 
   const fetchPages = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getGalleryPages();
-      setPages(data);
+      const [pagesData, countsData] = await Promise.all([
+        getGalleryPages(selectedNiche),
+        getNicheCounts(),
+      ]);
+      setPages(pagesData);
+      setNicheCounts(countsData);
     } catch (error) {
       console.error('Failed to fetch gallery:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedNiche]);
 
   useEffect(() => {
     fetchPages();
@@ -41,7 +49,15 @@ export function useGallery() {
     }
   }, []);
 
-  return { pages, loading, likePage, refetch: fetchPages };
+  return { 
+    pages, 
+    loading, 
+    likePage, 
+    refetch: fetchPages,
+    selectedNiche,
+    setSelectedNiche,
+    nicheCounts,
+  };
 }
 
 export function useGalleryStatus(userId: string | undefined) {

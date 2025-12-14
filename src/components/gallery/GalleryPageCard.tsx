@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import type { GalleryPage } from '@/services/gallery';
+import { NICHE_ICONS, type Niche } from '@/lib/niches';
 
 interface GalleryPageCardProps {
   page: GalleryPage;
@@ -77,11 +78,18 @@ export function GalleryPageCard({ page, onLike, isLiked, featured = false }: Gal
                   @{page.slug}
                 </p>
               </div>
-              {featured && (
-                <Badge variant="default" className="bg-primary/90 text-xs shrink-0">
-                  ⭐ {t('gallery.featured', 'Featured')}
-                </Badge>
-              )}
+              <div className="flex flex-col items-end gap-1 shrink-0">
+                {featured && (
+                  <Badge variant="default" className="bg-primary/90 text-xs">
+                    ⭐ {t('gallery.featured', 'Featured')}
+                  </Badge>
+                )}
+                {page.niche && page.niche !== 'other' && (
+                  <Badge variant="outline" className="text-xs bg-card/50">
+                    {NICHE_ICONS[page.niche as Niche] || '📌'} {t(`niches.${page.niche}`, page.niche)}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         </div>
