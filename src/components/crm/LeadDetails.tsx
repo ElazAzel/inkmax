@@ -42,7 +42,9 @@ import {
   PhoneCall,
   Video,
   FileText,
-  Send
+  Send,
+  Tag,
+  Globe
 } from 'lucide-react';
 import type { Lead } from '@/hooks/useLeads';
 
@@ -66,6 +68,22 @@ const interactionIcons: Record<InteractionType, React.ReactNode> = {
   email: <Mail className="h-4 w-4" />,
   message: <MessageSquare className="h-4 w-4" />,
   meeting: <Video className="h-4 w-4" />,
+};
+
+const sourceColors: Record<string, string> = {
+  form: 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30',
+  messenger: 'bg-indigo-500/20 text-indigo-500 border-indigo-500/30',
+  manual: 'bg-slate-500/20 text-slate-500 border-slate-500/30',
+  page_view: 'bg-cyan-500/20 text-cyan-500 border-cyan-500/30',
+  other: 'bg-gray-500/20 text-gray-500 border-gray-500/30',
+};
+
+const sourceIcons: Record<string, string> = {
+  form: '📝',
+  messenger: '💬',
+  manual: '✏️',
+  page_view: '👁️',
+  other: '📌',
 };
 
 export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
@@ -153,7 +171,30 @@ export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
                 <Calendar className="h-4 w-4" />
                 {t('crm.createdAt', 'Created')}: {formatDate(lead.created_at)}
               </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className={sourceColors[lead.source]}>
+                  {sourceIcons[lead.source]} {t(`crm.source.${lead.source}`, lead.source)}
+                </Badge>
+              </div>
             </Card>
+
+            {/* Form Data / Metadata */}
+            {lead.metadata && Object.keys(lead.metadata).length > 0 && (
+              <Card className="p-4">
+                <h4 className="font-medium text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                  <Tag className="h-4 w-4" />
+                  {t('crm.formData', 'Form Submission Data')}
+                </h4>
+                <div className="space-y-2">
+                  {Object.entries(lead.metadata).map(([key, value]) => (
+                    <div key={key} className="flex flex-col gap-1 p-2 bg-accent/50 rounded-lg">
+                      <span className="text-xs font-medium text-muted-foreground uppercase">{key}</span>
+                      <span className="text-sm break-words">{String(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
 
             {/* Status */}
             <div>
