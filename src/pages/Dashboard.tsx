@@ -91,7 +91,11 @@ export default function Dashboard() {
           onUpdateUsername={dashboard.usernameState.handleUpdateUsername}
           usernameSaving={dashboard.usernameState.saving}
           profileBlock={dashboard.profileBlock}
-          onUpdateProfile={dashboard.handleUpdateProfile}
+          onUpdateProfile={(updates) => {
+            dashboard.handleUpdateProfile(updates);
+            // Trigger edit_profile quest
+            dashboard.dailyQuests.markQuestComplete('edit_profile');
+          }}
           isPremium={dashboard.isPremium}
           premiumLoading={dashboard.premiumLoading}
           chatbotContext={dashboard.chatbotContext}
@@ -111,6 +115,10 @@ export default function Dashboard() {
           telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
           onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
           userId={dashboard.user?.id}
+          dailyQuests={dashboard.dailyQuests.quests}
+          completedQuests={dashboard.dailyQuests.completedQuests}
+          questsProgress={dashboard.dailyQuests.progress}
+          questsLoading={dashboard.dailyQuests.loading}
         />
 
         {/* Referral Panel in Settings Area */}

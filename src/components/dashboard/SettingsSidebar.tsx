@@ -12,6 +12,8 @@ import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
+import { DailyQuestsPanel } from '@/components/quests/DailyQuestsPanel';
+import type { Quest } from '@/services/quests';
 
 interface SettingsSidebarProps {
   show: boolean;
@@ -37,6 +39,10 @@ interface SettingsSidebarProps {
   telegramChatId?: string;
   onTelegramChange?: (enabled: boolean, chatId: string | null) => void;
   userId?: string;
+  dailyQuests?: Quest[];
+  completedQuests?: string[];
+  questsProgress?: { completed: number; total: number; bonusEarned: number };
+  questsLoading?: boolean;
 }
 
 export function SettingsSidebar({
@@ -63,6 +69,10 @@ export function SettingsSidebar({
   telegramChatId,
   onTelegramChange,
   userId,
+  dailyQuests,
+  completedQuests,
+  questsProgress,
+  questsLoading,
 }: SettingsSidebarProps) {
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
 
@@ -224,6 +234,16 @@ export function SettingsSidebar({
 
         {/* Streak Display */}
         <StreakDisplay userId={userId} />
+
+        {/* Daily Quests */}
+        {dailyQuests && questsProgress && (
+          <DailyQuestsPanel
+            quests={dailyQuests}
+            completedQuests={completedQuests || []}
+            progress={questsProgress}
+            loading={questsLoading}
+          />
+        )}
 
         {/* Gallery Toggle */}
         <GalleryToggle userId={userId} />
