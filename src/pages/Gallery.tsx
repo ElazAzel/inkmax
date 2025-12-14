@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CommunityGallery } from '@/components/gallery/CommunityGallery';
 import { Leaderboard } from '@/components/gallery/Leaderboard';
+import { TopReferrers } from '@/components/gallery/TopReferrers';
 import { useGallery } from '@/hooks/useGallery';
 
 export default function Gallery() {
@@ -67,10 +68,11 @@ export default function Gallery() {
       {/* Main content */}
       <div className="container max-w-6xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Leaderboard - mobile first, desktop sidebar */}
-          <div className="lg:col-span-1 order-1 lg:order-2">
-            <div className="lg:sticky lg:top-8">
+          {/* Sidebar - Leaderboard + Top Referrers */}
+          <div className="lg:col-span-1 order-1 lg:order-2 space-y-6">
+            <div className="lg:sticky lg:top-8 space-y-6">
               <Leaderboard />
+              <TopReferrers />
             </div>
           </div>
 
