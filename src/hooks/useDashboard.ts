@@ -16,6 +16,7 @@ import { useDashboardUsername } from '@/hooks/useDashboardUsername';
 import { useDashboardAI } from '@/hooks/useDashboardAI';
 import { useBlockEditor } from '@/hooks/useBlockEditor';
 import { useEditorModeToggle } from '@/hooks/useEditorModeToggle';
+import { useDailyQuests } from '@/hooks/useDailyQuests';
 import type { Block, ProfileBlock, PageData } from '@/types/page';
 
 /**
@@ -40,6 +41,9 @@ export function useDashboard() {
     isLoading: loading,
   });
 
+  // Daily quests
+  const dailyQuests = useDailyQuests(user?.id);
+
   // User profile
   const userProfile = useUserProfile(user?.id);
 
@@ -54,6 +58,7 @@ export function useDashboard() {
   const sharingState = useDashboardSharing({
     onPublish: publish,
     onSave: save,
+    onQuestComplete: dailyQuests.markQuestComplete,
   });
 
   // AI tools
@@ -65,6 +70,7 @@ export function useDashboard() {
       }
     },
     onAddBlock: addBlock,
+    onQuestComplete: dailyQuests.markQuestComplete,
   });
 
   // Block editing with undo
@@ -79,6 +85,7 @@ export function useDashboard() {
     playError,
     hapticSuccess: haptic.success,
     onBlockHint: blockHints.showHint,
+    onQuestComplete: dailyQuests.markQuestComplete,
   });
 
   // Editor mode toggle (linear/grid)
@@ -176,6 +183,9 @@ export function useDashboard() {
 
     // Haptic
     haptic,
+
+    // Daily quests
+    dailyQuests,
 
     // Actions
     handleSignOut,

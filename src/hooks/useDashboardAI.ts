@@ -18,12 +18,13 @@ interface AIBuilderResult {
 interface UseDashboardAIOptions {
   onUpdateProfile: (updates: { name: string; bio: string }) => void;
   onAddBlock: (block: Block) => void;
+  onQuestComplete?: (questKey: string) => void;
 }
 
 /**
  * Hook to manage AI generator state and handlers
  */
-export function useDashboardAI({ onUpdateProfile, onAddBlock }: UseDashboardAIOptions) {
+export function useDashboardAI({ onUpdateProfile, onAddBlock, onQuestComplete }: UseDashboardAIOptions) {
   const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
   const [aiGeneratorType, setAiGeneratorType] = useState<AIGeneratorType>('ai-builder');
 
@@ -53,6 +54,9 @@ export function useDashboardAI({ onUpdateProfile, onAddBlock }: UseDashboardAIOp
 
   const handleAIResult = useCallback(
     (result: AIBuilderResult) => {
+      // Trigger use_ai quest on any AI result
+      onQuestComplete?.('use_ai');
+      
       if (aiGeneratorType === 'ai-builder') {
         const { profile, blocks } = result;
 
@@ -73,7 +77,7 @@ export function useDashboardAI({ onUpdateProfile, onAddBlock }: UseDashboardAIOp
         toast.success(`Added ${blocks.length} blocks from AI`);
       }
     },
-    [aiGeneratorType, onUpdateProfile, onAddBlock]
+    [aiGeneratorType, onUpdateProfile, onAddBlock, onQuestComplete]
   );
 
   return {

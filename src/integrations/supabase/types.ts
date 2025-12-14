@@ -120,6 +120,33 @@ export type Database = {
           },
         ]
       }
+      daily_quests_completed: {
+        Row: {
+          completed_date: string
+          created_at: string
+          id: string
+          quest_key: string
+          reward_claimed: boolean
+          user_id: string
+        }
+        Insert: {
+          completed_date?: string
+          created_at?: string
+          id?: string
+          quest_key: string
+          reward_claimed?: boolean
+          user_id: string
+        }
+        Update: {
+          completed_date?: string
+          created_at?: string
+          id?: string
+          quest_key?: string
+          reward_claimed?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       lead_interactions: {
         Row: {
           content: string
@@ -526,6 +553,10 @@ export type Database = {
         Returns: Json
       }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
+      complete_daily_quest: {
+        Args: { p_bonus_hours?: number; p_quest_key: string; p_user_id: string }
+        Returns: Json
+      }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
       increment_block_clicks: {

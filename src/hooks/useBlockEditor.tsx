@@ -18,6 +18,7 @@ interface UseBlockEditorOptions {
   playError?: () => void;
   hapticSuccess?: () => void;
   onBlockHint?: (blockType: string, blockId: string) => void;
+  onQuestComplete?: (questKey: string) => void;
 }
 
 /**
@@ -40,6 +41,7 @@ export function useBlockEditor({
   playError,
   hapticSuccess,
   onBlockHint,
+  onQuestComplete,
 }: UseBlockEditorOptions) {
   const [editingBlock, setEditingBlock] = useState<Block | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -74,6 +76,9 @@ export function useBlockEditor({
         toast.success('Block added');
         onBlockHint?.(blockType, newBlock.id);
         
+        // Trigger add_block quest
+        onQuestComplete?.('add_block');
+        
         return { success: true, blockId: newBlock.id };
       } catch (error) {
         toast.error('Failed to add block');
@@ -81,7 +86,7 @@ export function useBlockEditor({
         return { success: false, error: 'Block creation failed' };
       }
     },
-    [isPremiumBlock, addBlock, playAdd, playError, onBlockHint]
+    [isPremiumBlock, addBlock, playAdd, playError, onBlockHint, onQuestComplete]
   );
 
   /**

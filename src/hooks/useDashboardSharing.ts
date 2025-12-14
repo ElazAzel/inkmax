@@ -9,12 +9,13 @@ const STORAGE_KEYS = {
 interface UseDashboardSharingOptions {
   onPublish: () => Promise<string | null>;
   onSave: () => Promise<void>;
+  onQuestComplete?: (questKey: string) => void;
 }
 
 /**
  * Hook to manage sharing, preview, and install prompt logic
  */
-export function useDashboardSharing({ onPublish, onSave }: UseDashboardSharingOptions) {
+export function useDashboardSharing({ onPublish, onSave, onQuestComplete }: UseDashboardSharingOptions) {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState('');
 
@@ -27,6 +28,8 @@ export function useDashboardSharing({ onPublish, onSave }: UseDashboardSharingOp
 
     if (copied) {
       toast.success('Link copied to clipboard!');
+      // Trigger share_page quest
+      onQuestComplete?.('share_page');
     } else {
       toast.error('Failed to copy link');
     }
@@ -38,7 +41,7 @@ export function useDashboardSharing({ onPublish, onSave }: UseDashboardSharingOp
       setTimeout(() => setShowInstallPrompt(true), 1000);
       localStorage.setItem(STORAGE_KEYS.INSTALL_PROMPT_SHOWN, 'true');
     }
-  }, [onPublish]);
+  }, [onPublish, onQuestComplete]);
 
   const handlePreview = useCallback(async () => {
     await onSave();
