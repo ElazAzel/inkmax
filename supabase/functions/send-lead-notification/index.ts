@@ -19,8 +19,6 @@ interface NotificationSettings {
   email_notifications_enabled: boolean | null;
   telegram_notifications_enabled: boolean | null;
   telegram_chat_id: string | null;
-  whatsapp_notifications_enabled: boolean | null;
-  whatsapp_phone: string | null;
 }
 
 // HTML encode user input to prevent XSS in emails
@@ -89,75 +87,6 @@ async function sendTelegramNotification(
   }
 }
 
-// Send WhatsApp notification via Twilio
-async function sendWhatsAppNotification(
-  phone: string,
-  leadName: string,
-  leadEmail: string | null,
-  leadPhone: string | null,
-  source: string
-): Promise<{ success: boolean; error?: string }> {
-  const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
-  const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
-  const fromNumber = Deno.env.get("TWILIO_WHATSAPP_FROM");
-
-  if (!accountSid || !authToken || !fromNumber) {
-    console.log("Twilio credentials not configured");
-    return { success: false, error: "WhatsApp not configured" };
-  }
-
-  const sourceLabels: Record<string, string> = {
-    'form': '📝 Форма',
-    'page_view': '👁 Просмотр',
-    'messenger': '💬 Мессенджер',
-    'manual': '✏️ Вручную',
-    'other': '📌 Другое'
-  };
-
-  let message = `🎉 *Новая заявка в LinkMAX!*\n\n`;
-  message += `👤 Имя: ${leadName}\n`;
-  if (leadEmail) message += `📧 Email: ${leadEmail}\n`;
-  if (leadPhone) message += `📱 Телефон: ${leadPhone}\n`;
-  message += `📍 Источник: ${sourceLabels[source] || source}`;
-
-  // Normalize phone number
-  let toNumber = phone.replace(/\D/g, '');
-  if (!toNumber.startsWith('+')) {
-    toNumber = '+' + toNumber;
-  }
-
-  try {
-    const credentials = btoa(`${accountSid}:${authToken}`);
-    const response = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Basic ${credentials}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          From: `whatsapp:${fromNumber}`,
-          To: `whatsapp:${toNumber}`,
-          Body: message
-        })
-      }
-    );
-
-    const result = await response.json();
-    if (!response.ok) {
-      console.error("Twilio API error:", result);
-      return { success: false, error: result.message };
-    }
-
-    console.log("WhatsApp notification sent successfully:", result.sid);
-    return { success: true };
-  } catch (error: any) {
-    console.error("WhatsApp send error:", error);
-    return { success: false, error: error.message };
-  }
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -180,7 +109,7 @@ serve(async (req) => {
     // Get notification settings from user profile
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
-      .select('email_notifications_enabled, telegram_notifications_enabled, telegram_chat_id, whatsapp_notifications_enabled, whatsapp_phone')
+      .select('email_notifications_enabled, telegram_notifications_enabled, telegram_chat_id')
       .eq('id', pageOwnerId)
       .maybeSingle();
 
@@ -191,12 +120,10 @@ serve(async (req) => {
     const settings: NotificationSettings = profile || {
       email_notifications_enabled: true,
       telegram_notifications_enabled: false,
-      telegram_chat_id: null,
-      whatsapp_notifications_enabled: false,
-      whatsapp_phone: null
+      telegram_chat_id: null
     };
 
-    const results: { email?: boolean; telegram?: boolean; whatsapp?: boolean } = {};
+    const results: { email?: boolean; telegram?: boolean } = {};
 
     // Send Telegram notification
     if (settings.telegram_notifications_enabled && settings.telegram_chat_id) {
@@ -208,18 +135,6 @@ serve(async (req) => {
         source
       );
       results.telegram = telegramResult.success;
-    }
-
-    // Send WhatsApp notification
-    if (settings.whatsapp_notifications_enabled && settings.whatsapp_phone) {
-      const whatsappResult = await sendWhatsAppNotification(
-        settings.whatsapp_phone,
-        leadName,
-        leadEmail,
-        leadPhone,
-        source
-      );
-      results.whatsapp = whatsappResult.success;
     }
 
     // Send email notification
