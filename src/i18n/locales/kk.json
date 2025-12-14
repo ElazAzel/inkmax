@@ -474,5 +474,56 @@
     "activityChart": "Белсенділік",
     "topBlocks": "Танымал мазмұн",
     "clicksByBlock": "Блоктар бойынша басулар"
+  },
+  "gallery": {
+    "title": "Қоғамдастық галереясы",
+    "subtitle": "Қоғамдастық жасаған беттерді табыңыз",
+    "shareToGallery": "Галереяда көрсету",
+    "shareDescription": "Сіздің бетіңіз қоғамдастық галереясында пайда болады",
+    "empty": "Әлі беттер жоқ",
+    "emptyDescription": "Бетіңізбен бөлісетін бірінші болыңыз!",
+    "noResults": "Іздеуге сәйкес беттер табылмады",
+    "statsPages": "Беттер",
+    "statsLikes": "Ұнатулар",
+    "statsViews": "Қаралымдар"
+  },
+  "leaderboard": {
+    "title": "Үздік беттер",
+    "week": "Апта",
+    "month": "Ай",
+    "all": "Барлығы",
+    "allTime": "Барлық уақыт",
+    "empty": "Осы кезеңде беттер жоқ"
+  },
+  "share": {
+    "published": "Бет жарияланды!",
+    "yourPageLink": "Сіздің бет сілтемеңіз",
+    "linkCopied": "Сілтеме көшірілді!",
+    "shareNow": "Қазір бөлісу",
+    "title": "Менің LinkMAX бетім!"
+  },
+  "referral": {
+    "inviteFriend": "Досыңызды шақырыңыз",
+    "bothGetBonus": "Екеуіңіз де +3 күн Premium аласыз!",
+    "shareReferralLink": "Реферал сілтемесін бөлісу",
+    "friendsInvited": "Шақырылған достар",
+    "bonusEarned": "Алынған бонус күндер"
+  },
+  "niches": {
+    "beauty": "Сұлулық",
+    "fitness": "Фитнес",
+    "food": "Тамақ және мейрамханалар",
+    "education": "Білім",
+    "art": "Өнер және дизайн",
+    "music": "Музыка",
+    "tech": "IT және технологиялар",
+    "business": "Бизнес",
+    "health": "Денсаулық",
+    "fashion": "Сән",
+    "travel": "Саяхат",
+    "realestate": "Жылжымайтын мүлік",
+    "events": "Іс-шаралар",
+    "services": "Қызметтер",
+    "other": "Басқа"
   }
 }

@@ -17,6 +17,7 @@ import { InstallPromptDialog } from '@/components/InstallPromptDialog';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
+import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublishDialog';
 import {
   DashboardHeader,
   MobileHeader,
@@ -285,6 +286,14 @@ export default function Dashboard() {
         open={dashboard.sharingState.showInstallPrompt}
         onClose={dashboard.sharingState.closeInstallPrompt}
         pageUrl={dashboard.sharingState.publishedUrl}
+      />
+
+      {/* Share After Publish Dialog with Referral */}
+      <ShareAfterPublishDialog
+        open={dashboard.sharingState.showShareDialog}
+        onOpenChange={dashboard.sharingState.closeShareDialog}
+        userId={dashboard.user?.id}
+        publishedUrl={dashboard.sharingState.publishedUrl}
       />
     </div>
   );
