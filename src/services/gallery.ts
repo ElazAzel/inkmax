@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import type { Niche } from '@/lib/niches';
 
 export interface GalleryPage {
   id: string;
@@ -9,18 +10,25 @@ export interface GalleryPage {
   gallery_likes: number;
   gallery_featured_at: string | null;
   view_count: number | null;
+  niche: string | null;
 }
 
 export type LeaderboardPeriod = 'week' | 'month' | 'all';
 
-export async function getGalleryPages(): Promise<GalleryPage[]> {
-  const { data, error } = await supabase
+export async function getGalleryPages(niche?: Niche | null): Promise<GalleryPage[]> {
+  let query = supabase
     .from('pages')
-    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count')
+    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
     .eq('is_in_gallery', true)
-    .eq('is_published', true)
+    .eq('is_published', true);
+
+  if (niche) {
+    query = query.eq('niche', niche);
+  }
+
+  const { data, error } = await query
     .order('gallery_featured_at', { ascending: false })
-    .limit(50);
+    .limit(100);
 
   if (error) {
     console.error('Error fetching gallery pages:', error);
@@ -30,10 +38,31 @@ export async function getGalleryPages(): Promise<GalleryPage[]> {
   return (data || []) as GalleryPage[];
 }
 
+export async function getNicheCounts(): Promise<Record<string, number>> {
+  const { data, error } = await supabase
+    .from('pages')
+    .select('niche')
+    .eq('is_in_gallery', true)
+    .eq('is_published', true);
+
+  if (error) {
+    console.error('Error fetching niche counts:', error);
+    return {};
+  }
+
+  const counts: Record<string, number> = {};
+  (data || []).forEach((page) => {
+    const niche = page.niche || 'other';
+    counts[niche] = (counts[niche] || 0) + 1;
+  });
+
+  return counts;
+}
+
 export async function getLeaderboardPages(period: LeaderboardPeriod = 'week'): Promise<GalleryPage[]> {
   let query = supabase
     .from('pages')
-    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count')
+    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
     .eq('is_in_gallery', true)
     .eq('is_published', true);
 

@@ -237,6 +237,7 @@ export type Database = {
           id: string
           is_in_gallery: boolean | null
           is_published: boolean | null
+          niche: string | null
           seo_meta: Json | null
           slug: string
           theme_settings: Json | null
@@ -257,6 +258,7 @@ export type Database = {
           id?: string
           is_in_gallery?: boolean | null
           is_published?: boolean | null
+          niche?: string | null
           seo_meta?: Json | null
           slug: string
           theme_settings?: Json | null
@@ -277,6 +279,7 @@ export type Database = {
           id?: string
           is_in_gallery?: boolean | null
           is_published?: boolean | null
+          niche?: string | null
           seo_meta?: Json | null
           slug?: string
           theme_settings?: Json | null

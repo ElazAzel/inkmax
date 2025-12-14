@@ -500,5 +500,22 @@
     "all": "All",
     "allTime": "All Time",
     "empty": "No pages yet for this period"
+  },
+  "niches": {
+    "beauty": "Beauty",
+    "fitness": "Fitness",
+    "food": "Food & Dining",
+    "education": "Education",
+    "art": "Art & Design",
+    "music": "Music",
+    "tech": "Tech & IT",
+    "business": "Business",
+    "health": "Health & Wellness",
+    "fashion": "Fashion",
+    "travel": "Travel",
+    "realestate": "Real Estate",
+    "events": "Events",
+    "services": "Services",
+    "other": "Other"
   }
 }

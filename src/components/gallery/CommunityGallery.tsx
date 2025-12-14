@@ -6,6 +6,7 @@ import { useGalleryFilters } from '@/hooks/useGalleryFilters';
 import { GalleryFilters } from './GalleryFilters';
 import { GalleryPageCard } from './GalleryPageCard';
 import { FeaturedPages } from './FeaturedPages';
+import { NicheFilter } from './NicheFilter';
 
 interface CommunityGalleryProps {
   compact?: boolean;
@@ -21,7 +22,7 @@ export function CommunityGallery({
   showFeatured = true,
 }: CommunityGalleryProps) {
   const { t } = useTranslation();
-  const { pages, loading, likePage } = useGallery();
+  const { pages, loading, likePage, selectedNiche, setSelectedNiche, nicheCounts } = useGallery();
   const [likedPages, setLikedPages] = useState<Set<string>>(new Set());
   
   const {
@@ -50,7 +51,7 @@ export function CommunityGallery({
     );
   }
 
-  if (pages.length === 0) {
+  if (pages.length === 0 && !selectedNiche) {
     return (
       <div className="text-center py-12">
         <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -64,8 +65,17 @@ export function CommunityGallery({
 
   return (
     <div className="space-y-6">
-      {/* Featured carousel (only on full view) */}
-      {showFeatured && !compact && featuredPages.length > 0 && (
+      {/* Niche filter */}
+      {showFilters && !compact && (
+        <NicheFilter
+          selectedNiche={selectedNiche}
+          onNicheChange={setSelectedNiche}
+          nicheCounts={nicheCounts}
+        />
+      )}
+
+      {/* Featured carousel (only on full view and no niche selected) */}
+      {showFeatured && !compact && !selectedNiche && featuredPages.length > 0 && (
         <FeaturedPages
           pages={featuredPages}
           onLike={handleLike}
@@ -73,7 +83,7 @@ export function CommunityGallery({
         />
       )}
 
-      {/* Filters */}
+      {/* Search and sort filters */}
       {showFilters && !compact && (
         <GalleryFilters
           search={search}
