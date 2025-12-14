@@ -562,6 +562,16 @@ export type Database = {
       }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
+      get_top_referrers: {
+        Args: { p_limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          referrals_count: number
+          user_id: string
+          username: string
+        }[]
+      }
       increment_block_clicks: {
         Args: { block_uuid: string }
         Returns: undefined
