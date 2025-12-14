@@ -15,6 +15,7 @@ import { AchievementNotification } from '@/components/achievements/AchievementNo
 import { InstallPromptDialog } from '@/components/InstallPromptDialog';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LeadsPanel } from '@/components/crm/LeadsPanel';
+import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import {
   DashboardHeader,
   MobileHeader,
@@ -34,6 +35,7 @@ export default function Dashboard() {
   const [showMobileSettings, setShowMobileSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showLeads, setShowLeads] = useState(false);
+  const [showReferral, setShowReferral] = useState(false);
 
   // Loading/Error states
   if (dashboard.loading) return <LoadingState />;
@@ -108,6 +110,13 @@ export default function Dashboard() {
           telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
           onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
         />
+
+        {/* Referral Panel in Settings Area */}
+        {showSettings && !dashboard.isMobile && (
+          <div className="fixed left-4 bottom-4 w-80 z-40 hidden md:block">
+            <ReferralPanel userId={dashboard.user?.id} compact />
+          </div>
+        )}
 
         {/* Preview Editor */}
         <div
@@ -190,6 +199,7 @@ export default function Dashboard() {
         telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
         telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
         onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
+        userId={dashboard.user?.id}
         onSignOut={dashboard.handleSignOut}
       />
 
