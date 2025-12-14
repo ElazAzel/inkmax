@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, Users } from 'lucide-react';
 
 interface MobileHeaderProps {
   onSignOut: () => void;
+  onOpenGallery: () => void;
 }
 
-export function MobileHeader({ onSignOut }: MobileHeaderProps) {
+export function MobileHeader({ onSignOut, onOpenGallery }: MobileHeaderProps) {
   return (
     <header className="sticky top-0 z-50 md:hidden">
       <div className="mx-3 mt-2">
@@ -21,14 +22,23 @@ export function MobileHeader({ onSignOut }: MobileHeaderProps) {
             </div>
             <h1 className="text-lg font-bold text-primary">LinkMAX</h1>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onSignOut}
-            className="hover:bg-destructive/10 hover:text-destructive"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onOpenGallery}
+            >
+              <Users className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onSignOut}
+              className="hover:bg-destructive/10 hover:text-destructive"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </header>

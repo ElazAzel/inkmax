@@ -34,6 +34,7 @@ interface DashboardHeaderProps {
   onOpenAchievements: () => void;
   onOpenCRM: () => void;
   userId?: string;
+  onOpenGallery: () => void;
 }
 
 export function DashboardHeader({
@@ -52,6 +53,7 @@ export function DashboardHeader({
   onOpenTemplates,
   onOpenAchievements,
   onOpenCRM,
+  onOpenGallery,
   userId,
 }: DashboardHeaderProps) {
   const { t } = useTranslation();
@@ -109,6 +111,11 @@ export function DashboardHeader({
               <Button variant="ghost" size="sm" onClick={onOpenCRM}>
                 <Users className="h-4 w-4 mr-2" />
                 CRM
+              </Button>
+
+              <Button variant="ghost" size="sm" onClick={onOpenGallery}>
+                <Users className="h-4 w-4 mr-2" />
+                Gallery
               </Button>
 
               <Button

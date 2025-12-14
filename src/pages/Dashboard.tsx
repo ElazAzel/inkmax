@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useDashboard } from '@/hooks/useDashboard';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
@@ -26,6 +27,7 @@ import {
 } from '@/components/dashboard';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const dashboard = useDashboard();
 
   // Local UI state
@@ -36,6 +38,8 @@ export default function Dashboard() {
   const [showAchievements, setShowAchievements] = useState(false);
   const [showLeads, setShowLeads] = useState(false);
   const [showReferral, setShowReferral] = useState(false);
+
+  const handleOpenGallery = () => navigate('/gallery');
 
   // Loading/Error states
   if (dashboard.loading) return <LoadingState />;
@@ -74,11 +78,12 @@ export default function Dashboard() {
         onOpenTemplates={() => setTemplateGalleryOpen(true)}
         onOpenAchievements={() => setShowAchievements(true)}
         onOpenCRM={() => setShowLeads(true)}
+        onOpenGallery={handleOpenGallery}
         userId={dashboard.user?.id}
       />
 
       {/* Mobile Header */}
-      <MobileHeader onSignOut={dashboard.handleSignOut} />
+      <MobileHeader onSignOut={dashboard.handleSignOut} onOpenGallery={handleOpenGallery} />
 
       {/* Main Content */}
       <div className="relative">
