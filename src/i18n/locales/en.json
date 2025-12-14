@@ -463,5 +463,42 @@
     "activityChart": "Activity",
     "topBlocks": "Top Content",
     "clicksByBlock": "Clicks by Block"
+  },
+  "gallery": {
+    "title": "Community Gallery",
+    "subtitle": "Discover amazing pages created by our community",
+    "shareToGallery": "Share to Gallery",
+    "shareDescription": "Show your page in the community gallery",
+    "empty": "No pages yet",
+    "emptyDescription": "Be the first to share your page!",
+    "noResults": "No pages found matching your search",
+    "searchPlaceholder": "Search pages...",
+    "sortBy": "Sort by",
+    "sortRecent": "Recent",
+    "sortPopular": "Popular",
+    "sortTrending": "Trending",
+    "totalPages": "{{count}} pages in gallery",
+    "searchResults": "Filtering by \"{{search}}\"",
+    "featuredPages": "Featured Pages",
+    "featured": "Featured",
+    "like": "Like",
+    "liked": "Liked",
+    "alreadyLiked": "You already liked this page",
+    "likeTooltip": "Show some love!",
+    "shareTooltip": "Copy page link",
+    "viewPage": "Open page",
+    "linkCopied": "Link copied!",
+    "copyError": "Failed to copy",
+    "statsPages": "Pages",
+    "statsLikes": "Likes",
+    "statsViews": "Views"
+  },
+  "leaderboard": {
+    "title": "Top Pages",
+    "week": "Week",
+    "month": "Month",
+    "all": "All",
+    "allTime": "All Time",
+    "empty": "No pages yet for this period"
   }
 }

@@ -463,5 +463,42 @@
     "activityChart": "Активность",
     "topBlocks": "Популярный контент",
     "clicksByBlock": "Клики по блокам"
+  },
+  "gallery": {
+    "title": "Галерея сообщества",
+    "subtitle": "Откройте для себя страницы созданные нашим сообществом",
+    "shareToGallery": "Показать в галерее",
+    "shareDescription": "Ваша страница появится в галерее сообщества",
+    "empty": "Пока нет страниц",
+    "emptyDescription": "Станьте первым, кто поделится своей страницей!",
+    "noResults": "Страницы не найдены",
+    "searchPlaceholder": "Поиск страниц...",
+    "sortBy": "Сортировка",
+    "sortRecent": "Новые",
+    "sortPopular": "Популярные",
+    "sortTrending": "В тренде",
+    "totalPages": "{{count}} страниц в галерее",
+    "searchResults": "Поиск: \"{{search}}\"",
+    "featuredPages": "Избранные страницы",
+    "featured": "Избранное",
+    "like": "Нравится",
+    "liked": "Понравилось",
+    "alreadyLiked": "Вы уже оценили эту страницу",
+    "likeTooltip": "Поставьте лайк!",
+    "shareTooltip": "Скопировать ссылку",
+    "viewPage": "Открыть страницу",
+    "linkCopied": "Ссылка скопирована!",
+    "copyError": "Не удалось скопировать",
+    "statsPages": "Страниц",
+    "statsLikes": "Лайков",
+    "statsViews": "Просмотров"
+  },
+  "leaderboard": {
+    "title": "Топ страниц",
+    "week": "Неделя",
+    "month": "Месяц",
+    "all": "Все",
+    "allTime": "Всё время",
+    "empty": "Нет страниц за этот период"
   }
 }
