@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { loadUserProfile, updateEmailNotifications, type UserProfile } from '@/services/user';
+import { 
+  loadUserProfile, 
+  updateEmailNotifications, 
+  updateTelegramNotifications,
+  updateWhatsAppNotifications,
+  type UserProfile 
+} from '@/services/user';
 import { toast } from 'sonner';
 
 export function useUserProfile(userId: string | undefined) {
@@ -50,6 +56,56 @@ export function useUserProfile(userId: string | undefined) {
     }
   }, [userId]);
 
+  const handleUpdateTelegramNotifications = useCallback(async (enabled: boolean, chatId: string | null) => {
+    if (!userId) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await updateTelegramNotifications(userId, enabled, chatId);
+      if (error) {
+        toast.error('Failed to update Telegram settings');
+        return;
+      }
+      
+      setProfile(prev => prev ? { 
+        ...prev, 
+        telegram_notifications_enabled: enabled,
+        telegram_chat_id: chatId
+      } : null);
+      toast.success(enabled ? 'Telegram notifications enabled' : 'Telegram notifications disabled');
+    } catch (error) {
+      console.error('Error updating Telegram notifications:', error);
+      toast.error('Failed to update Telegram settings');
+    } finally {
+      setSaving(false);
+    }
+  }, [userId]);
+
+  const handleUpdateWhatsAppNotifications = useCallback(async (enabled: boolean, phone: string | null) => {
+    if (!userId) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await updateWhatsAppNotifications(userId, enabled, phone);
+      if (error) {
+        toast.error('Failed to update WhatsApp settings');
+        return;
+      }
+      
+      setProfile(prev => prev ? { 
+        ...prev, 
+        whatsapp_notifications_enabled: enabled,
+        whatsapp_phone: phone
+      } : null);
+      toast.success(enabled ? 'WhatsApp notifications enabled' : 'WhatsApp notifications disabled');
+    } catch (error) {
+      console.error('Error updating WhatsApp notifications:', error);
+      toast.error('Failed to update WhatsApp settings');
+    } finally {
+      setSaving(false);
+    }
+  }, [userId]);
+
   return {
     profile,
     loading,
@@ -58,5 +114,7 @@ export function useUserProfile(userId: string | undefined) {
     setProfile,
     refresh: loadProfile,
     updateEmailNotifications: handleUpdateEmailNotifications,
+    updateTelegramNotifications: handleUpdateTelegramNotifications,
+    updateWhatsAppNotifications: handleUpdateWhatsAppNotifications,
   };
 }

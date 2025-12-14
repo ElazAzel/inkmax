@@ -350,9 +350,13 @@ export type Database = {
           email_notifications_enabled: boolean | null
           id: string
           is_premium: boolean | null
+          telegram_chat_id: string | null
+          telegram_notifications_enabled: boolean | null
           trial_ends_at: string | null
           updated_at: string | null
           username: string | null
+          whatsapp_notifications_enabled: boolean | null
+          whatsapp_phone: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -362,9 +366,13 @@ export type Database = {
           email_notifications_enabled?: boolean | null
           id: string
           is_premium?: boolean | null
+          telegram_chat_id?: string | null
+          telegram_notifications_enabled?: boolean | null
           trial_ends_at?: string | null
           updated_at?: string | null
           username?: string | null
+          whatsapp_notifications_enabled?: boolean | null
+          whatsapp_phone?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -374,9 +382,13 @@ export type Database = {
           email_notifications_enabled?: boolean | null
           id?: string
           is_premium?: boolean | null
+          telegram_chat_id?: string | null
+          telegram_notifications_enabled?: boolean | null
           trial_ends_at?: string | null
           updated_at?: string | null
           username?: string | null
+          whatsapp_notifications_enabled?: boolean | null
+          whatsapp_phone?: string | null
         }
         Relationships: []
       }

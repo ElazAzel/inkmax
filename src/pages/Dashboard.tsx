@@ -104,6 +104,12 @@ export default function Dashboard() {
           }}
           emailNotificationsEnabled={dashboard.userProfile.profile?.email_notifications_enabled ?? true}
           onEmailNotificationsChange={dashboard.userProfile.updateEmailNotifications}
+          telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
+          telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
+          onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
+          whatsappEnabled={dashboard.userProfile.profile?.whatsapp_notifications_enabled ?? false}
+          whatsappPhone={dashboard.userProfile.profile?.whatsapp_phone ?? ''}
+          onWhatsAppChange={dashboard.userProfile.updateWhatsAppNotifications}
         />
 
         {/* Preview Editor */}
@@ -184,6 +190,12 @@ export default function Dashboard() {
         }}
         emailNotificationsEnabled={dashboard.userProfile.profile?.email_notifications_enabled ?? true}
         onEmailNotificationsChange={dashboard.userProfile.updateEmailNotifications}
+        telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
+        telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
+        onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
+        whatsappEnabled={dashboard.userProfile.profile?.whatsapp_notifications_enabled ?? false}
+        whatsappPhone={dashboard.userProfile.profile?.whatsapp_phone ?? ''}
+        onWhatsAppChange={dashboard.userProfile.updateWhatsAppNotifications}
         onSignOut={dashboard.handleSignOut}
       />
 
