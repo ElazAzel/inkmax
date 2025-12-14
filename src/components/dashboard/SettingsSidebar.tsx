@@ -7,9 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Users } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
+import { GalleryToggle } from '@/components/gallery/GalleryToggle';
 
 interface SettingsSidebarProps {
   show: boolean;
@@ -34,6 +35,7 @@ interface SettingsSidebarProps {
   telegramEnabled?: boolean;
   telegramChatId?: string;
   onTelegramChange?: (enabled: boolean, chatId: string | null) => void;
+  userId?: string;
 }
 
 export function SettingsSidebar({
@@ -59,6 +61,7 @@ export function SettingsSidebar({
   telegramEnabled,
   telegramChatId,
   onTelegramChange,
+  userId,
 }: SettingsSidebarProps) {
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
 
@@ -217,6 +220,9 @@ export function SettingsSidebar({
             )}
           </Card>
         )}
+
+        {/* Gallery Toggle */}
+        <GalleryToggle userId={userId} />
 
         {/* Notifications Settings */}
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">

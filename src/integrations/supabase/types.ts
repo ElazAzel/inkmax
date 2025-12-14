@@ -204,8 +204,11 @@ export type Database = {
           created_at: string | null
           description: string | null
           editor_mode: string
+          gallery_featured_at: string | null
+          gallery_likes: number | null
           grid_config: Json | null
           id: string
+          is_in_gallery: boolean | null
           is_published: boolean | null
           seo_meta: Json | null
           slug: string
@@ -221,8 +224,11 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           editor_mode?: string
+          gallery_featured_at?: string | null
+          gallery_likes?: number | null
           grid_config?: Json | null
           id?: string
+          is_in_gallery?: boolean | null
           is_published?: boolean | null
           seo_meta?: Json | null
           slug: string
@@ -238,8 +244,11 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           editor_mode?: string
+          gallery_featured_at?: string | null
+          gallery_likes?: number | null
           grid_config?: Json | null
           id?: string
+          is_in_gallery?: boolean | null
           is_published?: boolean | null
           seo_meta?: Json | null
           slug?: string
@@ -512,10 +521,12 @@ export type Database = {
         Returns: undefined
       }
       increment_view_count: { Args: { page_slug: string }; Returns: undefined }
+      like_gallery_page: { Args: { p_page_id: string }; Returns: undefined }
       save_page_blocks: {
         Args: { p_blocks: Json; p_is_premium?: boolean; p_page_id: string }
         Returns: undefined
       }
+      toggle_gallery_status: { Args: { p_user_id: string }; Returns: boolean }
       upsert_user_page:
         | {
             Args: {
