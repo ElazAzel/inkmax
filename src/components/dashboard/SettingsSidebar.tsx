@@ -4,8 +4,9 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 
@@ -27,6 +28,8 @@ interface SettingsSidebarProps {
   editorMode?: EditorMode;
   gridConfig?: GridConfig;
   onGridConfigChange?: (config: Partial<GridConfig>) => void;
+  emailNotificationsEnabled?: boolean;
+  onEmailNotificationsChange?: (enabled: boolean) => void;
 }
 
 export function SettingsSidebar({
@@ -47,6 +50,8 @@ export function SettingsSidebar({
   editorMode,
   gridConfig,
   onGridConfigChange,
+  emailNotificationsEnabled,
+  onEmailNotificationsChange,
 }: SettingsSidebarProps) {
   if (!show) return null;
 
@@ -204,7 +209,27 @@ export function SettingsSidebar({
           </Card>
         )}
 
-        {/* Chatbot Settings */}
+        {/* Notifications Settings */}
+        <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="p-1.5 rounded-lg bg-green-500/10">
+              <Bell className="h-4 w-4 text-green-500" />
+            </div>
+            <h3 className="font-semibold">Notifications</h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label className="text-sm">Email notifications</Label>
+              <p className="text-xs text-muted-foreground">
+                Get notified about new leads
+              </p>
+            </div>
+            <Switch
+              checked={emailNotificationsEnabled ?? true}
+              onCheckedChange={onEmailNotificationsChange}
+            />
+          </div>
+        </Card>
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
           <div className="flex items-center gap-2 mb-3">
             <div className="p-1.5 rounded-lg bg-blue-500/10">

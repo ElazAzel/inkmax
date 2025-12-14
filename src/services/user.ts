@@ -13,6 +13,7 @@ export interface UserProfile {
   avatar_url: string | null;
   is_premium: boolean | null;
   trial_ends_at: string | null;
+  email_notifications_enabled: boolean | null;
 }
 
 export interface UpdateUsernameResult {
@@ -169,5 +170,28 @@ export async function checkPremiumStatus(userId: string): Promise<PremiumStatusR
     return { isPremium, trialEndsAt: data.trial_ends_at, inTrial };
   } catch (error) {
     return { isPremium: false, trialEndsAt: null, inTrial: false };
+  }
+}
+
+/**
+ * Update email notification preference
+ */
+export async function updateEmailNotifications(
+  userId: string,
+  enabled: boolean
+): Promise<ApiResult<boolean>> {
+  try {
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ email_notifications_enabled: enabled })
+      .eq('id', userId);
+
+    if (error) {
+      return { data: null, error: wrapError(error) };
+    }
+
+    return { data: enabled, error: null };
+  } catch (error) {
+    return { data: null, error: wrapError(error) };
   }
 }

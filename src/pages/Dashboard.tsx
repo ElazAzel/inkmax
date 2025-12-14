@@ -102,6 +102,8 @@ export default function Dashboard() {
               gridConfig: { ...dashboard.pageData?.gridConfig, ...config },
             });
           }}
+          emailNotificationsEnabled={dashboard.userProfile.profile?.email_notifications_enabled ?? true}
+          onEmailNotificationsChange={dashboard.userProfile.updateEmailNotifications}
         />
 
         {/* Preview Editor */}
@@ -180,6 +182,8 @@ export default function Dashboard() {
             gridConfig: { ...dashboard.pageData?.gridConfig, ...config },
           });
         }}
+        emailNotificationsEnabled={dashboard.userProfile.profile?.email_notifications_enabled ?? true}
+        onEmailNotificationsChange={dashboard.userProfile.updateEmailNotifications}
         onSignOut={dashboard.handleSignOut}
       />
 
