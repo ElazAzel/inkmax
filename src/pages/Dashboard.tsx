@@ -107,9 +107,6 @@ export default function Dashboard() {
           telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
           telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
           onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
-          whatsappEnabled={dashboard.userProfile.profile?.whatsapp_notifications_enabled ?? false}
-          whatsappPhone={dashboard.userProfile.profile?.whatsapp_phone ?? ''}
-          onWhatsAppChange={dashboard.userProfile.updateWhatsAppNotifications}
         />
 
         {/* Preview Editor */}
@@ -193,9 +190,6 @@ export default function Dashboard() {
         telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
         telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
         onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
-        whatsappEnabled={dashboard.userProfile.profile?.whatsapp_notifications_enabled ?? false}
-        whatsappPhone={dashboard.userProfile.profile?.whatsapp_phone ?? ''}
-        onWhatsAppChange={dashboard.userProfile.updateWhatsAppNotifications}
         onSignOut={dashboard.handleSignOut}
       />
 

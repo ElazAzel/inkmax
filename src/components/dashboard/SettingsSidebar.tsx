@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Phone } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 
@@ -34,9 +34,6 @@ interface SettingsSidebarProps {
   telegramEnabled?: boolean;
   telegramChatId?: string;
   onTelegramChange?: (enabled: boolean, chatId: string | null) => void;
-  whatsappEnabled?: boolean;
-  whatsappPhone?: string;
-  onWhatsAppChange?: (enabled: boolean, phone: string | null) => void;
 }
 
 export function SettingsSidebar({
@@ -62,12 +59,8 @@ export function SettingsSidebar({
   telegramEnabled,
   telegramChatId,
   onTelegramChange,
-  whatsappEnabled,
-  whatsappPhone,
-  onWhatsAppChange,
 }: SettingsSidebarProps) {
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
-  const [localWhatsappPhone, setLocalWhatsappPhone] = useState(whatsappPhone || '');
 
   if (!show) return null;
 
@@ -276,35 +269,6 @@ export function SettingsSidebar({
               )}
             </div>
             
-            {/* WhatsApp */}
-            <div className="space-y-2 pt-2 border-t border-border/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-green-500" />
-                  <Label className="text-sm">WhatsApp</Label>
-                </div>
-                <Switch
-                  checked={whatsappEnabled ?? false}
-                  onCheckedChange={(enabled) => {
-                    onWhatsAppChange?.(enabled, enabled ? localWhatsappPhone : null);
-                  }}
-                />
-              </div>
-              {whatsappEnabled && (
-                <div className="space-y-1">
-                  <Input
-                    placeholder="+7 XXX XXX XX XX"
-                    value={localWhatsappPhone}
-                    onChange={(e) => setLocalWhatsappPhone(e.target.value)}
-                    onBlur={() => onWhatsAppChange?.(true, localWhatsappPhone)}
-                    className="bg-background/50 text-sm"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Phone number linked to WhatsApp
-                  </p>
-                </div>
-              )}
-            </div>
           </div>
         </Card>
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">

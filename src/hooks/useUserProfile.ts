@@ -3,7 +3,6 @@ import {
   loadUserProfile, 
   updateEmailNotifications, 
   updateTelegramNotifications,
-  updateWhatsAppNotifications,
   type UserProfile 
 } from '@/services/user';
 import { toast } from 'sonner';
@@ -81,31 +80,6 @@ export function useUserProfile(userId: string | undefined) {
     }
   }, [userId]);
 
-  const handleUpdateWhatsAppNotifications = useCallback(async (enabled: boolean, phone: string | null) => {
-    if (!userId) return;
-    
-    setSaving(true);
-    try {
-      const { error } = await updateWhatsAppNotifications(userId, enabled, phone);
-      if (error) {
-        toast.error('Failed to update WhatsApp settings');
-        return;
-      }
-      
-      setProfile(prev => prev ? { 
-        ...prev, 
-        whatsapp_notifications_enabled: enabled,
-        whatsapp_phone: phone
-      } : null);
-      toast.success(enabled ? 'WhatsApp notifications enabled' : 'WhatsApp notifications disabled');
-    } catch (error) {
-      console.error('Error updating WhatsApp notifications:', error);
-      toast.error('Failed to update WhatsApp settings');
-    } finally {
-      setSaving(false);
-    }
-  }, [userId]);
-
   return {
     profile,
     loading,
@@ -115,6 +89,5 @@ export function useUserProfile(userId: string | undefined) {
     refresh: loadProfile,
     updateEmailNotifications: handleUpdateEmailNotifications,
     updateTelegramNotifications: handleUpdateTelegramNotifications,
-    updateWhatsAppNotifications: handleUpdateWhatsAppNotifications,
   };
 }
