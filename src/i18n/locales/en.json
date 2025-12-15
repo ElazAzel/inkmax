@@ -4,7 +4,15 @@
     "nicheDescription": "Choose a category for your page",
     "preview": "Gallery Preview",
     "previewDesc": "Custom image shown in the gallery",
-    "removePreview": "Remove custom preview"
+    "removePreview": "Remove custom preview",
+    "notifications": "Notifications",
+    "emailDesc": "New leads via email",
+    "telegramDesc": "Instant notifications",
+    "telegramChatId": "Your Chat ID",
+    "telegramHelp": "Get your ID from"
+  },
+  "common": {
+    "save": "Save"
   },
   "niche": {
     "barber": "Barber",
