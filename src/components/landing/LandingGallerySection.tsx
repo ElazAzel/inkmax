@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Users, ArrowRight, Crown, Eye, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useGallery } from '@/hooks/useGallery';
+import { PagePreview } from '@/components/gallery/PagePreview';
 
 export function LandingGallerySection() {
   const { t } = useTranslation();
@@ -36,49 +36,51 @@ export function LandingGallerySection() {
         </div>
 
         {/* Gallery grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
           {displayPages.map((page) => (
             <Card 
               key={page.id} 
               className="group cursor-pointer bg-card/50 backdrop-blur-xl border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-glass-lg overflow-hidden"
               onClick={() => navigate(`/${page.slug}`)}
             >
-              <CardContent className="p-3 sm:p-4">
-                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                  <Avatar className="h-10 w-10 sm:h-12 sm:w-12 ring-2 ring-border/50 group-hover:ring-primary/30 transition-all">
-                    <AvatarImage src={page.avatar_url || ''} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs sm:text-sm">
-                      {page.title?.charAt(0) || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="font-semibold text-sm sm:text-base truncate">
-                        {page.title || page.slug}
-                      </h3>
-                      {page.is_premium && (
-                        <Crown className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary flex-shrink-0" />
-                      )}
-                    </div>
-                    {page.niche && (
-                      <Badge variant="secondary" className="text-[10px] sm:text-xs mt-0.5">
-                        {t(`niches.${page.niche}`, page.niche)}
-                      </Badge>
-                    )}
-                  </div>
+              {/* Page Preview Screenshot */}
+              <PagePreview
+                slug={page.slug}
+                title={page.title}
+                avatarUrl={page.avatar_url}
+                className="aspect-[4/3] w-full"
+              />
+              
+              {/* Page Info */}
+              <div className="p-3 sm:p-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <h3 className="font-semibold text-sm sm:text-base truncate flex-1">
+                    {page.title || page.slug}
+                  </h3>
+                  {page.is_premium && (
+                    <Crown className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                  )}
                 </div>
                 
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Eye className="h-3 w-3" />
-                    {page.view_count || 0}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Heart className="h-3 w-3" />
-                    {page.gallery_likes || 0}
-                  </span>
+                <div className="flex items-center justify-between">
+                  {page.niche && (
+                    <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                      {t(`niches.${page.niche}`, page.niche)}
+                    </Badge>
+                  )}
+                  
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground ml-auto">
+                    <span className="flex items-center gap-1">
+                      <Eye className="h-3 w-3" />
+                      {page.view_count || 0}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-3 w-3" />
+                      {page.gallery_likes || 0}
+                    </span>
+                  </div>
                 </div>
-              </CardContent>
+              </div>
             </Card>
           ))}
         </div>
