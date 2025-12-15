@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { Check, Loader2, MessageCircle, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Check, Loader2, MessageCircle, ExternalLink, ArrowLeft, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -13,11 +13,15 @@ interface TelegramVerificationProps {
   onBack: () => void;
 }
 
+// Bot username - should match your actual bot
+const LINKMAX_BOT_USERNAME = 'linkmaxbot';
+
 export function TelegramVerification({ onVerified, onBack }: TelegramVerificationProps) {
   const { t } = useTranslation();
   const [chatId, setChatId] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleVerify = async () => {
     const cleanChatId = chatId.trim().replace(/[^0-9-]/g, '');
@@ -28,13 +32,14 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
     }
 
     setIsVerifying(true);
+    setError(null);
     
     try {
-      const { data, error } = await supabase.functions.invoke('validate-telegram', {
+      const { data, error: invokeError } = await supabase.functions.invoke('validate-telegram', {
         body: { chatId: cleanChatId },
       });
 
-      if (error) throw error;
+      if (invokeError) throw invokeError;
 
       if (data?.valid) {
         setIsVerified(true);
@@ -43,11 +48,20 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
           onVerified(cleanChatId);
         }, 500);
       } else {
-        toast.error(data?.error || t('telegram.invalidChatId', 'Неверный Chat ID'));
+        // Handle specific errors
+        if (data?.error === 'invalid_chat_id' || data?.description?.includes('chat not found')) {
+          setError(t('telegram.chatNotFound', 'Чат не найден. Убедитесь, что вы начали диалог с ботом @linkmaxbot и отправили /start'));
+        } else if (data?.error === 'cannot_send_message') {
+          setError(t('telegram.cannotSendMessage', 'Не удалось отправить сообщение. Начните диалог с ботом @linkmaxbot'));
+        } else {
+          setError(data?.description || t('telegram.invalidChatId', 'Неверный Chat ID'));
+        }
+        toast.error(t('telegram.verificationFailed', 'Ошибка проверки'));
       }
-    } catch (error: any) {
-      console.error('Telegram verification error:', error);
-      toast.error(t('telegram.verificationError', 'Ошибка проверки. Попробуйте снова.'));
+    } catch (err: any) {
+      console.error('Telegram verification error:', err);
+      setError(t('telegram.verificationError', 'Ошибка проверки. Попробуйте снова.'));
+      toast.error(t('telegram.verificationError', 'Ошибка проверки'));
     } finally {
       setIsVerifying(false);
     }
@@ -79,17 +93,17 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
             1
           </div>
           <div>
-            <p className="text-sm">
-              {t('telegram.step1', 'Откройте бота')} <span className="font-mono text-primary">@userinfobot</span> {t('telegram.inTelegram', 'в Telegram')}
+            <p className="text-sm font-medium">
+              {t('telegram.step1New', 'Откройте бота LinkMAX в Telegram')}
             </p>
             <a 
-              href="https://t.me/userinfobot" 
+              href={`https://t.me/${LINKMAX_BOT_USERNAME}`}
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
+              className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-1"
             >
               <ExternalLink className="h-3 w-3" />
-              t.me/userinfobot
+              t.me/{LINKMAX_BOT_USERNAME}
             </a>
           </div>
         </div>
@@ -99,7 +113,7 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
             2
           </div>
           <p className="text-sm">
-            {t('telegram.step2', 'Отправьте боту команду /start')}
+            {t('telegram.step2New', 'Нажмите START или отправьте /start')}
           </p>
         </div>
         
@@ -108,10 +122,31 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
             3
           </div>
           <p className="text-sm">
-            {t('telegram.step3', 'Скопируйте ваш ID (числовое значение) и вставьте ниже')}
+            {t('telegram.step3New', 'Бот отправит вам ваш Chat ID - скопируйте его сюда')}
           </p>
         </div>
       </Card>
+
+      {/* Alternative method */}
+      <details className="text-xs text-muted-foreground">
+        <summary className="cursor-pointer hover:text-foreground">
+          {t('telegram.alternativeMethod', 'Альтернативный способ получить Chat ID')}
+        </summary>
+        <div className="mt-2 pl-4 border-l-2 border-border">
+          <p>{t('telegram.altStep1', '1. Откройте @userinfobot в Telegram')}</p>
+          <p>{t('telegram.altStep2', '2. Отправьте /start')}</p>
+          <p>{t('telegram.altStep3', '3. Скопируйте числовой ID')}</p>
+          <p className="mt-1 text-yellow-600">{t('telegram.altWarning', '⚠️ После этого обязательно напишите /start боту @linkmaxbot')}</p>
+        </div>
+      </details>
+
+      {/* Error display */}
+      {error && (
+        <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-xl">
+          <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
       {/* Chat ID Input */}
       <div className="space-y-2">
@@ -122,7 +157,10 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
           <Input
             id="telegram-chat-id"
             value={chatId}
-            onChange={(e) => setChatId(e.target.value.replace(/[^0-9-]/g, ''))}
+            onChange={(e) => {
+              setChatId(e.target.value.replace(/[^0-9-]/g, ''));
+              setError(null);
+            }}
             placeholder="123456789"
             className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50 font-mono"
             disabled={isVerifying || isVerified}
