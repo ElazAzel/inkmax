@@ -10,14 +10,19 @@ function TextBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
   
   return (
     <div className="space-y-4">
-      <MultilingualInput
-        label={t('fields.content', 'Content')}
-        value={migrateToMultilingual(formData.content)}
-        onChange={(value) => onChange({ ...formData, content: value })}
-        type="textarea"
-        placeholder="Enter your text..."
-        required
-      />
+      <div className="space-y-2">
+        <MultilingualInput
+          label={t('fields.content', 'Content')}
+          value={migrateToMultilingual(formData.content)}
+          onChange={(value) => onChange({ ...formData, content: value })}
+          type="textarea"
+          placeholder="Enter your text..."
+          required
+        />
+        <p className="text-xs text-muted-foreground">
+          {t('hints.richText', 'Для ссылок используйте формат [текст](url). Переносы строк сохраняются.')}
+        </p>
+      </div>
       
       <div>
         <Label>{t('fields.style', 'Style')}</Label>
