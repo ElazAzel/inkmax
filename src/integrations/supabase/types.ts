@@ -120,6 +120,74 @@ export type Database = {
           },
         ]
       }
+      collaborations: {
+        Row: {
+          collab_slug: string | null
+          created_at: string
+          id: string
+          message: string | null
+          requester_id: string
+          requester_page_id: string
+          status: Database["public"]["Enums"]["collab_status"]
+          target_id: string
+          target_page_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          collab_slug?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          requester_id: string
+          requester_page_id: string
+          status?: Database["public"]["Enums"]["collab_status"]
+          target_id: string
+          target_page_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          collab_slug?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          requester_id?: string
+          requester_page_id?: string
+          status?: Database["public"]["Enums"]["collab_status"]
+          target_id?: string
+          target_page_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collaborations_requester_page_id_fkey"
+            columns: ["requester_page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaborations_requester_page_id_fkey"
+            columns: ["requester_page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaborations_target_page_id_fkey"
+            columns: ["target_page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaborations_target_page_id_fkey"
+            columns: ["target_page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_quests_completed: {
         Row: {
           completed_date: string
@@ -418,6 +486,104 @@ export type Database = {
           },
         ]
       }
+      shoutouts: {
+        Row: {
+          created_at: string
+          from_user_id: string
+          id: string
+          is_featured: boolean | null
+          message: string | null
+          to_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_user_id: string
+          id?: string
+          is_featured?: boolean | null
+          message?: string | null
+          to_user_id: string
+        }
+        Update: {
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          is_featured?: boolean | null
+          message?: string | null
+          to_user_id?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          niche: string | null
+          owner_id: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          niche?: string | null
+          owner_id: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          niche?: string | null
+          owner_id?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_key: string
@@ -618,6 +784,7 @@ export type Database = {
           }
     }
     Enums: {
+      collab_status: "pending" | "accepted" | "rejected"
       interaction_type: "note" | "call" | "email" | "message" | "meeting"
       lead_source: "page_view" | "form" | "messenger" | "manual" | "other"
       lead_status: "new" | "contacted" | "qualified" | "converted" | "lost"
@@ -748,6 +915,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      collab_status: ["pending", "accepted", "rejected"],
       interaction_type: ["note", "call", "email", "message", "meeting"],
       lead_source: ["page_view", "form", "messenger", "manual", "other"],
       lead_status: ["new", "contacted", "qualified", "converted", "lost"],
