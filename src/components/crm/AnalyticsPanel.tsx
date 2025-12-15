@@ -74,7 +74,7 @@ export function AnalyticsPanel() {
 
   return (
     <ScrollArea className="h-[calc(100vh-200px)]">
-      <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+      <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 overflow-hidden">
         {/* Period Selector - Scrollable on mobile */}
         <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
           <Tabs value={period} onValueChange={(v) => setPeriod(v as TimePeriod)}>
@@ -138,14 +138,14 @@ export function AnalyticsPanel() {
         </Card>
 
         {/* Activity Chart - Responsive height */}
-        <Card className="p-3 sm:p-4">
+        <Card className="p-3 sm:p-4 overflow-hidden">
           <h3 className="text-xs sm:text-sm font-medium mb-3 sm:mb-4 flex items-center gap-2">
             <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             {t('analytics.activityChart', 'Activity')}
           </h3>
-          <div className="h-36 sm:h-48">
+          <div className="h-36 sm:h-48 -mx-2 sm:mx-0">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ left: -20, right: 0 }}>
+              <AreaChart data={chartData} margin={{ left: -25, right: 5, top: 5, bottom: 5 }}>
                 <defs>
                   <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
@@ -249,13 +249,13 @@ export function AnalyticsPanel() {
 
         {/* Clicks by Block Chart - Horizontal bar, mobile optimized */}
         {analytics.topBlocks.length > 0 && (
-          <Card className="p-3 sm:p-4">
+          <Card className="p-3 sm:p-4 overflow-hidden">
             <h3 className="text-xs sm:text-sm font-medium mb-3">
               {t('analytics.clicksByBlock', 'Clicks by Block')}
             </h3>
-            <div className="h-40 sm:h-48">
+            <div className="h-40 sm:h-48 -mx-1 sm:mx-0">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart 
+                <BarChart
                   data={analytics.topBlocks.slice(0, 5)} 
                   layout="vertical"
                   margin={{ left: 0, right: 10, top: 0, bottom: 0 }}
@@ -320,7 +320,7 @@ export function AnalyticsPanel() {
 
         {/* Device Breakdown - Horizontal layout for mobile */}
         {deviceData.length > 0 && (
-          <Card className="p-3 sm:p-4">
+          <Card className="p-3 sm:p-4 overflow-hidden">
             <h3 className="text-xs sm:text-sm font-medium mb-3 flex items-center gap-2">
               <Monitor className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               {t('analytics.devices', 'Devices')}
