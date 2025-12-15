@@ -12,6 +12,8 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
   const alt = getTranslatedString(block.alt, i18n.language as SupportedLanguage);
   const caption = getTranslatedString(block.caption, i18n.language as SupportedLanguage);
 
+  const isBanner = block.style === 'banner';
+
   const getImageClass = () => {
     switch (block.style) {
       case 'polaroid':
@@ -20,6 +22,8 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
         return 'relative rounded-2xl shadow-sm after:absolute after:inset-0 after:shadow-[inset_0_0_100px_rgba(0,0,0,0.3)] after:pointer-events-none after:rounded-2xl';
       case 'circle':
         return 'rounded-full aspect-square object-cover shadow-sm';
+      case 'banner':
+        return 'w-full rounded-2xl shadow-lg';
       default:
         return 'rounded-2xl shadow-sm';
     }
@@ -29,14 +33,30 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
     : block.alignment === 'right' ? 'items-end' 
     : 'items-center';
 
+  const handleClick = () => {
+    if (block.link) {
+      window.open(block.link, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const imageElement = (
+    <img
+      src={block.url}
+      alt={alt}
+      className={`${isBanner ? 'w-full h-auto' : 'w-full h-auto object-cover'}`}
+    />
+  );
+
+  const containerClass = isBanner ? 'w-full' : 'overflow-hidden max-w-md';
+
   return (
     <div className={`w-full flex flex-col ${alignmentClass}`}>
-      <div className={`overflow-hidden max-w-md ${getImageClass()}`}>
-        <img
-          src={block.url}
-          alt={alt}
-          className="w-full h-auto object-cover"
-        />
+      <div 
+        className={`${containerClass} ${getImageClass()} ${block.link ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
+        onClick={block.link ? handleClick : undefined}
+        role={block.link ? 'link' : undefined}
+      >
+        {imageElement}
       </div>
       {caption && (
         <p className={`text-sm text-muted-foreground mt-4 ${block.alignment === 'center' ? 'text-center' : block.alignment === 'right' ? 'text-right' : 'text-left'}`}>

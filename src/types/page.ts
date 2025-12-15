@@ -153,7 +153,8 @@ export interface ImageBlock {
   url: string;
   alt: string;
   caption?: string;
-  style?: 'polaroid' | 'vignette' | 'circle' | 'default';
+  link?: string;
+  style?: 'polaroid' | 'vignette' | 'circle' | 'default' | 'banner';
   alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;

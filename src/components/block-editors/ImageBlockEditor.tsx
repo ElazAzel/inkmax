@@ -1,4 +1,5 @@
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
@@ -18,6 +19,19 @@ function ImageBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
         onChange={(url) => onChange({ ...formData, url })}
         accept="image/*"
       />
+
+      <div>
+        <Label>{t('fields.link', 'Link URL')} ({t('fields.optional', 'optional')})</Label>
+        <Input
+          type="url"
+          value={formData.link || ''}
+          onChange={(e) => onChange({ ...formData, link: e.target.value })}
+          placeholder="https://example.com"
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          {t('fields.linkHint', 'Add a link to make the image clickable')}
+        </p>
+      </div>
 
       <MultilingualInput
         label={t('fields.altText', 'Alt Text')}
@@ -45,6 +59,7 @@ function ImageBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="default">{t('imageStyles.default', 'Default - Rounded Corners')}</SelectItem>
+            <SelectItem value="banner">{t('imageStyles.banner', 'Banner - Full Width')}</SelectItem>
             <SelectItem value="polaroid">{t('imageStyles.polaroid', 'Polaroid - Vintage Frame')}</SelectItem>
             <SelectItem value="vignette">{t('imageStyles.vignette', 'Vignette - Soft Edges')}</SelectItem>
             <SelectItem value="circle">{t('imageStyles.circle', 'Circle - Round Crop')}</SelectItem>
@@ -73,6 +88,6 @@ function ImageBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
 }
 
 export const ImageBlockEditor = withBlockEditor(ImageBlockEditorComponent, {
-  hint: 'Add images with different styles: Polaroid, Vignette, Circle, or Default',
+  hint: 'Add images with different styles: Banner (full width), Polaroid, Vignette, Circle, or Default. Add a link to make the image clickable.',
   validate: validateImageBlock,
 });
