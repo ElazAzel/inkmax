@@ -54,6 +54,9 @@ export function useDashboardAI({ onUpdateProfile, onAddBlock, onQuestComplete }:
 
   const handleAIResult = useCallback(
     (result: AIBuilderResult) => {
+      // Mark AI as used for achievements
+      localStorage.setItem('linkmax_ai_used', 'true');
+      
       // Trigger use_ai quest on any AI result
       onQuestComplete?.('use_ai');
       

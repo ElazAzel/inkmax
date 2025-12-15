@@ -25,6 +25,9 @@ export function useDashboardSharing({ onPublish, onSave, onQuestComplete }: UseD
     const slug = await onPublish();
     if (!slug) return;
 
+    // Mark page as published for achievements
+    localStorage.setItem('linkmax_published', 'true');
+
     const url = getPublicPageUrl(slug);
     setPublishedUrl(url);
     
