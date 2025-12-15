@@ -13,6 +13,8 @@ import { Sparkles, Gift } from 'lucide-react';
 import { z } from 'zod';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { applyReferralCode } from '@/services/referral';
+import { TelegramVerification } from '@/components/auth/TelegramVerification';
+import { supabase } from '@/integrations/supabase/client';
 
 const authSchema = z.object({
   email: z
@@ -28,6 +30,8 @@ const authSchema = z.object({
     .regex(/[0-9]/, 'Password must contain at least one number'),
 });
 
+type SignupStep = 'credentials' | 'telegram';
+
 export default function Auth() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -36,6 +40,11 @@ export default function Auth() {
   const { playSuccess, playError } = useSoundEffects();
   const [isLoading, setIsLoading] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState<'google' | 'apple' | null>(null);
+  
+  // Signup flow state
+  const [signupStep, setSignupStep] = useState<SignupStep>('credentials');
+  const [pendingEmail, setPendingEmail] = useState('');
+  const [pendingPassword, setPendingPassword] = useState('');
   
   // Get referral code from URL
   const refCode = searchParams.get('ref');
@@ -55,9 +64,8 @@ export default function Auth() {
     }
   }, [user, navigate, refCode]);
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUpStep1 = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get('signup-email') as string;
@@ -70,19 +78,33 @@ export default function Auth() {
       const firstError = validation.error.errors[0];
       toast.error(firstError.message);
       playError();
-      setIsLoading(false);
       return;
     }
 
-    const { error } = await signUp(validation.data.email, validation.data.password);
+    // Save credentials and move to Telegram step
+    setPendingEmail(validation.data.email);
+    setPendingPassword(validation.data.password);
+    setSignupStep('telegram');
+  };
+
+  const handleTelegramVerified = async (telegramChatId: string) => {
+    setIsLoading(true);
+
+    const { error } = await signUp(pendingEmail, pendingPassword);
 
     if (error) {
       console.error('Signup error:', error);
       toast.error(error.message || t('messages.failedToSignUp'));
       playError();
       setIsLoading(false);
+      setSignupStep('credentials');
       return;
     }
+
+    // Update user profile with telegram chat id after signup
+    // This will be handled by the auth state change and profile creation trigger
+    // We'll store the chat ID temporarily and update it after the user is created
+    localStorage.setItem('pending_telegram_chat_id', telegramChatId);
 
     playSuccess();
     toast.success(t('messages.accountCreated'));
@@ -285,36 +307,45 @@ export default function Auth() {
               </TabsContent>
 
               <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4 pt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
-                    <Input
-                      id="signup-email"
-                      name="signup-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      required
-                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                {signupStep === 'credentials' ? (
+                  <form onSubmit={handleSignUpStep1} className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
+                      <Input
+                        id="signup-email"
+                        name="signup-email"
+                        type="email"
+                        placeholder="your@email.com"
+                        required
+                        className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
+                      <Input
+                        id="signup-password"
+                        name="signup-password"
+                        type="password"
+                        placeholder="••••••••"
+                        required
+                        className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                      />
+                      <p className="text-xs text-muted-foreground mt-2 bg-muted/20 backdrop-blur-xl p-2 rounded-lg">
+                        {t('auth.passwordHint')}
+                      </p>
+                    </div>
+                    <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
+                      {t('auth.continue', 'Продолжить')}
+                    </Button>
+                  </form>
+                ) : (
+                  <div className="pt-4">
+                    <TelegramVerification 
+                      onVerified={handleTelegramVerified}
+                      onBack={() => setSignupStep('credentials')}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
-                    <Input
-                      id="signup-password"
-                      name="signup-password"
-                      type="password"
-                      placeholder="••••••••"
-                      required
-                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
-                    />
-                    <p className="text-xs text-muted-foreground mt-2 bg-muted/20 backdrop-blur-xl p-2 rounded-lg">
-                      {t('auth.passwordHint')}
-                    </p>
-                  </div>
-                  <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
-                    {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
-                  </Button>
-                </form>
+                )}
               </TabsContent>
             </Tabs>
           </CardContent>
