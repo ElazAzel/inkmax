@@ -122,6 +122,7 @@ export type Database = {
       }
       collaborations: {
         Row: {
+          block_settings: Json | null
           collab_slug: string | null
           created_at: string
           id: string
@@ -134,6 +135,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          block_settings?: Json | null
           collab_slug?: string | null
           created_at?: string
           id?: string
@@ -146,6 +148,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          block_settings?: Json | null
           collab_slug?: string | null
           created_at?: string
           id?: string

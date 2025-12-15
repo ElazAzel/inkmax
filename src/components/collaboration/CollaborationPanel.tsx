@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Users, UserPlus, Heart, Megaphone, Search, X, Check, Loader2, ExternalLink, Copy } from 'lucide-react';
+import { Users, UserPlus, Heart, Megaphone, Search, X, Check, Loader2, ExternalLink, Copy, Settings } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,9 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useCollaboration } from '@/hooks/useCollaboration';
 import { NICHES, NICHE_ICONS, type Niche } from '@/lib/niches';
+import { CollabBlockManager } from './CollabBlockManager';
+import { TeamEditor } from './TeamEditor';
+import type { Team } from '@/services/collaboration';
 
 interface CollaborationPanelProps {
   userId: string;
@@ -38,6 +41,7 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
     removeShoutout,
     search,
     findByNiche,
+    refresh,
   } = useCollaboration(userId);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,6 +64,8 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
   // Shoutout form
   const [shoutoutMessage, setShoutoutMessage] = useState('');
   const [selectedShoutoutUser, setSelectedShoutoutUser] = useState<string | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [editingCollab, setEditingCollab] = useState<string | null>(null);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -89,6 +95,15 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
     await addShoutout(toUserId, shoutoutMessage);
     setShoutoutMessage('');
     setSelectedShoutoutUser(null);
+  };
+
+  const handleTeamUpdate = (updatedTeam: Team) => {
+    setSelectedTeam(updatedTeam);
+  };
+
+  const handleTeamDelete = () => {
+    setSelectedTeam(null);
+    refresh();
   };
 
   if (loading) {
@@ -174,6 +189,11 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
                   {activeCollabs.map(collab => {
                     const partner = collab.requester_id === userId ? collab.target : collab.requester;
                     const collabUrl = collab.collab_slug ? `${window.location.origin}/collab/${collab.collab_slug}` : null;
+                    const blockSettings = (collab as { block_settings?: { requester_blocks: string[]; target_blocks: string[]; show_all: boolean } }).block_settings || {
+                      requester_blocks: [],
+                      target_blocks: [],
+                      show_all: true,
+                    };
                     return (
                       <div key={collab.id} className="p-3 bg-muted/50 rounded-lg space-y-2">
                         <div className="flex items-center justify-between">
@@ -184,9 +204,34 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
                             </Avatar>
                             <span className="text-sm">{partner?.display_name || partner?.username}</span>
                           </div>
-                          <Button size="sm" variant="ghost" onClick={() => removeCollab(collab.id)}>
-                            <X className="h-4 w-4" />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button size="sm" variant="ghost" onClick={() => setEditingCollab(collab.id)}>
+                                  <Settings className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Управление блоками</DialogTitle>
+                                </DialogHeader>
+                                <CollabBlockManager
+                                  collabId={collab.id}
+                                  requesterId={collab.requester_id}
+                                  targetId={collab.target_id}
+                                  requesterPageId={collab.requester_page_id}
+                                  targetPageId={collab.target_page_id}
+                                  currentSettings={blockSettings}
+                                  requesterProfile={collab.requester || null}
+                                  targetProfile={collab.target || null}
+                                  onSettingsChange={() => refresh()}
+                                />
+                              </DialogContent>
+                            </Dialog>
+                            <Button size="sm" variant="ghost" onClick={() => removeCollab(collab.id)}>
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                         {collabUrl && (
                           <div className="flex items-center gap-2 text-xs">
@@ -428,11 +473,32 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        {team.owner_id === userId ? (
-                          <Button size="sm" variant="destructive" onClick={() => removeTeam(team.id)}>
-                            Удалить
+                        <Link to={`/team/${team.slug}`}>
+                          <Button size="sm" variant="ghost">
+                            <ExternalLink className="h-4 w-4" />
                           </Button>
-                        ) : (
+                        </Link>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="ghost" onClick={() => setSelectedTeam(team)}>
+                              <Settings className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Настройки команды</DialogTitle>
+                            </DialogHeader>
+                            {selectedTeam && selectedTeam.id === team.id && (
+                              <TeamEditor
+                                team={selectedTeam}
+                                isOwner={team.owner_id === userId}
+                                onTeamUpdate={handleTeamUpdate}
+                                onTeamDelete={handleTeamDelete}
+                              />
+                            )}
+                          </DialogContent>
+                        </Dialog>
+                        {team.owner_id !== userId && (
                           <Button size="sm" variant="outline" onClick={() => leaveTeam(team.id)}>
                             Выйти
                           </Button>

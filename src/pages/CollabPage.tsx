@@ -12,9 +12,19 @@ import { BlockRenderer } from '@/components/BlockRenderer';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import type { Block, PageTheme } from '@/types/page';
 
+interface BlockSettings {
+  requester_blocks: string[];
+  target_blocks: string[];
+  show_all: boolean;
+}
+
 interface CollabPageData {
   id: string;
   collab_slug: string;
+  requester_id: string;
+  target_id: string;
+  requester_page_id: string;
+  target_page_id: string | null;
   requester: {
     username: string | null;
     display_name: string | null;
@@ -27,18 +37,26 @@ interface CollabPageData {
   } | null;
   blocks: Block[];
   theme: PageTheme;
+  block_settings: BlockSettings;
 }
 
 async function fetchCollabPage(collabSlug: string): Promise<CollabPageData | null> {
   // Get collaboration by slug
   const { data: collab, error } = await supabase
     .from('collaborations')
-    .select('id, collab_slug, requester_id, target_id, requester_page_id, target_page_id')
+    .select('id, collab_slug, requester_id, target_id, requester_page_id, target_page_id, block_settings')
     .eq('collab_slug', collabSlug)
     .eq('status', 'accepted')
     .maybeSingle();
 
   if (error || !collab) return null;
+
+  const rawSettings = collab.block_settings as unknown as BlockSettings | null;
+  const blockSettings: BlockSettings = rawSettings || {
+    requester_blocks: [],
+    target_blocks: [],
+    show_all: true,
+  };
 
   // Fetch user profiles
   const userIds = [collab.requester_id, collab.target_id];
@@ -69,13 +87,26 @@ async function fetchCollabPage(collabSlug: string): Promise<CollabPageData | nul
       .order('position');
 
     if (blocks) {
-      allBlocks = blocks.map(b => ({
-        id: b.id,
-        type: b.type as Block['type'],
-        ...((b.content || {}) as Record<string, unknown>),
-        style: (b.style as Record<string, unknown>) || undefined,
-        schedule: (b.schedule as Record<string, unknown>) || undefined,
-      })) as Block[];
+      allBlocks = blocks
+        .filter(b => {
+          // If show_all, include all blocks
+          if (blockSettings.show_all) return true;
+          
+          // Otherwise filter based on settings
+          const isRequesterBlock = b.page_id === collab.requester_page_id;
+          if (isRequesterBlock) {
+            return blockSettings.requester_blocks.includes(b.id);
+          } else {
+            return blockSettings.target_blocks.includes(b.id);
+          }
+        })
+        .map(b => ({
+          id: b.id,
+          type: b.type as Block['type'],
+          ...((b.content || {}) as Record<string, unknown>),
+          style: (b.style as Record<string, unknown>) || undefined,
+          schedule: (b.schedule as Record<string, unknown>) || undefined,
+        })) as Block[];
     }
 
     // Get theme from first page
@@ -99,10 +130,15 @@ async function fetchCollabPage(collabSlug: string): Promise<CollabPageData | nul
   return {
     id: collab.id,
     collab_slug: collab.collab_slug!,
+    requester_id: collab.requester_id,
+    target_id: collab.target_id,
+    requester_page_id: collab.requester_page_id,
+    target_page_id: collab.target_page_id,
     requester: profileMap.get(collab.requester_id) || null,
     target: profileMap.get(collab.target_id) || null,
     blocks: allBlocks,
     theme,
+    block_settings: blockSettings,
   };
 }
 
