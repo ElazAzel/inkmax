@@ -1,8 +1,8 @@
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateImageBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
@@ -19,24 +19,20 @@ function ImageBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
         accept="image/*"
       />
 
-      <div>
-        <Label>{t('fields.altText', 'Alt Text')}</Label>
-        <Input
-          value={formData.alt || ''}
-          onChange={(e) => onChange({ ...formData, alt: e.target.value })}
-          placeholder={t('fields.altPlaceholder', 'Image description for accessibility')}
-        />
-      </div>
+      <MultilingualInput
+        label={t('fields.altText', 'Alt Text')}
+        value={migrateToMultilingual(formData.alt)}
+        onChange={(value) => onChange({ ...formData, alt: value })}
+        placeholder={t('fields.altPlaceholder', 'Image description for accessibility')}
+      />
 
-      <div>
-        <Label>{t('fields.caption', 'Caption')} ({t('fields.optional', 'optional')})</Label>
-        <Textarea
-          value={formData.caption || ''}
-          onChange={(e) => onChange({ ...formData, caption: e.target.value })}
-          placeholder={t('fields.captionPlaceholder', 'Add a caption for your image...')}
-          rows={2}
-        />
-      </div>
+      <MultilingualInput
+        label={`${t('fields.caption', 'Caption')} (${t('fields.optional', 'optional')})`}
+        value={migrateToMultilingual(formData.caption)}
+        onChange={(value) => onChange({ ...formData, caption: value })}
+        type="textarea"
+        placeholder={t('fields.captionPlaceholder', 'Add a caption for your image...')}
+      />
 
       <div>
         <Label>{t('fields.imageStyle', 'Image Style')}</Label>
