@@ -279,7 +279,16 @@
     "resetEmailSent": "Құпия сөзді қалпына келтіру сілтемесін поштаңызға жібердік",
     "backToSignIn": "Кіруге оралу",
     "invalidEmail": "Дұрыс email енгізіңіз",
-    "resetFailed": "Хат жіберу сәтсіз аяқталды"
+    "resetFailed": "Хат жіберу сәтсіз аяқталды",
+    "newPassword": "Жаңа құпия сөз",
+    "confirmPassword": "Құпия сөзді растаңыз",
+    "enterNewPassword": "Жаңа құпия сөзді енгізіңіз",
+    "updatePassword": "Құпия сөзді жаңарту",
+    "passwordUpdated": "Құпия сөз жаңартылды",
+    "passwordUpdatedDesc": "Құпия сөзіңіз сәтті жаңартылды",
+    "goToDashboard": "Редакторға өту",
+    "passwordsDoNotMatch": "Құпия сөздер сәйкес келмейді",
+    "updateFailed": "Құпия сөзді жаңарту сәтсіз аяқталды"
   },
   "editor": {
     "title": "Бет редакторы",

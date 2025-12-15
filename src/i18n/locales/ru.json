@@ -285,7 +285,16 @@
     "resetEmailSent": "Мы отправили ссылку для сброса пароля на вашу почту",
     "backToSignIn": "Вернуться к входу",
     "invalidEmail": "Введите корректный email",
-    "resetFailed": "Не удалось отправить письмо"
+    "resetFailed": "Не удалось отправить письмо",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "enterNewPassword": "Введите новый пароль",
+    "updatePassword": "Обновить пароль",
+    "passwordUpdated": "Пароль обновлен",
+    "passwordUpdatedDesc": "Ваш пароль успешно обновлен",
+    "goToDashboard": "Перейти в редактор",
+    "passwordsDoNotMatch": "Пароли не совпадают",
+    "updateFailed": "Не удалось обновить пароль"
   },
   "editor": {
     "title": "Редактор страницы",

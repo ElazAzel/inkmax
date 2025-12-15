@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
-import { Sparkles, Gift, Mail } from 'lucide-react';
+import { Sparkles, Gift, Mail, Check } from 'lucide-react';
 import { z } from 'zod';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { applyReferralCode } from '@/services/referral';
@@ -31,7 +31,7 @@ const authSchema = z.object({
 });
 
 type SignupStep = 'credentials' | 'telegram';
-type AuthMode = 'signin' | 'signup' | 'reset';
+type AuthMode = 'signin' | 'signup' | 'reset' | 'update-password';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -43,18 +43,27 @@ export default function Auth() {
   const [isOAuthLoading, setIsOAuthLoading] = useState<'google' | 'apple' | null>(null);
   const [authMode, setAuthMode] = useState<AuthMode>('signin');
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [passwordUpdated, setPasswordUpdated] = useState(false);
   
   // Signup flow state
   const [signupStep, setSignupStep] = useState<SignupStep>('credentials');
   const [pendingEmail, setPendingEmail] = useState('');
   const [pendingPassword, setPendingPassword] = useState('');
   
-  // Get referral code from URL
+  // Get referral code and mode from URL
   const refCode = searchParams.get('ref');
+  const urlMode = searchParams.get('mode');
 
-  // Redirect if already logged in and apply referral
+  // Check for password update mode from URL
   useEffect(() => {
-    if (user) {
+    if (urlMode === 'update-password') {
+      setAuthMode('update-password');
+    }
+  }, [urlMode]);
+
+  // Redirect if already logged in (but not during password update)
+  useEffect(() => {
+    if (user && authMode !== 'update-password') {
       // Apply referral code if present
       if (refCode) {
         applyReferralCode(refCode, user.id).then((result) => {
@@ -65,7 +74,7 @@ export default function Auth() {
       }
       navigate('/dashboard');
     }
-  }, [user, navigate, refCode]);
+  }, [user, navigate, refCode, authMode]);
 
   const handleSignUpStep1 = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -180,6 +189,46 @@ export default function Auth() {
     setIsLoading(false);
   };
 
+  const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const newPassword = formData.get('new-password') as string;
+    const confirmPassword = formData.get('confirm-password') as string;
+
+    if (newPassword !== confirmPassword) {
+      toast.error(t('auth.passwordsDoNotMatch', 'Passwords do not match'));
+      playError();
+      setIsLoading(false);
+      return;
+    }
+
+    const passwordValidation = authSchema.shape.password.safeParse(newPassword);
+    if (!passwordValidation.success) {
+      toast.error(passwordValidation.error.errors[0].message);
+      playError();
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      console.error('Password update error:', error);
+      toast.error(error.message || t('auth.updateFailed', 'Failed to update password'));
+      playError();
+      setIsLoading(false);
+      return;
+    }
+
+    playSuccess();
+    setPasswordUpdated(true);
+    setIsLoading(false);
+  };
+
   const handleGoogleSignIn = async () => {
     setIsOAuthLoading('google');
     const { error } = await signInWithGoogle();
@@ -245,14 +294,79 @@ export default function Auth() {
           </div>
         </div>
 
-        {/* Auth Card - Liquid Glass */}
-        <Card className="bg-card/60 backdrop-blur-2xl border border-border/30 rounded-3xl shadow-glass-xl animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl">{t('auth.getStarted')}</CardTitle>
-            <CardDescription>
-              {t('auth.signInToAccount')}
-            </CardDescription>
-          </CardHeader>
+        {/* Password Update Card */}
+        {authMode === 'update-password' ? (
+          <Card className="bg-card/60 backdrop-blur-2xl border border-border/30 rounded-3xl shadow-glass-xl animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl">{t('auth.newPassword', 'New Password')}</CardTitle>
+              <CardDescription>
+                {t('auth.enterNewPassword', 'Enter your new password')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {passwordUpdated ? (
+                <div className="space-y-4 text-center">
+                  <div className="h-16 w-16 mx-auto rounded-full bg-green-500/20 flex items-center justify-center">
+                    <Check className="h-8 w-8 text-green-500" />
+                  </div>
+                  <h3 className="text-lg font-semibold">{t('auth.passwordUpdated', 'Password Updated')}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t('auth.passwordUpdatedDesc', 'Your password has been successfully updated')}
+                  </p>
+                  <Button 
+                    className="w-full h-12 rounded-xl"
+                    onClick={() => navigate('/dashboard')}
+                  >
+                    {t('auth.goToDashboard', 'Go to Dashboard')}
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleUpdatePassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password" className="text-sm text-muted-foreground">
+                      {t('auth.newPassword', 'New Password')}
+                    </Label>
+                    <Input
+                      id="new-password"
+                      name="new-password"
+                      type="password"
+                      placeholder="••••••••"
+                      required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-password" className="text-sm text-muted-foreground">
+                      {t('auth.confirmPassword', 'Confirm Password')}
+                    </Label>
+                    <Input
+                      id="confirm-password"
+                      name="confirm-password"
+                      type="password"
+                      placeholder="••••••••"
+                      required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2 bg-muted/20 backdrop-blur-xl p-2 rounded-lg">
+                      {t('auth.passwordHint')}
+                    </p>
+                  </div>
+                  <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading}>
+                    {isLoading ? t('messages.loading', 'Loading...') : t('auth.updatePassword', 'Update Password')}
+                  </Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          /* Auth Card - Liquid Glass */
+          <Card className="bg-card/60 backdrop-blur-2xl border border-border/30 rounded-3xl shadow-glass-xl animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl">{t('auth.getStarted')}</CardTitle>
+              <CardDescription>
+                {t('auth.signInToAccount')}
+              </CardDescription>
+            </CardHeader>
           <CardContent className="space-y-4">
             {/* OAuth Buttons - Hidden until configured */}
             {/* TODO: Uncomment when Google/Apple OAuth is configured in Lovable Cloud
@@ -446,6 +560,7 @@ export default function Auth() {
             </Tabs>
           </CardContent>
         </Card>
+        )}
 
         {/* Back to home */}
         <div className="text-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
