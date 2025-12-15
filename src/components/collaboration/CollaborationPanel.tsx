@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Users, UserPlus, Heart, Megaphone, Search, X, Check, Loader2, ExternalLink, Copy, Settings } from 'lucide-react';
@@ -14,7 +14,8 @@ import { useCollaboration } from '@/hooks/useCollaboration';
 import { NICHES, NICHE_ICONS, type Niche } from '@/lib/niches';
 import { CollabBlockManager } from './CollabBlockManager';
 import { TeamEditor } from './TeamEditor';
-import type { Team } from '@/services/collaboration';
+import { TeamMembersList } from './TeamMembersList';
+import { getTeamWithMembers, type Team, type TeamMember } from '@/services/collaboration';
 
 interface CollaborationPanelProps {
   userId: string;
@@ -65,6 +66,8 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
   const [shoutoutMessage, setShoutoutMessage] = useState('');
   const [selectedShoutoutUser, setSelectedShoutoutUser] = useState<string | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [loadingMembers, setLoadingMembers] = useState(false);
   const [editingCollab, setEditingCollab] = useState<string | null>(null);
 
   const handleSearch = async () => {
@@ -103,7 +106,33 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
 
   const handleTeamDelete = () => {
     setSelectedTeam(null);
+    setTeamMembers([]);
     refresh();
+  };
+
+  const loadTeamMembers = async (teamId: string) => {
+    setLoadingMembers(true);
+    try {
+      const teamWithMembers = await getTeamWithMembers(teamId);
+      if (teamWithMembers?.members) {
+        setTeamMembers(teamWithMembers.members);
+      }
+    } catch (error) {
+      console.error('Error loading team members:', error);
+    } finally {
+      setLoadingMembers(false);
+    }
+  };
+
+  const handleOpenTeamSettings = async (team: Team) => {
+    setSelectedTeam(team);
+    await loadTeamMembers(team.id);
+  };
+
+  const handleMemberRemoved = () => {
+    if (selectedTeam) {
+      loadTeamMembers(selectedTeam.id);
+    }
   };
 
   if (loading) {
@@ -480,7 +509,7 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
                         </Link>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button size="sm" variant="ghost" onClick={() => setSelectedTeam(team)}>
+                            <Button size="sm" variant="ghost" onClick={() => handleOpenTeamSettings(team)}>
                               <Settings className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
@@ -489,12 +518,27 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
                               <DialogTitle>Настройки команды</DialogTitle>
                             </DialogHeader>
                             {selectedTeam && selectedTeam.id === team.id && (
-                              <TeamEditor
-                                team={selectedTeam}
-                                isOwner={team.owner_id === userId}
-                                onTeamUpdate={handleTeamUpdate}
-                                onTeamDelete={handleTeamDelete}
-                              />
+                              <div className="space-y-4">
+                                <TeamEditor
+                                  team={selectedTeam}
+                                  isOwner={team.owner_id === userId}
+                                  onTeamUpdate={handleTeamUpdate}
+                                  onTeamDelete={handleTeamDelete}
+                                />
+                                {loadingMembers ? (
+                                  <div className="flex justify-center py-4">
+                                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                                  </div>
+                                ) : (
+                                  <TeamMembersList
+                                    teamId={team.id}
+                                    members={teamMembers}
+                                    ownerId={team.owner_id}
+                                    isOwner={team.owner_id === userId}
+                                    onMemberRemoved={handleMemberRemoved}
+                                  />
+                                )}
+                              </div>
                             )}
                           </DialogContent>
                         </Dialog>

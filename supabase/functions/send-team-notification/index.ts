@@ -8,8 +8,8 @@ const corsHeaders = {
 interface NotificationPayload {
   targetUserId: string;
   teamName: string;
-  inviterName: string;
-  type: 'invited' | 'joined' | 'left';
+  inviterName?: string;
+  type: 'invited' | 'joined' | 'left' | 'removed';
 }
 
 Deno.serve(async (req) => {
@@ -55,13 +55,16 @@ Deno.serve(async (req) => {
     let message = '';
     switch (type) {
       case 'invited':
-        message = `🎉 Приглашение в команду!\n\n${inviterName} приглашает вас в команду "${teamName}".\n\nВойдите в LinkMAX чтобы присоединиться!`;
+        message = `🎉 Приглашение в команду!\n\n${inviterName || 'Кто-то'} приглашает вас в команду "${teamName}".\n\nВойдите в LinkMAX чтобы присоединиться!`;
         break;
       case 'joined':
-        message = `👋 Новый участник!\n\n${inviterName} присоединился к вашей команде "${teamName}".`;
+        message = `👋 Новый участник!\n\n${inviterName || 'Кто-то'} присоединился к вашей команде "${teamName}".`;
         break;
       case 'left':
-        message = `🚪 Участник вышел\n\n${inviterName} покинул вашу команду "${teamName}".`;
+        message = `🚪 Участник вышел\n\n${inviterName || 'Кто-то'} покинул вашу команду "${teamName}".`;
+        break;
+      case 'removed':
+        message = `⚠️ Вы были удалены из команды "${teamName}".`;
         break;
     }
 

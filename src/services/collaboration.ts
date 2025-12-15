@@ -363,6 +363,58 @@ export async function deleteTeam(teamId: string): Promise<boolean> {
   return !error;
 }
 
+// Remove member from team (owner only)
+export async function removeMemberFromTeam(
+  teamId: string,
+  memberId: string
+): Promise<{ success: boolean; error?: string }> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not authenticated' };
+
+  // Check if current user is team owner
+  const { data: team } = await supabase
+    .from('teams')
+    .select('owner_id, name')
+    .eq('id', teamId)
+    .maybeSingle();
+
+  if (!team) return { success: false, error: 'Team not found' };
+  if (team.owner_id !== user.id) return { success: false, error: 'Only owner can remove members' };
+  if (team.owner_id === memberId) return { success: false, error: 'Cannot remove owner' };
+
+  // Get member info for notification
+  const { data: memberProfile } = await supabase
+    .from('user_profiles')
+    .select('telegram_chat_id, telegram_notifications_enabled')
+    .eq('id', memberId)
+    .maybeSingle();
+
+  const { error } = await supabase
+    .from('team_members')
+    .delete()
+    .eq('team_id', teamId)
+    .eq('user_id', memberId);
+
+  if (error) return { success: false, error: error.message };
+
+  // Send notification if member has Telegram enabled
+  if (memberProfile?.telegram_notifications_enabled && memberProfile?.telegram_chat_id) {
+    try {
+      await supabase.functions.invoke('send-team-notification', {
+        body: { 
+          targetUserId: memberId, 
+          teamName: team.name, 
+          type: 'removed' 
+        }
+      });
+    } catch (e) {
+      console.error('Failed to send removal notification:', e);
+    }
+  }
+
+  return { success: true };
+}
+
 // Generate or get invite code for team
 export async function generateTeamInviteCode(teamId: string): Promise<string | null> {
   // First check if code already exists
