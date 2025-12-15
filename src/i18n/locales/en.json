@@ -515,7 +515,7 @@
     "featuredPages": "Featured Pages",
     "featured": "Featured",
     "like": "Like",
-    "liked": "Liked",
+    "liked": "Liked!",
     "alreadyLiked": "You already liked this page",
     "likeTooltip": "Show some love!",
     "shareTooltip": "Copy page link",
@@ -524,7 +524,9 @@
     "copyError": "Failed to copy",
     "statsPages": "Pages",
     "statsLikes": "Likes",
-    "statsViews": "Views"
+    "statsViews": "Views",
+    "filter": "Filter",
+    "all": "All"
   },
   "leaderboard": {
     "title": "Top Pages",

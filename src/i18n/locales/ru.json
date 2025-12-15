@@ -515,7 +515,7 @@
     "featuredPages": "Избранные страницы",
     "featured": "Избранное",
     "like": "Нравится",
-    "liked": "Понравилось",
+    "liked": "Понравилось!",
     "alreadyLiked": "Вы уже оценили эту страницу",
     "likeTooltip": "Поставьте лайк!",
     "shareTooltip": "Скопировать ссылку",
@@ -524,7 +524,9 @@
     "copyError": "Не удалось скопировать",
     "statsPages": "Страниц",
     "statsLikes": "Лайков",
-    "statsViews": "Просмотров"
+    "statsViews": "Просмотров",
+    "filter": "Фильтр",
+    "all": "Все"
   },
   "leaderboard": {
     "title": "Топ страниц",
