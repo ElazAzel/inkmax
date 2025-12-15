@@ -223,6 +223,7 @@ export default function Dashboard() {
         telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
         onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
         userId={dashboard.user?.id}
+        pageId={dashboard.pageData?.id}
         niche={dashboard.pageData?.niche as any}
         onNicheChange={dashboard.updateNiche}
         previewUrl={dashboard.pageData?.previewUrl}
