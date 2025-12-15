@@ -65,6 +65,9 @@ const ALL_BLOCKS = [
   { type: 'search', label: 'AI Search', icon: '🔍', category: 'Interactive', premium: true },
   { type: 'countdown', label: 'Countdown', icon: '⏰', category: 'Interactive', premium: true },
   
+  // Social
+  { type: 'shoutout', label: 'Shoutout', icon: '📣', category: 'Social', premium: false },
+  
   // Advanced
   { type: 'custom_code', label: 'Custom Code', icon: '💻', category: 'Advanced', premium: true },
 ];

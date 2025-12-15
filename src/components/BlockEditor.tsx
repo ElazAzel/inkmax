@@ -48,6 +48,8 @@ const BeforeAfterBlockEditor = lazy(() => import('./block-editors/BeforeAfterBlo
 const FAQBlockEditor = lazy(() => import('./block-editors/FAQBlockEditor').then(m => ({ default: m.FAQBlockEditor })));
 const CountdownBlockEditor = lazy(() => import('./block-editors/CountdownBlockEditor').then(m => ({ default: m.CountdownBlockEditor })));
 const PricingBlockEditor = lazy(() => import('./block-editors/PricingBlockEditor').then(m => ({ default: m.PricingBlockEditor })));
+const ShoutoutBlockEditor = lazy(() => import('./block-editors/ShoutoutBlockEditor').then(m => ({ default: m.ShoutoutBlockEditor })));
+
 interface BlockEditorProps {
   block: Block | null;
   isOpen: boolean;
@@ -262,6 +264,17 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <Suspense fallback={<EditorFallback />}>
             <PricingBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'shoutout':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <ShoutoutBlockEditor 
+              block={formData} 
+              onChange={setFormData} 
+              onDelete={onClose} 
+            />
           </Suspense>
         );
       

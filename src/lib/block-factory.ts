@@ -281,6 +281,14 @@ export function createBlock(type: string): Block {
         currency: 'KZT',
       };
     
+    case 'shoutout':
+      return {
+        id: `shoutout-${timestamp}`,
+        type: 'shoutout',
+        userId: '',
+        message: 'Рекомендую этого специалиста!',
+      };
+    
     default:
       throw new Error(`Unknown block type: ${type}`);
   }

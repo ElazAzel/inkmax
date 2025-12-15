@@ -131,6 +131,7 @@ export default function Dashboard() {
           onPreviewUrlChange={(url) => {
             dashboard.updatePageDataPartial({ previewUrl: url || undefined });
           }}
+          pageId={dashboard.pageData?.id}
         />
 
         {/* Referral Panel in Settings Area */}

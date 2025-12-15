@@ -111,6 +111,8 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
         return `Таймер: ${block.title ? getTranslatedString(block.title, currentLang) : 'Обратный отсчёт'}`;
       case 'pricing':
         return `Прайс: ${block.title ? getTranslatedString(block.title, currentLang) : `${block.items?.length || 0} услуг`}`;
+      case 'shoutout':
+        return `Шаут-аут: ${(block as any).displayName || 'Рекомендация'}`;
       default:
         return 'Неизвестный блок';
     }
