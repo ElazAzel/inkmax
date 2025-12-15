@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users, UserPlus } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
@@ -57,6 +57,7 @@ interface SettingsSidebarProps {
   previewUrl?: string;
   onPreviewUrlChange?: (url: string | null) => void;
   pageId?: string;
+  onOpenFriends?: () => void;
 }
 
 export function SettingsSidebar({
@@ -92,6 +93,7 @@ export function SettingsSidebar({
   previewUrl,
   onPreviewUrlChange,
   pageId,
+  onOpenFriends,
 }: SettingsSidebarProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('settings');
@@ -365,6 +367,20 @@ export function SettingsSidebar({
 
         {/* Gallery Toggle */}
         <GalleryToggle userId={userId} />
+
+        {/* Friends Button */}
+        {onOpenFriends && (
+          <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
+            <Button
+              variant="outline"
+              className="w-full justify-start bg-background/50 hover:bg-background/70"
+              onClick={onOpenFriends}
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              {t('settings.friends', 'Friends')}
+            </Button>
+          </Card>
+        )}
 
         {/* Notifications Settings */}
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useDashboard } from '@/hooks/useDashboard';
@@ -18,6 +18,7 @@ import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublishDialog';
+import { FriendsPanel } from '@/components/friends/FriendsPanel';
 import {
   DashboardHeader,
   MobileHeader,
@@ -39,8 +40,16 @@ export default function Dashboard() {
   const [showAchievements, setShowAchievements] = useState(false);
   const [showLeads, setShowLeads] = useState(false);
   const [showReferral, setShowReferral] = useState(false);
+  const [showFriends, setShowFriends] = useState(false);
 
   const handleOpenGallery = () => navigate('/gallery');
+
+  // Listen for openFriends event from MobileSettingsSheet
+  useEffect(() => {
+    const handleOpenFriends = () => setShowFriends(true);
+    window.addEventListener('openFriends', handleOpenFriends);
+    return () => window.removeEventListener('openFriends', handleOpenFriends);
+  }, []);
 
   // Loading/Error states
   if (dashboard.loading) return <LoadingState />;
@@ -132,6 +141,7 @@ export default function Dashboard() {
             dashboard.updatePageDataPartial({ previewUrl: url || undefined });
           }}
           pageId={dashboard.pageData?.id}
+          onOpenFriends={() => setShowFriends(true)}
         />
 
         {/* Referral Panel in Settings Area */}
@@ -287,6 +297,11 @@ export default function Dashboard() {
 
       {/* Achievements Panel */}
       {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
+
+      {/* Friends Panel */}
+      {showFriends && (
+        <FriendsPanel onClose={() => setShowFriends(false)} />
+      )}
 
       {/* Leads Panel (CRM) */}
       <LeadsPanel open={showLeads} onOpenChange={setShowLeads} />
