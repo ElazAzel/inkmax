@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { Check, Loader2, MessageCircle, ExternalLink, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Check, Loader2, MessageCircle, ArrowLeft, AlertCircle, Copy, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -43,32 +43,50 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
 
       if (data?.valid) {
         setIsVerified(true);
-        toast.success(t('telegram.verified', 'Telegram подтвержден!'));
+        toast.success(t('telegram.verified', 'Telegram подтвержден! ✓'));
         setTimeout(() => {
           onVerified(cleanChatId);
         }, 500);
       } else {
-        // Handle specific errors
         if (data?.error === 'invalid_chat_id' || data?.description?.includes('chat not found')) {
-          setError(t('telegram.chatNotFound', 'Чат не найден. Убедитесь, что вы начали диалог с ботом @linkmaxbot и отправили /start'));
+          setError('Чат не найден. Сначала нажмите START в боте @linkmaxmy_bot');
         } else if (data?.error === 'cannot_send_message') {
-          setError(t('telegram.cannotSendMessage', 'Не удалось отправить сообщение. Начните диалог с ботом @linkmaxbot'));
+          setError('Нажмите START в боте @linkmaxmy_bot чтобы разрешить сообщения');
         } else {
-          setError(data?.description || t('telegram.invalidChatId', 'Неверный Chat ID'));
+          setError(data?.description || 'Неверный Chat ID. Проверьте номер');
         }
-        toast.error(t('telegram.verificationFailed', 'Ошибка проверки'));
+        toast.error('Проверьте Chat ID');
       }
     } catch (err: any) {
       console.error('Telegram verification error:', err);
-      setError(t('telegram.verificationError', 'Ошибка проверки. Попробуйте снова.'));
-      toast.error(t('telegram.verificationError', 'Ошибка проверки'));
+      setError('Ошибка проверки. Попробуйте снова.');
+      toast.error('Ошибка проверки');
     } finally {
       setIsVerifying(false);
     }
   };
 
+  const openBot = () => {
+    window.open(`https://t.me/${LINKMAX_BOT_USERNAME}`, '_blank');
+  };
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      const numbersOnly = text.replace(/[^0-9-]/g, '');
+      if (numbersOnly) {
+        setChatId(numbersOnly);
+        setError(null);
+        toast.success('Chat ID вставлен');
+      }
+    } catch {
+      toast.error('Не удалось вставить. Введите вручную');
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <Button
           variant="ghost"
@@ -79,67 +97,69 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h3 className="font-semibold text-lg">{t('telegram.connectTitle', 'Подключите Telegram')}</h3>
+          <h3 className="font-semibold text-lg">Подключите Telegram</h3>
           <p className="text-sm text-muted-foreground">
-            {t('telegram.connectDescription', 'Для уведомлений о новых лидах')}
+            Для уведомлений о заявках
           </p>
         </div>
       </div>
 
-      {/* Get Chat ID Button */}
-      <Button
-        variant="outline"
-        className="w-full h-12 rounded-xl gap-2"
-        onClick={() => window.open(`https://t.me/${LINKMAX_BOT_USERNAME}?start=getchatid`, '_blank')}
-      >
-        <MessageCircle className="h-5 w-5" />
-        {t('telegram.getChatIdButton', 'Получить Chat ID в Telegram')}
-      </Button>
-
-      {/* Instructions */}
-      <Card className="p-4 bg-muted/30 space-y-3">
-        <p className="text-sm font-medium mb-2">{t('telegram.instructions', 'Инструкция:')}</p>
-        
-        <div className="flex items-start gap-3">
-          <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-medium shrink-0">
+      {/* Step 1 - Open Bot */}
+      <Card className="p-4 bg-primary/5 border-primary/20 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shrink-0">
             1
           </div>
-          <p className="text-sm">
-            {t('telegram.step1New', 'Нажмите кнопку выше — откроется бот в Telegram')}
-          </p>
+          <div className="flex-1">
+            <p className="font-medium text-sm">Откройте бота и нажмите START</p>
+            <p className="text-xs text-muted-foreground">Бот покажет ваш Chat ID</p>
+          </div>
         </div>
         
-        <div className="flex items-start gap-3">
-          <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-medium shrink-0">
-            2
-          </div>
-          <p className="text-sm">
-            {t('telegram.step2New', 'Нажмите START или отправьте /start')}
-          </p>
-        </div>
-        
-        <div className="flex items-start gap-3">
-          <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-medium shrink-0">
-            3
-          </div>
-          <p className="text-sm">
-            {t('telegram.step3New', 'Бот отправит вам ваш Chat ID - скопируйте его сюда')}
-          </p>
-        </div>
+        <Button
+          className="w-full h-12 rounded-xl gap-2"
+          onClick={openBot}
+        >
+          <MessageCircle className="h-5 w-5" />
+          Открыть @linkmaxmy_bot
+          <ExternalLink className="h-4 w-4 ml-auto" />
+        </Button>
       </Card>
 
-      {/* Alternative method */}
-      <details className="text-xs text-muted-foreground">
-        <summary className="cursor-pointer hover:text-foreground">
-          {t('telegram.alternativeMethod', 'Альтернативный способ получить Chat ID')}
-        </summary>
-        <div className="mt-2 pl-4 border-l-2 border-border">
-          <p>{t('telegram.altStep1', '1. Откройте @userinfobot в Telegram')}</p>
-          <p>{t('telegram.altStep2', '2. Отправьте /start')}</p>
-          <p>{t('telegram.altStep3', '3. Скопируйте числовой ID')}</p>
-          <p className="mt-1 text-yellow-600">{t('telegram.altWarning', '⚠️ После этого обязательно напишите /start боту @linkmaxbot')}</p>
+      {/* Step 2 - Enter Chat ID */}
+      <Card className="p-4 bg-muted/30 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold shrink-0">
+            2
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-sm">Скопируйте Chat ID и вставьте сюда</p>
+            <p className="text-xs text-muted-foreground">Нажмите на номер в боте для копирования</p>
+          </div>
         </div>
-      </details>
+        
+        <div className="flex gap-2">
+          <Input
+            value={chatId}
+            onChange={(e) => {
+              setChatId(e.target.value.replace(/[^0-9-]/g, ''));
+              setError(null);
+            }}
+            placeholder="123456789"
+            className="h-12 rounded-xl bg-card/60 backdrop-blur-xl border-border/30 focus:border-primary/50 font-mono text-lg"
+            disabled={isVerifying || isVerified}
+          />
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handlePaste}
+            className="h-12 w-12 rounded-xl shrink-0"
+            disabled={isVerifying || isVerified}
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+      </Card>
 
       {/* Error display */}
       {error && (
@@ -149,50 +169,38 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
         </div>
       )}
 
-      {/* Chat ID Input */}
-      <div className="space-y-2">
-        <Label htmlFor="telegram-chat-id" className="text-sm text-muted-foreground">
-          {t('telegram.yourChatId', 'Ваш Telegram Chat ID')}
-        </Label>
-        <div className="flex gap-2">
-          <Input
-            id="telegram-chat-id"
-            value={chatId}
-            onChange={(e) => {
-              setChatId(e.target.value.replace(/[^0-9-]/g, ''));
-              setError(null);
-            }}
-            placeholder="123456789"
-            className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50 font-mono"
-            disabled={isVerifying || isVerified}
-          />
-          <Button
-            onClick={handleVerify}
-            disabled={!chatId.trim() || isVerifying || isVerified}
-            className="h-12 px-6 rounded-xl"
-          >
-            {isVerifying ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : isVerified ? (
-              <Check className="h-4 w-4" />
-            ) : (
-              t('telegram.verify', 'Проверить')
-            )}
-          </Button>
-        </div>
-      </div>
-
+      {/* Success display */}
       {isVerified && (
         <div className="flex items-center gap-2 text-sm text-green-500 bg-green-500/10 p-3 rounded-xl">
           <Check className="h-4 w-4" />
-          {t('telegram.verifiedSuccess', 'Telegram успешно подключен!')}
+          Telegram успешно подключен!
         </div>
       )}
 
+      {/* Verify Button */}
+      <Button
+        onClick={handleVerify}
+        disabled={!chatId.trim() || isVerifying || isVerified}
+        className="w-full h-12 rounded-xl"
+      >
+        {isVerifying ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            Проверка...
+          </>
+        ) : isVerified ? (
+          <>
+            <Check className="h-4 w-4 mr-2" />
+            Подтверждено
+          </>
+        ) : (
+          'Подтвердить'
+        )}
+      </Button>
+
       {/* Info */}
-      <p className="text-xs text-muted-foreground text-center">
-        <MessageCircle className="h-3 w-3 inline mr-1" />
-        {t('telegram.whyRequired', 'Telegram нужен для получения уведомлений о новых заявках с вашей страницы')}
+      <p className="text-xs text-muted-foreground text-center px-4">
+        Telegram нужен для мгновенных уведомлений о новых заявках с вашей страницы
       </p>
     </div>
   );
