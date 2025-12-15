@@ -276,7 +276,16 @@
     "welcomeBack": "Welcome back!",
     "continueWithGoogle": "Continue with Google",
     "continueWithApple": "Continue with Apple",
-    "orContinueWith": "or continue with email"
+    "orContinueWith": "or continue with email",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset Password",
+    "resetDescription": "Enter your email to receive a reset link",
+    "sendResetLink": "Send Reset Link",
+    "checkEmail": "Check your email",
+    "resetEmailSent": "We sent a password reset link to your email",
+    "backToSignIn": "Back to Sign In",
+    "invalidEmail": "Please enter a valid email address",
+    "resetFailed": "Failed to send reset email"
   },
   "editor": {
     "title": "Page Editor",

@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
-import { Sparkles, Gift } from 'lucide-react';
+import { Sparkles, Gift, Mail } from 'lucide-react';
 import { z } from 'zod';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { applyReferralCode } from '@/services/referral';
@@ -31,6 +31,7 @@ const authSchema = z.object({
 });
 
 type SignupStep = 'credentials' | 'telegram';
+type AuthMode = 'signin' | 'signup' | 'reset';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -40,6 +41,8 @@ export default function Auth() {
   const { playSuccess, playError } = useSoundEffects();
   const [isLoading, setIsLoading] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState<'google' | 'apple' | null>(null);
+  const [authMode, setAuthMode] = useState<AuthMode>('signin');
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   
   // Signup flow state
   const [signupStep, setSignupStep] = useState<SignupStep>('credentials');
@@ -141,8 +144,40 @@ export default function Auth() {
     }
 
     playSuccess();
-    toast.success(t('auth.welcomeBack'));
+    toast.success(t('auth.welcomeBack', 'Welcome back!'));
     // Auth state change will trigger redirect
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('reset-email') as string;
+
+    const emailValidation = z.string().trim().email().safeParse(email);
+    if (!emailValidation.success) {
+      toast.error(t('auth.invalidEmail', 'Please enter a valid email address'));
+      playError();
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(emailValidation.data, {
+      redirectTo: `${window.location.origin}/auth?mode=update-password`,
+    });
+
+    if (error) {
+      console.error('Password reset error:', error);
+      toast.error(error.message || t('auth.resetFailed', 'Failed to send reset email'));
+      playError();
+      setIsLoading(false);
+      return;
+    }
+
+    playSuccess();
+    setResetEmailSent(true);
+    setIsLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
@@ -277,33 +312,94 @@ export default function Auth() {
               </TabsList>
 
               <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4 pt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
-                    <Input
-                      id="signin-email"
-                      name="signin-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      required
-                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
-                    <Input
-                      id="signin-password"
-                      name="signin-password"
-                      type="password"
-                      placeholder="••••••••"
-                      required
-                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
-                    {isLoading ? t('auth.signingIn') : t('auth.signIn')}
-                  </Button>
-                </form>
+                {authMode === 'reset' ? (
+                  resetEmailSent ? (
+                    <div className="space-y-4 pt-4 text-center">
+                      <div className="h-16 w-16 mx-auto rounded-full bg-green-500/20 flex items-center justify-center">
+                        <Mail className="h-8 w-8 text-green-500" />
+                      </div>
+                      <h3 className="text-lg font-semibold">{t('auth.checkEmail', 'Check your email')}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t('auth.resetEmailSent', 'We sent a password reset link to your email')}
+                      </p>
+                      <Button 
+                        variant="outline" 
+                        className="w-full h-12 rounded-xl"
+                        onClick={() => { setAuthMode('signin'); setResetEmailSent(false); }}
+                      >
+                        {t('auth.backToSignIn', 'Back to Sign In')}
+                      </Button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handlePasswordReset} className="space-y-4 pt-4">
+                      <div className="text-center mb-4">
+                        <h3 className="text-lg font-semibold">{t('auth.resetPassword', 'Reset Password')}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {t('auth.resetDescription', 'Enter your email to receive a reset link')}
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="reset-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
+                        <Input
+                          id="reset-email"
+                          name="reset-email"
+                          type="email"
+                          placeholder="your@email.com"
+                          required
+                          className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                        />
+                      </div>
+                      <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading}>
+                        {isLoading ? t('messages.loading', 'Loading...') : t('auth.sendResetLink', 'Send Reset Link')}
+                      </Button>
+                      <Button 
+                        type="button"
+                        variant="ghost" 
+                        className="w-full rounded-xl"
+                        onClick={() => setAuthMode('signin')}
+                      >
+                        {t('auth.backToSignIn', 'Back to Sign In')}
+                      </Button>
+                    </form>
+                  )
+                ) : (
+                  <form onSubmit={handleSignIn} className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
+                      <Input
+                        id="signin-email"
+                        name="signin-email"
+                        type="email"
+                        placeholder="your@email.com"
+                        required
+                        className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="signin-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
+                        <button 
+                          type="button"
+                          onClick={() => setAuthMode('reset')}
+                          className="text-xs text-primary hover:underline"
+                        >
+                          {t('auth.forgotPassword', 'Forgot password?')}
+                        </button>
+                      </div>
+                      <Input
+                        id="signin-password"
+                        name="signin-password"
+                        type="password"
+                        placeholder="••••••••"
+                        required
+                        className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                      />
+                    </div>
+                    <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
+                      {isLoading ? t('auth.signingIn') : t('auth.signIn')}
+                    </Button>
+                  </form>
+                )}
               </TabsContent>
 
               <TabsContent value="signup">
