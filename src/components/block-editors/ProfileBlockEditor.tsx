@@ -26,18 +26,14 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         placeholder="Your Name"
       />
       
-      <div className="space-y-2">
-        <MultilingualInput
-          label={t('fields.bio', 'Bio')}
-          value={migrateToMultilingual(formData.bio)}
-          onChange={(value) => onChange({ ...formData, bio: value })}
-          type="textarea"
-          placeholder="Tell people about yourself..."
-        />
-        <p className="text-xs text-muted-foreground">
-          {t('hints.richText', 'Для ссылок используйте формат [текст](url). Переносы строк сохраняются.')}
-        </p>
-      </div>
+      <MultilingualInput
+        label={t('fields.bio', 'Bio')}
+        value={migrateToMultilingual(formData.bio)}
+        onChange={(value) => onChange({ ...formData, bio: value })}
+        type="textarea"
+        placeholder="Tell people about yourself..."
+        enableRichText={true}
+      />
       
       <div className="border-t pt-4 space-y-4">
         <MediaUpload

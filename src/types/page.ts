@@ -199,9 +199,10 @@ export interface FormBlock {
   type: 'form';
   title: string | MultilingualString;
   fields: Array<{
-    name: string;
+    name: string | MultilingualString;
     type: 'text' | 'email' | 'phone' | 'textarea';
     required: boolean;
+    placeholder?: string | MultilingualString;
   }>;
   submitEmail: string;
   buttonText: string | MultilingualString;

@@ -13,14 +13,15 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
   const fields = formData.fields || [];
 
   const addField = () => {
+    const newField = { 
+      name: { ru: '', en: '', kk: '' }, 
+      placeholder: { ru: '', en: '', kk: '' },
+      type: 'text' as const, 
+      required: false 
+    };
     onChange({
       ...formData,
-      fields: [...fields, { 
-        name: { ru: '', en: '', kk: '' }, 
-        placeholder: { ru: '', en: '', kk: '' },
-        type: 'text', 
-        required: false 
-      }],
+      fields: [...fields, newField],
     });
   };
 
