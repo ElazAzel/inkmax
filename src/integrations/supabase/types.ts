@@ -218,6 +218,33 @@ export type Database = {
         }
         Relationships: []
       }
+      friendships: {
+        Row: {
+          created_at: string
+          friend_id: string
+          id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friend_id: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friend_id?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lead_interactions: {
         Row: {
           content: string
@@ -361,6 +388,33 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           view_count?: number | null
+        }
+        Relationships: []
+      }
+      password_reset_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          token: string
+          used: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          token: string
+          used?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string
+          used?: boolean
+          user_id?: string
         }
         Relationships: []
       }
@@ -622,6 +676,7 @@ export type Database = {
           current_streak: number | null
           display_name: string | null
           email_notifications_enabled: boolean | null
+          friends_count: number | null
           id: string
           is_premium: boolean | null
           last_active_date: string | null
@@ -642,6 +697,7 @@ export type Database = {
           current_streak?: number | null
           display_name?: string | null
           email_notifications_enabled?: boolean | null
+          friends_count?: number | null
           id: string
           is_premium?: boolean | null
           last_active_date?: string | null
@@ -662,6 +718,7 @@ export type Database = {
           current_streak?: number | null
           display_name?: string | null
           email_notifications_enabled?: boolean | null
+          friends_count?: number | null
           id?: string
           is_premium?: boolean | null
           last_active_date?: string | null

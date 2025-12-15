@@ -31,7 +31,8 @@ const authSchema = z.object({
 });
 
 type SignupStep = 'credentials' | 'telegram';
-type AuthMode = 'signin' | 'signup' | 'reset' | 'update-password';
+type AuthMode = 'signin' | 'signup' | 'reset' | 'reset-telegram' | 'update-password';
+type TelegramResetStep = 'request' | 'verify';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -44,6 +45,11 @@ export default function Auth() {
   const [authMode, setAuthMode] = useState<AuthMode>('signin');
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [passwordUpdated, setPasswordUpdated] = useState(false);
+  
+  // Telegram password reset state
+  const [telegramResetStep, setTelegramResetStep] = useState<TelegramResetStep>('request');
+  const [telegramChatId, setTelegramChatId] = useState('');
+  const [resetToken, setResetToken] = useState('');
   
   // Signup flow state
   const [signupStep, setSignupStep] = useState<SignupStep>('credentials');
@@ -186,6 +192,74 @@ export default function Auth() {
 
     playSuccess();
     setResetEmailSent(true);
+    setIsLoading(false);
+  };
+
+  const handleTelegramResetRequest = async () => {
+    if (!telegramChatId || !/^\d+$/.test(telegramChatId)) {
+      toast.error('Введите корректный Telegram Chat ID');
+      playError();
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('telegram-password-reset', {
+        body: { telegram_chat_id: telegramChatId, action: 'request' }
+      });
+
+      if (error || !data?.success) {
+        const errorMessages: Record<string, string> = {
+          telegram_not_found: 'Аккаунт с таким Telegram не найден',
+          telegram_send_failed: 'Не удалось отправить сообщение'
+        };
+        toast.error(errorMessages[data?.error] || 'Ошибка отправки кода');
+        playError();
+      } else {
+        playSuccess();
+        setTelegramResetStep('verify');
+        toast.success('Код отправлен в Telegram!');
+      }
+    } catch (e) {
+      toast.error('Ошибка соединения');
+      playError();
+    }
+    setIsLoading(false);
+  };
+
+  const handleTelegramResetVerify = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newPassword = formData.get('new-password') as string;
+
+    const passwordValidation = authSchema.shape.password.safeParse(newPassword);
+    if (!passwordValidation.success) {
+      toast.error(passwordValidation.error.errors[0].message);
+      playError();
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('telegram-password-reset', {
+        body: { telegram_chat_id: telegramChatId, action: 'verify', token: resetToken, new_password: newPassword }
+      });
+
+      if (error || !data?.success) {
+        toast.error(data?.error === 'invalid_token' ? 'Неверный или истёкший код' : 'Ошибка сброса пароля');
+        playError();
+      } else {
+        playSuccess();
+        toast.success('Пароль успешно изменён!');
+        setAuthMode('signin');
+        setTelegramResetStep('request');
+        setTelegramChatId('');
+        setResetToken('');
+      }
+    } catch (e) {
+      toast.error('Ошибка соединения');
+      playError();
+    }
     setIsLoading(false);
   };
 
@@ -466,6 +540,22 @@ export default function Auth() {
                       <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading}>
                         {isLoading ? t('messages.loading', 'Loading...') : t('auth.sendResetLink', 'Send Reset Link')}
                       </Button>
+                      <div className="relative py-2">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t border-border/30" />
+                        </div>
+                        <div className="relative flex justify-center text-xs">
+                          <span className="bg-card px-2 text-muted-foreground">или</span>
+                        </div>
+                      </div>
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="w-full h-12 rounded-xl"
+                        onClick={() => setAuthMode('reset-telegram')}
+                      >
+                        Восстановить через Telegram
+                      </Button>
                       <Button 
                         type="button"
                         variant="ghost" 
@@ -476,6 +566,55 @@ export default function Auth() {
                       </Button>
                     </form>
                   )
+                ) : authMode === 'reset-telegram' ? (
+                  <div className="space-y-4 pt-4">
+                    <div className="text-center mb-4">
+                      <h3 className="text-lg font-semibold">Восстановление через Telegram</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {telegramResetStep === 'request' ? 'Введите ваш Telegram Chat ID' : 'Введите код из Telegram'}
+                      </p>
+                    </div>
+                    {telegramResetStep === 'request' ? (
+                      <div className="space-y-4">
+                        <Input
+                          value={telegramChatId}
+                          onChange={(e) => setTelegramChatId(e.target.value.replace(/\D/g, ''))}
+                          placeholder="123456789"
+                          className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30"
+                        />
+                        <Button onClick={handleTelegramResetRequest} className="w-full h-12 rounded-xl" disabled={isLoading}>
+                          {isLoading ? 'Отправка...' : 'Получить код'}
+                        </Button>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleTelegramResetVerify} className="space-y-4">
+                        <Input
+                          value={resetToken}
+                          onChange={(e) => setResetToken(e.target.value.toUpperCase())}
+                          placeholder="XXXXXX"
+                          maxLength={6}
+                          className="h-12 rounded-xl bg-card/40 text-center text-xl tracking-widest font-mono"
+                        />
+                        <Input
+                          name="new-password"
+                          type="password"
+                          placeholder="Новый пароль"
+                          required
+                          className="h-12 rounded-xl bg-card/40"
+                        />
+                        <Button type="submit" className="w-full h-12 rounded-xl" disabled={isLoading}>
+                          {isLoading ? 'Сохранение...' : 'Сохранить пароль'}
+                        </Button>
+                      </form>
+                    )}
+                    <Button 
+                      variant="ghost" 
+                      className="w-full rounded-xl"
+                      onClick={() => { setAuthMode('signin'); setTelegramResetStep('request'); }}
+                    >
+                      Назад
+                    </Button>
+                  </div>
                 ) : (
                   <form onSubmit={handleSignIn} className="space-y-4 pt-4">
                     <div className="space-y-2">
