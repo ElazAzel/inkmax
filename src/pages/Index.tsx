@@ -253,11 +253,11 @@ export default function Index() {
                 <Button 
                   variant="ghost" 
                   onClick={() => navigate('/gallery')}
-                  className="hidden sm:inline-flex font-medium hover:bg-foreground/5 backdrop-blur-sm rounded-xl"
+                  className="inline-flex font-medium hover:bg-foreground/5 backdrop-blur-sm rounded-xl"
                   size="sm"
                 >
-                  <Users className="h-4 w-4 mr-1.5" />
-                  {t('landing.nav.gallery', 'Gallery')}
+                  <Users className="h-4 w-4 sm:mr-1.5" />
+                  <span className="hidden sm:inline">{t('landing.nav.gallery', 'Gallery')}</span>
                 </Button>
                 <Button 
                   variant="ghost" 

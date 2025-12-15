@@ -53,7 +53,7 @@ export function LandingFeaturedPages() {
         </div>
 
         {/* Pages Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 mb-8">
           {pages.map((page, index) => (
             <Card
               key={page.id}
@@ -68,25 +68,25 @@ export function LandingFeaturedPages() {
                 </div>
               </div>
 
-              <div className="p-4 sm:p-5">
+              <div className="p-3 sm:p-4">
                 {/* Avatar */}
-                <div className="flex justify-center mb-4">
-                  <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-primary/20 shadow-lg group-hover:scale-105 transition-transform">
+                <div className="flex justify-center mb-3">
+                  <Avatar className="h-12 w-12 sm:h-16 sm:w-16 border-2 border-primary/20 shadow-lg group-hover:scale-105 transition-transform">
                     <AvatarImage src={page.avatar_url || ''} alt={page.title || ''} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+                    <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">
                       {(page.title || 'U')[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </div>
 
                 {/* Info */}
-                <div className="text-center space-y-2">
-                  <h3 className="font-semibold text-sm sm:text-base truncate">
+                <div className="text-center space-y-1.5">
+                  <h3 className="font-semibold text-xs sm:text-sm truncate">
                     {page.title || page.slug}
                   </h3>
                   
                   {page.niche && (
-                    <div className="flex justify-center">
+                    <div className="hidden sm:flex justify-center">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-xs">
                         <span>{NICHE_ICONS[page.niche as Niche] || '📌'}</span>
                         <span className="text-muted-foreground">
@@ -97,13 +97,13 @@ export function LandingFeaturedPages() {
                   )}
 
                   {/* Stats */}
-                  <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground pt-2">
-                    <span className="flex items-center gap-1">
-                      <Eye className="h-3.5 w-3.5" />
+                  <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs text-muted-foreground pt-1">
+                    <span className="flex items-center gap-0.5">
+                      <Eye className="h-3 w-3" />
                       {page.view_count || 0}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-3.5 w-3.5" />
+                    <span className="flex items-center gap-0.5">
+                      <Heart className="h-3 w-3" />
                       {page.gallery_likes || 0}
                     </span>
                   </div>
