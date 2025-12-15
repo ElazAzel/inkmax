@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -7,10 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   X, Users, UserPlus, Search, Check, 
   X as XIcon, UserMinus, Trophy, 
-  Sparkles, Clock, ExternalLink 
+  Sparkles, Clock, ExternalLink, Heart 
 } from 'lucide-react';
 import { useFriends } from '@/hooks/useFriends';
 import { getUserPageSlug } from '@/services/friends';
+import { getPageByUserId, likeGalleryPage, unlikeGalleryPage } from '@/services/gallery';
 import { toast } from 'sonner';
 
 interface FriendsPanelProps {
@@ -40,6 +41,36 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
   }>>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [activeTab, setActiveTab] = useState('friends');
+  const [likedPages, setLikedPages] = useState<Set<string>>(() => {
+    const storedLikes = localStorage.getItem('linkmax_liked_pages');
+    if (storedLikes) {
+      try {
+        return new Set(JSON.parse(storedLikes));
+      } catch {
+        return new Set();
+      }
+    }
+    return new Set();
+  });
+
+  const handleToggleLike = async (pageId: string) => {
+    const isCurrentlyLiked = likedPages.has(pageId);
+    
+    if (isCurrentlyLiked) {
+      const newLikedPages = new Set(likedPages);
+      newLikedPages.delete(pageId);
+      setLikedPages(newLikedPages);
+      localStorage.setItem('linkmax_liked_pages', JSON.stringify([...newLikedPages]));
+      await unlikeGalleryPage(pageId);
+      toast.success('Лайк убран');
+    } else {
+      const newLikedPages = new Set(likedPages).add(pageId);
+      setLikedPages(newLikedPages);
+      localStorage.setItem('linkmax_liked_pages', JSON.stringify([...newLikedPages]));
+      await likeGalleryPage(pageId);
+      toast.success('Страница понравилась!');
+    }
+  };
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
@@ -190,6 +221,8 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
                     key={friendship.id}
                     user={friendship.friend_profile}
                     showViewPage
+                    onToggleLike={handleToggleLike}
+                    likedPages={likedPages}
                     action={
                       <Button
                         variant="ghost"
@@ -317,9 +350,22 @@ interface UserCardProps {
   badge?: React.ReactNode;
   action: React.ReactNode;
   showViewPage?: boolean;
+  onToggleLike?: (pageId: string) => Promise<void>;
+  likedPages?: Set<string>;
 }
 
-function UserCard({ user, badge, action, showViewPage }: UserCardProps) {
+function UserCard({ user, badge, action, showViewPage, onToggleLike, likedPages }: UserCardProps) {
+  const [pageId, setPageId] = useState<string | null>(null);
+  const [isLiking, setIsLiking] = useState(false);
+
+  useEffect(() => {
+    if (user && showViewPage) {
+      getPageByUserId(user.id).then(page => {
+        if (page) setPageId(page.id);
+      });
+    }
+  }, [user, showViewPage]);
+
   if (!user) return null;
 
   const handleViewPage = async () => {
@@ -330,6 +376,18 @@ function UserCard({ user, badge, action, showViewPage }: UserCardProps) {
       toast.error('Страница не опубликована');
     }
   };
+
+  const handleLike = async () => {
+    if (!pageId || !onToggleLike || isLiking) return;
+    setIsLiking(true);
+    try {
+      await onToggleLike(pageId);
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
+  const isLiked = pageId ? likedPages?.has(pageId) : false;
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-2xl bg-card/50 border border-border/30">
@@ -351,6 +409,18 @@ function UserCard({ user, badge, action, showViewPage }: UserCardProps) {
         )}
       </div>
       <div className="flex items-center gap-1">
+        {showViewPage && pageId && onToggleLike && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLike}
+            disabled={isLiking}
+            className="h-8 w-8 p-0 rounded-lg"
+            title={isLiked ? 'Убрать лайк' : 'Поставить лайк'}
+          >
+            <Heart className={`h-4 w-4 transition-all ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+          </Button>
+        )}
         {showViewPage && (
           <Button
             variant="ghost"

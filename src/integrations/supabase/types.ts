@@ -815,6 +815,7 @@ export type Database = {
         Returns: undefined
       }
       toggle_gallery_status: { Args: { p_user_id: string }; Returns: boolean }
+      unlike_gallery_page: { Args: { p_page_id: string }; Returns: undefined }
       update_user_streak: { Args: { p_user_id: string }; Returns: Json }
       upsert_user_page:
         | {
