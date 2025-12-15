@@ -30,11 +30,14 @@ import {
   Image,
   ExternalLink,
   Check,
+  Loader2,
 } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 
@@ -125,18 +128,46 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
-  const [telegramSaved, setTelegramSaved] = useState(false);
+  const [telegramValidating, setTelegramValidating] = useState(false);
+  const [telegramValidated, setTelegramValidated] = useState(false);
 
   // Sync local state with prop changes
   useEffect(() => {
     setLocalTelegramChatId(telegramChatId || '');
+    setTelegramValidated(!!telegramChatId);
   }, [telegramChatId]);
 
-  const handleSaveTelegram = () => {
-    if (localTelegramChatId.trim()) {
-      onTelegramChange?.(true, localTelegramChatId.trim());
-      setTelegramSaved(true);
-      setTimeout(() => setTelegramSaved(false), 2000);
+  const handleValidateAndSaveTelegram = async () => {
+    if (!localTelegramChatId.trim()) return;
+    
+    setTelegramValidating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-telegram', {
+        body: { chatId: localTelegramChatId.trim() }
+      });
+
+      if (error) {
+        toast.error(t('settings.telegramError', 'Failed to validate Telegram'));
+        return;
+      }
+
+      if (data.valid) {
+        onTelegramChange?.(true, localTelegramChatId.trim());
+        setTelegramValidated(true);
+        toast.success(t('settings.telegramConnected', 'Telegram connected! Check your messages.'));
+      } else {
+        const errorMsg = data.error === 'invalid_chat_id' 
+          ? t('settings.telegramInvalidId', 'Invalid Chat ID. Make sure you sent /start to @userinfobot')
+          : data.error === 'cannot_send_message'
+          ? t('settings.telegramCantSend', 'Cannot send messages. Start the bot first: @LinkMAXBot')
+          : t('settings.telegramError', 'Failed to validate Telegram');
+        toast.error(errorMsg);
+      }
+    } catch (error) {
+      console.error('Telegram validation error:', error);
+      toast.error(t('settings.telegramError', 'Failed to validate Telegram'));
+    } finally {
+      setTelegramValidating(false);
     }
   };
 
@@ -466,17 +497,23 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                           value={localTelegramChatId}
                           onChange={(e) => {
                             setLocalTelegramChatId(e.target.value.replace(/\D/g, ''));
-                            setTelegramSaved(false);
+                            setTelegramValidated(false);
                           }}
                           className="bg-background/50 text-sm font-mono rounded-xl"
                         />
                         <Button
                           size="sm"
-                          onClick={handleSaveTelegram}
-                          disabled={!localTelegramChatId.trim() || telegramSaved}
+                          onClick={handleValidateAndSaveTelegram}
+                          disabled={!localTelegramChatId.trim() || telegramValidating || telegramValidated}
                           className="shrink-0 rounded-xl"
                         >
-                          {telegramSaved ? <Check className="h-4 w-4" /> : t('common.save', 'Save')}
+                          {telegramValidating ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : telegramValidated ? (
+                            <Check className="h-4 w-4" />
+                          ) : (
+                            t('settings.telegramVerify', 'Verify')
+                          )}
                         </Button>
                       </div>
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

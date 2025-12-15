@@ -9,7 +9,12 @@
     "emailDesc": "New leads via email",
     "telegramDesc": "Instant notifications",
     "telegramChatId": "Your Chat ID",
-    "telegramHelp": "Get your ID from"
+    "telegramHelp": "Get your ID from",
+    "telegramVerify": "Verify",
+    "telegramConnected": "Telegram connected! Check your messages.",
+    "telegramError": "Failed to connect Telegram",
+    "telegramInvalidId": "Invalid Chat ID. Make sure you sent /start to @userinfobot",
+    "telegramCantSend": "Cannot send messages. Start the bot first"
   },
   "common": {
     "save": "Save"

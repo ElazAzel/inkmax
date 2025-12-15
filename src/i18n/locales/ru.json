@@ -9,7 +9,12 @@
     "emailDesc": "Новые заявки на email",
     "telegramDesc": "Мгновенные уведомления",
     "telegramChatId": "Ваш Chat ID",
-    "telegramHelp": "Получите ID у"
+    "telegramHelp": "Получите ID у",
+    "telegramVerify": "Проверить",
+    "telegramConnected": "Telegram подключен! Проверьте сообщения.",
+    "telegramError": "Не удалось подключить Telegram",
+    "telegramInvalidId": "Неверный Chat ID. Убедитесь, что отправили /start боту @userinfobot",
+    "telegramCantSend": "Не удается отправить сообщение. Сначала запустите бота"
   },
   "common": {
     "save": "Сохранить"
