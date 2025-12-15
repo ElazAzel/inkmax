@@ -44,6 +44,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // Check for pending Telegram chat ID after signup
+        if (event === 'SIGNED_IN' && session?.user) {
+          const pendingChatId = localStorage.getItem('pending_telegram_chat_id');
+          if (pendingChatId) {
+            localStorage.removeItem('pending_telegram_chat_id');
+            // Use setTimeout to avoid deadlock with Supabase auth
+            setTimeout(async () => {
+              try {
+                await supabase
+                  .from('user_profiles')
+                  .update({ 
+                    telegram_chat_id: pendingChatId,
+                    telegram_notifications_enabled: true 
+                  })
+                  .eq('id', session.user.id);
+              } catch (err) {
+                console.error('Failed to save telegram chat id:', err);
+              }
+            }, 0);
+          }
+        }
       }
     );
 
