@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Users, Loader2 } from 'lucide-react';
 import { useGallery } from '@/hooks/useGallery';
@@ -23,7 +23,17 @@ export function CommunityGallery({
 }: CommunityGalleryProps) {
   const { t } = useTranslation();
   const { pages, loading, likePage, selectedNiche, setSelectedNiche, nicheCounts } = useGallery();
-  const [likedPages, setLikedPages] = useState<Set<string>>(new Set());
+  const [likedPages, setLikedPages] = useState<Set<string>>(() => {
+    const storedLikes = localStorage.getItem('linkmax_liked_pages');
+    if (storedLikes) {
+      try {
+        return new Set(JSON.parse(storedLikes));
+      } catch {
+        return new Set();
+      }
+    }
+    return new Set();
+  });
   
   const {
     search,
@@ -37,11 +47,15 @@ export function CommunityGallery({
 
   const displayPages = maxItems ? filteredPages.slice(0, maxItems) : filteredPages;
 
-  const handleLike = async (pageId: string) => {
+  const handleLike = useCallback(async (pageId: string) => {
     if (likedPages.has(pageId)) return;
-    setLikedPages(prev => new Set(prev).add(pageId));
+    
+    const newLikedPages = new Set(likedPages).add(pageId);
+    setLikedPages(newLikedPages);
+    localStorage.setItem('linkmax_liked_pages', JSON.stringify([...newLikedPages]));
+    
     await likePage(pageId);
-  };
+  }, [likedPages, likePage]);
 
   if (loading) {
     return (
