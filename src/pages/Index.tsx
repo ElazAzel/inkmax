@@ -147,7 +147,7 @@ export default function Index() {
   const features = [
     { icon: Sparkles, title: t('landing.features.aiGeneration.title'), description: t('landing.features.aiGeneration.description'), gradient: 'from-violet-500 to-purple-600', delay: '0ms' },
     { icon: Link2, title: t('landing.features.magicLinks.title'), description: t('landing.features.magicLinks.description'), gradient: 'from-blue-500 to-cyan-500', delay: '100ms' },
-    { icon: Zap, title: t('landing.features.fast.title'), description: t('landing.features.fast.description'), gradient: 'from-amber-500 to-orange-500', delay: '200ms' },
+    { icon: Users, title: 'Команды и коллабы', description: 'Создавайте команды, приглашайте участников по ссылке, управляйте совместными страницами', gradient: 'from-amber-500 to-orange-500', delay: '200ms' },
     { icon: Smartphone, title: t('landing.features.mobile.title'), description: t('landing.features.mobile.description'), gradient: 'from-emerald-500 to-teal-500', delay: '300ms' },
     { icon: Share2, title: t('landing.features.sharing.title'), description: t('landing.features.sharing.description'), gradient: 'from-pink-500 to-rose-500', delay: '400ms' },
     { icon: Shield, title: t('landing.features.privacy.title'), description: t('landing.features.privacy.description'), gradient: 'from-slate-500 to-zinc-600', delay: '500ms' }
@@ -176,6 +176,8 @@ export default function Index() {
       { text: t('landing.pricing.features.unlimitedAI'), included: true },
       { text: t('landing.pricing.features.analytics'), included: true },
       { text: t('landing.pricing.features.crm'), included: true },
+      { text: 'Команды и коллаборации', included: true },
+      { text: 'Приглашения по ссылке', included: true },
       { text: t('landing.pricing.features.noWatermark'), included: true },
       { text: t('landing.pricing.features.priority'), included: true }
     ]
@@ -186,7 +188,7 @@ export default function Index() {
     { icon: Palette, label: t('landing.benefits.design') },
     { icon: BarChart3, label: t('landing.benefits.analytics') },
     { icon: Globe, label: 'Multi-lang' },
-    { icon: Users, label: t('landing.benefits.crm') }
+    { icon: Users, label: 'Команды' }
   ];
 
   const heroSection = useScrollAnimation();
