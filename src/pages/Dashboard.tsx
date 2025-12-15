@@ -127,6 +127,10 @@ export default function Dashboard() {
           questsLoading={dashboard.dailyQuests.loading}
           niche={dashboard.pageData?.niche as any}
           onNicheChange={dashboard.updateNiche}
+          previewUrl={dashboard.pageData?.previewUrl}
+          onPreviewUrlChange={(url) => {
+            dashboard.updatePageDataPartial({ previewUrl: url || undefined });
+          }}
         />
 
         {/* Referral Panel in Settings Area */}
@@ -220,6 +224,10 @@ export default function Dashboard() {
         userId={dashboard.user?.id}
         niche={dashboard.pageData?.niche as any}
         onNicheChange={dashboard.updateNiche}
+        previewUrl={dashboard.pageData?.previewUrl}
+        onPreviewUrlChange={(url) => {
+          dashboard.updatePageDataPartial({ previewUrl: url || undefined });
+        }}
         onSignOut={dashboard.handleSignOut}
       />
 

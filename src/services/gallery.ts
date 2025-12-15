@@ -7,6 +7,7 @@ export interface GalleryPage {
   title: string | null;
   description: string | null;
   avatar_url: string | null;
+  preview_url: string | null;
   gallery_likes: number;
   gallery_featured_at: string | null;
   view_count: number | null;
@@ -20,7 +21,7 @@ export type LeaderboardPeriod = 'week' | 'month' | 'all';
 export async function getGalleryPages(niche?: Niche | null): Promise<GalleryPage[]> {
   let query = supabase
     .from('pages')
-    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche, user_id')
+    .select('id, slug, title, description, avatar_url, preview_url, gallery_likes, gallery_featured_at, view_count, niche, user_id')
     .eq('is_published', true);
 
   if (niche) {
@@ -59,6 +60,7 @@ export async function getGalleryPages(niche?: Niche | null): Promise<GalleryPage
     title: p.title,
     description: p.description,
     avatar_url: p.avatar_url,
+    preview_url: p.preview_url,
     gallery_likes: p.gallery_likes,
     gallery_featured_at: p.gallery_featured_at,
     view_count: p.view_count,
@@ -97,7 +99,7 @@ export async function getTopPremiumPages(limit: number = 5): Promise<GalleryPage
   
   const { data, error } = await supabase
     .from('pages')
-    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
+    .select('id, slug, title, description, avatar_url, preview_url, gallery_likes, gallery_featured_at, view_count, niche')
     .eq('is_published', true)
     .in('user_id', premiumUserIds)
     .order('view_count', { ascending: false, nullsFirst: false })
@@ -134,7 +136,7 @@ export async function getNicheCounts(): Promise<Record<string, number>> {
 export async function getLeaderboardPages(period: LeaderboardPeriod = 'week'): Promise<GalleryPage[]> {
   let query = supabase
     .from('pages')
-    .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
+    .select('id, slug, title, description, avatar_url, preview_url, gallery_likes, gallery_featured_at, view_count, niche')
     .eq('is_published', true);
 
   // Filter by period

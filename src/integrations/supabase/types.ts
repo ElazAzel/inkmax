@@ -238,6 +238,7 @@ export type Database = {
           is_in_gallery: boolean | null
           is_published: boolean | null
           niche: string | null
+          preview_url: string | null
           seo_meta: Json | null
           slug: string
           theme_settings: Json | null
@@ -259,6 +260,7 @@ export type Database = {
           is_in_gallery?: boolean | null
           is_published?: boolean | null
           niche?: string | null
+          preview_url?: string | null
           seo_meta?: Json | null
           slug: string
           theme_settings?: Json | null
@@ -280,6 +282,7 @@ export type Database = {
           is_in_gallery?: boolean | null
           is_published?: boolean | null
           niche?: string | null
+          preview_url?: string | null
           seo_meta?: Json | null
           slug?: string
           theme_settings?: Json | null

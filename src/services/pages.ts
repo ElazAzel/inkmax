@@ -206,6 +206,14 @@ export async function savePage(
       return { data: null, error: wrapError(blocksError) };
     }
 
+    // Save preview_url if provided
+    if (pageData.previewUrl !== undefined) {
+      await supabase
+        .from('pages')
+        .update({ preview_url: pageData.previewUrl || null })
+        .eq('id', pageId);
+    }
+
     // Save chatbot context if provided
     if (chatbotContext !== undefined) {
       await supabase.from('private_page_data').upsert(
@@ -270,6 +278,7 @@ export async function loadPageBySlug(slug: string): Promise<LoadPageResult> {
       editorMode: (page as unknown as { editor_mode?: string }).editor_mode as EditorMode || 'linear',
       gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
       niche: (page as unknown as { niche?: string }).niche || 'other',
+      previewUrl: (page as unknown as { preview_url?: string }).preview_url || undefined,
     };
 
     return { data: pageData, error: null };
@@ -318,6 +327,7 @@ export async function loadUserPage(userId: string): Promise<LoadUserPageResult> 
       editorMode: (page as unknown as { editor_mode?: string }).editor_mode as EditorMode || 'linear',
       gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
       niche: (page as unknown as { niche?: string }).niche || 'other',
+      previewUrl: (page as unknown as { preview_url?: string }).preview_url || undefined,
     };
 
     // Extract chatbot context
