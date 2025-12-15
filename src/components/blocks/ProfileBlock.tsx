@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2 } from 'lucide-react';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { parseRichText } from '@/lib/rich-text-parser';
 import type { ProfileBlock as ProfileBlockType } from '@/types/page';
-
 interface ProfileBlockProps {
   block: ProfileBlockType;
   isPreview?: boolean;
@@ -148,7 +148,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           </div>
           
           {bio && (
-            <p className="text-muted-foreground max-w-md whitespace-pre-line">{bio}</p>
+            <p className="text-muted-foreground max-w-md whitespace-pre-line">{parseRichText(bio)}</p>
           )}
         </div>
       </div>
