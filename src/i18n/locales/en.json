@@ -285,7 +285,16 @@
     "resetEmailSent": "We sent a password reset link to your email",
     "backToSignIn": "Back to Sign In",
     "invalidEmail": "Please enter a valid email address",
-    "resetFailed": "Failed to send reset email"
+    "resetFailed": "Failed to send reset email",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "enterNewPassword": "Enter your new password",
+    "updatePassword": "Update Password",
+    "passwordUpdated": "Password Updated",
+    "passwordUpdatedDesc": "Your password has been successfully updated",
+    "goToDashboard": "Go to Dashboard",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "updateFailed": "Failed to update password"
   },
   "editor": {
     "title": "Page Editor",

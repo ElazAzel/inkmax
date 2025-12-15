@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { CheckCircle2, Check, X, Camera, Loader2, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -25,6 +24,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { compressImage } from '@/lib/image-compression';
 import { toast } from 'sonner';
 import { ImageCropper } from '@/components/form-fields/ImageCropper';
+import { RichTextEditor } from '@/components/form-fields/RichTextEditor';
 import type { ProfileBlock as ProfileBlockType } from '@/types/page';
 
 interface InlineProfileEditorProps {
@@ -622,34 +622,31 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
           
           {/* Editable Bio */}
           {isEditingBio ? (
-            <div className="space-y-2">
-              <Textarea
-                ref={bioInputRef}
+            <div className="space-y-2 w-full">
+              <RichTextEditor
                 value={editedBio}
-                onChange={(e) => setEditedBio(e.target.value)}
-                onKeyDown={handleBioKeyDown}
-                className="text-center resize-none min-h-[60px]"
-                placeholder="Tell people about yourself"
-                rows={2}
+                onChange={setEditedBio}
+                placeholder={t('profile.bioPlaceholder', 'Tell people about yourself')}
+                className="min-h-[80px] text-sm"
               />
               <div className="flex items-center justify-center gap-2">
                 <Button size="sm" variant="default" onClick={handleSaveBio}>
                   <Check className="h-4 w-4 mr-1" />
-                  Save
+                  {t('common.save', 'Save')}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={handleCancelBio}>
                   <X className="h-4 w-4 mr-1" />
-                  Cancel
+                  {t('editor.cancel', 'Cancel')}
                 </Button>
               </div>
             </div>
           ) : (
             <p 
-              className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors border-b-2 border-transparent hover:border-primary/30"
+              className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors border-b-2 border-transparent hover:border-primary/30 px-2 py-1"
               onClick={() => setIsEditingBio(true)}
-              title="Click to edit"
+              title={t('profile.clickToEdit', 'Click to edit')}
             >
-              {bio || 'Click to add bio'}
+              {bio || t('profile.addBio', 'Click to add bio')}
             </p>
           )}
         </div>
