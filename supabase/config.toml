@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.send-trial-ending-notification]
 verify_jwt = false
+
+[functions.validate-telegram]
+verify_jwt = false

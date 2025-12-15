@@ -9,7 +9,12 @@
     "emailDesc": "Жаңа өтініштер email арқылы",
     "telegramDesc": "Лезде хабарламалар",
     "telegramChatId": "Сіздің Chat ID",
-    "telegramHelp": "ID алыңыз"
+    "telegramHelp": "ID алыңыз",
+    "telegramVerify": "Тексеру",
+    "telegramConnected": "Telegram қосылды! Хабарламаларыңызды тексеріңіз.",
+    "telegramError": "Telegram қосу сәтсіз аяқталды",
+    "telegramInvalidId": "Қате Chat ID. @userinfobot ботына /start жібергеніңізге көз жеткізіңіз",
+    "telegramCantSend": "Хабарлама жіберу мүмкін емес. Алдымен ботты іске қосыңыз"
   },
   "common": {
     "save": "Сақтау"
