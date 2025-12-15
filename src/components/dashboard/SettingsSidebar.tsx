@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
@@ -15,6 +16,9 @@ import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { DailyQuestsPanel } from '@/components/quests/DailyQuestsPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
+import { CollaborationPanel } from '@/components/collaboration/CollaborationPanel';
+import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { Quest } from '@/services/quests';
@@ -52,6 +56,7 @@ interface SettingsSidebarProps {
   onNicheChange?: (niche: Niche) => void;
   previewUrl?: string;
   onPreviewUrlChange?: (url: string | null) => void;
+  pageId?: string;
 }
 
 export function SettingsSidebar({
@@ -86,8 +91,10 @@ export function SettingsSidebar({
   onNicheChange,
   previewUrl,
   onPreviewUrlChange,
+  pageId,
 }: SettingsSidebarProps) {
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState('settings');
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
   const [telegramValidating, setTelegramValidating] = useState(false);
   const [telegramValidated, setTelegramValidated] = useState(false);
@@ -142,13 +149,27 @@ export function SettingsSidebar({
 
   return (
     <div className="fixed left-4 top-20 bottom-4 w-80 bg-card/50 backdrop-blur-2xl border border-border/30 rounded-2xl shadow-glass-lg z-40 overflow-y-auto hidden md:block">
-      <div className="p-6 space-y-6">
-        {/* Close Button */}
-        <div className="flex justify-end">
-          <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-foreground/5">
+      <div className="p-4 space-y-4">
+        {/* Header with Close and Tabs */}
+        <div className="flex items-center justify-between">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
+            <TabsList className="grid w-full grid-cols-2 bg-background/50">
+              <TabsTrigger value="settings" className="text-xs">Настройки</TabsTrigger>
+              <TabsTrigger value="collabs" className="text-xs">
+                <Users className="h-3 w-3 mr-1" />
+                Коллабы
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-foreground/5 ml-2">
             <X className="h-4 w-4" />
           </Button>
         </div>
+
+        {activeTab === 'collabs' && userId && pageId ? (
+          <CollaborationPanel userId={userId} pageId={pageId} />
+        ) : (
+          <div className="space-y-6">
 
         {/* Grid Settings - only show in grid mode */}
         {editorMode === 'grid' && onGridConfigChange && (
@@ -232,25 +253,21 @@ export function SettingsSidebar({
         {/* Profile Settings */}
         {profileBlock && (
           <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
-            <h3 className="font-semibold mb-4">Profile</h3>
-            <div className="space-y-3">
-              <div>
-                <Label>Name</Label>
-                <Input
-                  value={getStringValue(profileBlock.name)}
-                  onChange={(e) => onUpdateProfile({ name: e.target.value })}
-                  className="bg-background/50"
-                />
-              </div>
-              <div>
-                <Label>Bio</Label>
-                <Textarea
-                  value={getStringValue(profileBlock.bio)}
-                  onChange={(e) => onUpdateProfile({ bio: e.target.value })}
-                  rows={3}
-                  className="bg-background/50"
-                />
-              </div>
+            <h3 className="font-semibold mb-4">{t('settings.profile', 'Profile')}</h3>
+            <div className="space-y-4">
+              <MultilingualInput
+                label={t('settings.name', 'Name')}
+                value={migrateToMultilingual(profileBlock.name)}
+                onChange={(value) => onUpdateProfile({ name: value })}
+                placeholder={t('settings.namePlaceholder', 'Your name')}
+              />
+              <MultilingualInput
+                label={t('settings.bio', 'Bio')}
+                value={migrateToMultilingual(profileBlock.bio)}
+                onChange={(value) => onUpdateProfile({ bio: value })}
+                type="textarea"
+                placeholder={t('settings.bioPlaceholder', 'Tell about yourself')}
+              />
             </div>
           </Card>
         )}
@@ -474,6 +491,8 @@ export function SettingsSidebar({
             SEO Generator
           </Button>
         </Card>
+          </div>
+        )}
       </div>
     </div>
   );

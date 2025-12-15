@@ -12,7 +12,7 @@ export type BlockType =
   | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' 
   | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' 
   | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' 
-  | 'before_after' | 'faq' | 'countdown' | 'pricing';
+  | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout';
 
 export type Currency = 
   | 'KZT' | 'RUB' | 'BYN' | 'AMD' | 'AZN' | 'KGS' | 'TJS' | 'TMT' | 'UZS' 

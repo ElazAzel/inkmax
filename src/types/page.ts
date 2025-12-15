@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout';
 
 // Multilingual string support
 import type { MultilingualString } from '@/lib/i18n-helpers';
@@ -398,13 +398,26 @@ export interface PricingBlock {
   blockStyle?: BlockStyle;
 }
 
+// Shoutout Block - recommend other users
+export interface ShoutoutBlock {
+  id: string;
+  type: 'shoutout';
+  userId: string;
+  username?: string;
+  displayName?: string;
+  avatarUrl?: string;
+  message?: string | MultilingualString;
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
 // Base block type with optional grid layout
 interface BlockGridProps {
   gridLayout?: GridLayoutData;
   createdAt?: string;
 }
 
-export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock) & BlockGridProps;
+export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock) & BlockGridProps;
 
 export interface PageTheme {
   backgroundColor: string;
