@@ -16,7 +16,7 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
   const addImage = () => {
     onChange({
       ...formData,
-      images: [...images, { url: '', alt: '', link: '' }],
+      images: [...images, { url: '', alt: { ru: '', en: '', kk: '' }, link: '' }],
     });
   };
 
@@ -27,7 +27,7 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
     });
   };
 
-  const updateImage = (index: number, field: string, value: string) => {
+  const updateImage = (index: number, field: string, value: any) => {
     const updated = [...images];
     updated[index] = { ...updated[index], [field]: value };
     onChange({ ...formData, images: updated });
@@ -70,14 +70,12 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
               accept="image/*"
             />
 
-            <div>
-              <Label className="text-xs">{t('fields.altText', 'Alt Text')}</Label>
-              <Input
-                value={image.alt}
-                onChange={(e) => updateImage(index, 'alt', e.target.value)}
-                placeholder={t('fields.imageDescription', 'Image description')}
-              />
-            </div>
+            <MultilingualInput
+              label={t('fields.altText', 'Alt Text')}
+              value={migrateToMultilingual(image.alt)}
+              onChange={(value) => updateImage(index, 'alt', value)}
+              placeholder={t('fields.imageDescription', 'Image description')}
+            />
 
             <div>
               <Label className="text-xs">{t('fields.link', 'Link')} ({t('fields.optional', 'optional')})</Label>

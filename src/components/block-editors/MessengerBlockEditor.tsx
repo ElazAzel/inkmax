@@ -1,7 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateMessengerBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
@@ -17,7 +16,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
   const addMessenger = () => {
     onChange({
       ...formData,
-      messengers: [...messengers, { platform: 'whatsapp', username: '', message: '' }],
+      messengers: [...messengers, { platform: 'whatsapp', username: '', message: { ru: '', en: '', kk: '' } }],
     });
   };
 
@@ -28,7 +27,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
     });
   };
 
-  const updateMessenger = (index: number, field: string, value: string) => {
+  const updateMessenger = (index: number, field: string, value: any) => {
     const updated = [...messengers];
     updated[index] = { ...updated[index], [field]: value };
     onChange({ ...formData, messengers: updated });
@@ -40,7 +39,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
         label={`${t('fields.title', 'Title')} (${t('fields.optional', 'optional')})`}
         value={migrateToMultilingual(formData.title)}
         onChange={(value) => onChange({ ...formData, title: value })}
-        placeholder="Contact me"
+        placeholder={t('fields.contactMe', 'Contact me')}
       />
 
       <ArrayFieldList label={t('fields.messengers', 'Messengers')} items={messengers} onAdd={addMessenger}>
@@ -74,19 +73,17 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
               <Input
                 value={messenger.username}
                 onChange={(e) => updateMessenger(index, 'username', e.target.value)}
-                placeholder="username or phone number"
+                placeholder={t('fields.usernameOrPhone', 'username or phone number')}
               />
             </div>
 
-            <div>
-              <Label className="text-xs">{t('fields.prefilledMessage', 'Pre-filled Message')} ({t('fields.optional', 'optional')})</Label>
-              <Textarea
-                value={messenger.message || ''}
-                onChange={(e) => updateMessenger(index, 'message', e.target.value)}
-                placeholder="Hello! I have a question..."
-                rows={2}
-              />
-            </div>
+            <MultilingualInput
+              label={`${t('fields.prefilledMessage', 'Pre-filled Message')} (${t('fields.optional', 'optional')})`}
+              value={migrateToMultilingual(messenger.message)}
+              onChange={(value) => updateMessenger(index, 'message', value)}
+              type="textarea"
+              placeholder={t('fields.prefilledMessagePlaceholder', 'Hello! I have a question...')}
+            />
           </ArrayFieldItem>
         ))}
       </ArrayFieldList>
