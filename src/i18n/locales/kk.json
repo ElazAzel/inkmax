@@ -270,7 +270,16 @@
     "welcomeBack": "Қош келдіңіз!",
     "continueWithGoogle": "Google арқылы жалғастыру",
     "continueWithApple": "Apple арқылы жалғастыру",
-    "orContinueWith": "немесе email арқылы жалғастыру"
+    "orContinueWith": "немесе email арқылы жалғастыру",
+    "forgotPassword": "Құпия сөзді ұмыттыңыз ба?",
+    "resetPassword": "Құпия сөзді қалпына келтіру",
+    "resetDescription": "Қалпына келтіру сілтемесін алу үшін email енгізіңіз",
+    "sendResetLink": "Сілтемені жіберу",
+    "checkEmail": "Поштаңызды тексеріңіз",
+    "resetEmailSent": "Құпия сөзді қалпына келтіру сілтемесін поштаңызға жібердік",
+    "backToSignIn": "Кіруге оралу",
+    "invalidEmail": "Дұрыс email енгізіңіз",
+    "resetFailed": "Хат жіберу сәтсіз аяқталды"
   },
   "editor": {
     "title": "Бет редакторы",

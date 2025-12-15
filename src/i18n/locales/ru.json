@@ -276,7 +276,16 @@
     "welcomeBack": "С возвращением!",
     "continueWithGoogle": "Продолжить через Google",
     "continueWithApple": "Продолжить через Apple",
-    "orContinueWith": "или продолжить с email"
+    "orContinueWith": "или продолжить с email",
+    "forgotPassword": "Забыли пароль?",
+    "resetPassword": "Восстановление пароля",
+    "resetDescription": "Введите email для получения ссылки сброса",
+    "sendResetLink": "Отправить ссылку",
+    "checkEmail": "Проверьте почту",
+    "resetEmailSent": "Мы отправили ссылку для сброса пароля на вашу почту",
+    "backToSignIn": "Вернуться к входу",
+    "invalidEmail": "Введите корректный email",
+    "resetFailed": "Не удалось отправить письмо"
   },
   "editor": {
     "title": "Редактор страницы",
