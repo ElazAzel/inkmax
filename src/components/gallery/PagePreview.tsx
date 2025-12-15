@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { User } from 'lucide-react';
 
 interface PagePreviewProps {
   slug: string;
@@ -13,31 +14,32 @@ export function PagePreview({ slug, title, avatarUrl, previewUrl, className = ''
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
-  // Priority: custom preview > mshots screenshot
-  const pageUrl = `${window.location.origin}/${slug}`;
-  const screenshotUrl = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(pageUrl)}?w=400&h=300`;
-  const imageUrl = previewUrl || screenshotUrl;
+  // Only use custom preview if available, no external screenshot service
+  const hasCustomPreview = previewUrl && previewUrl.trim() !== '';
 
-  if (imageError && !previewUrl) {
-    // Fallback to avatar with decorative preview
+  // If no custom preview or error, show avatar-based fallback
+  if (!hasCustomPreview || imageError) {
     return (
       <div className={`relative bg-gradient-to-br from-muted/50 to-muted rounded-lg overflow-hidden ${className}`}>
         <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-          <Avatar className="h-16 w-16 ring-2 ring-border/50 mb-2">
-            <AvatarImage src={avatarUrl || ''} />
-            <AvatarFallback className="bg-primary/10 text-primary text-lg">
-              {title?.charAt(0) || '?'}
+          <Avatar className="h-20 w-20 ring-4 ring-background/50 shadow-lg mb-3">
+            <AvatarImage src={avatarUrl || ''} alt={title || slug} />
+            <AvatarFallback className="bg-primary/10 text-primary text-2xl">
+              {title?.charAt(0)?.toUpperCase() || slug?.charAt(0)?.toUpperCase() || <User className="h-8 w-8" />}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium text-foreground/80 text-center truncate max-w-full">
+          <span className="text-base font-semibold text-foreground/90 text-center truncate max-w-full">
             {title || slug}
+          </span>
+          <span className="text-sm text-muted-foreground mt-1">
+            @{slug}
           </span>
         </div>
         {/* Decorative browser dots */}
-        <div className="absolute top-2 left-2 right-2 flex gap-1">
-          <div className="w-2 h-2 rounded-full bg-destructive/40" />
-          <div className="w-2 h-2 rounded-full bg-yellow-500/40" />
-          <div className="w-2 h-2 rounded-full bg-green-500/40" />
+        <div className="absolute top-2 left-2 right-2 flex gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-destructive/40" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/40" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500/40" />
         </div>
       </div>
     );
@@ -51,29 +53,15 @@ export function PagePreview({ slug, title, avatarUrl, previewUrl, className = ''
         </div>
       )}
       <img
-        src={imageUrl}
+        src={previewUrl}
         alt={`Preview of ${title || slug}`}
         className={`w-full h-full object-cover object-top transition-opacity duration-300 ${
           imageLoading ? 'opacity-0' : 'opacity-100'
         }`}
         onLoad={() => setImageLoading(false)}
         onError={() => {
-          // If custom preview fails, try screenshot
-          if (previewUrl && imageUrl === previewUrl) {
-            setImageLoading(true);
-            setImageError(false);
-            // Try to load screenshot instead
-            const img = new Image();
-            img.onload = () => setImageLoading(false);
-            img.onerror = () => {
-              setImageError(true);
-              setImageLoading(false);
-            };
-            img.src = screenshotUrl;
-          } else {
-            setImageError(true);
-            setImageLoading(false);
-          }
+          setImageError(true);
+          setImageLoading(false);
         }}
       />
     </div>
