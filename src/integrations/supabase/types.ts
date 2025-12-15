@@ -120,6 +120,47 @@ export type Database = {
           },
         ]
       }
+      challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          created_at: string
+          current_count: number
+          id: string
+          is_completed: boolean
+          reward_claimed: boolean
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string
+          current_count?: number
+          id?: string
+          is_completed?: boolean
+          reward_claimed?: boolean
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string
+          current_count?: number
+          id?: string
+          is_completed?: boolean
+          reward_claimed?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "weekly_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collaborations: {
         Row: {
           block_settings: Json | null
@@ -214,6 +255,30 @@ export type Database = {
           id?: string
           quest_key?: string
           reward_claimed?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
+      friend_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
           user_id?: string
         }
         Relationships: []
@@ -322,6 +387,54 @@ export type Database = {
         }
         Relationships: []
       }
+      page_boosts: {
+        Row: {
+          boost_type: string
+          created_at: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          page_id: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          boost_type?: string
+          created_at?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          page_id: string
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          boost_type?: string
+          created_at?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          page_id?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_boosts_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_boosts_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pages: {
         Row: {
           avatar_style: Json | null
@@ -415,6 +528,39 @@ export type Database = {
           token?: string
           used?: boolean
           user_id?: string
+        }
+        Relationships: []
+      }
+      premium_gifts: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          days_gifted: number
+          id: string
+          is_claimed: boolean
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          days_gifted?: number
+          id?: string
+          is_claimed?: boolean
+          message?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          days_gifted?: number
+          id?: string
+          is_claimed?: boolean
+          message?: string | null
+          recipient_id?: string
+          sender_id?: string
         }
         Relationships: []
       }
@@ -734,6 +880,42 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_challenges: {
+        Row: {
+          challenge_key: string
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          reward_hours: number
+          target_count: number
+          title: string
+          week_start: string
+        }
+        Insert: {
+          challenge_key: string
+          created_at?: string
+          description: string
+          id?: string
+          is_active?: boolean
+          reward_hours?: number
+          target_count?: number
+          title: string
+          week_start?: string
+        }
+        Update: {
+          challenge_key?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          reward_hours?: number
+          target_count?: number
+          title?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       public_pages: {
@@ -787,9 +969,14 @@ export type Database = {
         Args: { p_code: string; p_referred_user_id: string }
         Returns: Json
       }
+      claim_premium_gift: { Args: { p_gift_id: string }; Returns: Json }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       complete_daily_quest: {
         Args: { p_bonus_hours?: number; p_quest_key: string; p_user_id: string }
+        Returns: Json
+      }
+      complete_weekly_challenge: {
+        Args: { p_challenge_id: string }
         Returns: Json
       }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
@@ -806,6 +993,10 @@ export type Database = {
       }
       increment_block_clicks: {
         Args: { block_uuid: string }
+        Returns: undefined
+      }
+      increment_challenge_progress: {
+        Args: { p_challenge_key: string }
         Returns: undefined
       }
       increment_view_count: { Args: { page_slug: string }; Returns: undefined }

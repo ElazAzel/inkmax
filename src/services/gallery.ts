@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { incrementChallengeProgress } from '@/services/social';
 import type { Niche } from '@/lib/niches';
 
 export interface GalleryPage {
@@ -185,6 +186,9 @@ export async function likeGalleryPage(pageId: string): Promise<void> {
     console.error('Error liking page:', error);
     throw error;
   }
+
+  // Track challenge progress
+  incrementChallengeProgress('like_pages');
 }
 
 export async function unlikeGalleryPage(pageId: string): Promise<void> {
