@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
@@ -87,6 +87,20 @@ export function SettingsSidebar({
 }: SettingsSidebarProps) {
   const { t } = useTranslation();
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
+  const [telegramSaved, setTelegramSaved] = useState(false);
+
+  // Sync local state with prop changes
+  useEffect(() => {
+    setLocalTelegramChatId(telegramChatId || '');
+  }, [telegramChatId]);
+
+  const handleSaveTelegram = () => {
+    if (localTelegramChatId.trim()) {
+      onTelegramChange?.(true, localTelegramChatId.trim());
+      setTelegramSaved(true);
+      setTimeout(() => setTelegramSaved(false), 2000);
+    }
+  };
 
   if (!show) return null;
 
@@ -307,18 +321,18 @@ export function SettingsSidebar({
 
         {/* Notifications Settings */}
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-4">
             <div className="p-1.5 rounded-lg bg-green-500/10">
               <Bell className="h-4 w-4 text-green-500" />
             </div>
-            <h3 className="font-semibold">Notifications</h3>
+            <h3 className="font-semibold">{t('settings.notifications', 'Notifications')}</h3>
           </div>
           <div className="space-y-4">
             {/* Email */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 rounded-xl bg-background/30 border border-border/20">
               <div className="space-y-0.5">
-                <Label className="text-sm">Email</Label>
-                <p className="text-xs text-muted-foreground">Get notified via email</p>
+                <Label className="text-sm font-medium">Email</Label>
+                <p className="text-xs text-muted-foreground">{t('settings.emailDesc', 'New leads via email')}</p>
               </div>
               <Switch
                 checked={emailNotificationsEnabled ?? true}
@@ -327,35 +341,63 @@ export function SettingsSidebar({
             </div>
             
             {/* Telegram */}
-            <div className="space-y-2 pt-2 border-t border-border/30">
+            <div className="p-3 rounded-xl bg-background/30 border border-border/20 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Send className="h-4 w-4 text-blue-500" />
-                  <Label className="text-sm">Telegram</Label>
+                  <div>
+                    <Label className="text-sm font-medium">Telegram</Label>
+                    <p className="text-xs text-muted-foreground">{t('settings.telegramDesc', 'Instant notifications')}</p>
+                  </div>
                 </div>
                 <Switch
                   checked={telegramEnabled ?? false}
                   onCheckedChange={(enabled) => {
-                    onTelegramChange?.(enabled, enabled ? localTelegramChatId : null);
+                    if (!enabled) {
+                      onTelegramChange?.(false, null);
+                    } else if (localTelegramChatId.trim()) {
+                      onTelegramChange?.(true, localTelegramChatId.trim());
+                    }
                   }}
                 />
               </div>
-              {telegramEnabled && (
-                <div className="space-y-1">
+              
+              {/* Telegram Setup */}
+              <div className="space-y-2 pt-2 border-t border-border/20">
+                <Label className="text-xs text-muted-foreground">{t('settings.telegramChatId', 'Your Chat ID')}</Label>
+                <div className="flex gap-2">
                   <Input
-                    placeholder="Chat ID (from @userinfobot)"
+                    placeholder="123456789"
                     value={localTelegramChatId}
-                    onChange={(e) => setLocalTelegramChatId(e.target.value)}
-                    onBlur={() => onTelegramChange?.(true, localTelegramChatId)}
-                    className="bg-background/50 text-sm"
+                    onChange={(e) => {
+                      setLocalTelegramChatId(e.target.value.replace(/\D/g, ''));
+                      setTelegramSaved(false);
+                    }}
+                    className="bg-background/50 text-sm font-mono"
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Send /start to @userinfobot to get your ID
-                  </p>
+                  <Button
+                    size="sm"
+                    onClick={handleSaveTelegram}
+                    disabled={!localTelegramChatId.trim() || telegramSaved}
+                    className="shrink-0"
+                  >
+                    {telegramSaved ? <Check className="h-4 w-4" /> : t('common.save', 'Save')}
+                  </Button>
                 </div>
-              )}
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span>{t('settings.telegramHelp', 'Get your ID from')}</span>
+                  <a 
+                    href="https://t.me/userinfobot" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-400 inline-flex items-center gap-0.5"
+                  >
+                    @userinfobot
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </div>
             </div>
-            
           </div>
         </Card>
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">

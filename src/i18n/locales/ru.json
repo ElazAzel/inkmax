@@ -4,7 +4,15 @@
     "nicheDescription": "Выберите категорию для вашей страницы",
     "preview": "Превью для галереи",
     "previewDesc": "Картинка которая показывается в галерее",
-    "removePreview": "Убрать своё превью"
+    "removePreview": "Убрать своё превью",
+    "notifications": "Уведомления",
+    "emailDesc": "Новые заявки на email",
+    "telegramDesc": "Мгновенные уведомления",
+    "telegramChatId": "Ваш Chat ID",
+    "telegramHelp": "Получите ID у"
+  },
+  "common": {
+    "save": "Сохранить"
   },
   "niche": {
     "barber": "Барбер",

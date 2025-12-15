@@ -4,7 +4,15 @@
     "nicheDescription": "Беттің санатын таңдаңыз",
     "preview": "Галерея алдын ала қарау",
     "previewDesc": "Галереяда көрсетілетін сурет",
-    "removePreview": "Алдын ала қарауды алып тастау"
+    "removePreview": "Алдын ала қарауды алып тастау",
+    "notifications": "Хабарламалар",
+    "emailDesc": "Жаңа өтініштер email арқылы",
+    "telegramDesc": "Лезде хабарламалар",
+    "telegramChatId": "Сіздің Chat ID",
+    "telegramHelp": "ID алыңыз"
+  },
+  "common": {
+    "save": "Сақтау"
   },
   "niche": {
     "barber": "Шаштараз",
