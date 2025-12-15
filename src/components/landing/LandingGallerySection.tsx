@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Users, ArrowRight, Crown, Eye, Heart, Loader2, Filter } from 'lucide-react';
@@ -40,12 +40,16 @@ export function LandingGallerySection() {
   }, [likePage, t]);
 
   // Load liked pages from localStorage on mount
-  useState(() => {
+  useEffect(() => {
     const storedLikes = localStorage.getItem('linkmax_liked_pages');
     if (storedLikes) {
-      setLikedPages(new Set(JSON.parse(storedLikes)));
+      try {
+        setLikedPages(new Set(JSON.parse(storedLikes)));
+      } catch (e) {
+        console.error('Failed to parse liked pages:', e);
+      }
     }
-  });
+  }, []);
 
   // Top 5 niches by count
   const topNiches = Object.entries(nicheCounts)
