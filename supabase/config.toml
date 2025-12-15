@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.send-friend-notification]
 verify_jwt = false
+
+[functions.send-social-notification]
+verify_jwt = false
