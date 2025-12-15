@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Check, Loader2, MessageCircle, ArrowLeft, AlertCircle, Copy, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,17 +21,46 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const verifyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastVerifiedRef = useRef<string>('');
 
-  const handleVerify = async () => {
+  // Auto-verify when chatId changes (with debounce)
+  useEffect(() => {
+    // Clear previous timeout
+    if (verifyTimeoutRef.current) {
+      clearTimeout(verifyTimeoutRef.current);
+    }
+
     const cleanChatId = chatId.trim().replace(/[^0-9-]/g, '');
     
-    if (!cleanChatId) {
-      toast.error(t('telegram.enterChatId', 'Введите ваш Chat ID'));
+    // Only auto-verify if:
+    // - chatId is at least 5 digits (valid Telegram IDs are usually 6+ digits)
+    // - not already verifying
+    // - not already verified with this ID
+    // - different from last verified
+    if (cleanChatId.length >= 5 && !isVerifying && !isVerified && cleanChatId !== lastVerifiedRef.current) {
+      verifyTimeoutRef.current = setTimeout(() => {
+        handleVerify(cleanChatId);
+      }, 800); // 800ms debounce
+    }
+
+    return () => {
+      if (verifyTimeoutRef.current) {
+        clearTimeout(verifyTimeoutRef.current);
+      }
+    };
+  }, [chatId]);
+
+  const handleVerify = async (idToVerify?: string) => {
+    const cleanChatId = (idToVerify || chatId).trim().replace(/[^0-9-]/g, '');
+    
+    if (!cleanChatId || cleanChatId.length < 5) {
       return;
     }
 
     setIsVerifying(true);
     setError(null);
+    lastVerifiedRef.current = cleanChatId;
     
     try {
       const { data, error: invokeError } = await supabase.functions.invoke('validate-telegram', {
@@ -49,18 +77,16 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
         }, 500);
       } else {
         if (data?.error === 'invalid_chat_id' || data?.description?.includes('chat not found')) {
-          setError('Чат не найден. Сначала нажмите START в боте @linkmaxmy_bot');
+          setError('Сначала нажмите START в боте @linkmaxmy_bot');
         } else if (data?.error === 'cannot_send_message') {
-          setError('Нажмите START в боте @linkmaxmy_bot чтобы разрешить сообщения');
+          setError('Нажмите START в боте @linkmaxmy_bot');
         } else {
-          setError(data?.description || 'Неверный Chat ID. Проверьте номер');
+          setError('Неверный Chat ID');
         }
-        toast.error('Проверьте Chat ID');
       }
     } catch (err: any) {
       console.error('Telegram verification error:', err);
-      setError('Ошибка проверки. Попробуйте снова.');
-      toast.error('Ошибка проверки');
+      setError('Ошибка проверки. Попробуйте снова');
     } finally {
       setIsVerifying(false);
     }
@@ -77,10 +103,10 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
       if (numbersOnly) {
         setChatId(numbersOnly);
         setError(null);
-        toast.success('Chat ID вставлен');
+        // Auto-verify will trigger via useEffect
       }
     } catch {
-      toast.error('Не удалось вставить. Введите вручную');
+      toast.error('Не удалось вставить');
     }
   };
 
@@ -177,26 +203,20 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
         </div>
       )}
 
-      {/* Verify Button */}
-      <Button
-        onClick={handleVerify}
-        disabled={!chatId.trim() || isVerifying || isVerified}
-        className="w-full h-12 rounded-xl"
-      >
-        {isVerifying ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            Проверка...
-          </>
-        ) : isVerified ? (
-          <>
-            <Check className="h-4 w-4 mr-2" />
-            Подтверждено
-          </>
-        ) : (
-          'Подтвердить'
-        )}
-      </Button>
+      {/* Status indicator */}
+      {isVerifying && (
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground py-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Проверяем Chat ID...
+        </div>
+      )}
+
+      {isVerified && (
+        <div className="flex items-center gap-2 text-sm text-green-500 bg-green-500/10 p-3 rounded-xl">
+          <Check className="h-4 w-4" />
+          Telegram успешно подключен!
+        </div>
+      )}
 
       {/* Info */}
       <p className="text-xs text-muted-foreground text-center px-4">
