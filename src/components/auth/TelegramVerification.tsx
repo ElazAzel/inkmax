@@ -86,26 +86,27 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
         </div>
       </div>
 
+      {/* Get Chat ID Button */}
+      <Button
+        variant="outline"
+        className="w-full h-12 rounded-xl gap-2"
+        onClick={() => window.open(`https://t.me/${LINKMAX_BOT_USERNAME}?start=getchatid`, '_blank')}
+      >
+        <MessageCircle className="h-5 w-5" />
+        {t('telegram.getChatIdButton', 'Получить Chat ID в Telegram')}
+      </Button>
+
       {/* Instructions */}
       <Card className="p-4 bg-muted/30 space-y-3">
+        <p className="text-sm font-medium mb-2">{t('telegram.instructions', 'Инструкция:')}</p>
+        
         <div className="flex items-start gap-3">
           <div className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-medium shrink-0">
             1
           </div>
-          <div>
-            <p className="text-sm font-medium">
-              {t('telegram.step1New', 'Откройте бота LinkMAX в Telegram')}
-            </p>
-            <a 
-              href={`https://t.me/${LINKMAX_BOT_USERNAME}`}
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-1"
-            >
-              <ExternalLink className="h-3 w-3" />
-              t.me/{LINKMAX_BOT_USERNAME}
-            </a>
-          </div>
+          <p className="text-sm">
+            {t('telegram.step1New', 'Нажмите кнопку выше — откроется бот в Telegram')}
+          </p>
         </div>
         
         <div className="flex items-start gap-3">
