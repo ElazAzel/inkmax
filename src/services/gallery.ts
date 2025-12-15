@@ -16,12 +16,11 @@ export interface GalleryPage {
 
 export type LeaderboardPeriod = 'week' | 'month' | 'all';
 
-// Fetch gallery pages with premium and popular pages first
+// Fetch all published pages for gallery with premium and popular pages first
 export async function getGalleryPages(niche?: Niche | null): Promise<GalleryPage[]> {
   let query = supabase
     .from('pages')
     .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche, user_id')
-    .eq('is_in_gallery', true)
     .eq('is_published', true);
 
   if (niche) {
@@ -99,7 +98,6 @@ export async function getTopPremiumPages(limit: number = 5): Promise<GalleryPage
   const { data, error } = await supabase
     .from('pages')
     .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
-    .eq('is_in_gallery', true)
     .eq('is_published', true)
     .in('user_id', premiumUserIds)
     .order('view_count', { ascending: false, nullsFirst: false })
@@ -117,7 +115,6 @@ export async function getNicheCounts(): Promise<Record<string, number>> {
   const { data, error } = await supabase
     .from('pages')
     .select('niche')
-    .eq('is_in_gallery', true)
     .eq('is_published', true);
 
   if (error) {
@@ -138,7 +135,6 @@ export async function getLeaderboardPages(period: LeaderboardPeriod = 'week'): P
   let query = supabase
     .from('pages')
     .select('id, slug, title, description, avatar_url, gallery_likes, gallery_featured_at, view_count, niche')
-    .eq('is_in_gallery', true)
     .eq('is_published', true);
 
   // Filter by period
