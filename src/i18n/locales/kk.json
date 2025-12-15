@@ -501,7 +501,11 @@
     "noResults": "Іздеуге сәйкес беттер табылмады",
     "statsPages": "Беттер",
     "statsLikes": "Ұнатулар",
-    "statsViews": "Қаралымдар"
+    "statsViews": "Қаралымдар",
+    "liked": "Ұнады!",
+    "alreadyLiked": "Сіз бұл бетті бұрын ұнаттыңыз",
+    "filter": "Сүзгі",
+    "all": "Барлығы"
   },
   "leaderboard": {
     "title": "Үздік беттер",
