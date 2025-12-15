@@ -198,9 +198,8 @@ export function createBlock(type: string): Block {
         id: `map-${timestamp}`,
         type: 'map',
         title: 'Наше местоположение',
-        provider: 'google',
-        embedUrl: '',
         address: '',
+        zoom: 15,
         height: 'medium',
       };
     

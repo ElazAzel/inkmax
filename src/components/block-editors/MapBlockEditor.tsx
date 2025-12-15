@@ -1,13 +1,11 @@
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { MapBlock } from '@/types/page';
 import { withBlockEditor } from './BlockEditorWrapper';
-import { Info } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { getTranslatedString, type SupportedLanguage, type MultilingualString } from '@/lib/i18n-helpers';
-import { useTranslation } from 'react-i18next';
+import { type MultilingualString } from '@/lib/i18n-helpers';
+import { MapPin } from 'lucide-react';
 
 interface MapBlockEditorProps {
   formData: MapBlock;
@@ -15,21 +13,7 @@ interface MapBlockEditorProps {
 }
 
 function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
-  const { i18n } = useTranslation();
-  
-  const getPlaceholderUrl = () => {
-    if (formData.provider === 'google') {
-      return 'https://www.google.com/maps/embed?pb=...';
-    }
-    return 'https://yandex.ru/map-widget/v1/?...';
-  };
-
-  const getInstructions = () => {
-    if (formData.provider === 'google') {
-      return 'Перейдите на Google Maps, найдите место, нажмите "Поделиться" → "Встроить карту" и скопируйте ссылку из iframe';
-    }
-    return 'Перейдите на Яндекс.Карты, найдите место, нажмите "Поделиться" → "HTML-код" и скопируйте ссылку из src';
-  };
+  const zoom = formData.zoom || 15;
 
   return (
     <div className="space-y-4">
@@ -43,46 +27,36 @@ function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Провайдер карты</Label>
-        <Select
-          value={formData.provider}
-          onValueChange={(value: 'google' | 'yandex') => onChange({ provider: value })}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="google">Google Maps</SelectItem>
-            <SelectItem value="yandex">Яндекс.Карты</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <Alert>
-        <Info className="h-4 w-4" />
-        <AlertDescription className="text-xs">
-          {getInstructions()}
-        </AlertDescription>
-      </Alert>
-
-      <div className="space-y-2">
-        <Label>Ссылка для встраивания *</Label>
-        <Textarea
-          placeholder={getPlaceholderUrl()}
-          value={formData.embedUrl}
-          onChange={(e) => onChange({ embedUrl: e.target.value })}
-          rows={3}
-          className="font-mono text-xs"
-        />
-      </div>
-
-      <div className="space-y-2">
         <MultilingualInput
-          label="Адрес (опционально)"
+          label="Адрес *"
           value={formData.address as MultilingualString || { ru: '', en: '', kk: '' }}
           onChange={(value) => onChange({ address: value })}
-          placeholder="ул. Примерная, 123"
+          placeholder="Алматы, ул. Абая 150"
         />
+        <p className="text-xs text-muted-foreground flex items-center gap-1">
+          <MapPin className="h-3 w-3" />
+          Введите адрес - карта найдёт место автоматически
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label>Масштаб</Label>
+          <span className="text-sm text-muted-foreground">{zoom}x</span>
+        </div>
+        <Slider
+          value={[zoom]}
+          onValueChange={([value]) => onChange({ zoom: value })}
+          min={1}
+          max={20}
+          step={1}
+          className="w-full"
+        />
+        <div className="flex justify-between text-xs text-muted-foreground">
+          <span>Весь мир</span>
+          <span>Район</span>
+          <span>Улица</span>
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -95,9 +69,9 @@ function MapBlockEditorComponent({ formData, onChange }: MapBlockEditorProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="small">Маленькая (192px)</SelectItem>
-            <SelectItem value="medium">Средняя (256px)</SelectItem>
-            <SelectItem value="large">Большая (384px)</SelectItem>
+            <SelectItem value="small">Маленькая</SelectItem>
+            <SelectItem value="medium">Средняя</SelectItem>
+            <SelectItem value="large">Большая</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -109,9 +83,17 @@ export const MapBlockEditor = withBlockEditor(
   MapBlockEditorComponent,
   {
     validate: (data) => {
-      if (!data.embedUrl || data.embedUrl.trim() === '') {
-        return 'Ссылка для встраивания обязательна';
+      const address = data.address;
+      if (!address) return 'Адрес обязателен';
+      
+      // Check if it's multilingual or simple string
+      if (typeof address === 'object') {
+        const hasValue = address.ru || address.en || address.kk;
+        if (!hasValue) return 'Введите адрес';
+      } else if (!address.trim()) {
+        return 'Введите адрес';
       }
+      
       return null;
     }
   }

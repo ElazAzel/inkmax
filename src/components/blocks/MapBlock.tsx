@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { MapPin } from 'lucide-react';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { useMemo } from 'react';
 
 interface MapBlockProps {
   block: MapBlockType;
@@ -21,9 +22,33 @@ export function MapBlock({ block }: MapBlockProps) {
   };
 
   const height = heightClasses[block.height || 'medium'];
+  const zoom = block.zoom || 15;
   
   const paddingMap = { none: '', sm: 'p-2', md: 'p-4', lg: 'p-6', xl: 'p-8' };
   const marginMap = { none: '', sm: 'my-2', md: 'my-4', lg: 'my-6', xl: 'my-8' };
+
+  // Generate Google Maps embed URL from address
+  const embedUrl = useMemo(() => {
+    if (!address) return '';
+    const encodedAddress = encodeURIComponent(address);
+    return `https://maps.google.com/maps?q=${encodedAddress}&z=${zoom}&ie=UTF8&iwloc=&output=embed`;
+  }, [address, zoom]);
+
+  if (!address) {
+    return (
+      <div 
+        className={cn(
+          "w-full flex items-center justify-center bg-muted rounded-lg",
+          height
+        )}
+      >
+        <div className="text-center text-muted-foreground">
+          <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <p className="text-sm">Укажите адрес для отображения карты</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -53,7 +78,7 @@ export function MapBlock({ block }: MapBlockProps) {
         )}
       >
         <iframe
-          src={block.embedUrl}
+          src={embedUrl}
           width="100%"
           height="100%"
           style={{ border: 0 }}
