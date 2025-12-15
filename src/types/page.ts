@@ -269,9 +269,8 @@ export interface MapBlock {
   id: string;
   type: 'map';
   title?: string | MultilingualString;
-  provider: 'google' | 'yandex';
-  embedUrl: string;
-  address?: string | MultilingualString;
+  address: string | MultilingualString;
+  zoom?: number; // 1-20, default 15
   height?: 'small' | 'medium' | 'large';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;

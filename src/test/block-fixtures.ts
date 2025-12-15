@@ -197,9 +197,8 @@ export const mockMapBlock: MapBlock = {
   id: 'map-1',
   type: 'map',
   title: 'Our Location',
-  provider: 'google',
-  embedUrl: 'https://www.google.com/maps/embed?pb=test',
   address: '123 Test Street',
+  zoom: 15,
   height: 'medium',
 };
 
