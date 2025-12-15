@@ -19,6 +19,7 @@ const Install = lazy(() => import("./pages/Install"));
 const Gallery = lazy(() => import("./pages/Gallery"));
 const TeamPage = lazy(() => import("./pages/TeamPage"));
 const CollabPage = lazy(() => import("./pages/CollabPage"));
+const JoinTeam = lazy(() => import("./pages/JoinTeam"));
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/install" element={<Install />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/team/:slug" element={<TeamPage />} />
+              <Route path="/join/:inviteCode" element={<JoinTeam />} />
               <Route path="/collab/:collabSlug" element={<CollabPage />} />
               <Route path="/p/:compressed" element={<PublicPage />} />
               <Route path="/:slug" element={<PublicPage />} />

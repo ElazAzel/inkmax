@@ -34,6 +34,7 @@ export interface Team {
   owner_id: string;
   niche: string | null;
   is_public: boolean;
+  invite_code: string | null;
   created_at: string;
   members?: TeamMember[];
 }
@@ -360,6 +361,52 @@ export async function deleteTeam(teamId: string): Promise<boolean> {
     .eq('id', teamId);
 
   return !error;
+}
+
+// Generate or get invite code for team
+export async function generateTeamInviteCode(teamId: string): Promise<string | null> {
+  // First check if code already exists
+  const { data: team } = await supabase
+    .from('teams')
+    .select('invite_code')
+    .eq('id', teamId)
+    .maybeSingle();
+
+  if (team?.invite_code) {
+    return team.invite_code;
+  }
+
+  // Generate new code
+  const code = `team-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`;
+  
+  const { error } = await supabase
+    .from('teams')
+    .update({ invite_code: code })
+    .eq('id', teamId);
+
+  if (error) {
+    console.error('Error generating invite code:', error);
+    return null;
+  }
+
+  return code;
+}
+
+// Reset invite code
+export async function resetTeamInviteCode(teamId: string): Promise<string | null> {
+  const code = `team-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`;
+  
+  const { error } = await supabase
+    .from('teams')
+    .update({ invite_code: code })
+    .eq('id', teamId);
+
+  if (error) {
+    console.error('Error resetting invite code:', error);
+    return null;
+  }
+
+  return code;
 }
 
 // Shoutout functions
