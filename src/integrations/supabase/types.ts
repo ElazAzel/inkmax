@@ -554,6 +554,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          invite_code: string | null
           is_public: boolean | null
           name: string
           niche: string | null
@@ -566,6 +567,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          invite_code?: string | null
           is_public?: boolean | null
           name: string
           niche?: string | null
@@ -578,6 +580,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          invite_code?: string | null
           is_public?: boolean | null
           name?: string
           niche?: string | null
