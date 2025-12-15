@@ -53,30 +53,30 @@ export function LandingGallerySection() {
               />
               
               {/* Page Info */}
-              <div className="p-3 sm:p-4">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <h3 className="font-semibold text-sm sm:text-base truncate flex-1">
+              <div className="p-2.5 sm:p-4">
+                <div className="flex items-center gap-1 mb-1">
+                  <h3 className="font-semibold text-xs sm:text-base truncate flex-1">
                     {page.title || page.slug}
                   </h3>
                   {page.is_premium && (
-                    <Crown className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                    <Crown className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary flex-shrink-0" />
                   )}
                 </div>
                 
                 <div className="flex items-center justify-between">
                   {page.niche && (
-                    <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                    <Badge variant="secondary" className="text-[9px] sm:text-xs px-1.5 py-0">
                       {t(`niches.${page.niche}`, page.niche)}
                     </Badge>
                   )}
                   
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground ml-auto">
-                    <span className="flex items-center gap-1">
-                      <Eye className="h-3 w-3" />
+                  <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-muted-foreground ml-auto">
+                    <span className="flex items-center gap-0.5">
+                      <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                       {page.view_count || 0}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-3 w-3" />
+                    <span className="flex items-center gap-0.5">
+                      <Heart className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                       {page.gallery_likes || 0}
                     </span>
                   </div>
