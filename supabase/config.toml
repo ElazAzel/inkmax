@@ -23,3 +23,15 @@ verify_jwt = false
 
 [functions.validate-telegram]
 verify_jwt = false
+
+[functions.send-collab-notification]
+verify_jwt = false
+
+[functions.send-team-notification]
+verify_jwt = false
+
+[functions.telegram-password-reset]
+verify_jwt = false
+
+[functions.send-friend-notification]
+verify_jwt = false
