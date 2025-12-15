@@ -18,6 +18,7 @@ export interface UserProfile {
   telegram_chat_id: string | null;
   push_notifications_enabled: boolean | null;
   push_subscription: unknown | null;
+  friends_count: number | null;
 }
 
 export interface UpdateUsernameResult {
