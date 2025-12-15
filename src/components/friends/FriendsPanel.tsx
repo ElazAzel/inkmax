@@ -6,11 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   X, Users, UserPlus, Search, Check, 
-  X as XIcon, UserMinus, MessageCircle, Trophy, 
-  Sparkles, Clock 
+  X as XIcon, UserMinus, Trophy, 
+  Sparkles, Clock, ExternalLink 
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useFriends } from '@/hooks/useFriends';
+import { getUserPageSlug } from '@/services/friends';
+import { toast } from 'sonner';
 
 interface FriendsPanelProps {
   onClose: () => void;
@@ -188,12 +189,13 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
                   <UserCard
                     key={friendship.id}
                     user={friendship.friend_profile}
+                    showViewPage
                     action={
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => removeFriend(friendship.id)}
-                        className="h-8 rounded-lg text-destructive hover:text-destructive"
+                        className="h-8 w-8 p-0 rounded-lg text-destructive hover:text-destructive"
                       >
                         <UserMinus className="h-4 w-4" />
                       </Button>
@@ -314,10 +316,20 @@ interface UserCardProps {
   };
   badge?: React.ReactNode;
   action: React.ReactNode;
+  showViewPage?: boolean;
 }
 
-function UserCard({ user, badge, action }: UserCardProps) {
+function UserCard({ user, badge, action, showViewPage }: UserCardProps) {
   if (!user) return null;
+
+  const handleViewPage = async () => {
+    const slug = await getUserPageSlug(user.id);
+    if (slug) {
+      window.open(`/${slug}`, '_blank');
+    } else {
+      toast.error('Страница не опубликована');
+    }
+  };
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-2xl bg-card/50 border border-border/30">
@@ -338,7 +350,20 @@ function UserCard({ user, badge, action }: UserCardProps) {
           <p className="text-xs text-muted-foreground truncate">@{user.username}</p>
         )}
       </div>
-      {action}
+      <div className="flex items-center gap-1">
+        {showViewPage && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleViewPage}
+            className="h-8 w-8 p-0 rounded-lg"
+            title="Открыть страницу"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </Button>
+        )}
+        {action}
+      </div>
     </div>
   );
 }
