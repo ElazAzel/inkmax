@@ -13,8 +13,8 @@ interface TelegramVerificationProps {
   onBack: () => void;
 }
 
-// Bot username - should match your actual bot
-const LINKMAX_BOT_USERNAME = 'linkmaxbot';
+// Bot username - LinkMAX official bot
+const LINKMAX_BOT_USERNAME = 'linkmaxmy_bot';
 
 export function TelegramVerification({ onVerified, onBack }: TelegramVerificationProps) {
   const { t } = useTranslation();
