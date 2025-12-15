@@ -1,7 +1,10 @@
 {
   "settings": {
     "niche": "Category",
-    "nicheDescription": "Choose a category for your page"
+    "nicheDescription": "Choose a category for your page",
+    "preview": "Gallery Preview",
+    "previewDesc": "Custom image shown in the gallery",
+    "removePreview": "Remove custom preview"
   },
   "niche": {
     "barber": "Barber",

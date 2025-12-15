@@ -7,13 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { DailyQuestsPanel } from '@/components/quests/DailyQuestsPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
+import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import type { Quest } from '@/services/quests';
 import type { Niche } from '@/lib/niches';
 
@@ -47,6 +48,8 @@ interface SettingsSidebarProps {
   questsLoading?: boolean;
   niche?: Niche;
   onNicheChange?: (niche: Niche) => void;
+  previewUrl?: string;
+  onPreviewUrlChange?: (url: string | null) => void;
 }
 
 export function SettingsSidebar({
@@ -79,6 +82,8 @@ export function SettingsSidebar({
   questsLoading,
   niche,
   onNicheChange,
+  previewUrl,
+  onPreviewUrlChange,
 }: SettingsSidebarProps) {
   const { t } = useTranslation();
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
@@ -216,6 +221,38 @@ export function SettingsSidebar({
               <h3 className="font-semibold">{t('settings.niche', 'Category')}</h3>
             </div>
             <NicheSelector value={niche} onChange={onNicheChange} />
+          </Card>
+        )}
+
+        {/* Page Preview Image */}
+        {onPreviewUrlChange && (
+          <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1.5 rounded-lg bg-violet-500/10">
+                <Image className="h-4 w-4 text-violet-500" />
+              </div>
+              <h3 className="font-semibold">{t('settings.preview', 'Gallery Preview')}</h3>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                {t('settings.previewDesc', 'Custom image shown in the gallery')}
+              </Label>
+              <MediaUpload
+                value={previewUrl || ''}
+                onChange={(url) => onPreviewUrlChange(url || null)}
+                allowGif={isPremium}
+              />
+              {previewUrl && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onPreviewUrlChange(null)}
+                  className="text-xs text-muted-foreground hover:text-destructive"
+                >
+                  {t('settings.removePreview', 'Remove custom preview')}
+                </Button>
+              )}
+            </div>
           </Card>
         )}
 

@@ -27,10 +27,12 @@ import {
   Bell,
   Send,
   Tag,
+  Image,
 } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
+import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 
@@ -81,6 +83,10 @@ interface MobileSettingsSheetProps {
   niche?: Niche;
   onNicheChange?: (niche: Niche) => void;
   
+  // Preview URL
+  previewUrl?: string;
+  onPreviewUrlChange?: (url: string | null) => void;
+  
   // Sign out
   onSignOut: () => void;
 }
@@ -111,6 +117,8 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   userId,
   niche,
   onNicheChange,
+  previewUrl,
+  onPreviewUrlChange,
   onSignOut,
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
@@ -277,6 +285,38 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                     {t('settings.niche', 'Category')}
                   </h3>
                   <NicheSelector value={niche} onChange={onNicheChange} />
+                </Card>
+              )}
+
+              {/* Gallery Preview Image */}
+              {onPreviewUrlChange && (
+                <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                      <Image className="h-4 w-4 text-violet-500" />
+                    </div>
+                    {t('settings.preview', 'Gallery Preview')}
+                  </h3>
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground">
+                      {t('settings.previewDesc', 'Custom image shown in the gallery')}
+                    </p>
+                    <MediaUpload
+                      value={previewUrl || ''}
+                      onChange={(url) => onPreviewUrlChange(url || null)}
+                      allowGif={isPremium}
+                    />
+                    {previewUrl && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onPreviewUrlChange(null)}
+                        className="text-xs text-muted-foreground hover:text-destructive w-full"
+                      >
+                        {t('settings.removePreview', 'Remove custom preview')}
+                      </Button>
+                    )}
+                  </div>
                 </Card>
               )}
             </TabsContent>

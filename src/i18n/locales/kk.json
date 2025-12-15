@@ -1,7 +1,10 @@
 {
   "settings": {
     "niche": "Санат",
-    "nicheDescription": "Беттің санатын таңдаңыз"
+    "nicheDescription": "Беттің санатын таңдаңыз",
+    "preview": "Галерея алдын ала қарау",
+    "previewDesc": "Галереяда көрсетілетін сурет",
+    "removePreview": "Алдын ала қарауды алып тастау"
   },
   "niche": {
     "barber": "Шаштараз",

@@ -5,18 +5,20 @@ interface PagePreviewProps {
   slug: string;
   title: string | null;
   avatarUrl: string | null;
+  previewUrl?: string | null;
   className?: string;
 }
 
-export function PagePreview({ slug, title, avatarUrl, className = '' }: PagePreviewProps) {
+export function PagePreview({ slug, title, avatarUrl, previewUrl, className = '' }: PagePreviewProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
-  // Use WordPress mshots service for free screenshots
+  // Priority: custom preview > mshots screenshot
   const pageUrl = `${window.location.origin}/${slug}`;
   const screenshotUrl = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(pageUrl)}?w=400&h=300`;
+  const imageUrl = previewUrl || screenshotUrl;
 
-  if (imageError) {
+  if (imageError && !previewUrl) {
     // Fallback to avatar with decorative preview
     return (
       <div className={`relative bg-gradient-to-br from-muted/50 to-muted rounded-lg overflow-hidden ${className}`}>
@@ -31,7 +33,7 @@ export function PagePreview({ slug, title, avatarUrl, className = '' }: PagePrev
             {title || slug}
           </span>
         </div>
-        {/* Decorative elements */}
+        {/* Decorative browser dots */}
         <div className="absolute top-2 left-2 right-2 flex gap-1">
           <div className="w-2 h-2 rounded-full bg-destructive/40" />
           <div className="w-2 h-2 rounded-full bg-yellow-500/40" />
@@ -49,15 +51,29 @@ export function PagePreview({ slug, title, avatarUrl, className = '' }: PagePrev
         </div>
       )}
       <img
-        src={screenshotUrl}
+        src={imageUrl}
         alt={`Preview of ${title || slug}`}
         className={`w-full h-full object-cover object-top transition-opacity duration-300 ${
           imageLoading ? 'opacity-0' : 'opacity-100'
         }`}
         onLoad={() => setImageLoading(false)}
         onError={() => {
-          setImageError(true);
-          setImageLoading(false);
+          // If custom preview fails, try screenshot
+          if (previewUrl && imageUrl === previewUrl) {
+            setImageLoading(true);
+            setImageError(false);
+            // Try to load screenshot instead
+            const img = new Image();
+            img.onload = () => setImageLoading(false);
+            img.onerror = () => {
+              setImageError(true);
+              setImageLoading(false);
+            };
+            img.src = screenshotUrl;
+          } else {
+            setImageError(true);
+            setImageLoading(false);
+          }
         }}
       />
     </div>

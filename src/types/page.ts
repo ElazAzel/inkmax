@@ -456,4 +456,5 @@ export interface PageData {
   editorMode?: EditorMode;
   gridConfig?: GridConfig;
   niche?: string;
+  previewUrl?: string; // Custom preview image for gallery
 }

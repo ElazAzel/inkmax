@@ -48,6 +48,7 @@ export function LandingGallerySection() {
                 slug={page.slug}
                 title={page.title}
                 avatarUrl={page.avatar_url}
+                previewUrl={page.preview_url}
                 className="aspect-[4/3] w-full"
               />
               
