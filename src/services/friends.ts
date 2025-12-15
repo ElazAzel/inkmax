@@ -275,3 +275,15 @@ export async function searchUsers(query: string): Promise<Array<{ id: string; us
 
   return data || [];
 }
+
+export async function getUserPageSlug(userId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from('pages')
+    .select('slug')
+    .eq('user_id', userId)
+    .eq('is_published', true)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data.slug;
+}
