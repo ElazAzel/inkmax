@@ -148,7 +148,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           </div>
           
           {bio && (
-            <p className="text-muted-foreground max-w-md">{bio}</p>
+            <p className="text-muted-foreground max-w-md whitespace-pre-line">{bio}</p>
           )}
         </div>
       </div>
