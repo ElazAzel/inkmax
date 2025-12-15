@@ -7,12 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   X, Users, UserPlus, Search, Check, 
   X as XIcon, UserMinus, Trophy, 
-  Sparkles, Clock, ExternalLink, Heart 
+  Sparkles, Clock, ExternalLink, Heart, Gift, Activity
 } from 'lucide-react';
 import { useFriends } from '@/hooks/useFriends';
 import { getUserPageSlug } from '@/services/friends';
 import { getPageByUserId, likeGalleryPage, unlikeGalleryPage } from '@/services/gallery';
 import { toast } from 'sonner';
+import { GiftPremiumDialog } from '@/components/social/GiftPremiumDialog';
+import { FriendActivityFeed } from '@/components/social/FriendActivityFeed';
 
 interface FriendsPanelProps {
   onClose: () => void;
@@ -52,6 +54,12 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
     }
     return new Set();
   });
+  const [giftRecipient, setGiftRecipient] = useState<{
+    id: string;
+    username: string | null;
+    display_name: string | null;
+    avatar_url: string | null;
+  } | null>(null);
 
   const handleToggleLike = async (pageId: string) => {
     const isCurrentlyLiked = likedPages.has(pageId);
@@ -131,11 +139,15 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="px-4 pb-3">
-          <TabsList className="grid w-full grid-cols-3 h-10 rounded-xl bg-muted/50">
-            <TabsTrigger value="friends" className="rounded-lg text-sm">
+          <TabsList className="grid w-full grid-cols-4 h-10 rounded-xl bg-muted/50">
+            <TabsTrigger value="friends" className="rounded-lg text-xs px-2">
               Друзья
             </TabsTrigger>
-            <TabsTrigger value="requests" className="rounded-lg text-sm relative">
+            <TabsTrigger value="activity" className="rounded-lg text-xs px-2">
+              <Activity className="h-3 w-3 mr-1" />
+              Лента
+            </TabsTrigger>
+            <TabsTrigger value="requests" className="rounded-lg text-xs px-2 relative">
               Запросы
               {pendingCount > 0 && (
                 <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
@@ -143,8 +155,8 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="sent" className="rounded-lg text-sm">
-              Отправленные
+            <TabsTrigger value="sent" className="rounded-lg text-xs px-2">
+              Отправ.
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -223,6 +235,7 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
                     showViewPage
                     onToggleLike={handleToggleLike}
                     likedPages={likedPages}
+                    onGift={setGiftRecipient}
                     action={
                       <Button
                         variant="ghost"
@@ -244,6 +257,11 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
               />
             )}
           </div>
+        )}
+
+        {/* Activity Feed */}
+        {activeTab === 'activity' && (
+          <FriendActivityFeed maxHeight="calc(100vh - 280px)" />
         )}
 
         {/* Pending Requests */}
@@ -336,6 +354,15 @@ export function FriendsPanel({ onClose }: FriendsPanelProps) {
           </div>
         </div>
       </div>
+
+      {/* Gift Premium Dialog */}
+      {giftRecipient && (
+        <GiftPremiumDialog
+          open={!!giftRecipient}
+          onOpenChange={(open) => !open && setGiftRecipient(null)}
+          recipient={giftRecipient}
+        />
+      )}
     </div>
   );
 }
@@ -350,11 +377,12 @@ interface UserCardProps {
   badge?: React.ReactNode;
   action: React.ReactNode;
   showViewPage?: boolean;
+  onGift?: (user: { id: string; username: string | null; display_name: string | null; avatar_url: string | null }) => void;
   onToggleLike?: (pageId: string) => Promise<void>;
   likedPages?: Set<string>;
 }
 
-function UserCard({ user, badge, action, showViewPage, onToggleLike, likedPages }: UserCardProps) {
+function UserCard({ user, badge, action, showViewPage, onToggleLike, likedPages, onGift }: UserCardProps) {
   const [pageId, setPageId] = useState<string | null>(null);
   const [isLiking, setIsLiking] = useState(false);
 
@@ -409,6 +437,17 @@ function UserCard({ user, badge, action, showViewPage, onToggleLike, likedPages 
         )}
       </div>
       <div className="flex items-center gap-1">
+        {showViewPage && onGift && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onGift(user)}
+            className="h-8 w-8 p-0 rounded-lg text-pink-500 hover:text-pink-600 hover:bg-pink-500/10"
+            title="Подарить Premium"
+          >
+            <Gift className="h-4 w-4" />
+          </Button>
+        )}
         {showViewPage && pageId && onToggleLike && (
           <Button
             variant="ghost"

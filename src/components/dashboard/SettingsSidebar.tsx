@@ -14,6 +14,7 @@ import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { DailyQuestsPanel } from '@/components/quests/DailyQuestsPanel';
+import { WeeklyChallengesPanel, PendingGiftsPanel } from '@/components/social';
 import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
@@ -364,6 +365,14 @@ export function SettingsSidebar({
             loading={questsLoading}
           />
         )}
+
+        {/* Pending Gifts */}
+        <PendingGiftsPanel />
+
+        {/* Weekly Challenges */}
+        <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
+          <WeeklyChallengesPanel compact />
+        </Card>
 
         {/* Gallery Toggle */}
         <GalleryToggle userId={userId} />
