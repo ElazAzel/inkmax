@@ -68,24 +68,23 @@ serve(async (req: Request) => {
       let replyMarkup: any = null;
 
       if (data === 'get_id' || data === 'copy_id') {
-        responseText = `🆔 <b>Ваш Chat ID:</b>\n\n<code>${chatId}</code>\n\n` +
-          `👆 Нажмите на номер чтобы скопировать`;
+        responseText = `📋 <b>Ваш Chat ID:</b>\n\n` +
+          `<code>${chatId}</code>\n\n` +
+          `☝️ Нажмите на номер → Скопируйте → Вставьте в LinkMAX`;
         replyMarkup = {
           inline_keyboard: [
-            [{ text: '📝 Регистрация в LinkMAX', url: 'https://lnkmx.my/auth' }]
+            [{ text: '✅ Продолжить регистрацию', url: 'https://lnkmx.my/auth' }]
           ]
         };
       } else if (data === 'help') {
-        responseText = `ℹ️ <b>LinkMAX Bot</b>\n\n` +
-          `Этот бот помогает получать уведомления от LinkMAX.\n\n` +
-          `<b>Команды:</b>\n` +
-          `/start - Получить Chat ID\n` +
-          `/id - Показать Chat ID\n` +
-          `/help - Справка\n\n` +
-          `🆔 Ваш Chat ID: <code>${chatId}</code>`;
+        responseText = `ℹ️ <b>Как подключить Telegram к LinkMAX:</b>\n\n` +
+          `1️⃣ Скопируйте Chat ID: <code>${chatId}</code>\n` +
+          `2️⃣ Вставьте его при регистрации на lnkmx.my\n` +
+          `3️⃣ Нажмите "Подтвердить"\n\n` +
+          `После этого вы будете получать уведомления о заявках прямо сюда! 📩`;
         replyMarkup = {
           inline_keyboard: [
-            [{ text: '🔗 Открыть LinkMAX', url: 'https://lnkmx.my' }]
+            [{ text: '📝 Регистрация', url: 'https://lnkmx.my/auth' }]
           ]
         };
       }
@@ -96,7 +95,11 @@ serve(async (req: Request) => {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ callback_query_id: callbackQuery.id }),
+          body: JSON.stringify({ 
+            callback_query_id: callbackQuery.id,
+            text: 'Chat ID скопирован!',
+            show_alert: false
+          }),
         }
       );
 
@@ -132,54 +135,51 @@ serve(async (req: Request) => {
       let replyMarkup: any = null;
 
       if (text === '/start' || text.startsWith('/start ')) {
-        // Welcome message with Chat ID and inline buttons
+        // Main welcome message - clear and simple
         responseText = `👋 Привет, ${firstName}!\n\n` +
-          `🆔 <b>Ваш Chat ID:</b>\n<code>${chatId}</code>\n\n` +
-          `📋 Нажмите на номер выше чтобы скопировать, затем вставьте его в LinkMAX.\n\n` +
-          `✅ После подключения вы будете получать:\n` +
-          `• Уведомления о новых заявках\n` +
-          `• Уведомления о подарках Premium\n` +
-          `• Уведомления о коллаборациях`;
+          `📋 <b>Ваш Chat ID для регистрации:</b>\n\n` +
+          `<code>${chatId}</code>\n\n` +
+          `☝️ <b>Нажмите на номер чтобы скопировать</b>\n\n` +
+          `Затем вернитесь в LinkMAX и вставьте его в поле регистрации.`;
+        
+        replyMarkup = {
+          inline_keyboard: [
+            [{ text: '📋 Скопировать ещё раз', callback_data: 'copy_id' }],
+            [{ text: '✅ Продолжить регистрацию', url: 'https://lnkmx.my/auth' }],
+            [{ text: 'ℹ️ Как это работает?', callback_data: 'help' }]
+          ]
+        };
+      } else if (text === '/help') {
+        responseText = `ℹ️ <b>Как подключить Telegram к LinkMAX:</b>\n\n` +
+          `1️⃣ Скопируйте Chat ID: <code>${chatId}</code>\n` +
+          `2️⃣ Вставьте его при регистрации на lnkmx.my\n` +
+          `3️⃣ Нажмите "Подтвердить"\n\n` +
+          `После этого вы будете получать уведомления о заявках прямо сюда! 📩`;
         
         replyMarkup = {
           inline_keyboard: [
             [{ text: '📋 Скопировать Chat ID', callback_data: 'copy_id' }],
-            [{ text: '🔗 Открыть LinkMAX', url: 'https://lnkmx.my' }],
-            [{ text: '📝 Регистрация', url: 'https://lnkmx.my/auth' }],
-            [{ text: 'ℹ️ Помощь', callback_data: 'help' }]
-          ]
-        };
-      } else if (text === '/help') {
-        responseText = `ℹ️ <b>LinkMAX Bot</b>\n\n` +
-          `Этот бот помогает получать уведомления от LinkMAX.\n\n` +
-          `<b>Команды:</b>\n` +
-          `/start - Получить Chat ID\n` +
-          `/id - Показать Chat ID\n` +
-          `/help - Справка\n\n` +
-          `🆔 Ваш Chat ID: <code>${chatId}</code>`;
-        
-        replyMarkup = {
-          inline_keyboard: [
-            [{ text: '🔄 Получить Chat ID', callback_data: 'get_id' }],
-            [{ text: '🔗 Открыть LinkMAX', url: 'https://lnkmx.my' }]
+            [{ text: '📝 Регистрация', url: 'https://lnkmx.my/auth' }]
           ]
         };
       } else if (text === '/id') {
-        responseText = `🆔 <b>Ваш Telegram Chat ID:</b>\n\n<code>${chatId}</code>\n\n` +
-          `👆 Нажмите чтобы скопировать`;
+        responseText = `📋 <b>Ваш Chat ID:</b>\n\n<code>${chatId}</code>\n\n` +
+          `☝️ Нажмите чтобы скопировать`;
         
         replyMarkup = {
           inline_keyboard: [
-            [{ text: '📝 Регистрация в LinkMAX', url: 'https://lnkmx.my/auth' }]
+            [{ text: '✅ Вставить в LinkMAX', url: 'https://lnkmx.my/auth' }]
           ]
         };
       } else {
-        responseText = `🆔 Ваш Chat ID: <code>${chatId}</code>`;
+        // Any other message - just show the ID
+        responseText = `📋 <b>Ваш Chat ID:</b>\n\n<code>${chatId}</code>\n\n` +
+          `Скопируйте и вставьте в LinkMAX`;
         
         replyMarkup = {
           inline_keyboard: [
-            [{ text: '🔄 Обновить', callback_data: 'get_id' }],
-            [{ text: 'ℹ️ Помощь', callback_data: 'help' }]
+            [{ text: '📋 Скопировать', callback_data: 'copy_id' }],
+            [{ text: '📝 Регистрация', url: 'https://lnkmx.my/auth' }]
           ]
         };
       }
