@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Users, UserPlus, Heart, Megaphone, Search, X, Check, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Users, UserPlus, Heart, Megaphone, Search, X, Check, Loader2, ExternalLink, Copy } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -172,18 +173,39 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
                 <div className="space-y-2">
                   {activeCollabs.map(collab => {
                     const partner = collab.requester_id === userId ? collab.target : collab.requester;
+                    const collabUrl = collab.collab_slug ? `${window.location.origin}/collab/${collab.collab_slug}` : null;
                     return (
-                      <div key={collab.id} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={partner?.avatar_url || ''} />
-                            <AvatarFallback>{partner?.display_name?.[0] || '?'}</AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm">{partner?.display_name || partner?.username}</span>
+                      <div key={collab.id} className="p-3 bg-muted/50 rounded-lg space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={partner?.avatar_url || ''} />
+                              <AvatarFallback>{partner?.display_name?.[0] || '?'}</AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm">{partner?.display_name || partner?.username}</span>
+                          </div>
+                          <Button size="sm" variant="ghost" onClick={() => removeCollab(collab.id)}>
+                            <X className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <Button size="sm" variant="ghost" onClick={() => removeCollab(collab.id)}>
-                          <X className="h-4 w-4" />
-                        </Button>
+                        {collabUrl && (
+                          <div className="flex items-center gap-2 text-xs">
+                            <Link to={`/collab/${collab.collab_slug}`} className="text-primary hover:underline flex items-center gap-1">
+                              <ExternalLink className="h-3 w-3" />
+                              Совместная страница
+                            </Link>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-6 px-2"
+                              onClick={() => {
+                                navigator.clipboard.writeText(collabUrl);
+                              }}
+                            >
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
