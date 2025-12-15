@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Heart, Eye, ExternalLink, Share2, Check, Calendar } from 'lucide-react';
+import { Heart, Eye, ExternalLink, Share2, Check, Calendar, Crown } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import type { GalleryPage } from '@/services/gallery';
 import { NICHE_ICONS, type Niche } from '@/lib/niches';
+import { PagePreview } from './PagePreview';
 
 interface GalleryPageCardProps {
   page: GalleryPage;
@@ -58,39 +58,43 @@ export function GalleryPageCard({ page, onLike, isLiked, featured = false }: Gal
         }
       `}
     >
-      <CardContent className="p-4">
-        {/* Header with avatar and actions */}
-        <div className="flex items-start gap-3">
-          <Avatar className="h-14 w-14 ring-2 ring-background shadow-md">
-            <AvatarImage src={page.avatar_url || undefined} />
-            <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">
-              {(page.title || page.slug)?.[0]?.toUpperCase() || '?'}
-            </AvatarFallback>
-          </Avatar>
+      {/* Page Preview Screenshot */}
+      <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer" className="block">
+        <PagePreview
+          slug={page.slug}
+          title={page.title}
+          avatarUrl={page.avatar_url}
+          className="aspect-[4/3] w-full"
+        />
+      </a>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <h3 className="font-semibold text-foreground truncate">
-                  {page.title || page.slug}
-                </h3>
-                <p className="text-sm text-muted-foreground truncate">
-                  @{page.slug}
-                </p>
-              </div>
-              <div className="flex flex-col items-end gap-1 shrink-0">
-                {featured && (
-                  <Badge variant="default" className="bg-primary/90 text-xs">
-                    ⭐ {t('gallery.featured', 'Featured')}
-                  </Badge>
-                )}
-                {page.niche && page.niche !== 'other' && (
-                  <Badge variant="outline" className="text-xs bg-card/50">
-                    {NICHE_ICONS[page.niche as Niche] || '📌'} {t(`niches.${page.niche}`, page.niche)}
-                  </Badge>
-                )}
-              </div>
+      <CardContent className="p-4">
+        {/* Header with title and badges */}
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-semibold text-foreground truncate">
+                {page.title || page.slug}
+              </h3>
+              {page.is_premium && (
+                <Crown className="h-4 w-4 text-primary flex-shrink-0" />
+              )}
             </div>
+            <p className="text-sm text-muted-foreground truncate">
+              @{page.slug}
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-1 shrink-0">
+            {featured && (
+              <Badge variant="default" className="bg-primary/90 text-xs">
+                ⭐ {t('gallery.featured', 'Featured')}
+              </Badge>
+            )}
+            {page.niche && page.niche !== 'other' && (
+              <Badge variant="outline" className="text-xs bg-card/50">
+                {NICHE_ICONS[page.niche as Niche] || '📌'} {t(`niches.${page.niche}`, page.niche)}
+              </Badge>
+            )}
           </div>
         </div>
 
