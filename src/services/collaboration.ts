@@ -182,6 +182,9 @@ export async function respondToCollab(
 
   if (accept && pageId) {
     updates.target_page_id = pageId;
+    // Generate unique collab_slug when accepting
+    const slug = `collab-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
+    updates.collab_slug = slug;
   }
 
   const { error } = await supabase
