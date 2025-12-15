@@ -72,7 +72,7 @@ serve(async (req: Request) => {
           `👆 Нажмите на номер чтобы скопировать`;
         replyMarkup = {
           inline_keyboard: [
-            [{ text: '📝 Регистрация в LinkMAX', url: 'https://linkmax.kz/auth' }]
+            [{ text: '📝 Регистрация в LinkMAX', url: 'https://lnkmx.my/auth' }]
           ]
         };
       } else if (data === 'help') {
@@ -85,7 +85,7 @@ serve(async (req: Request) => {
           `🆔 Ваш Chat ID: <code>${chatId}</code>`;
         replyMarkup = {
           inline_keyboard: [
-            [{ text: '🔗 Открыть LinkMAX', url: 'https://linkmax.kz' }]
+            [{ text: '🔗 Открыть LinkMAX', url: 'https://lnkmx.my' }]
           ]
         };
       }
@@ -144,8 +144,8 @@ serve(async (req: Request) => {
         replyMarkup = {
           inline_keyboard: [
             [{ text: '📋 Скопировать Chat ID', callback_data: 'copy_id' }],
-            [{ text: '🔗 Открыть LinkMAX', url: 'https://linkmax.kz' }],
-            [{ text: '📝 Регистрация', url: 'https://linkmax.kz/auth' }],
+            [{ text: '🔗 Открыть LinkMAX', url: 'https://lnkmx.my' }],
+            [{ text: '📝 Регистрация', url: 'https://lnkmx.my/auth' }],
             [{ text: 'ℹ️ Помощь', callback_data: 'help' }]
           ]
         };
@@ -161,7 +161,7 @@ serve(async (req: Request) => {
         replyMarkup = {
           inline_keyboard: [
             [{ text: '🔄 Получить Chat ID', callback_data: 'get_id' }],
-            [{ text: '🔗 Открыть LinkMAX', url: 'https://linkmax.kz' }]
+            [{ text: '🔗 Открыть LinkMAX', url: 'https://lnkmx.my' }]
           ]
         };
       } else if (text === '/id') {
@@ -170,7 +170,7 @@ serve(async (req: Request) => {
         
         replyMarkup = {
           inline_keyboard: [
-            [{ text: '📝 Регистрация в LinkMAX', url: 'https://linkmax.kz/auth' }]
+            [{ text: '📝 Регистрация в LinkMAX', url: 'https://lnkmx.my/auth' }]
           ]
         };
       } else {
