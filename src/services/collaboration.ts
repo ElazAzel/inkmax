@@ -70,6 +70,22 @@ export interface Shoutout {
   };
 }
 
+// Send collab notification via edge function
+async function sendCollabNotification(
+  targetUserId: string,
+  requesterName: string,
+  message: string | undefined,
+  type: 'request' | 'accepted' | 'rejected'
+): Promise<void> {
+  try {
+    await supabase.functions.invoke('send-collab-notification', {
+      body: { targetUserId, requesterName, message, type }
+    });
+  } catch (error) {
+    console.error('Failed to send collab notification:', error);
+  }
+}
+
 // Collaboration functions
 export async function sendCollabRequest(
   targetId: string,
@@ -78,6 +94,15 @@ export async function sendCollabRequest(
 ): Promise<{ success: boolean; error?: string }> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Not authenticated' };
+
+  // Get requester's display name
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('display_name, username')
+    .eq('id', user.id)
+    .maybeSingle();
+  
+  const requesterName = profile?.display_name || profile?.username || 'Someone';
 
   const { error } = await supabase
     .from('collaborations')
@@ -94,6 +119,9 @@ export async function sendCollabRequest(
     }
     return { success: false, error: error.message };
   }
+
+  // Send notification to target user
+  await sendCollabNotification(targetId, requesterName, message, 'request');
 
   return { success: true };
 }
@@ -137,6 +165,16 @@ export async function respondToCollab(
   accept: boolean,
   pageId?: string
 ): Promise<{ success: boolean; error?: string }> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not authenticated' };
+
+  // Get the collaboration to find requester
+  const { data: collab } = await supabase
+    .from('collaborations')
+    .select('requester_id')
+    .eq('id', collabId)
+    .maybeSingle();
+
   const updates: Record<string, unknown> = {
     status: accept ? 'accepted' : 'rejected',
     updated_at: new Date().toISOString(),
@@ -152,6 +190,19 @@ export async function respondToCollab(
     .eq('id', collabId);
 
   if (error) return { success: false, error: error.message };
+
+  // Send notification to requester
+  if (collab?.requester_id) {
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('display_name, username')
+      .eq('id', user.id)
+      .maybeSingle();
+    
+    const responderName = profile?.display_name || profile?.username || 'Someone';
+    await sendCollabNotification(collab.requester_id, responderName, undefined, accept ? 'accepted' : 'rejected');
+  }
+
   return { success: true };
 }
 

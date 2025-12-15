@@ -31,7 +31,9 @@ import {
   ExternalLink,
   Check,
   Loader2,
+  Users,
 } from 'lucide-react';
+import { CollaborationPanel } from '@/components/collaboration/CollaborationPanel';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
@@ -84,6 +86,9 @@ interface MobileSettingsSheetProps {
   // User ID for referral
   userId?: string;
   
+  // Page ID for collaborations
+  pageId?: string;
+  
   // Niche
   niche?: Niche;
   onNicheChange?: (niche: Niche) => void;
@@ -120,6 +125,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   telegramChatId,
   onTelegramChange,
   userId,
+  pageId,
   niche,
   onNicheChange,
   previewUrl,
@@ -186,22 +192,21 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
         
         <div className="overflow-y-auto h-full pb-24">
           <Tabs defaultValue="link" className="w-full">
-            <TabsList className="w-full sticky top-0 bg-card/60 backdrop-blur-xl z-10 h-14 rounded-none border-b border-border/20 p-1.5 gap-1">
-              <TabsTrigger value="link" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
+            <TabsList className="w-full sticky top-0 bg-card/60 backdrop-blur-xl z-10 h-14 rounded-none border-b border-border/20 p-1.5 gap-0.5">
+              <TabsTrigger value="link" className="flex-1 gap-1 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-2">
                 <Link2 className="h-4 w-4" />
-                <span className="hidden xs:inline">Link</span>
               </TabsTrigger>
-              <TabsTrigger value="profile" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
+              <TabsTrigger value="profile" className="flex-1 gap-1 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-2">
                 <User className="h-4 w-4" />
-                <span className="hidden xs:inline">Profile</span>
               </TabsTrigger>
-              <TabsTrigger value="chatbot" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
+              <TabsTrigger value="chatbot" className="flex-1 gap-1 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-2">
                 <MessageCircle className="h-4 w-4" />
-                <span className="hidden xs:inline">AI</span>
               </TabsTrigger>
-              <TabsTrigger value="premium" className="flex-1 gap-1.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl">
+              <TabsTrigger value="collabs" className="flex-1 gap-1 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-2">
+                <Users className="h-4 w-4" />
+              </TabsTrigger>
+              <TabsTrigger value="premium" className="flex-1 gap-1 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-2">
                 <Crown className="h-4 w-4" />
-                <span className="hidden xs:inline">Plan</span>
               </TabsTrigger>
             </TabsList>
             
@@ -412,6 +417,11 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                   SEO Generator
                 </Button>
               </Card>
+            </TabsContent>
+            
+            {/* Collabs Tab */}
+            <TabsContent value="collabs" className="p-4 mt-0">
+              <CollaborationPanel userId={userId} pageId={pageId} />
             </TabsContent>
             
             {/* Premium Tab */}
