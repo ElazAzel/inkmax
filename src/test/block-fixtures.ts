@@ -196,10 +196,7 @@ export const mockScratchBlock: ScratchBlock = {
 export const mockMapBlock: MapBlock = {
   id: 'map-1',
   type: 'map',
-  title: 'Our Location',
   address: '123 Test Street',
-  zoom: 15,
-  height: 'medium',
 };
 
 export const mockAvatarBlock: AvatarBlock = {

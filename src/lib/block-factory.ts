@@ -197,10 +197,7 @@ export function createBlock(type: string): Block {
       return {
         id: `map-${timestamp}`,
         type: 'map',
-        title: 'Наше местоположение',
         address: '',
-        zoom: 15,
-        height: 'medium',
       };
     
     case 'avatar':

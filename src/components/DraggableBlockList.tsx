@@ -96,7 +96,7 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
       case 'scratch':
         return `Скретч: ${block.title || 'Сюрприз'}`;
       case 'map':
-        return `Карта: ${block.title || 'Местоположение'}`;
+        return `Карта: ${getTranslatedString(block.address, currentLang) || 'Местоположение'}`;
       case 'avatar':
         return `Аватар: ${getTranslatedString(block.name, currentLang)}`;
       case 'separator':

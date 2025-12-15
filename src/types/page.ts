@@ -268,10 +268,7 @@ export interface ScratchBlock {
 export interface MapBlock {
   id: string;
   type: 'map';
-  title?: string | MultilingualString;
   address: string | MultilingualString;
-  zoom?: number; // 1-20, default 15
-  height?: 'small' | 'medium' | 'large';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
