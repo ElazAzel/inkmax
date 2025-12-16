@@ -295,4 +295,4 @@
 ---
 
 *LinkMAX — AI-powered link-in-bio platform*
-*Создано с ❤️ на Lovable*
+*Создано с ❤️ Ильясом Азелхановым*
