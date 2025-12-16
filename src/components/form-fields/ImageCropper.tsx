@@ -93,22 +93,42 @@ export function ImageCropper({
     img.crossOrigin = 'anonymous';
     
     img.onload = () => {
-      const outputSize = shape === 'circle' ? 512 : aspectRatio >= 1 ? 1200 : 800;
-      const outputHeight = shape === 'circle' ? outputSize : Math.round(outputSize / aspectRatio);
+      // For cover: preserve original aspect ratio, for avatar: square
+      const maxWidth = shape === 'circle' ? 512 : 1200;
+      const maxHeight = shape === 'circle' ? 512 : 800;
       
-      canvas.width = outputSize;
+      // Calculate output dimensions preserving aspect ratio for cover
+      let outputWidth: number;
+      let outputHeight: number;
+      
+      if (shape === 'circle') {
+        outputWidth = 512;
+        outputHeight = 512;
+      } else {
+        // Preserve original image aspect ratio for cover
+        const imgAspect = img.width / img.height;
+        if (imgAspect > maxWidth / maxHeight) {
+          outputWidth = maxWidth;
+          outputHeight = Math.round(maxWidth / imgAspect);
+        } else {
+          outputHeight = maxHeight;
+          outputWidth = Math.round(maxHeight * imgAspect);
+        }
+      }
+      
+      canvas.width = outputWidth;
       canvas.height = outputHeight;
       
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Calculate source dimensions
+      // Calculate source dimensions based on zoom
       const sourceWidth = img.width / zoom;
       const sourceHeight = img.height / zoom;
       const sourceX = (img.width - sourceWidth) * (position.x / 100);
       const sourceY = (img.height - sourceHeight) * (position.y / 100);
 
-      // Draw image
+      // Draw image preserving proportions
       ctx.drawImage(
         img,
         sourceX,
@@ -117,7 +137,7 @@ export function ImageCropper({
         sourceHeight,
         0,
         0,
-        outputSize,
+        outputWidth,
         outputHeight
       );
 
@@ -154,7 +174,7 @@ export function ImageCropper({
           <div
             ref={containerRef}
             className={`relative mx-auto overflow-hidden bg-muted border-2 border-dashed border-border ${
-              shape === 'circle' ? 'rounded-full w-48 h-48' : 'rounded-xl w-full aspect-video'
+              shape === 'circle' ? 'rounded-full w-48 h-48' : 'rounded-xl w-full max-h-64'
             }`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
