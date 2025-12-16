@@ -87,34 +87,14 @@ export function ImageCropper({
   };
 
   const handleSave = () => {
-    // Create canvas and draw the cropped image
     const canvas = document.createElement('canvas');
     const img = new Image();
     img.crossOrigin = 'anonymous';
     
     img.onload = () => {
-      // For cover: preserve original aspect ratio, for avatar: square
-      const maxWidth = shape === 'circle' ? 512 : 1200;
-      const maxHeight = shape === 'circle' ? 512 : 800;
-      
-      // Calculate output dimensions preserving aspect ratio for cover
-      let outputWidth: number;
-      let outputHeight: number;
-      
-      if (shape === 'circle') {
-        outputWidth = 512;
-        outputHeight = 512;
-      } else {
-        // Preserve original image aspect ratio for cover
-        const imgAspect = img.width / img.height;
-        if (imgAspect > maxWidth / maxHeight) {
-          outputWidth = maxWidth;
-          outputHeight = Math.round(maxWidth / imgAspect);
-        } else {
-          outputHeight = maxHeight;
-          outputWidth = Math.round(maxHeight * imgAspect);
-        }
-      }
+      // Fixed output dimensions
+      const outputWidth = shape === 'circle' ? 512 : 1200;
+      const outputHeight = shape === 'circle' ? 512 : 400; // 3:1 aspect for cover
       
       canvas.width = outputWidth;
       canvas.height = outputHeight;
@@ -122,26 +102,42 @@ export function ImageCropper({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Calculate source dimensions based on zoom
-      const sourceWidth = img.width / zoom;
-      const sourceHeight = img.height / zoom;
-      const sourceX = (img.width - sourceWidth) * (position.x / 100);
-      const sourceY = (img.height - sourceHeight) * (position.y / 100);
+      // Calculate crop area maintaining image proportions (object-fit: cover logic)
+      const outputAspect = outputWidth / outputHeight;
+      const imgAspect = img.width / img.height;
+      
+      let cropWidth: number;
+      let cropHeight: number;
+      
+      if (imgAspect > outputAspect) {
+        // Image is wider - crop sides
+        cropHeight = img.height / zoom;
+        cropWidth = cropHeight * outputAspect;
+      } else {
+        // Image is taller - crop top/bottom
+        cropWidth = img.width / zoom;
+        cropHeight = cropWidth / outputAspect;
+      }
+      
+      // Position the crop area based on user pan
+      const maxOffsetX = Math.max(0, img.width - cropWidth);
+      const maxOffsetY = Math.max(0, img.height - cropHeight);
+      const cropX = maxOffsetX * (position.x / 100);
+      const cropY = maxOffsetY * (position.y / 100);
 
-      // Draw image preserving proportions
+      // Draw cropped image (no stretching)
       ctx.drawImage(
         img,
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
+        cropX,
+        cropY,
+        cropWidth,
+        cropHeight,
         0,
         0,
         outputWidth,
         outputHeight
       );
 
-      // Convert to data URL
       const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
       onSave(dataUrl);
     };
@@ -174,7 +170,7 @@ export function ImageCropper({
           <div
             ref={containerRef}
             className={`relative mx-auto overflow-hidden bg-muted border-2 border-dashed border-border ${
-              shape === 'circle' ? 'rounded-full w-48 h-48' : 'rounded-xl w-full max-h-64'
+              shape === 'circle' ? 'rounded-full w-48 h-48' : 'rounded-xl w-full aspect-[3/1]'
             }`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
