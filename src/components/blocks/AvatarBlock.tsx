@@ -29,10 +29,10 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
 
   const shadowClasses = {
     none: '',
-    soft: 'shadow-sm',
-    medium: 'shadow-md',
-    strong: 'shadow-lg',
-    glow: 'shadow-lg shadow-primary/50',
+    soft: '',
+    medium: '',
+    strong: '',
+    glow: '',
   };
 
   const initials = name
