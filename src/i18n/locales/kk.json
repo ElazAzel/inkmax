@@ -226,16 +226,22 @@
       "title": "Тарифті таңдаңыз",
       "subtitle": "Тегін бастаңыз, қажет болғанда жаңартыңыз",
       "month": "ай",
+      "annually": "жылдық төлемде",
       "popular": "Танымал",
       "free": {
         "title": "Тегін",
         "description": "Бастау үшін тамаша",
         "cta": "Тегін бастау"
       },
-      "premium": {
-        "title": "Премиум",
-        "description": "Мамандар мен бизнес үшін",
-        "cta": "Premium-ға көшу"
+      "pro": {
+        "title": "Pro",
+        "description": "Мамандар үшін",
+        "cta": "Pro-ға көшу"
+      },
+      "business": {
+        "title": "Business",
+        "description": "Командалар мен бизнес үшін",
+        "cta": "Business-ке көшу"
       },
       "features": {
         "blocks5": "5 блокқа дейін",
@@ -247,6 +253,7 @@
         "premiumBlocks": "Премиум блоктар",
         "analytics": "Аналитика панелі",
         "crm": "Мини-CRM",
+        "teams": "Командалар мен ынтымақтастық",
         "noWatermark": "Су белгісіз",
         "unlimitedAI": "Шексіз AI",
         "priority": "Басымдықты қолдау"

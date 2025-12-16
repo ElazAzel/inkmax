@@ -231,17 +231,23 @@
       "badge": "Simple Pricing",
       "title": "Choose Your Plan",
       "subtitle": "Start free, upgrade when you need more power",
-      "month": "month",
+      "month": "mo",
+      "annually": "billed annually",
       "popular": "Most Popular",
       "free": {
         "title": "Free",
         "description": "Perfect to get started",
         "cta": "Get Started Free"
       },
-      "premium": {
-        "title": "Premium",
-        "description": "For professionals and businesses",
-        "cta": "Upgrade to Premium"
+      "pro": {
+        "title": "Pro",
+        "description": "For professionals",
+        "cta": "Upgrade to Pro"
+      },
+      "business": {
+        "title": "Business",
+        "description": "For teams and businesses",
+        "cta": "Upgrade to Business"
       },
       "features": {
         "blocks5": "Up to 5 blocks",
@@ -253,6 +259,7 @@
         "premiumBlocks": "Premium blocks",
         "analytics": "Analytics dashboard",
         "crm": "Mini-CRM",
+        "teams": "Teams & collaborations",
         "noWatermark": "No watermark",
         "unlimitedAI": "Unlimited AI",
         "priority": "Priority support"
