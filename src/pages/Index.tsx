@@ -165,19 +165,24 @@ export default function Index() {
       { text: t('landing.pricing.features.basicBlocks'), included: true },
       { text: t('landing.pricing.features.ai3'), included: true },
       { text: t('landing.pricing.features.themes'), included: true },
-      { text: t('landing.pricing.features.unlimitedBlocks'), included: false },
       { text: t('landing.pricing.features.analytics'), included: false },
-      { text: t('landing.pricing.features.crm'), included: false },
       { text: t('landing.pricing.features.noWatermark'), included: false }
     ],
-    premium: [
+    pro: [
+      { text: t('landing.pricing.features.unlimitedBlocks'), included: true },
+      { text: t('landing.pricing.features.allBlocks'), included: true },
+      { text: t('landing.pricing.features.unlimitedAI'), included: true },
+      { text: t('landing.pricing.features.analytics'), included: true },
+      { text: t('landing.pricing.features.noWatermark'), included: true },
+      { text: t('landing.pricing.features.priority'), included: true }
+    ],
+    business: [
       { text: t('landing.pricing.features.unlimitedBlocks'), included: true },
       { text: t('landing.pricing.features.allBlocks'), included: true },
       { text: t('landing.pricing.features.unlimitedAI'), included: true },
       { text: t('landing.pricing.features.analytics'), included: true },
       { text: t('landing.pricing.features.crm'), included: true },
-      { text: 'Команды и коллаборации', included: true },
-      { text: 'Приглашения по ссылке', included: true },
+      { text: t('landing.pricing.features.teams'), included: true },
       { text: t('landing.pricing.features.noWatermark'), included: true },
       { text: t('landing.pricing.features.priority'), included: true }
     ]
@@ -809,46 +814,46 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+          <div className="grid sm:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto">
             {/* Free Plan */}
             <div 
-              className={`relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-border/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 ${pricingSection.isVisible ? 'animate-slide-in-left' : ''}`}
+              className={`relative p-5 sm:p-6 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-border/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 ${pricingSection.isVisible ? 'animate-slide-in-left' : ''}`}
               style={{ animationDelay: '400ms' }}
             >
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <div>
-                  <h3 className="text-2xl font-bold">{t('landing.pricing.free.title')}</h3>
-                  <p className="text-muted-foreground mt-1">{t('landing.pricing.free.description')}</p>
+                  <h3 className="text-xl font-bold">{t('landing.pricing.free.title')}</h3>
+                  <p className="text-muted-foreground text-sm mt-1">{t('landing.pricing.free.description')}</p>
                 </div>
                 
                 <div className="flex items-baseline gap-1">
-                  <span className="text-5xl font-bold">$0</span>
-                  <span className="text-muted-foreground">/{t('landing.pricing.month')}</span>
+                  <span className="text-4xl font-bold">$0</span>
+                  <span className="text-muted-foreground text-sm">/{t('landing.pricing.month')}</span>
                 </div>
 
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="w-full rounded-2xl text-lg py-6 hover:bg-accent"
+                  className="w-full rounded-2xl py-5 hover:bg-accent"
                   onClick={() => navigate('/auth')}
                 >
                   {t('landing.pricing.free.cta')}
                 </Button>
 
-                <div className="space-y-3 pt-4">
+                <div className="space-y-2.5 pt-3">
                   {pricingFeatures.free.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
+                    <div key={index} className="flex items-center gap-2.5">
                       {feature.included ? (
-                        <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="h-4 w-4 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Check className="h-2.5 w-2.5 text-primary" />
                         </div>
                       ) : (
-                        <div className="h-5 w-5 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                          <X className="h-3 w-3 text-muted-foreground" />
+                        <div className="h-4 w-4 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                          <X className="h-2.5 w-2.5 text-muted-foreground" />
                         </div>
                       )}
-                      <span className={`text-sm ${feature.included ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      <span className={`text-xs ${feature.included ? 'text-foreground' : 'text-muted-foreground'}`}>
                         {feature.text}
                       </span>
                     </div>
@@ -857,49 +862,98 @@ export default function Index() {
               </div>
             </div>
 
-            {/* Premium Plan */}
+            {/* Pro Plan */}
             <div 
-              className={`relative p-6 sm:p-8 rounded-3xl bg-card/50 backdrop-blur-2xl border-2 border-primary/30 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 overflow-hidden ${pricingSection.isVisible ? 'animate-slide-in-right' : ''}`}
-              style={{ animationDelay: '500ms' }}
+              className={`relative p-5 sm:p-6 rounded-3xl bg-card/50 backdrop-blur-2xl border-2 border-primary/30 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 overflow-hidden ${pricingSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              style={{ animationDelay: '450ms' }}
             >
-              {/* Premium glow effects */}
               <div className="absolute -inset-px bg-gradient-to-br from-primary/20 via-blue-500/10 to-purple-500/20 rounded-3xl opacity-50" />
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
               
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-sm font-medium shadow-lg shadow-primary/30 animate-glow-pulse border border-primary/50">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium shadow-lg shadow-primary/30 animate-glow-pulse border border-primary/50">
                 {t('landing.pricing.popular')}
               </div>
 
-              <div className="relative space-y-6">
+              <div className="relative space-y-5">
                 <div>
-                  <h3 className="text-2xl font-bold flex items-center gap-2">
-                    {t('landing.pricing.premium.title')}
-                    <Crown className="h-5 w-5 text-primary" />
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    {t('landing.pricing.pro.title')}
+                    <Crown className="h-4 w-4 text-primary" />
                   </h3>
-                  <p className="text-muted-foreground mt-1">{t('landing.pricing.premium.description')}</p>
+                  <p className="text-muted-foreground text-sm mt-1">{t('landing.pricing.pro.description')}</p>
                 </div>
                 
-                <div className="flex items-baseline gap-1">
-                  <span className="text-5xl font-bold">$6.99</span>
-                  <span className="text-muted-foreground">/{t('landing.pricing.month')}</span>
+                <div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">$2.9</span>
+                    <span className="text-muted-foreground text-sm">/{t('landing.pricing.month')}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">~$2/{t('landing.pricing.month')} {t('landing.pricing.annually')}</p>
                 </div>
 
                 <Button 
                   size="lg" 
-                  className="w-full rounded-2xl text-lg py-6 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group"
+                  className="w-full rounded-2xl py-5 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group"
                   onClick={openPremiumPurchase}
                 >
-                  {t('landing.pricing.premium.cta')}
-                  <Sparkles className="ml-2 h-5 w-5 group-hover:animate-wiggle" />
+                  {t('landing.pricing.pro.cta')}
+                  <Sparkles className="ml-2 h-4 w-4 group-hover:animate-wiggle" />
                 </Button>
 
-                <div className="space-y-3 pt-4">
-                  {pricingFeatures.premium.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                        <Check className="h-3 w-3 text-primary" />
+                <div className="space-y-2.5 pt-3">
+                  {pricingFeatures.pro.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2.5">
+                      <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <Check className="h-2.5 w-2.5 text-primary" />
                       </div>
-                      <span className="text-sm text-foreground">{feature.text}</span>
+                      <span className="text-xs text-foreground">{feature.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Business Plan */}
+            <div 
+              className={`relative p-5 sm:p-6 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-emerald-500/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 overflow-hidden ${pricingSection.isVisible ? 'animate-slide-in-right' : ''}`}
+              style={{ animationDelay: '500ms' }}
+            >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+
+              <div className="relative space-y-5">
+                <div>
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    {t('landing.pricing.business.title')}
+                    <Briefcase className="h-4 w-4 text-emerald-500" />
+                  </h3>
+                  <p className="text-muted-foreground text-sm mt-1">{t('landing.pricing.business.description')}</p>
+                </div>
+                
+                <div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">$5.9</span>
+                    <span className="text-muted-foreground text-sm">/{t('landing.pricing.month')}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">~$5/{t('landing.pricing.month')} {t('landing.pricing.annually')}</p>
+                </div>
+
+                <Button 
+                  variant="outline"
+                  size="lg" 
+                  className="w-full rounded-2xl py-5 border-emerald-500/30 hover:bg-emerald-500/10 hover:border-emerald-500/50 transition-all group"
+                  onClick={openPremiumPurchase}
+                >
+                  {t('landing.pricing.business.cta')}
+                  <Briefcase className="ml-2 h-4 w-4 text-emerald-500" />
+                </Button>
+
+                <div className="space-y-2.5 pt-3">
+                  {pricingFeatures.business.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2.5">
+                      <div className="h-4 w-4 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                        <Check className="h-2.5 w-2.5 text-emerald-500" />
+                      </div>
+                      <span className="text-xs text-foreground">{feature.text}</span>
                     </div>
                   ))}
                 </div>
