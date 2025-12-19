@@ -831,6 +831,7 @@ export type Database = {
           push_subscription: Json | null
           streak_bonus_days: number | null
           telegram_chat_id: string | null
+          telegram_language: string | null
           telegram_notifications_enabled: boolean | null
           trial_ends_at: string | null
           updated_at: string | null
@@ -852,6 +853,7 @@ export type Database = {
           push_subscription?: Json | null
           streak_bonus_days?: number | null
           telegram_chat_id?: string | null
+          telegram_language?: string | null
           telegram_notifications_enabled?: boolean | null
           trial_ends_at?: string | null
           updated_at?: string | null
@@ -873,6 +875,7 @@ export type Database = {
           push_subscription?: Json | null
           streak_bonus_days?: number | null
           telegram_chat_id?: string | null
+          telegram_language?: string | null
           telegram_notifications_enabled?: boolean | null
           trial_ends_at?: string | null
           updated_at?: string | null
