@@ -60,10 +60,26 @@ export default function Auth() {
   const refCode = searchParams.get('ref');
   const urlMode = searchParams.get('mode');
 
-  // Check for password update mode from URL
+  // Check for password update mode from URL or hash params (from email link)
   useEffect(() => {
     if (urlMode === 'update-password') {
       setAuthMode('update-password');
+      return;
+    }
+    
+    // Check hash params for recovery token (from Supabase email link)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get('access_token');
+    const type = hashParams.get('type');
+    
+    if (accessToken && type === 'recovery') {
+      console.log('Recovery token detected, setting up password update mode');
+      // Supabase will automatically set the session from hash params
+      // We just need to set the mode
+      setAuthMode('update-password');
+      
+      // Clean up the URL hash for better UX
+      window.history.replaceState(null, '', `${window.location.pathname}?mode=update-password`);
     }
   }, [urlMode]);
 
