@@ -28,8 +28,8 @@ export const PRO_LIMITS = {
   maxBlocks: Infinity,
   maxAIRequestsPerWeek: Infinity,
   showWatermark: false,
-  allowedBlocks: [...FREE_BLOCKS, ...PRO_BLOCKS] as unknown as string[],
-  premiumBlocks: BUSINESS_BLOCKS as unknown as string[],
+  allowedBlocks: [...FREE_BLOCKS, ...PRO_BLOCKS, ...BUSINESS_BLOCKS] as unknown as string[],
+  premiumBlocks: [] as string[],
   maxLeadsPerMonth: 100,
 };
 
