@@ -480,10 +480,15 @@
     "blocksRemaining": "Қалған блоктар: {{count}} / {{max}}",
     "upgradeToPremium": "Premium-ға көшу",
     "aiLimitReached": "AI сұраулар лимиті таусылды",
-    "aiRequestsRemaining": "Бүгінгі AI сұраулар: {{count}}",
-    "aiLimitResets": "Лимит күн сайын жаңарады",
+    "aiRequestsRemaining": "Осы аптадағы AI сұраулар: {{count}}",
+    "aiLimitResetsWeekly": "Лимит апта сайын жаңарады",
     "unlimitedAI": "Шексіз AI",
-    "premiumBlockRequired": "Бұл блок тек Premium-да қол жетімді"
+    "premiumBlockRequired": "Бұл блок тек Premium-да қол жетімді",
+    "viewOnly": "Тек көру",
+    "viewOnlyHint": "Өңдеу үшін {{tier}} қажет",
+    "upgradeToEdit": "Өңдеу үшін {{tier}}-ға жаңартыңыз",
+    "proRequired": "PRO қажет",
+    "businessRequired": "BUSINESS қажет"
   },
   "templates": {
     "title": "Үлгілер галереясы",

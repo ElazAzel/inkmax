@@ -486,10 +486,15 @@
     "blocksRemaining": "Blocks remaining: {{count}} of {{max}}",
     "upgradeToPremium": "Upgrade to Premium",
     "aiLimitReached": "AI request limit reached",
-    "aiRequestsRemaining": "AI requests remaining today: {{count}}",
-    "aiLimitResets": "Limit resets every day",
+    "aiRequestsRemaining": "AI requests remaining this week: {{count}}",
+    "aiLimitResetsWeekly": "Limit resets every week",
     "unlimitedAI": "Unlimited AI",
-    "premiumBlockRequired": "This block requires Premium"
+    "premiumBlockRequired": "This block requires Premium",
+    "viewOnly": "View only",
+    "viewOnlyHint": "Requires {{tier}} to edit",
+    "upgradeToEdit": "Upgrade to {{tier}} to edit",
+    "proRequired": "Requires PRO",
+    "businessRequired": "Requires BUSINESS"
   },
   "templates": {
     "title": "Template Gallery",
