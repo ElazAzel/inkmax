@@ -196,6 +196,23 @@ export default function Index() {
     { icon: Users, label: 'Команды' }
   ];
 
+  // Pricing toggle state - yearly by default
+  const [isYearly, setIsYearly] = useState(true);
+
+  // Pricing data with monthly and yearly prices
+  const pricingPlans = {
+    pro: {
+      monthly: 2.9,
+      yearly: 1.99, // ~31% savings
+      yearlySavings: 32, // percentage saved
+    },
+    business: {
+      monthly: 5.9,
+      yearly: 4.99, // ~15% savings
+      yearlySavings: 15,
+    }
+  };
+
   const heroSection = useScrollAnimation();
   const problemsSection = useScrollAnimation();
   const solutionsSection = useScrollAnimation();
@@ -812,6 +829,37 @@ export default function Index() {
             >
               {t('landing.pricing.subtitle')}
             </p>
+
+            {/* Billing Period Toggle */}
+            <div 
+              className={`flex items-center justify-center gap-3 pt-4 opacity-0 ${pricingSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              style={{ animationDelay: '350ms' }}
+            >
+              <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {t('landing.pricing.monthly')}
+              </span>
+              <button
+                onClick={() => setIsYearly(!isYearly)}
+                className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors ${
+                  isYearly ? 'bg-primary' : 'bg-muted'
+                }`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform ${
+                    isYearly ? 'translate-x-8' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className={`text-sm font-medium transition-colors ${isYearly ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {t('landing.pricing.yearly')}
+              </span>
+              {isYearly && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-semibold border border-emerald-500/20">
+                  <Zap className="h-3 w-3" />
+                  {t('landing.pricing.savePercent', { percent: 32 })}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto">
@@ -871,7 +919,7 @@ export default function Index() {
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
               
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium shadow-lg shadow-primary/30 animate-glow-pulse border border-primary/50">
-                {t('landing.pricing.popular')}
+                {isYearly ? t('landing.pricing.bestValue') : t('landing.pricing.popular')}
               </div>
 
               <div className="relative space-y-5">
@@ -883,12 +931,29 @@ export default function Index() {
                   <p className="text-muted-foreground text-sm mt-1">{t('landing.pricing.pro.description')}</p>
                 </div>
                 
-                <div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold">$2.9</span>
+                <div className="space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold">
+                      ${isYearly ? pricingPlans.pro.yearly : pricingPlans.pro.monthly}
+                    </span>
                     <span className="text-muted-foreground text-sm">/{t('landing.pricing.month')}</span>
+                    {isYearly && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        ${pricingPlans.pro.monthly}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">~$2/{t('landing.pricing.month')} {t('landing.pricing.annually')}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isYearly 
+                      ? t('landing.pricing.billedYearly') + ` ($${(pricingPlans.pro.yearly * 12).toFixed(0)}/${t('landing.pricing.year')})`
+                      : t('landing.pricing.billedMonthly')
+                    }
+                  </p>
+                  {isYearly && (
+                    <p className="text-xs text-emerald-600 font-medium">
+                      {t('landing.pricing.savePercent', { percent: pricingPlans.pro.yearlySavings })}
+                    </p>
+                  )}
                 </div>
 
                 <Button 
@@ -929,12 +994,29 @@ export default function Index() {
                   <p className="text-muted-foreground text-sm mt-1">{t('landing.pricing.business.description')}</p>
                 </div>
                 
-                <div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold">$5.9</span>
+                <div className="space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold">
+                      ${isYearly ? pricingPlans.business.yearly : pricingPlans.business.monthly}
+                    </span>
                     <span className="text-muted-foreground text-sm">/{t('landing.pricing.month')}</span>
+                    {isYearly && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        ${pricingPlans.business.monthly}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">~$5/{t('landing.pricing.month')} {t('landing.pricing.annually')}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isYearly 
+                      ? t('landing.pricing.billedYearly') + ` ($${(pricingPlans.business.yearly * 12).toFixed(0)}/${t('landing.pricing.year')})`
+                      : t('landing.pricing.billedMonthly')
+                    }
+                  </p>
+                  {isYearly && (
+                    <p className="text-xs text-emerald-600 font-medium">
+                      {t('landing.pricing.savePercent', { percent: pricingPlans.business.yearlySavings })}
+                    </p>
+                  )}
                 </div>
 
                 <Button 
