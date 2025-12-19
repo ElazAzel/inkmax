@@ -486,10 +486,15 @@
     "blocksRemaining": "Осталось блоков: {{count}} из {{max}}",
     "upgradeToPremium": "Перейти на Premium",
     "aiLimitReached": "Лимит AI запросов исчерпан",
-    "aiRequestsRemaining": "Осталось AI запросов сегодня: {{count}}",
-    "aiLimitResets": "Лимит обновляется каждый день",
+    "aiRequestsRemaining": "Осталось AI запросов на этой неделе: {{count}}",
+    "aiLimitResetsWeekly": "Лимит обновляется каждую неделю",
     "unlimitedAI": "Безлимитный AI",
-    "premiumBlockRequired": "Этот блок доступен только в Premium"
+    "premiumBlockRequired": "Этот блок доступен только в Premium",
+    "viewOnly": "Просмотр",
+    "viewOnlyHint": "Требуется {{tier}} для редактирования",
+    "upgradeToEdit": "Обновите до {{tier}} для редактирования",
+    "proRequired": "Требуется PRO",
+    "businessRequired": "Требуется BUSINESS"
   },
   "templates": {
     "title": "Галерея шаблонов",

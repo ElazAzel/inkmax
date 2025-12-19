@@ -164,17 +164,20 @@ export async function checkPremiumStatus(userId: string): Promise<PremiumStatusR
       .maybeSingle();
 
     if (error || !data) {
-      return { isPremium: false, trialEndsAt: null, inTrial: false };
+      return { isPremium: false, tier: 'free', trialEndsAt: null, inTrial: false };
     }
 
     const now = new Date();
     const trialEndsAt = data.trial_ends_at ? new Date(data.trial_ends_at) : null;
     const inTrial = trialEndsAt ? trialEndsAt > now : false;
     const isPremium = data.is_premium || inTrial;
+    
+    // For now, derive tier from is_premium (can be extended later with premium_tier column)
+    const tier: 'free' | 'pro' | 'business' = isPremium ? 'pro' : 'free';
 
-    return { isPremium, trialEndsAt: data.trial_ends_at, inTrial };
+    return { isPremium, tier, trialEndsAt: data.trial_ends_at, inTrial };
   } catch (error) {
-    return { isPremium: false, trialEndsAt: null, inTrial: false };
+    return { isPremium: false, tier: 'free', trialEndsAt: null, inTrial: false };
   }
 }
 
