@@ -230,21 +230,23 @@
     "pricing": {
       "badge": "Simple Pricing",
       "title": "Choose Your Plan",
-      "subtitle": "Start free, upgrade when you need more power",
+      "subtitle": "No monthly billing — only 3, 6, or 12 month plans",
       "month": "mo",
       "year": "year",
       "perMonth": "per month",
-      "annually": "billed annually",
-      "monthly": "Monthly",
-      "yearly": "Yearly",
+      "months3": "3 months",
+      "months6": "6 months",
+      "months12": "12 months",
       "savePercent": "Save {{percent}}%",
-      "billedYearly": "Billed yearly",
-      "billedMonthly": "Billed monthly",
+      "billedOnce": "One-time payment",
+      "total": "Total",
       "popular": "Most Popular",
       "bestValue": "Best Value",
+      "entryLevel": "Easy Start",
+      "maxSavings": "Max Savings",
       "free": {
-        "title": "Free",
-        "description": "Perfect to get started",
+        "title": "Basic",
+        "description": "Free forever",
         "cta": "Get Started Free"
       },
       "pro": {
@@ -258,19 +260,48 @@
         "cta": "Upgrade to Business"
       },
       "features": {
-        "blocks5": "Up to 5 blocks",
-        "basicBlocks": "Basic block types",
-        "ai3": "3 AI requests per day",
-        "themes": "All themes",
-        "unlimitedBlocks": "Unlimited blocks",
-        "allBlocks": "All block types",
-        "premiumBlocks": "Premium blocks",
-        "analytics": "Analytics dashboard",
-        "crm": "Mini-CRM",
-        "teams": "Teams & collaborations",
-        "noWatermark": "No watermark",
-        "unlimitedAI": "Unlimited AI",
-        "priority": "Priority support"
+        "free": {
+          "presetThemes": "Preset themes (limited)",
+          "basicCustomization": "Basic customization (colors, fonts)",
+          "unlimitedLinks": "Unlimited links",
+          "textBlocks": "Text blocks",
+          "basicBlocks": "Basic blocks (Profile, Link, Text, Image, Button, Socials, Separator)",
+          "messengers": "Messengers & social links",
+          "maps": "Maps (address + map)",
+          "basicStats": "Basic page view statistics",
+          "qrCode": "Page QR code",
+          "watermark": "LinkMAX watermark",
+          "ai3": "3 AI requests per day"
+        },
+        "pro": {
+          "allFree": "Everything in Basic, plus:",
+          "proThemes": "Professional themes & animations",
+          "media": "Media: images, video, music",
+          "pricing": "Price lists, Product/Catalog blocks",
+          "customCode": "Custom HTML/CSS block (limited)",
+          "pixels": "Social Media pixels (Meta, TikTok, Google)",
+          "scheduler": "Block scheduler (show by schedule)",
+          "clickAnalytics": "Extended click analytics",
+          "noWatermark": "No watermark",
+          "miniCrm": "Mini-CRM up to 100 leads/month",
+          "telegramLeads": "Telegram notifications for leads",
+          "unlimitedAi": "Unlimited AI within plan limits"
+        },
+        "business": {
+          "allPro": "Everything in Pro, plus:",
+          "innerPages": "Inner pages (multi-page mini-site)",
+          "digitalProducts": "Digital products (course/file landing pages)",
+          "applicationForms": "Application forms for leads",
+          "payments": "Payment acceptance (Stripe/Kaspi integration)",
+          "whiteLabel": "Full branding removal (white-label)",
+          "fullCrm": "Full CRM (unlimited leads, statuses, funnel)",
+          "autoNotifications": "Auto email/Telegram notifications",
+          "realtimeNotifications": "Real-time payment & lead notifications",
+          "timers": "Timers (launches, sales, scarcity)",
+          "customDomain": "Custom domain connection",
+          "ssl": "SSL certificate for custom domain",
+          "marketingAddons": "Marketing add-ons (referrals, promo codes)"
+        }
       }
     }
   },
