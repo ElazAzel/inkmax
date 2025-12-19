@@ -159,34 +159,50 @@ export default function Index() {
     { value: '∞', label: t('landing.stats.possibilities') }
   ];
 
-  const pricingFeatures = {
-    free: [
-      { text: t('landing.pricing.features.blocks5'), included: true },
-      { text: t('landing.pricing.features.basicBlocks'), included: true },
-      { text: t('landing.pricing.features.ai3'), included: true },
-      { text: t('landing.pricing.features.themes'), included: true },
-      { text: t('landing.pricing.features.analytics'), included: false },
-      { text: t('landing.pricing.features.noWatermark'), included: false }
-    ],
-    pro: [
-      { text: t('landing.pricing.features.unlimitedBlocks'), included: true },
-      { text: t('landing.pricing.features.allBlocks'), included: true },
-      { text: t('landing.pricing.features.unlimitedAI'), included: true },
-      { text: t('landing.pricing.features.analytics'), included: true },
-      { text: t('landing.pricing.features.noWatermark'), included: true },
-      { text: t('landing.pricing.features.priority'), included: true }
-    ],
-    business: [
-      { text: t('landing.pricing.features.unlimitedBlocks'), included: true },
-      { text: t('landing.pricing.features.allBlocks'), included: true },
-      { text: t('landing.pricing.features.unlimitedAI'), included: true },
-      { text: t('landing.pricing.features.analytics'), included: true },
-      { text: t('landing.pricing.features.crm'), included: true },
-      { text: t('landing.pricing.features.teams'), included: true },
-      { text: t('landing.pricing.features.noWatermark'), included: true },
-      { text: t('landing.pricing.features.priority'), included: true }
-    ]
-  };
+  // Pricing features organized by plan
+  const freeFeatures = [
+    t('landing.pricing.features.free.presetThemes'),
+    t('landing.pricing.features.free.basicCustomization'),
+    t('landing.pricing.features.free.unlimitedLinks'),
+    t('landing.pricing.features.free.textBlocks'),
+    t('landing.pricing.features.free.basicBlocks'),
+    t('landing.pricing.features.free.messengers'),
+    t('landing.pricing.features.free.maps'),
+    t('landing.pricing.features.free.basicStats'),
+    t('landing.pricing.features.free.qrCode'),
+    t('landing.pricing.features.free.ai3'),
+  ];
+
+  const proFeatures = [
+    t('landing.pricing.features.pro.allFree'),
+    t('landing.pricing.features.pro.proThemes'),
+    t('landing.pricing.features.pro.media'),
+    t('landing.pricing.features.pro.pricing'),
+    t('landing.pricing.features.pro.customCode'),
+    t('landing.pricing.features.pro.pixels'),
+    t('landing.pricing.features.pro.scheduler'),
+    t('landing.pricing.features.pro.clickAnalytics'),
+    t('landing.pricing.features.pro.noWatermark'),
+    t('landing.pricing.features.pro.miniCrm'),
+    t('landing.pricing.features.pro.telegramLeads'),
+    t('landing.pricing.features.pro.unlimitedAi'),
+  ];
+
+  const businessFeatures = [
+    t('landing.pricing.features.business.allPro'),
+    t('landing.pricing.features.business.innerPages'),
+    t('landing.pricing.features.business.digitalProducts'),
+    t('landing.pricing.features.business.applicationForms'),
+    t('landing.pricing.features.business.payments'),
+    t('landing.pricing.features.business.whiteLabel'),
+    t('landing.pricing.features.business.fullCrm'),
+    t('landing.pricing.features.business.autoNotifications'),
+    t('landing.pricing.features.business.realtimeNotifications'),
+    t('landing.pricing.features.business.timers'),
+    t('landing.pricing.features.business.customDomain'),
+    t('landing.pricing.features.business.ssl'),
+    t('landing.pricing.features.business.marketingAddons'),
+  ];
 
   const showcaseFeatures = [
     { icon: Bot, label: t('landing.benefits.ai') },
@@ -196,21 +212,27 @@ export default function Index() {
     { icon: Users, label: 'Команды' }
   ];
 
-  // Pricing toggle state - yearly by default
-  const [isYearly, setIsYearly] = useState(true);
+  // Billing period state: '3' | '6' | '12' months
+  const [billingPeriod, setBillingPeriod] = useState<'3' | '6' | '12'>('12');
 
-  // Pricing data with monthly and yearly prices
+  // Pricing data with different periods
   const pricingPlans = {
     pro: {
-      monthly: 2.9,
-      yearly: 1.99, // ~31% savings
-      yearlySavings: 32, // percentage saved
+      '3': { monthly: 5.00, total: 15 },
+      '6': { monthly: 3.50, total: 21 },
+      '12': { monthly: 2.50, total: 30 },
     },
     business: {
-      monthly: 5.9,
-      yearly: 4.99, // ~15% savings
-      yearlySavings: 15,
+      '3': { monthly: 9.50, total: 28.50 },
+      '6': { monthly: 7.00, total: 42 },
+      '12': { monthly: 5.00, total: 60 },
     }
+  };
+
+  const getSavingsPercent = (plan: 'pro' | 'business') => {
+    const baseMonthly = pricingPlans[plan]['3'].monthly;
+    const currentMonthly = pricingPlans[plan][billingPeriod].monthly;
+    return Math.round((1 - currentMonthly / baseMonthly) * 100);
   };
 
   const heroSection = useScrollAnimation();
@@ -809,7 +831,7 @@ export default function Index() {
           <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-r from-primary/10 via-transparent to-transparent rounded-full blur-[120px]" />
           <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-gradient-to-l from-blue-500/10 via-transparent to-transparent rounded-full blur-[100px]" />
         </div>
-        <div className="container mx-auto max-w-5xl relative z-10">
+        <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-12 sm:mb-16 space-y-4">
             <div 
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${pricingSection.isVisible ? 'animate-fade-in' : ''}`}
@@ -830,40 +852,42 @@ export default function Index() {
               {t('landing.pricing.subtitle')}
             </p>
 
-            {/* Billing Period Toggle */}
+            {/* Billing Period Selector - 3 buttons */}
             <div 
-              className={`flex items-center justify-center gap-3 pt-4 opacity-0 ${pricingSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              className={`flex items-center justify-center gap-2 pt-4 opacity-0 ${pricingSection.isVisible ? 'animate-fade-in-up' : ''}`}
               style={{ animationDelay: '350ms' }}
             >
-              <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-foreground' : 'text-muted-foreground'}`}>
-                {t('landing.pricing.monthly')}
-              </span>
-              <button
-                onClick={() => setIsYearly(!isYearly)}
-                className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors ${
-                  isYearly ? 'bg-primary' : 'bg-muted'
-                }`}
-              >
-                <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform ${
-                    isYearly ? 'translate-x-8' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-              <span className={`text-sm font-medium transition-colors ${isYearly ? 'text-foreground' : 'text-muted-foreground'}`}>
-                {t('landing.pricing.yearly')}
-              </span>
-              {isYearly && (
+              <div className="inline-flex p-1 rounded-2xl bg-muted/50 backdrop-blur-sm border border-border/30">
+                {(['3', '6', '12'] as const).map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => setBillingPeriod(period)}
+                    className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                      billingPeriod === period 
+                        ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25' 
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {t(`landing.pricing.months${period}`)}
+                    {period === '12' && (
+                      <span className="absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold">
+                        -50%
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              {billingPeriod !== '3' && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-semibold border border-emerald-500/20">
                   <Zap className="h-3 w-3" />
-                  {t('landing.pricing.savePercent', { percent: 32 })}
+                  {billingPeriod === '12' ? t('landing.pricing.maxSavings') : t('landing.pricing.savePercent', { percent: 30 })}
                 </span>
               )}
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-4 lg:gap-6 max-w-5xl mx-auto">
-            {/* Free Plan */}
+          <div className="grid sm:grid-cols-3 gap-4 lg:gap-6 max-w-6xl mx-auto">
+            {/* Free Plan - Basic */}
             <div 
               className={`relative p-5 sm:p-6 rounded-3xl bg-card/50 backdrop-blur-2xl border border-border/30 hover:border-border/50 transition-all duration-500 hover:shadow-glass-lg opacity-0 ${pricingSection.isVisible ? 'animate-slide-in-left' : ''}`}
               style={{ animationDelay: '400ms' }}
@@ -889,23 +913,22 @@ export default function Index() {
                   {t('landing.pricing.free.cta')}
                 </Button>
 
-                <div className="space-y-2.5 pt-3">
-                  {pricingFeatures.free.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2.5">
-                      {feature.included ? (
-                        <div className="h-4 w-4 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Check className="h-2.5 w-2.5 text-primary" />
-                        </div>
-                      ) : (
-                        <div className="h-4 w-4 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                          <X className="h-2.5 w-2.5 text-muted-foreground" />
-                        </div>
-                      )}
-                      <span className={`text-xs ${feature.included ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        {feature.text}
-                      </span>
+                <div className="space-y-2 pt-3 max-h-[280px] overflow-y-auto scrollbar-thin">
+                  {freeFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-2.5">
+                      <div className="h-4 w-4 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check className="h-2.5 w-2.5 text-primary" />
+                      </div>
+                      <span className="text-xs text-foreground leading-relaxed">{feature}</span>
                     </div>
                   ))}
+                  {/* Watermark - shown as limitation */}
+                  <div className="flex items-start gap-2.5">
+                    <div className="h-4 w-4 rounded-full bg-muted flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <X className="h-2.5 w-2.5 text-muted-foreground" />
+                    </div>
+                    <span className="text-xs text-muted-foreground leading-relaxed">{t('landing.pricing.features.free.watermark')}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -919,7 +942,7 @@ export default function Index() {
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
               
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium shadow-lg shadow-primary/30 animate-glow-pulse border border-primary/50">
-                {isYearly ? t('landing.pricing.bestValue') : t('landing.pricing.popular')}
+                {billingPeriod === '12' ? t('landing.pricing.bestValue') : t('landing.pricing.popular')}
               </div>
 
               <div className="relative space-y-5">
@@ -934,24 +957,21 @@ export default function Index() {
                 <div className="space-y-1">
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold">
-                      ${isYearly ? pricingPlans.pro.yearly : pricingPlans.pro.monthly}
+                      ${pricingPlans.pro[billingPeriod].monthly.toFixed(2)}
                     </span>
                     <span className="text-muted-foreground text-sm">/{t('landing.pricing.month')}</span>
-                    {isYearly && (
+                    {billingPeriod !== '3' && (
                       <span className="text-sm text-muted-foreground line-through">
-                        ${pricingPlans.pro.monthly}
+                        ${pricingPlans.pro['3'].monthly.toFixed(2)}
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {isYearly 
-                      ? t('landing.pricing.billedYearly') + ` ($${(pricingPlans.pro.yearly * 12).toFixed(0)}/${t('landing.pricing.year')})`
-                      : t('landing.pricing.billedMonthly')
-                    }
+                    {t('landing.pricing.total')}: ${pricingPlans.pro[billingPeriod].total} • {t('landing.pricing.billedOnce')}
                   </p>
-                  {isYearly && (
+                  {billingPeriod !== '3' && (
                     <p className="text-xs text-emerald-600 font-medium">
-                      {t('landing.pricing.savePercent', { percent: pricingPlans.pro.yearlySavings })}
+                      {t('landing.pricing.savePercent', { percent: getSavingsPercent('pro') })}
                     </p>
                   )}
                 </div>
@@ -965,13 +985,13 @@ export default function Index() {
                   <Sparkles className="ml-2 h-4 w-4 group-hover:animate-wiggle" />
                 </Button>
 
-                <div className="space-y-2.5 pt-3">
-                  {pricingFeatures.pro.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2.5">
-                      <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <div className="space-y-2 pt-3 max-h-[280px] overflow-y-auto scrollbar-thin">
+                  {proFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-2.5">
+                      <div className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <Check className="h-2.5 w-2.5 text-primary" />
                       </div>
-                      <span className="text-xs text-foreground">{feature.text}</span>
+                      <span className={`text-xs leading-relaxed ${index === 0 ? 'font-medium text-primary' : 'text-foreground'}`}>{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -997,24 +1017,21 @@ export default function Index() {
                 <div className="space-y-1">
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold">
-                      ${isYearly ? pricingPlans.business.yearly : pricingPlans.business.monthly}
+                      ${pricingPlans.business[billingPeriod].monthly.toFixed(2)}
                     </span>
                     <span className="text-muted-foreground text-sm">/{t('landing.pricing.month')}</span>
-                    {isYearly && (
+                    {billingPeriod !== '3' && (
                       <span className="text-sm text-muted-foreground line-through">
-                        ${pricingPlans.business.monthly}
+                        ${pricingPlans.business['3'].monthly.toFixed(2)}
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {isYearly 
-                      ? t('landing.pricing.billedYearly') + ` ($${(pricingPlans.business.yearly * 12).toFixed(0)}/${t('landing.pricing.year')})`
-                      : t('landing.pricing.billedMonthly')
-                    }
+                    {t('landing.pricing.total')}: ${pricingPlans.business[billingPeriod].total} • {t('landing.pricing.billedOnce')}
                   </p>
-                  {isYearly && (
+                  {billingPeriod !== '3' && (
                     <p className="text-xs text-emerald-600 font-medium">
-                      {t('landing.pricing.savePercent', { percent: pricingPlans.business.yearlySavings })}
+                      {t('landing.pricing.savePercent', { percent: getSavingsPercent('business') })}
                     </p>
                   )}
                 </div>
@@ -1029,13 +1046,13 @@ export default function Index() {
                   <Briefcase className="ml-2 h-4 w-4 text-emerald-500" />
                 </Button>
 
-                <div className="space-y-2.5 pt-3">
-                  {pricingFeatures.business.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2.5">
-                      <div className="h-4 w-4 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                <div className="space-y-2 pt-3 max-h-[280px] overflow-y-auto scrollbar-thin">
+                  {businessFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-2.5">
+                      <div className="h-4 w-4 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <Check className="h-2.5 w-2.5 text-emerald-500" />
                       </div>
-                      <span className="text-xs text-foreground">{feature.text}</span>
+                      <span className={`text-xs leading-relaxed ${index === 0 ? 'font-medium text-emerald-600' : 'text-foreground'}`}>{feature}</span>
                     </div>
                   ))}
                 </div>
