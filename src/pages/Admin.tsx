@@ -12,11 +12,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { 
   Users, FileText, Eye, MousePointer, Share2, 
   TrendingUp, Calendar, Shield, LogOut, Search,
-  BarChart3, Activity, Globe, Loader2
+  BarChart3, Activity, Globe, Loader2, PieChart
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
+import { AdminCharts } from '@/components/admin/AdminCharts';
 
 interface PlatformStats {
   totalUsers: number;
@@ -346,6 +347,10 @@ export default function Admin() {
             <TabsTrigger value="analytics">
               <Activity className="h-4 w-4 mr-2" />
               Аналитика
+            </TabsTrigger>
+            <TabsTrigger value="charts">
+              <PieChart className="h-4 w-4 mr-2" />
+              Графики
             </TabsTrigger>
           </TabsList>
 
@@ -705,6 +710,11 @@ export default function Admin() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Charts Tab */}
+          <TabsContent value="charts">
+            <AdminCharts />
           </TabsContent>
         </Tabs>
       </main>
