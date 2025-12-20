@@ -883,6 +883,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_challenges: {
         Row: {
           challenge_key: string
@@ -994,6 +1015,13 @@ export type Database = {
           username: string
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       increment_block_clicks: {
         Args: { block_uuid: string }
         Returns: undefined
@@ -1042,6 +1070,7 @@ export type Database = {
           }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       collab_status: "pending" | "accepted" | "rejected"
       interaction_type: "note" | "call" | "email" | "message" | "meeting"
       lead_source: "page_view" | "form" | "messenger" | "manual" | "other"
@@ -1173,6 +1202,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       collab_status: ["pending", "accepted", "rejected"],
       interaction_type: ["note", "call", "email", "message", "meeting"],
       lead_source: ["page_view", "form", "messenger", "manual", "other"],
