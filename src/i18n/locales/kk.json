@@ -3,7 +3,14 @@
     "termsOfService": "Пайдаланушы келісімі",
     "termsDescription": "LinkMAX платформасын пайдалану шарттарымен танысыңыз",
     "agreeToTerms": "Мен шарттарды қабылдаймын",
-    "termsLink": "Пайдаланушы келісімі"
+    "termsLink": "Пайдаланушы келісімі",
+    "privacyPolicy": "Құпиялылық саясаты",
+    "privacyDescription": "Дербес деректерді өңдеу саясатымен танысыңыз",
+    "privacyLink": "Құпиялылық саясаты",
+    "andThe": "және"
+  },
+  "common": {
+    "close": "Жабу"
   },
   "settings": {
     "niche": "Санат",

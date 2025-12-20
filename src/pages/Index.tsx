@@ -51,6 +51,7 @@ import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
 import { LandingFeaturedPages } from '@/components/landing/LandingFeaturedPages';
 import { LandingGallerySection } from '@/components/landing/LandingGallerySection';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
+import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 
 // Lazy load 3D component for better performance
 const Hero3D = lazy(() => import('@/components/landing/Hero3D').then(m => ({ default: m.Hero3D })));
@@ -1132,9 +1133,15 @@ export default function Index() {
               </span>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-4">
-              <TermsLink className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                {t('legal.termsOfService')}
-              </TermsLink>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <TermsLink className="hover:text-foreground transition-colors cursor-pointer">
+                  {t('legal.termsOfService')}
+                </TermsLink>
+                <span>•</span>
+                <PrivacyLink className="hover:text-foreground transition-colors cursor-pointer">
+                  {t('legal.privacyPolicy')}
+                </PrivacyLink>
+              </div>
               <p className="text-sm text-muted-foreground text-center sm:text-right font-medium">
                 {t('landing.footer.copyright')}
               </p>
