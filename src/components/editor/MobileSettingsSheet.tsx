@@ -476,15 +476,17 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                       )}
                     </div>
                   </div>
-                  {!isPremium && (
-                    <Button 
-                      onClick={openPremiumPurchase}
-                      className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-glass-lg transition-all duration-300 hover:scale-[1.02]"
-                    >
-                      <Crown className="h-4 w-4 mr-2" />
-                      Upgrade to Premium
-                    </Button>
-                  )}
+                  <Button 
+                    onClick={() => {
+                      onOpenChange(false);
+                      window.location.href = '/pricing';
+                    }}
+                    className={`w-full rounded-xl ${!isPremium ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600' : ''} shadow-glass-lg transition-all duration-300 hover:scale-[1.02]`}
+                    variant={isPremium ? 'outline' : 'default'}
+                  >
+                    <Crown className="h-4 w-4 mr-2" />
+                    {isPremium ? t('pricing.currentPlan', 'Текущий план') : t('pricing.subscribe', 'Подписаться')}
+                  </Button>
                 </Card>
               )}
               

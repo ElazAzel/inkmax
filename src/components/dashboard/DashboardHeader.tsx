@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { AutoSaveIndicator, SaveStatus } from '@/components/editor/AutoSaveIndicator';
@@ -15,6 +16,7 @@ import {
   LayoutTemplate,
   Trophy,
   Users,
+  Crown,
 } from 'lucide-react';
 
 interface DashboardHeaderProps {
@@ -57,6 +59,7 @@ export function DashboardHeader({
   userId,
 }: DashboardHeaderProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-50 hidden md:block">
@@ -111,6 +114,11 @@ export function DashboardHeader({
               <Button variant="ghost" size="sm" onClick={onOpenCRM}>
                 <Users className="h-4 w-4 mr-2" />
                 CRM
+              </Button>
+
+              <Button variant="ghost" size="sm" onClick={() => navigate('/pricing')}>
+                <Crown className="h-4 w-4 mr-2" />
+                {t('pricing.title', 'Тарифы')}
               </Button>
 
               <Button variant="ghost" size="sm" onClick={onOpenGallery}>
