@@ -16,6 +16,9 @@ interface DailyData {
   views: number;
   clicks: number;
   shares: number;
+  blocks: number;
+  friendships: number;
+  collabs: number;
 }
 
 interface UserStatusData {
@@ -28,6 +31,12 @@ interface EventTypeData {
   name: string;
   count: number;
   color: string;
+}
+
+interface SocialStatsData {
+  name: string;
+  total: number;
+  accepted: number;
 }
 
 const COLORS = {
@@ -48,6 +57,8 @@ export function AdminCharts() {
   const [userStatusData, setUserStatusData] = useState<UserStatusData[]>([]);
   const [eventTypeData, setEventTypeData] = useState<EventTypeData[]>([]);
   const [cumulativeUsers, setCumulativeUsers] = useState<{ date: string; total: number }[]>([]);
+  const [socialStats, setSocialStats] = useState<SocialStatsData[]>([]);
+  const [blockTypeStats, setBlockTypeStats] = useState<{ name: string; count: number; color: string }[]>([]);
 
   useEffect(() => {
     loadChartData();
@@ -59,7 +70,9 @@ export function AdminCharts() {
       loadDailyGrowth(),
       loadUserStatus(),
       loadEventTypes(),
-      loadCumulativeUsers()
+      loadCumulativeUsers(),
+      loadSocialStats(),
+      loadBlockTypeStats()
     ]);
     setLoading(false);
   };
@@ -69,23 +82,22 @@ export function AdminCharts() {
       const days = 14;
       const startDate = subDays(new Date(), days);
       
-      // Get users created in last N days
-      const { data: usersData } = await supabase
-        .from('user_profiles')
-        .select('created_at')
-        .gte('created_at', startDate.toISOString());
-
-      // Get pages created in last N days
-      const { data: pagesData } = await supabase
-        .from('pages')
-        .select('created_at')
-        .gte('created_at', startDate.toISOString());
-
-      // Get analytics events
-      const { data: analyticsData } = await supabase
-        .from('analytics')
-        .select('event_type, created_at')
-        .gte('created_at', startDate.toISOString());
+      // Get all data in parallel
+      const [
+        { data: usersData },
+        { data: pagesData },
+        { data: analyticsData },
+        { data: blocksData },
+        { data: friendshipsData },
+        { data: collabsData }
+      ] = await Promise.all([
+        supabase.from('user_profiles').select('created_at').gte('created_at', startDate.toISOString()),
+        supabase.from('pages').select('created_at').gte('created_at', startDate.toISOString()),
+        supabase.from('analytics').select('event_type, created_at').gte('created_at', startDate.toISOString()),
+        supabase.from('blocks').select('created_at').gte('created_at', startDate.toISOString()),
+        supabase.from('friendships').select('created_at').gte('created_at', startDate.toISOString()),
+        supabase.from('collaborations').select('created_at').gte('created_at', startDate.toISOString())
+      ]);
 
       // Generate daily breakdown
       const dateRange = eachDayOfInterval({ start: startDate, end: new Date() });
@@ -97,15 +109,11 @@ export function AdminCharts() {
         
         const dateStr = format(day, 'dd.MM');
         
-        const usersCount = usersData?.filter(u => {
-          const d = new Date(u.created_at);
-          return d >= dayStart && d < dayEnd;
-        }).length || 0;
-
-        const pagesCount = pagesData?.filter(p => {
-          const d = new Date(p.created_at);
-          return d >= dayStart && d < dayEnd;
-        }).length || 0;
+        const filterByDay = (items: any[] | null) => 
+          items?.filter(item => {
+            const d = new Date(item.created_at);
+            return d >= dayStart && d < dayEnd;
+          }).length || 0;
 
         const dayEvents = analyticsData?.filter(e => {
           const d = new Date(e.created_at);
@@ -114,11 +122,14 @@ export function AdminCharts() {
 
         return {
           date: dateStr,
-          users: usersCount,
-          pages: pagesCount,
+          users: filterByDay(usersData),
+          pages: filterByDay(pagesData),
           views: dayEvents.filter(e => e.event_type === 'view').length,
           clicks: dayEvents.filter(e => e.event_type === 'click').length,
-          shares: dayEvents.filter(e => e.event_type === 'share').length
+          shares: dayEvents.filter(e => e.event_type === 'share').length,
+          blocks: filterByDay(blocksData),
+          friendships: filterByDay(friendshipsData),
+          collabs: filterByDay(collabsData)
         };
       });
 
@@ -216,6 +227,63 @@ export function AdminCharts() {
       setCumulativeUsers(last30.map(([date, total]) => ({ date, total })));
     } catch (error) {
       console.error('Error loading cumulative users:', error);
+    }
+  };
+
+  const loadSocialStats = async () => {
+    try {
+      const [
+        { count: totalFriends },
+        { count: acceptedFriends },
+        { count: totalCollabs },
+        { count: acceptedCollabs },
+        { count: totalTeams }
+      ] = await Promise.all([
+        supabase.from('friendships').select('*', { count: 'exact', head: true }),
+        supabase.from('friendships').select('*', { count: 'exact', head: true }).eq('status', 'accepted'),
+        supabase.from('collaborations').select('*', { count: 'exact', head: true }),
+        supabase.from('collaborations').select('*', { count: 'exact', head: true }).eq('status', 'accepted'),
+        supabase.from('teams').select('*', { count: 'exact', head: true })
+      ]);
+
+      setSocialStats([
+        { name: 'Дружбы', total: totalFriends || 0, accepted: acceptedFriends || 0 },
+        { name: 'Коллаборации', total: totalCollabs || 0, accepted: acceptedCollabs || 0 },
+        { name: 'Команды', total: totalTeams || 0, accepted: totalTeams || 0 }
+      ]);
+    } catch (error) {
+      console.error('Error loading social stats:', error);
+    }
+  };
+
+  const loadBlockTypeStats = async () => {
+    try {
+      const { data } = await supabase
+        .from('blocks')
+        .select('type');
+
+      const typeCounts: Record<string, number> = {};
+      data?.forEach(block => {
+        typeCounts[block.type] = (typeCounts[block.type] || 0) + 1;
+      });
+
+      const colorPalette = [
+        '#8b5cf6', '#10b981', '#06b6d4', '#f97316', '#ec4899',
+        '#eab308', '#3b82f6', '#ef4444', '#14b8a6', '#a855f7'
+      ];
+
+      const sortedTypes = Object.entries(typeCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([name, count], index) => ({
+          name: name.charAt(0).toUpperCase() + name.slice(1),
+          count,
+          color: colorPalette[index % colorPalette.length]
+        }));
+
+      setBlockTypeStats(sortedTypes);
+    } catch (error) {
+      console.error('Error loading block type stats:', error);
     }
   };
 
@@ -472,6 +540,185 @@ export function AdminCharts() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Social & Community Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Social Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Социальная активность</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={socialStats}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fontSize: 12 }} 
+                    className="text-muted-foreground"
+                  />
+                  <YAxis tick={{ fontSize: 11 }} className="text-muted-foreground" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="total" name="Всего" fill={COLORS.users} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="accepted" name="Принято" fill={COLORS.pages} radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Block Types Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Популярные типы блоков</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={blockTypeStats} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis type="number" tick={{ fontSize: 11 }} />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    tick={{ fontSize: 11 }} 
+                    width={80}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar dataKey="count" name="Количество" radius={[0, 4, 4, 0]}>
+                    {blockTypeStats.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Daily Social Activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Социальная активность за 14 дней</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={dailyData}>
+                <defs>
+                  <linearGradient id="friendsGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLORS.pages} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={COLORS.pages} stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="collabsGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLORS.trial} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={COLORS.trial} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 11 }} 
+                  className="text-muted-foreground"
+                />
+                <YAxis tick={{ fontSize: 11 }} className="text-muted-foreground" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Legend />
+                <Area
+                  type="monotone"
+                  dataKey="friendships"
+                  name="Дружбы"
+                  stroke={COLORS.pages}
+                  fill="url(#friendsGradient)"
+                  strokeWidth={2}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="collabs"
+                  name="Коллаборации"
+                  stroke={COLORS.trial}
+                  fill="url(#collabsGradient)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Content Creation Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Создание контента за 14 дней</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={dailyData}>
+                <defs>
+                  <linearGradient id="blocksGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLORS.shares} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={COLORS.shares} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 11 }} 
+                  className="text-muted-foreground"
+                />
+                <YAxis tick={{ fontSize: 11 }} className="text-muted-foreground" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Legend />
+                <Area
+                  type="monotone"
+                  dataKey="pages"
+                  name="Страницы"
+                  stroke={COLORS.pages}
+                  fill={COLORS.pages}
+                  fillOpacity={0.3}
+                  strokeWidth={2}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="blocks"
+                  name="Блоки"
+                  stroke={COLORS.shares}
+                  fill="url(#blocksGradient)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
