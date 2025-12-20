@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
 import { AdminCharts } from '@/components/admin/AdminCharts';
+import { AdminAnalyticsDashboard } from '@/components/admin/AdminAnalyticsDashboard';
 
 interface PlatformStats {
   totalUsers: number;
@@ -391,6 +392,10 @@ export default function Admin() {
             <TabsTrigger value="charts">
               <PieChart className="h-4 w-4 mr-2" />
               Графики
+            </TabsTrigger>
+            <TabsTrigger value="detailed">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Детальный анализ
             </TabsTrigger>
           </TabsList>
 
@@ -978,6 +983,11 @@ export default function Admin() {
           {/* Charts Tab */}
           <TabsContent value="charts">
             <AdminCharts />
+          </TabsContent>
+
+          {/* Detailed Analytics Tab */}
+          <TabsContent value="detailed">
+            <AdminAnalyticsDashboard />
           </TabsContent>
         </Tabs>
       </main>
