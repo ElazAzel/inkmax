@@ -3,7 +3,14 @@
     "termsOfService": "Terms of Service",
     "termsDescription": "Read the terms of use of the LinkMAX platform",
     "agreeToTerms": "I accept the",
-    "termsLink": "Terms of Service"
+    "termsLink": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "privacyDescription": "Read the personal data processing policy",
+    "privacyLink": "Privacy Policy",
+    "andThe": "and"
+  },
+  "common": {
+    "close": "Close"
   },
   "settings": {
     "niche": "Category",

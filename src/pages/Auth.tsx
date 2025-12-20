@@ -16,6 +16,7 @@ import { applyReferralCode } from '@/services/referral';
 import { TelegramVerification } from '@/components/auth/TelegramVerification';
 import { supabase } from '@/integrations/supabase/client';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
+import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 import { Checkbox } from '@/components/ui/checkbox';
 
 const authSchema = z.object({
@@ -708,6 +709,10 @@ export default function Auth() {
                         <TermsLink className="text-primary hover:underline">
                           {t('legal.termsLink')}
                         </TermsLink>
+                        {' '}{t('legal.andThe')}{' '}
+                        <PrivacyLink className="text-primary hover:underline">
+                          {t('legal.privacyLink')}
+                        </PrivacyLink>
                       </label>
                     </div>
                     <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
