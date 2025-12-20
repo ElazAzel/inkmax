@@ -15,6 +15,8 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { applyReferralCode } from '@/services/referral';
 import { TelegramVerification } from '@/components/auth/TelegramVerification';
 import { supabase } from '@/integrations/supabase/client';
+import { TermsLink } from '@/components/legal/TermsOfServiceModal';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const authSchema = z.object({
   email: z
@@ -698,6 +700,15 @@ export default function Auth() {
                       <p className="text-xs text-muted-foreground mt-2 bg-muted/20 backdrop-blur-xl p-2 rounded-lg">
                         {t('auth.passwordHint')}
                       </p>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <Checkbox id="terms" required className="mt-0.5" />
+                      <label htmlFor="terms" className="text-sm text-muted-foreground leading-tight">
+                        {t('legal.agreeToTerms')}{' '}
+                        <TermsLink className="text-primary hover:underline">
+                          {t('legal.termsLink')}
+                        </TermsLink>
+                      </label>
                     </div>
                     <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
                       {t('auth.continue', 'Продолжить')}

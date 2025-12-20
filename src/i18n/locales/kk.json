@@ -1,4 +1,10 @@
 {
+  "legal": {
+    "termsOfService": "Пайдаланушы келісімі",
+    "termsDescription": "LinkMAX платформасын пайдалану шарттарымен танысыңыз",
+    "agreeToTerms": "Мен шарттарды қабылдаймын",
+    "termsLink": "Пайдаланушы келісімі"
+  },
   "settings": {
     "niche": "Санат",
     "nicheDescription": "Беттің санатын таңдаңыз",
