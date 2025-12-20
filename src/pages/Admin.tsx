@@ -12,7 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { 
   Users, FileText, Eye, MousePointer, Share2, 
   TrendingUp, Calendar, Shield, LogOut, Search,
-  BarChart3, Activity, Globe, Loader2, PieChart
+  BarChart3, Activity, Globe, Loader2, PieChart,
+  Blocks, UserPlus, Handshake, Users2, Target,
+  Star, Trophy, Flame, MessageSquare, Link2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -28,6 +30,21 @@ interface PlatformStats {
   totalShares: number;
   premiumUsers: number;
   activeTrials: number;
+  // New stats
+  totalBlocks: number;
+  totalFriendships: number;
+  acceptedFriendships: number;
+  pendingFriendships: number;
+  totalCollaborations: number;
+  acceptedCollaborations: number;
+  totalTeams: number;
+  totalTeamMembers: number;
+  totalLeads: number;
+  galleryPages: number;
+  totalReferrals: number;
+  totalAchievements: number;
+  usersWithStreak: number;
+  totalShoutouts: number;
 }
 
 interface UserData {
@@ -100,46 +117,55 @@ export default function Admin() {
   const loadStats = async () => {
     try {
       // Get user stats
-      const { count: totalUsers } = await supabase
-        .from('user_profiles')
-        .select('*', { count: 'exact', head: true });
+      const [
+        { count: totalUsers },
+        { count: premiumUsers },
+        { count: activeTrials },
+        { count: usersWithStreak },
+        { count: totalPages },
+        { count: publishedPages },
+        { count: galleryPages },
+        { data: viewData },
+        { count: totalClicks },
+        { count: totalShares },
+        { count: totalBlocks },
+        { count: totalFriendships },
+        { count: acceptedFriendships },
+        { count: pendingFriendships },
+        { count: totalCollaborations },
+        { count: acceptedCollaborations },
+        { count: totalTeams },
+        { count: totalTeamMembers },
+        { count: totalLeads },
+        { count: totalReferrals },
+        { count: totalAchievements },
+        { count: totalShoutouts }
+      ] = await Promise.all([
+        supabase.from('user_profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('user_profiles').select('*', { count: 'exact', head: true }).eq('is_premium', true),
+        supabase.from('user_profiles').select('*', { count: 'exact', head: true }).gt('trial_ends_at', new Date().toISOString()),
+        supabase.from('user_profiles').select('*', { count: 'exact', head: true }).gt('current_streak', 0),
+        supabase.from('pages').select('*', { count: 'exact', head: true }),
+        supabase.from('pages').select('*', { count: 'exact', head: true }).eq('is_published', true),
+        supabase.from('pages').select('*', { count: 'exact', head: true }).eq('is_in_gallery', true),
+        supabase.from('pages').select('view_count'),
+        supabase.from('analytics').select('*', { count: 'exact', head: true }).eq('event_type', 'click'),
+        supabase.from('analytics').select('*', { count: 'exact', head: true }).eq('event_type', 'share'),
+        supabase.from('blocks').select('*', { count: 'exact', head: true }),
+        supabase.from('friendships').select('*', { count: 'exact', head: true }),
+        supabase.from('friendships').select('*', { count: 'exact', head: true }).eq('status', 'accepted'),
+        supabase.from('friendships').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('collaborations').select('*', { count: 'exact', head: true }),
+        supabase.from('collaborations').select('*', { count: 'exact', head: true }).eq('status', 'accepted'),
+        supabase.from('teams').select('*', { count: 'exact', head: true }),
+        supabase.from('team_members').select('*', { count: 'exact', head: true }),
+        supabase.from('leads').select('*', { count: 'exact', head: true }),
+        supabase.from('referrals').select('*', { count: 'exact', head: true }),
+        supabase.from('user_achievements').select('*', { count: 'exact', head: true }),
+        supabase.from('shoutouts').select('*', { count: 'exact', head: true })
+      ]);
 
-      const { count: premiumUsers } = await supabase
-        .from('user_profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_premium', true);
-
-      const { count: activeTrials } = await supabase
-        .from('user_profiles')
-        .select('*', { count: 'exact', head: true })
-        .gt('trial_ends_at', new Date().toISOString());
-
-      // Get page stats
-      const { count: totalPages } = await supabase
-        .from('pages')
-        .select('*', { count: 'exact', head: true });
-
-      const { count: publishedPages } = await supabase
-        .from('pages')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_published', true);
-
-      // Get total views from pages
-      const { data: viewData } = await supabase
-        .from('pages')
-        .select('view_count');
       const totalViews = viewData?.reduce((sum, p) => sum + (p.view_count || 0), 0) || 0;
-
-      // Get analytics counts
-      const { count: totalClicks } = await supabase
-        .from('analytics')
-        .select('*', { count: 'exact', head: true })
-        .eq('event_type', 'click');
-
-      const { count: totalShares } = await supabase
-        .from('analytics')
-        .select('*', { count: 'exact', head: true })
-        .eq('event_type', 'share');
 
       setStats({
         totalUsers: totalUsers || 0,
@@ -149,7 +175,21 @@ export default function Admin() {
         totalClicks: totalClicks || 0,
         totalShares: totalShares || 0,
         premiumUsers: premiumUsers || 0,
-        activeTrials: activeTrials || 0
+        activeTrials: activeTrials || 0,
+        totalBlocks: totalBlocks || 0,
+        totalFriendships: totalFriendships || 0,
+        acceptedFriendships: acceptedFriendships || 0,
+        pendingFriendships: pendingFriendships || 0,
+        totalCollaborations: totalCollaborations || 0,
+        acceptedCollaborations: acceptedCollaborations || 0,
+        totalTeams: totalTeams || 0,
+        totalTeamMembers: totalTeamMembers || 0,
+        totalLeads: totalLeads || 0,
+        galleryPages: galleryPages || 0,
+        totalReferrals: totalReferrals || 0,
+        totalAchievements: totalAchievements || 0,
+        usersWithStreak: usersWithStreak || 0,
+        totalShoutouts: totalShoutouts || 0
       });
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -362,119 +402,342 @@ export default function Admin() {
               </div>
             ) : (
               <div className="space-y-6">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Всего пользователей
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <Users className="h-5 w-5 text-primary" />
-                        <span className="text-2xl font-bold">{stats?.totalUsers}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                {/* User Stats Cards */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Пользователи
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Всего
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-5 w-5 text-primary" />
+                          <span className="text-2xl font-bold">{stats?.totalUsers}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Premium пользователи
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5 text-yellow-500" />
-                        <span className="text-2xl font-bold">{stats?.premiumUsers}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Premium
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Star className="h-5 w-5 text-yellow-500" />
+                          <span className="text-2xl font-bold">{stats?.premiumUsers}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Активные триалы
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5 text-blue-500" />
-                        <span className="text-2xl font-bold">{stats?.activeTrials}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Активные триалы
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-5 w-5 text-blue-500" />
+                          <span className="text-2xl font-bold">{stats?.activeTrials}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Всего страниц
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-green-500" />
-                        <span className="text-2xl font-bold">{stats?.totalPages}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          С активным стриком
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Flame className="h-5 w-5 text-orange-500" />
+                          <span className="text-2xl font-bold">{stats?.usersWithStreak}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Опубликованные
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <Globe className="h-5 w-5 text-purple-500" />
-                        <span className="text-2xl font-bold">{stats?.publishedPages}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                {/* Pages & Content Stats */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Страницы и контент
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Всего страниц
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-5 w-5 text-green-500" />
+                          <span className="text-2xl font-bold">{stats?.totalPages}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Всего просмотров
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <Eye className="h-5 w-5 text-cyan-500" />
-                        <span className="text-2xl font-bold">{stats?.totalViews?.toLocaleString()}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Опубликовано
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-5 w-5 text-purple-500" />
+                          <span className="text-2xl font-bold">{stats?.publishedPages}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Всего кликов
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <MousePointer className="h-5 w-5 text-orange-500" />
-                        <span className="text-2xl font-bold">{stats?.totalClicks?.toLocaleString()}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          В галерее
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Star className="h-5 w-5 text-amber-500" />
+                          <span className="text-2xl font-bold">{stats?.galleryPages}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
-                        Всего шейров
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2">
-                        <Share2 className="h-5 w-5 text-pink-500" />
-                        <span className="text-2xl font-bold">{stats?.totalShares?.toLocaleString()}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Всего блоков
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Blocks className="h-5 w-5 text-indigo-500" />
+                          <span className="text-2xl font-bold">{stats?.totalBlocks?.toLocaleString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Engagement Stats */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Eye className="h-5 w-5" />
+                    Вовлечённость
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Просмотры
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Eye className="h-5 w-5 text-cyan-500" />
+                          <span className="text-2xl font-bold">{stats?.totalViews?.toLocaleString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Клики
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <MousePointer className="h-5 w-5 text-orange-500" />
+                          <span className="text-2xl font-bold">{stats?.totalClicks?.toLocaleString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Шейры
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Share2 className="h-5 w-5 text-pink-500" />
+                          <span className="text-2xl font-bold">{stats?.totalShares?.toLocaleString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Достижения
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Trophy className="h-5 w-5 text-yellow-500" />
+                          <span className="text-2xl font-bold">{stats?.totalAchievements?.toLocaleString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Social & Community Stats */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <UserPlus className="h-5 w-5" />
+                    Сообщество
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Дружбы (всего)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <UserPlus className="h-5 w-5 text-green-500" />
+                          <span className="text-2xl font-bold">{stats?.totalFriendships}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Принято: {stats?.acceptedFriendships} / Ожидает: {stats?.pendingFriendships}
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Коллаборации
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Handshake className="h-5 w-5 text-blue-500" />
+                          <span className="text-2xl font-bold">{stats?.totalCollaborations}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Принято: {stats?.acceptedCollaborations}
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Команды
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Users2 className="h-5 w-5 text-violet-500" />
+                          <span className="text-2xl font-bold">{stats?.totalTeams}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Участников: {stats?.totalTeamMembers}
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Шаутауты
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <MessageSquare className="h-5 w-5 text-rose-500" />
+                          <span className="text-2xl font-bold">{stats?.totalShoutouts}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Growth & Marketing Stats */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Рост и маркетинг
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Рефералы
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Link2 className="h-5 w-5 text-emerald-500" />
+                          <span className="text-2xl font-bold">{stats?.totalReferrals}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Лиды (CRM)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Target className="h-5 w-5 text-red-500" />
+                          <span className="text-2xl font-bold">{stats?.totalLeads}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Конверсия (опубликовано)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="h-5 w-5 text-teal-500" />
+                          <span className="text-2xl font-bold">
+                            {stats?.totalPages ? ((stats.publishedPages / stats.totalPages) * 100).toFixed(1) : 0}%
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                          Блоков на страницу
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-2">
+                          <Blocks className="h-5 w-5 text-slate-500" />
+                          <span className="text-2xl font-bold">
+                            {stats?.totalPages ? (stats.totalBlocks / stats.totalPages).toFixed(1) : 0}
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
 
                 {/* Recent Activity */}
