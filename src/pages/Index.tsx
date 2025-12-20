@@ -50,6 +50,7 @@ import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
 import { LandingFeaturedPages } from '@/components/landing/LandingFeaturedPages';
 import { LandingGallerySection } from '@/components/landing/LandingGallerySection';
+import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 
 // Lazy load 3D component for better performance
 const Hero3D = lazy(() => import('@/components/landing/Hero3D').then(m => ({ default: m.Hero3D })));
@@ -1130,9 +1131,14 @@ export default function Index() {
                 Link<span className="text-gradient">MAX</span>
               </span>
             </div>
-            <p className="text-sm text-muted-foreground text-center sm:text-right font-medium">
-              {t('landing.footer.copyright')}
-            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <TermsLink className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                {t('legal.termsOfService')}
+              </TermsLink>
+              <p className="text-sm text-muted-foreground text-center sm:text-right font-medium">
+                {t('landing.footer.copyright')}
+              </p>
+            </div>
           </div>
         </div>
       </footer>

@@ -1,4 +1,10 @@
 {
+  "legal": {
+    "termsOfService": "Terms of Service",
+    "termsDescription": "Read the terms of use of the LinkMAX platform",
+    "agreeToTerms": "I accept the",
+    "termsLink": "Terms of Service"
+  },
   "settings": {
     "niche": "Category",
     "nicheDescription": "Choose a category for your page",
