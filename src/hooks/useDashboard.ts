@@ -174,17 +174,25 @@ export function useDashboard() {
     [pageData, updateBlock]
   );
 
-  // Apply template
+  // Apply template - replaces all blocks at once (like AI Builder)
   const handleApplyTemplate = useCallback(
     (blocks: Block[]) => {
       // Mark template as used for achievements
       localStorage.setItem('linkmax_template_used', 'true');
       
-      blocks.forEach((block, index) => {
-        addBlock({ ...block, id: `${block.type}-${Date.now()}-${index}` });
-      });
+      // Generate unique IDs for all blocks
+      const blocksWithIds = blocks.map((block, index) => ({
+        ...block,
+        id: `${block.type}-${Date.now()}-${index}`,
+      }));
+      
+      // Replace all content blocks at once (keeps profile block)
+      pageState.replaceBlocks(blocksWithIds);
+      
+      // Complete quest
+      dailyQuests.markQuestComplete('use_template');
     },
-    [addBlock]
+    [pageState.replaceBlocks, dailyQuests.markQuestComplete]
   );
 
   // Get profile block
