@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { useDashboard } from '@/hooks/useDashboard';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
+import { SaveTemplateDialog } from '@/components/editor/SaveTemplateDialog';
 import { MobileToolbar } from '@/components/editor/MobileToolbar';
 import { MobileSettingsSheet } from '@/components/editor/MobileSettingsSheet';
 import { PullToRefresh } from '@/components/editor/PullToRefresh';
@@ -19,6 +20,7 @@ import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublishDialog';
 import { FriendsPanel } from '@/components/friends/FriendsPanel';
+import { MyTemplatesPanel } from '@/components/templates/MyTemplatesPanel';
 import {
   DashboardHeader,
   MobileHeader,
