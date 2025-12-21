@@ -352,23 +352,29 @@ export function AdminAnalyticsDashboard() {
     }
   };
 
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toLocaleString();
+  };
+
   const renderTrend = (value: number) => {
     if (value > 0) {
       return (
-        <span className="flex items-center text-green-500 text-sm">
-          <TrendingUp className="h-4 w-4 mr-1" />
+        <span className="flex items-center text-green-500 text-xs md:text-sm">
+          <TrendingUp className="h-3 w-3 md:h-4 md:w-4 mr-0.5" />
           +{value}%
         </span>
       );
     } else if (value < 0) {
       return (
-        <span className="flex items-center text-red-500 text-sm">
-          <TrendingDown className="h-4 w-4 mr-1" />
+        <span className="flex items-center text-red-500 text-xs md:text-sm">
+          <TrendingDown className="h-3 w-3 md:h-4 md:w-4 mr-0.5" />
           {value}%
         </span>
       );
     }
-    return <span className="text-muted-foreground text-sm">0%</span>;
+    return <span className="text-muted-foreground text-xs md:text-sm">0%</span>;
   };
 
   if (loading) {
@@ -383,16 +389,17 @@ export function AdminAnalyticsDashboard() {
     return <div className="text-center py-12 text-muted-foreground">Нет данных</div>;
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Period Selector */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Детальная аналитика</h2>
+return (
+    <div className="space-y-4 md:space-y-6">
+      {/* Period Selector - Mobile optimized */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <h2 className="text-xl md:text-2xl font-bold">Детальная аналитика</h2>
         <Select value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-full sm:w-[140px] bg-card">
+            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-card border-border">
             <SelectItem value="7d">7 дней</SelectItem>
             <SelectItem value="14d">14 дней</SelectItem>
             <SelectItem value="30d">30 дней</SelectItem>
@@ -401,122 +408,140 @@ export function AdminAnalyticsDashboard() {
         </Select>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <Eye className="h-5 w-5 text-cyan-500" />
+      {/* Key Metrics - Responsive grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-4">
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 md:p-2 rounded-lg bg-cyan-500/10">
+                <Eye className="h-4 w-4 md:h-5 md:w-5 text-cyan-500" />
+              </div>
               {renderTrend(analytics.viewsTrend)}
             </div>
-            <div className="mt-2">
-              <p className="text-2xl font-bold">{analytics.totalViews.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Просмотры</p>
-            </div>
+            <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalViews)}</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">Просмотры</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <MousePointer className="h-5 w-5 text-orange-500" />
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 md:p-2 rounded-lg bg-orange-500/10">
+                <MousePointer className="h-4 w-4 md:h-5 md:w-5 text-orange-500" />
+              </div>
               {renderTrend(analytics.clicksTrend)}
             </div>
-            <div className="mt-2">
-              <p className="text-2xl font-bold">{analytics.totalClicks.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Клики</p>
-            </div>
+            <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalClicks)}</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">Клики</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <Share2 className="h-5 w-5 text-pink-500" />
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 md:p-2 rounded-lg bg-pink-500/10">
+                <Share2 className="h-4 w-4 md:h-5 md:w-5 text-pink-500" />
+              </div>
               {renderTrend(analytics.sharesTrend)}
             </div>
-            <div className="mt-2">
-              <p className="text-2xl font-bold">{analytics.totalShares.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Шейры</p>
-            </div>
+            <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalShares)}</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">Шейры</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <Activity className="h-5 w-5 text-purple-500" />
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 md:p-2 rounded-lg bg-purple-500/10">
+                <Activity className="h-4 w-4 md:h-5 md:w-5 text-purple-500" />
+              </div>
             </div>
-            <div className="mt-2">
-              <p className="text-2xl font-bold">{analytics.totalEvents.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Всего событий</p>
-            </div>
+            <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalEvents)}</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">События</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <Users className="h-5 w-5 text-green-500" />
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 md:p-2 rounded-lg bg-green-500/10">
+                <Users className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
+              </div>
             </div>
-            <div className="mt-2">
-              <p className="text-2xl font-bold">{analytics.uniqueVisitors.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Уник. посетители</p>
-            </div>
+            <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.uniqueVisitors)}</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">Посетители</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between">
-              <Clock className="h-5 w-5 text-blue-500" />
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-1.5 md:p-2 rounded-lg bg-blue-500/10">
+                <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
+              </div>
             </div>
-            <div className="mt-2">
-              <p className="text-2xl font-bold">{analytics.totalSessions.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Сессии</p>
-            </div>
+            <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalSessions)}</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">Сессии</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* CTR Metric */}
-      <Card>
-        <CardContent className="pt-4">
+      {/* CTR Metric - Compact on mobile */}
+      <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+        <CardContent className="p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Общий CTR (Click-Through Rate)</p>
-              <p className="text-3xl font-bold">
+              <p className="text-xs md:text-sm text-muted-foreground">Общий CTR</p>
+              <p className="text-2xl md:text-4xl font-bold text-primary">
                 {analytics.totalViews > 0 
-                  ? ((analytics.totalClicks / analytics.totalViews) * 100).toFixed(2)
+                  ? ((analytics.totalClicks / analytics.totalViews) * 100).toFixed(1)
                   : 0}%
               </p>
             </div>
-            <Target className="h-8 w-8 text-primary" />
+            <div className="p-3 md:p-4 rounded-full bg-primary/10">
+              <Target className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+            </div>
           </div>
-          <div className="mt-2 text-sm text-muted-foreground">
-            {analytics.totalClicks} кликов из {analytics.totalViews} просмотров
+          <div className="mt-2 text-xs md:text-sm text-muted-foreground">
+            {formatNumber(analytics.totalClicks)} кликов / {formatNumber(analytics.totalViews)} просмотров
           </div>
         </CardContent>
       </Card>
 
       <Tabs defaultValue="timeline" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="timeline">Динамика</TabsTrigger>
-          <TabsTrigger value="breakdown">Распределение</TabsTrigger>
-          <TabsTrigger value="engagement">Вовлечённость</TabsTrigger>
-          <TabsTrigger value="top">Топ контента</TabsTrigger>
+        <TabsList className="w-full flex-wrap h-auto p-1 bg-muted/50">
+          <TabsTrigger value="timeline" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
+            <BarChart3 className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+            <span className="hidden sm:inline">Динамика</span>
+            <span className="sm:hidden">Дин.</span>
+          </TabsTrigger>
+          <TabsTrigger value="breakdown" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
+            <Activity className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+            <span className="hidden sm:inline">Распределение</span>
+            <span className="sm:hidden">Расп.</span>
+          </TabsTrigger>
+          <TabsTrigger value="engagement" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
+            <Zap className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+            <span className="hidden sm:inline">Вовлечённость</span>
+            <span className="sm:hidden">Вовл.</span>
+          </TabsTrigger>
+          <TabsTrigger value="top" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
+            <Target className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+            <span className="hidden sm:inline">Топ контента</span>
+            <span className="sm:hidden">Топ</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Timeline Tab */}
-        <TabsContent value="timeline" className="space-y-6">
+        <TabsContent value="timeline" className="space-y-4 md:space-y-6">
           {/* Daily Events Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>События по дням</CardTitle>
-              <CardDescription>Просмотры, клики и шейры за период</CardDescription>
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2 md:pb-4">
+              <CardTitle className="text-base md:text-lg">События по дням</CardTitle>
+              <CardDescription className="text-xs md:text-sm">Просмотры, клики и шейры за период</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[350px]">
+            <CardContent className="p-2 md:p-6 pt-0">
+              <div className="h-[250px] md:h-[350px] -mx-2 md:mx-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={analytics.dailyEvents}>
                     <defs>
@@ -526,16 +551,17 @@ export function AdminAnalyticsDashboard() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
+                    <XAxis dataKey="date" tick={{ fontSize: 9 }} interval="preserveStartEnd" />
+                    <YAxis tick={{ fontSize: 9 }} width={35} />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        fontSize: '12px'
                       }}
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ fontSize: '11px' }} />
                     <Area
                       type="monotone"
                       dataKey="views"
@@ -567,26 +593,27 @@ export function AdminAnalyticsDashboard() {
           </Card>
 
           {/* Sessions & Visitors */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Сессии и посетители</CardTitle>
-              <CardDescription>Уникальные сессии и посетители по дням</CardDescription>
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2 md:pb-4">
+              <CardTitle className="text-base md:text-lg">Сессии и посетители</CardTitle>
+              <CardDescription className="text-xs md:text-sm">Уникальные сессии и посетители по дням</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
+            <CardContent className="p-2 md:p-6 pt-0">
+              <div className="h-[200px] md:h-[300px] -mx-2 md:mx-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={analytics.dailyEvents}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
+                    <XAxis dataKey="date" tick={{ fontSize: 9 }} interval="preserveStartEnd" />
+                    <YAxis tick={{ fontSize: 9 }} width={35} />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        fontSize: '12px'
                       }}
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ fontSize: '11px' }} />
                     <Bar dataKey="sessions" name="Сессии" fill={COLORS.sessions} radius={[4, 4, 0, 0]} />
                     <Bar dataKey="visitors" name="Посетители" fill={COLORS.visitors} radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -596,26 +623,27 @@ export function AdminAnalyticsDashboard() {
           </Card>
 
           {/* Hourly Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Активность за 24 часа</CardTitle>
-              <CardDescription>Почасовое распределение событий</CardDescription>
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2 md:pb-4">
+              <CardTitle className="text-base md:text-lg">Активность за 24 часа</CardTitle>
+              <CardDescription className="text-xs md:text-sm">Почасовое распределение событий</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[250px]">
+            <CardContent className="p-2 md:p-6 pt-0">
+              <div className="h-[180px] md:h-[250px] -mx-2 md:mx-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={analytics.hourlyEvents}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                    <XAxis dataKey="hour" tick={{ fontSize: 10 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
+                    <XAxis dataKey="hour" tick={{ fontSize: 8 }} interval={2} />
+                    <YAxis tick={{ fontSize: 9 }} width={30} />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        fontSize: '12px'
                       }}
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ fontSize: '11px' }} />
                     <Area
                       type="monotone"
                       dataKey="views"
@@ -640,23 +668,23 @@ export function AdminAnalyticsDashboard() {
         </TabsContent>
 
         {/* Breakdown Tab */}
-        <TabsContent value="breakdown" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <TabsContent value="breakdown" className="space-y-4 md:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Event Types */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Типы событий</CardTitle>
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg">Типы событий</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[220px]">
+              <CardContent className="p-3 md:p-6 pt-0">
+                <div className="h-[160px] md:h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={analytics.eventsByType}
                         cx="50%"
                         cy="50%"
-                        innerRadius={50}
-                        outerRadius={80}
+                        innerRadius={35}
+                        outerRadius={60}
                         paddingAngle={2}
                         dataKey="count"
                       >
@@ -664,18 +692,18 @@ export function AdminAnalyticsDashboard() {
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip contentStyle={{ fontSize: '12px', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '6px' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="space-y-2 mt-2">
+                <div className="space-y-1.5 mt-2">
                   {analytics.eventsByType.map((item) => (
-                    <div key={item.name} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                    <div key={item.name} className="flex items-center justify-between text-xs md:text-sm">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                         <span>{item.name}</span>
                       </div>
-                      <span className="font-medium">{item.count.toLocaleString()}</span>
+                      <span className="font-medium">{formatNumber(item.count)}</span>
                     </div>
                   ))}
                 </div>
@@ -683,23 +711,23 @@ export function AdminAnalyticsDashboard() {
             </Card>
 
             {/* Devices */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg flex items-center gap-2">
                   <Monitor className="h-4 w-4" />
                   Устройства
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[220px]">
+              <CardContent className="p-3 md:p-6 pt-0">
+                <div className="h-[160px] md:h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={analytics.eventsByDevice}
                         cx="50%"
                         cy="50%"
-                        innerRadius={50}
-                        outerRadius={80}
+                        innerRadius={35}
+                        outerRadius={60}
                         paddingAngle={2}
                         dataKey="count"
                       >
@@ -707,20 +735,20 @@ export function AdminAnalyticsDashboard() {
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip contentStyle={{ fontSize: '12px', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '6px' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="space-y-2 mt-2">
+                <div className="space-y-1.5 mt-2">
                   {analytics.eventsByDevice.map((item) => (
-                    <div key={item.name} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        {item.name === 'Desktop' && <Monitor className="h-4 w-4" />}
-                        {item.name === 'Mobile' && <Smartphone className="h-4 w-4" />}
-                        {item.name === 'Tablet' && <Tablet className="h-4 w-4" />}
+                    <div key={item.name} className="flex items-center justify-between text-xs md:text-sm">
+                      <div className="flex items-center gap-1.5">
+                        {item.name === 'Desktop' && <Monitor className="h-3.5 w-3.5" />}
+                        {item.name === 'Mobile' && <Smartphone className="h-3.5 w-3.5" />}
+                        {item.name === 'Tablet' && <Tablet className="h-3.5 w-3.5" />}
                         <span>{item.name}</span>
                       </div>
-                      <span className="font-medium">{item.count.toLocaleString()}</span>
+                      <span className="font-medium">{formatNumber(item.count)}</span>
                     </div>
                   ))}
                 </div>
@@ -728,23 +756,23 @@ export function AdminAnalyticsDashboard() {
             </Card>
 
             {/* Traffic Sources */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="overflow-hidden md:col-span-2 lg:col-span-1">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg flex items-center gap-2">
                   <Globe className="h-4 w-4" />
-                  Источники трафика
+                  Источники
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[220px]">
+              <CardContent className="p-3 md:p-6 pt-0">
+                <div className="h-[160px] md:h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={analytics.eventsBySource}
                         cx="50%"
                         cy="50%"
-                        innerRadius={50}
-                        outerRadius={80}
+                        innerRadius={35}
+                        outerRadius={60}
                         paddingAngle={2}
                         dataKey="count"
                       >
@@ -752,18 +780,18 @@ export function AdminAnalyticsDashboard() {
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip contentStyle={{ fontSize: '12px', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '6px' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="space-y-2 mt-2">
+                <div className="space-y-1.5 mt-2">
                   {analytics.eventsBySource.map((item) => (
-                    <div key={item.name} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                    <div key={item.name} className="flex items-center justify-between text-xs md:text-sm">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                         <span>{item.name}</span>
                       </div>
-                      <span className="font-medium">{item.count.toLocaleString()}</span>
+                      <span className="font-medium">{formatNumber(item.count)}</span>
                     </div>
                   ))}
                 </div>
@@ -773,30 +801,31 @@ export function AdminAnalyticsDashboard() {
         </TabsContent>
 
         {/* Engagement Tab */}
-        <TabsContent value="engagement" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TabsContent value="engagement" className="space-y-4 md:space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             {/* By Hour of Day */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Активность по часам</CardTitle>
-                <CardDescription>В какое время пользователи наиболее активны</CardDescription>
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg">По часам</CardTitle>
+                <CardDescription className="text-xs md:text-sm">Активность в течение дня</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
+              <CardContent className="p-2 md:p-6 pt-0">
+                <div className="h-[200px] md:h-[280px] -mx-2 md:mx-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={analytics.engagementByHour}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis dataKey="hour" tick={{ fontSize: 10 }} tickFormatter={(h) => `${h}:00`} />
-                      <YAxis tick={{ fontSize: 11 }} />
+                      <XAxis dataKey="hour" tick={{ fontSize: 8 }} tickFormatter={(h) => `${h}`} interval={2} />
+                      <YAxis tick={{ fontSize: 9 }} width={30} />
                       <Tooltip
                         labelFormatter={(h) => `${h}:00`}
                         contentStyle={{
                           backgroundColor: 'hsl(var(--card))',
                           border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
+                          borderRadius: '8px',
+                          fontSize: '12px'
                         }}
                       />
-                      <Bar dataKey="events" name="События" fill={COLORS.sessions} radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="events" name="События" fill={COLORS.sessions} radius={[2, 2, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -804,23 +833,24 @@ export function AdminAnalyticsDashboard() {
             </Card>
 
             {/* By Day of Week */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Активность по дням недели</CardTitle>
-                <CardDescription>В какие дни пользователи наиболее активны</CardDescription>
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg">По дням недели</CardTitle>
+                <CardDescription className="text-xs md:text-sm">Распределение активности</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
+              <CardContent className="p-2 md:p-6 pt-0">
+                <div className="h-[200px] md:h-[280px] -mx-2 md:mx-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={analytics.engagementByDay} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis type="number" tick={{ fontSize: 11 }} />
-                      <YAxis dataKey="day" type="category" tick={{ fontSize: 11 }} width={30} />
+                      <XAxis type="number" tick={{ fontSize: 9 }} />
+                      <YAxis dataKey="day" type="category" tick={{ fontSize: 10 }} width={25} />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: 'hsl(var(--card))',
                           border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
+                          borderRadius: '8px',
+                          fontSize: '12px'
                         }}
                       />
                       <Bar dataKey="events" name="События" fill={COLORS.visitors} radius={[0, 4, 4, 0]} />
@@ -833,33 +863,33 @@ export function AdminAnalyticsDashboard() {
         </TabsContent>
 
         {/* Top Content Tab */}
-        <TabsContent value="top" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TabsContent value="top" className="space-y-4 md:space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             {/* Top Pages */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Топ страницы</CardTitle>
-                <CardDescription>По количеству просмотров</CardDescription>
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg">Топ страницы</CardTitle>
+                <CardDescription className="text-xs md:text-sm">По просмотрам</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-3 md:p-6 pt-0">
+                <div className="space-y-2 md:space-y-3 max-h-[350px] overflow-y-auto">
                   {analytics.topPages.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Нет данных</p>
+                    <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">Нет данных</p>
                   ) : (
                     analytics.topPages.map((page, index) => (
-                      <div key={page.page_id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                        <div className="flex items-center gap-3">
-                          <span className="text-muted-foreground font-mono text-sm w-6">#{index + 1}</span>
-                          <div>
-                            <p className="font-medium">/{page.slug}</p>
-                            <div className="flex gap-4 text-xs text-muted-foreground">
-                              <span>{page.views} просмотров</span>
-                              <span>{page.clicks} кликов</span>
+                      <div key={page.page_id} className="flex items-center justify-between py-1.5 md:py-2 border-b border-border/50 last:border-0">
+                        <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                          <span className="text-muted-foreground font-mono text-xs md:text-sm w-5 md:w-6 shrink-0">#{index + 1}</span>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-xs md:text-sm truncate">/{page.slug}</p>
+                            <div className="flex gap-2 md:gap-4 text-[10px] md:text-xs text-muted-foreground">
+                              <span>{formatNumber(page.views)} просм.</span>
+                              <span>{formatNumber(page.clicks)} клик.</span>
                             </div>
                           </div>
                         </div>
-                        <Badge variant={page.ctr >= 10 ? 'default' : 'secondary'}>
-                          CTR: {page.ctr}%
+                        <Badge variant={page.ctr >= 10 ? 'default' : 'secondary'} className="text-[10px] md:text-xs shrink-0 ml-2">
+                          {page.ctr}%
                         </Badge>
                       </div>
                     ))
@@ -869,25 +899,23 @@ export function AdminAnalyticsDashboard() {
             </Card>
 
             {/* Top Blocks */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Топ блоки</CardTitle>
-                <CardDescription>По количеству кликов</CardDescription>
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg">Топ блоки</CardTitle>
+                <CardDescription className="text-xs md:text-sm">По кликам</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-3 md:p-6 pt-0">
+                <div className="space-y-2 md:space-y-3 max-h-[350px] overflow-y-auto">
                   {analytics.topBlocks.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Нет данных</p>
+                    <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">Нет данных</p>
                   ) : (
                     analytics.topBlocks.map((block, index) => (
-                      <div key={block.block_id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                        <div className="flex items-center gap-3">
-                          <span className="text-muted-foreground font-mono text-sm w-6">#{index + 1}</span>
-                          <div>
-                            <Badge variant="outline">{block.type}</Badge>
-                          </div>
+                      <div key={block.block_id} className="flex items-center justify-between py-1.5 md:py-2 border-b border-border/50 last:border-0">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <span className="text-muted-foreground font-mono text-xs md:text-sm w-5 md:w-6">#{index + 1}</span>
+                          <Badge variant="outline" className="text-[10px] md:text-xs">{block.type}</Badge>
                         </div>
-                        <span className="font-medium">{block.clicks} кликов</span>
+                        <span className="font-medium text-xs md:text-sm">{formatNumber(block.clicks)}</span>
                       </div>
                     ))
                   )}

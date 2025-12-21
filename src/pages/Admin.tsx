@@ -353,51 +353,62 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Shield className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold">Admin Panel</h1>
+      {/* Header - Mobile optimized */}
+      <header className="border-b border-border bg-card/95 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 md:gap-3">
+            <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+            <h1 className="text-lg md:text-xl font-bold">Admin</h1>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{user?.email}</span>
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Выйти
+          <div className="flex items-center gap-2 md:gap-4">
+            <span className="text-xs md:text-sm text-muted-foreground hidden sm:block truncate max-w-[150px]">
+              {user?.email}
+            </span>
+            <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 px-2 md:px-3">
+              <LogOut className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Выйти</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-2 md:px-4 py-3 md:py-6">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="mb-6">
-            <TabsTrigger value="overview">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Обзор
-            </TabsTrigger>
-            <TabsTrigger value="users">
-              <Users className="h-4 w-4 mr-2" />
-              Пользователи
-            </TabsTrigger>
-            <TabsTrigger value="pages">
-              <FileText className="h-4 w-4 mr-2" />
-              Страницы
-            </TabsTrigger>
-            <TabsTrigger value="analytics">
-              <Activity className="h-4 w-4 mr-2" />
-              Аналитика
-            </TabsTrigger>
-            <TabsTrigger value="charts">
-              <PieChart className="h-4 w-4 mr-2" />
-              Графики
-            </TabsTrigger>
-            <TabsTrigger value="detailed">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Детальный анализ
-            </TabsTrigger>
-          </TabsList>
+          {/* Scrollable tabs for mobile */}
+          <div className="overflow-x-auto -mx-2 px-2 pb-2 mb-4 md:mb-6">
+            <TabsList className="inline-flex w-max md:w-auto bg-muted/50 p-1">
+              <TabsTrigger value="overview" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
+                <BarChart3 className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Обзор</span>
+                <span className="sm:hidden">Обз</span>
+              </TabsTrigger>
+              <TabsTrigger value="users" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
+                <Users className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Пользователи</span>
+                <span className="sm:hidden">Польз</span>
+              </TabsTrigger>
+              <TabsTrigger value="pages" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
+                <FileText className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Страницы</span>
+                <span className="sm:hidden">Стр</span>
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
+                <Activity className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Аналитика</span>
+                <span className="sm:hidden">Анал</span>
+              </TabsTrigger>
+              <TabsTrigger value="charts" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
+                <PieChart className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Графики</span>
+                <span className="sm:hidden">Граф</span>
+              </TabsTrigger>
+              <TabsTrigger value="detailed" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
+                <TrendingUp className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Детальный</span>
+                <span className="sm:hidden">Детал</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview">
