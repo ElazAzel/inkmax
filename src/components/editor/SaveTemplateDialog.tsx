@@ -1,4 +1,5 @@
-import { memo, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
+import html2canvas from 'html2canvas';
 import {
   Dialog,
   DialogContent,
@@ -18,12 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Save, Share2, DollarSign } from 'lucide-react';
+import { Loader2, Save, Share2, DollarSign, Camera, Image } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import type { Block } from '@/types/page';
+import type { Json } from '@/integrations/supabase/types';
 
 const CATEGORIES = [
   'Креаторы',
@@ -39,12 +41,14 @@ interface SaveTemplateDialogProps {
   open: boolean;
   onClose: () => void;
   blocks: Block[];
+  previewContainerId?: string;
 }
 
 export const SaveTemplateDialog = memo(function SaveTemplateDialog({
   open,
   onClose,
   blocks,
+  previewContainerId = 'preview-container',
 }: SaveTemplateDialogProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -55,6 +59,38 @@ export const SaveTemplateDialog = memo(function SaveTemplateDialog({
   const [isForSale, setIsForSale] = useState(false);
   const [price, setPrice] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isCapturing, setIsCapturing] = useState(false);
+
+  const capturePreview = useCallback(async () => {
+    setIsCapturing(true);
+    try {
+      const container = document.getElementById(previewContainerId);
+      if (!container) {
+        toast.error(t('templates.captureError', 'Не удалось найти превью'));
+        return;
+      }
+
+      const canvas = await html2canvas(container, {
+        scale: 0.5,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        logging: false,
+        width: container.scrollWidth,
+        height: Math.min(container.scrollHeight, 1200),
+      });
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      setPreviewUrl(dataUrl);
+      toast.success(t('templates.captured', 'Превью захвачено!'));
+    } catch (error) {
+      console.error('Capture error:', error);
+      toast.error(t('templates.captureError', 'Ошибка захвата превью'));
+    } finally {
+      setIsCapturing(false);
+    }
+  }, [previewContainerId, t]);
 
   const handleSave = async () => {
     if (!user) {
@@ -86,11 +122,12 @@ export const SaveTemplateDialog = memo(function SaveTemplateDialog({
         name: name.trim(),
         description: description.trim() || null,
         category,
-        blocks: templateBlocks as unknown as import('@/integrations/supabase/types').Json,
+        blocks: templateBlocks as unknown as Json,
         is_public: isPublic,
         is_for_sale: isForSale && isPublic,
         price: isForSale ? parseInt(price) || 0 : 0,
         currency: 'KZT',
+        preview_url: previewUrl,
       }]);
 
       if (error) throw error;
@@ -105,6 +142,7 @@ export const SaveTemplateDialog = memo(function SaveTemplateDialog({
       setIsPublic(false);
       setIsForSale(false);
       setPrice('');
+      setPreviewUrl(null);
     } catch (error) {
       console.error('Save template error:', error);
       toast.error(t('templates.saveError', 'Ошибка сохранения'));
@@ -115,7 +153,7 @@ export const SaveTemplateDialog = memo(function SaveTemplateDialog({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Save className="h-5 w-5" />
@@ -127,6 +165,60 @@ export const SaveTemplateDialog = memo(function SaveTemplateDialog({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {/* Preview Capture */}
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <Camera className="h-4 w-4" />
+              {t('templates.preview', 'Превью шаблона')}
+            </Label>
+            <div className="border rounded-lg overflow-hidden bg-muted/30">
+              {previewUrl ? (
+                <div className="relative">
+                  <img 
+                    src={previewUrl} 
+                    alt="Template preview" 
+                    className="w-full h-40 object-cover object-top"
+                  />
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="absolute bottom-2 right-2"
+                    onClick={capturePreview}
+                    disabled={isCapturing}
+                  >
+                    {isCapturing ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Camera className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              ) : (
+                <div className="h-40 flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                  <Image className="h-8 w-8" />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={capturePreview}
+                    disabled={isCapturing}
+                  >
+                    {isCapturing ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t('templates.capturing', 'Захват...')}
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="mr-2 h-4 w-4" />
+                        {t('templates.capturePreview', 'Сделать скриншот')}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="templateName">
               {t('templates.name', 'Название')} *

@@ -8,9 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users, UserPlus } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users, UserPlus, Package, Save } from 'lucide-react';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
-import type { ProfileBlock, GridConfig, EditorMode } from '@/types/page';
+import type { ProfileBlock, GridConfig, EditorMode, Block } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { DailyQuestsPanel } from '@/components/quests/DailyQuestsPanel';
@@ -59,6 +59,8 @@ interface SettingsSidebarProps {
   onPreviewUrlChange?: (url: string | null) => void;
   pageId?: string;
   onOpenFriends?: () => void;
+  onOpenSaveTemplate?: () => void;
+  onOpenMyTemplates?: () => void;
 }
 
 export function SettingsSidebar({
@@ -95,6 +97,8 @@ export function SettingsSidebar({
   onPreviewUrlChange,
   pageId,
   onOpenFriends,
+  onOpenSaveTemplate,
+  onOpenMyTemplates,
 }: SettingsSidebarProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('settings');
