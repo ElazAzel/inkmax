@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,10 +15,10 @@ import {
   TrendingUp, Calendar, Shield, LogOut, Search,
   BarChart3, Activity, Globe, Loader2, PieChart,
   Blocks, UserPlus, Handshake, Users2, Target,
-  Star, Trophy, Flame, MessageSquare, Link2
+  Star, Trophy, Flame, MessageSquare, Link2, RefreshCw
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { ru, enUS, kk } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
 import { AdminCharts } from '@/components/admin/AdminCharts';
 import { AdminAnalyticsDashboard } from '@/components/admin/AdminAnalyticsDashboard';
@@ -81,6 +82,7 @@ interface AnalyticsEvent {
 
 export default function Admin() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { isAdmin, loading, user } = useAdminAuth();
   const { toast } = useToast();
   
@@ -91,6 +93,15 @@ export default function Admin() {
   const [loadingData, setLoadingData] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTab, setSelectedTab] = useState('overview');
+
+  // Get date-fns locale based on current language
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'ru': return ru;
+      case 'kk': return kk;
+      default: return enUS;
+    }
+  };
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -279,8 +290,8 @@ export default function Admin() {
       if (error) throw error;
       
       toast({
-        title: 'Статус обновлён',
-        description: `Premium ${!currentStatus ? 'включён' : 'отключён'}`,
+        title: t('admin.statusUpdated'),
+        description: !currentStatus ? t('admin.premiumEnabled') : t('admin.premiumDisabled'),
       });
       
       loadUsers();
@@ -288,8 +299,8 @@ export default function Admin() {
     } catch (error) {
       console.error('Error updating user:', error);
       toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить статус',
+        title: t('admin.error'),
+        description: t('admin.updateFailed'),
         variant: 'destructive',
       });
     }
@@ -308,16 +319,16 @@ export default function Admin() {
       if (error) throw error;
       
       toast({
-        title: 'Триал продлён',
-        description: `+${days} дней`,
+        title: t('admin.trialExtended'),
+        description: `+${days} ${t('admin.days')}`,
       });
       
       loadUsers();
     } catch (error) {
       console.error('Error extending trial:', error);
       toast({
-        title: 'Ошибка',
-        description: 'Не удалось продлить триал',
+        title: t('admin.error'),
+        description: t('admin.extendFailed'),
         variant: 'destructive',
       });
     }
@@ -358,7 +369,7 @@ export default function Admin() {
         <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
             <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-            <h1 className="text-lg md:text-xl font-bold">Admin</h1>
+            <h1 className="text-lg md:text-xl font-bold">{t('admin.title')}</h1>
           </div>
           <div className="flex items-center gap-2 md:gap-4">
             <span className="text-xs md:text-sm text-muted-foreground hidden sm:block truncate max-w-[150px]">
@@ -366,7 +377,7 @@ export default function Admin() {
             </span>
             <Button variant="outline" size="sm" onClick={handleSignOut} className="h-8 px-2 md:px-3">
               <LogOut className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Выйти</span>
+              <span className="hidden md:inline">{t('admin.signOut')}</span>
             </Button>
           </div>
         </div>
@@ -379,33 +390,33 @@ export default function Admin() {
             <TabsList className="inline-flex w-max md:w-auto bg-muted/50 p-1">
               <TabsTrigger value="overview" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
                 <BarChart3 className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Обзор</span>
-                <span className="sm:hidden">Обз</span>
+                <span className="hidden sm:inline">{t('admin.overview')}</span>
+                <span className="sm:hidden">{t('admin.overview').slice(0, 3)}</span>
               </TabsTrigger>
               <TabsTrigger value="users" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
                 <Users className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Пользователи</span>
-                <span className="sm:hidden">Польз</span>
+                <span className="hidden sm:inline">{t('admin.users')}</span>
+                <span className="sm:hidden">{t('admin.users').slice(0, 4)}</span>
               </TabsTrigger>
               <TabsTrigger value="pages" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
                 <FileText className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Страницы</span>
-                <span className="sm:hidden">Стр</span>
+                <span className="hidden sm:inline">{t('admin.pages')}</span>
+                <span className="sm:hidden">{t('admin.pages').slice(0, 3)}</span>
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
                 <Activity className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Аналитика</span>
-                <span className="sm:hidden">Анал</span>
+                <span className="hidden sm:inline">{t('admin.analytics')}</span>
+                <span className="sm:hidden">{t('admin.analytics').slice(0, 4)}</span>
               </TabsTrigger>
               <TabsTrigger value="charts" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
                 <PieChart className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Графики</span>
-                <span className="sm:hidden">Граф</span>
+                <span className="hidden sm:inline">{t('admin.charts')}</span>
+                <span className="sm:hidden">{t('admin.charts').slice(0, 4)}</span>
               </TabsTrigger>
               <TabsTrigger value="detailed" className="text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2">
                 <TrendingUp className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Детальный</span>
-                <span className="sm:hidden">Детал</span>
+                <span className="hidden sm:inline">{t('admin.detailed')}</span>
+                <span className="sm:hidden">{t('admin.detailed').slice(0, 5)}</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -422,13 +433,13 @@ export default function Admin() {
                 <div>
                   <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                     <Users className="h-5 w-5" />
-                    Пользователи
+                    {t('admin.users')}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Всего
+                          {t('admin.totalUsers')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -442,7 +453,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Premium
+                          {t('admin.premium')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -456,7 +467,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Активные триалы
+                          {t('admin.activeTrials')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -470,7 +481,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          С активным стриком
+                          {t('admin.withStreak')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -487,13 +498,13 @@ export default function Admin() {
                 <div>
                   <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                     <FileText className="h-5 w-5" />
-                    Страницы и контент
+                    {t('admin.pagesSection')}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Всего страниц
+                          {t('admin.total')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -507,7 +518,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Опубликовано
+                          {t('admin.published')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -521,7 +532,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          В галерее
+                          {t('admin.inGallery')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -535,7 +546,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Всего блоков
+                          {t('admin.totalBlocks')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -552,13 +563,13 @@ export default function Admin() {
                 <div>
                   <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                     <Eye className="h-5 w-5" />
-                    Вовлечённость
+                    {t('admin.engagementSection')}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Просмотры
+                          {t('admin.views')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -572,7 +583,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Клики
+                          {t('admin.clicks')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -586,7 +597,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Шейры
+                          {t('admin.shares')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -600,7 +611,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Достижения
+                          {t('admin.achievements')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -617,13 +628,13 @@ export default function Admin() {
                 <div>
                   <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                     <UserPlus className="h-5 w-5" />
-                    Сообщество
+                    {t('admin.socialSection')}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Дружбы (всего)
+                          {t('admin.friendships')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -632,7 +643,7 @@ export default function Admin() {
                           <span className="text-2xl font-bold">{stats?.totalFriendships}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Принято: {stats?.acceptedFriendships} / Ожидает: {stats?.pendingFriendships}
+                          {t('admin.accepted')}: {stats?.acceptedFriendships} / {t('admin.pending')}: {stats?.pendingFriendships}
                         </p>
                       </CardContent>
                     </Card>
@@ -640,7 +651,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Коллаборации
+                          {t('admin.collaborations')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -649,7 +660,7 @@ export default function Admin() {
                           <span className="text-2xl font-bold">{stats?.totalCollaborations}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Принято: {stats?.acceptedCollaborations}
+                          {t('admin.accepted')}: {stats?.acceptedCollaborations}
                         </p>
                       </CardContent>
                     </Card>
@@ -657,7 +668,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Команды
+                          {t('admin.teams')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -666,7 +677,7 @@ export default function Admin() {
                           <span className="text-2xl font-bold">{stats?.totalTeams}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Участников: {stats?.totalTeamMembers}
+                          {t('admin.members')}: {stats?.totalTeamMembers}
                         </p>
                       </CardContent>
                     </Card>
@@ -674,7 +685,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Шаутауты
+                          {t('admin.shoutouts')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -691,13 +702,13 @@ export default function Admin() {
                 <div>
                   <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                     <TrendingUp className="h-5 w-5" />
-                    Рост и маркетинг
+                    {t('admin.gamificationSection')}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Рефералы
+                          {t('admin.referrals')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -711,7 +722,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Лиды (CRM)
+                          {t('admin.leads')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -725,7 +736,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Конверсия (опубликовано)
+                          CTR
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -741,7 +752,7 @@ export default function Admin() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Блоков на страницу
+                          {t('admin.totalBlocks')}/{t('admin.page')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -759,7 +770,7 @@ export default function Admin() {
                 {/* Recent Activity */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Последние события</CardTitle>
+                    <CardTitle>{t('admin.recentEvents')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2 max-h-[300px] overflow-y-auto">
@@ -772,7 +783,7 @@ export default function Admin() {
                             <span className="text-sm capitalize">{event.event_type}</span>
                           </div>
                           <span className="text-xs text-muted-foreground">
-                            {format(new Date(event.created_at), 'dd MMM HH:mm', { locale: ru })}
+                            {format(new Date(event.created_at), 'dd MMM HH:mm', { locale: getDateLocale() })}
                           </span>
                         </div>
                       ))}
