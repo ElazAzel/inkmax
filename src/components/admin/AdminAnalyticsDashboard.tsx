@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +10,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ComposedChart
 } from 'recharts';
 import { format, subDays, startOfDay, eachDayOfInterval, eachHourOfInterval, startOfHour } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { ru, enUS, kk } from 'date-fns/locale';
 import { 
   Loader2, Eye, MousePointer, Share2, TrendingUp, TrendingDown,
   Users, Clock, Globe, Smartphone, Monitor, Tablet, Activity,
@@ -80,9 +81,28 @@ const COLORS = {
 };
 
 export function AdminAnalyticsDashboard() {
+  const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'7d' | '14d' | '30d' | '90d'>('30d');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'ru': return ru;
+      case 'kk': return kk;
+      default: return enUS;
+    }
+  };
+
+  const getDayNames = () => [
+    t('admin.dayNames.sun'),
+    t('admin.dayNames.mon'),
+    t('admin.dayNames.tue'),
+    t('admin.dayNames.wed'),
+    t('admin.dayNames.thu'),
+    t('admin.dayNames.fri'),
+    t('admin.dayNames.sat')
+  ];
 
   useEffect(() => {
     loadAnalytics();
@@ -311,7 +331,7 @@ export function AdminAnalyticsDashboard() {
       }));
 
       // Engagement by day of week
-      const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      const dayNamesArr = getDayNames();
       const dayCounts: Record<number, number> = {};
       events.forEach(e => {
         const day = new Date(e.created_at).getDay();
@@ -319,7 +339,7 @@ export function AdminAnalyticsDashboard() {
       });
 
       const engagementByDay = Array.from({ length: 7 }, (_, i) => ({
-        day: dayNames[i],
+        day: dayNamesArr[i],
         events: dayCounts[i] || 0
       }));
 
@@ -386,24 +406,31 @@ export function AdminAnalyticsDashboard() {
   }
 
   if (!analytics) {
-    return <div className="text-center py-12 text-muted-foreground">Нет данных</div>;
+    return <div className="text-center py-12 text-muted-foreground">{t('admin.noData')}</div>;
   }
+
+  // Translated labels for charts
+  const translatedEventsByType = [
+    { name: t('admin.views'), count: analytics.totalViews, color: COLORS.views },
+    { name: t('admin.clicks'), count: analytics.totalClicks, color: COLORS.clicks },
+    { name: t('admin.shares'), count: analytics.totalShares, color: COLORS.shares }
+  ];
 
 return (
     <div className="space-y-4 md:space-y-6">
       {/* Period Selector - Mobile optimized */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <h2 className="text-xl md:text-2xl font-bold">Детальная аналитика</h2>
+        <h2 className="text-xl md:text-2xl font-bold">{t('admin.detailedAnalytics')}</h2>
         <Select value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
           <SelectTrigger className="w-full sm:w-[140px] bg-card">
             <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-card border-border">
-            <SelectItem value="7d">7 дней</SelectItem>
-            <SelectItem value="14d">14 дней</SelectItem>
-            <SelectItem value="30d">30 дней</SelectItem>
-            <SelectItem value="90d">90 дней</SelectItem>
+            <SelectItem value="7d">{t('admin.period7d')}</SelectItem>
+            <SelectItem value="14d">{t('admin.period14d')}</SelectItem>
+            <SelectItem value="30d">{t('admin.period30d')}</SelectItem>
+            <SelectItem value="90d">{t('admin.period90d')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -419,7 +446,7 @@ return (
               {renderTrend(analytics.viewsTrend)}
             </div>
             <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalViews)}</p>
-            <p className="text-xs md:text-sm text-muted-foreground truncate">Просмотры</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">{t('admin.views')}</p>
           </CardContent>
         </Card>
 
@@ -432,7 +459,7 @@ return (
               {renderTrend(analytics.clicksTrend)}
             </div>
             <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalClicks)}</p>
-            <p className="text-xs md:text-sm text-muted-foreground truncate">Клики</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">{t('admin.clicks')}</p>
           </CardContent>
         </Card>
 
@@ -445,7 +472,7 @@ return (
               {renderTrend(analytics.sharesTrend)}
             </div>
             <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalShares)}</p>
-            <p className="text-xs md:text-sm text-muted-foreground truncate">Шейры</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">{t('admin.shares')}</p>
           </CardContent>
         </Card>
 
@@ -457,7 +484,7 @@ return (
               </div>
             </div>
             <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalEvents)}</p>
-            <p className="text-xs md:text-sm text-muted-foreground truncate">События</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">{t('admin.events')}</p>
           </CardContent>
         </Card>
 
@@ -469,7 +496,7 @@ return (
               </div>
             </div>
             <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.uniqueVisitors)}</p>
-            <p className="text-xs md:text-sm text-muted-foreground truncate">Посетители</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">{t('admin.visitors')}</p>
           </CardContent>
         </Card>
 
@@ -481,7 +508,7 @@ return (
               </div>
             </div>
             <p className="text-lg md:text-2xl font-bold">{formatNumber(analytics.totalSessions)}</p>
-            <p className="text-xs md:text-sm text-muted-foreground truncate">Сессии</p>
+            <p className="text-xs md:text-sm text-muted-foreground truncate">{t('admin.sessions')}</p>
           </CardContent>
         </Card>
       </div>
@@ -491,7 +518,7 @@ return (
         <CardContent className="p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs md:text-sm text-muted-foreground">Общий CTR</p>
+              <p className="text-xs md:text-sm text-muted-foreground">{t('admin.totalCTR')}</p>
               <p className="text-2xl md:text-4xl font-bold text-primary">
                 {analytics.totalViews > 0 
                   ? ((analytics.totalClicks / analytics.totalViews) * 100).toFixed(1)
@@ -503,7 +530,7 @@ return (
             </div>
           </div>
           <div className="mt-2 text-xs md:text-sm text-muted-foreground">
-            {formatNumber(analytics.totalClicks)} кликов / {formatNumber(analytics.totalViews)} просмотров
+            {formatNumber(analytics.totalClicks)} {t('admin.clicks').toLowerCase()} / {formatNumber(analytics.totalViews)} {t('admin.views').toLowerCase()}
           </div>
         </CardContent>
       </Card>
@@ -512,23 +539,23 @@ return (
         <TabsList className="w-full flex-wrap h-auto p-1 bg-muted/50">
           <TabsTrigger value="timeline" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
             <BarChart3 className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-            <span className="hidden sm:inline">Динамика</span>
-            <span className="sm:hidden">Дин.</span>
+            <span className="hidden sm:inline">{t('admin.timeline')}</span>
+            <span className="sm:hidden">{t('admin.timeline').substring(0, 3)}.</span>
           </TabsTrigger>
           <TabsTrigger value="breakdown" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
             <Activity className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-            <span className="hidden sm:inline">Распределение</span>
-            <span className="sm:hidden">Расп.</span>
+            <span className="hidden sm:inline">{t('admin.breakdown')}</span>
+            <span className="sm:hidden">{t('admin.breakdown').substring(0, 4)}.</span>
           </TabsTrigger>
           <TabsTrigger value="engagement" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
             <Zap className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-            <span className="hidden sm:inline">Вовлечённость</span>
-            <span className="sm:hidden">Вовл.</span>
+            <span className="hidden sm:inline">{t('admin.engagement')}</span>
+            <span className="sm:hidden">{t('admin.engagement').substring(0, 4)}.</span>
           </TabsTrigger>
           <TabsTrigger value="top" className="flex-1 min-w-[80px] text-xs md:text-sm py-2">
             <Target className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-2" />
-            <span className="hidden sm:inline">Топ контента</span>
-            <span className="sm:hidden">Топ</span>
+            <span className="hidden sm:inline">{t('admin.topContent')}</span>
+            <span className="sm:hidden">{t('admin.topContent').substring(0, 3)}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -537,8 +564,8 @@ return (
           {/* Daily Events Chart */}
           <Card className="overflow-hidden">
             <CardHeader className="pb-2 md:pb-4">
-              <CardTitle className="text-base md:text-lg">События по дням</CardTitle>
-              <CardDescription className="text-xs md:text-sm">Просмотры, клики и шейры за период</CardDescription>
+              <CardTitle className="text-base md:text-lg">{t('admin.eventsByDays')}</CardTitle>
+              <CardDescription className="text-xs md:text-sm">{t('admin.viewsClicksShares')}</CardDescription>
             </CardHeader>
             <CardContent className="p-2 md:p-6 pt-0">
               <div className="h-[250px] md:h-[350px] -mx-2 md:mx-0">
@@ -565,7 +592,7 @@ return (
                     <Area
                       type="monotone"
                       dataKey="views"
-                      name="Просмотры"
+                      name={t('admin.views')}
                       stroke={COLORS.views}
                       fill="url(#viewsGrad)"
                       strokeWidth={2}
@@ -573,7 +600,7 @@ return (
                     <Line
                       type="monotone"
                       dataKey="clicks"
-                      name="Клики"
+                      name={t('admin.clicks')}
                       stroke={COLORS.clicks}
                       strokeWidth={2}
                       dot={false}
@@ -581,7 +608,7 @@ return (
                     <Line
                       type="monotone"
                       dataKey="shares"
-                      name="Шейры"
+                      name={t('admin.shares')}
                       stroke={COLORS.shares}
                       strokeWidth={2}
                       dot={false}
@@ -595,8 +622,8 @@ return (
           {/* Sessions & Visitors */}
           <Card className="overflow-hidden">
             <CardHeader className="pb-2 md:pb-4">
-              <CardTitle className="text-base md:text-lg">Сессии и посетители</CardTitle>
-              <CardDescription className="text-xs md:text-sm">Уникальные сессии и посетители по дням</CardDescription>
+              <CardTitle className="text-base md:text-lg">{t('admin.sessionsAndVisitors')}</CardTitle>
+              <CardDescription className="text-xs md:text-sm">{t('admin.uniqueSessionsVisitors')}</CardDescription>
             </CardHeader>
             <CardContent className="p-2 md:p-6 pt-0">
               <div className="h-[200px] md:h-[300px] -mx-2 md:mx-0">
@@ -614,8 +641,8 @@ return (
                       }}
                     />
                     <Legend wrapperStyle={{ fontSize: '11px' }} />
-                    <Bar dataKey="sessions" name="Сессии" fill={COLORS.sessions} radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="visitors" name="Посетители" fill={COLORS.visitors} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="sessions" name={t('admin.sessions')} fill={COLORS.sessions} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="visitors" name={t('admin.visitors')} fill={COLORS.visitors} radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -625,8 +652,8 @@ return (
           {/* Hourly Activity */}
           <Card className="overflow-hidden">
             <CardHeader className="pb-2 md:pb-4">
-              <CardTitle className="text-base md:text-lg">Активность за 24 часа</CardTitle>
-              <CardDescription className="text-xs md:text-sm">Почасовое распределение событий</CardDescription>
+              <CardTitle className="text-base md:text-lg">{t('admin.activity24h')}</CardTitle>
+              <CardDescription className="text-xs md:text-sm">{t('admin.hourlyDistribution')}</CardDescription>
             </CardHeader>
             <CardContent className="p-2 md:p-6 pt-0">
               <div className="h-[180px] md:h-[250px] -mx-2 md:mx-0">
@@ -647,7 +674,7 @@ return (
                     <Area
                       type="monotone"
                       dataKey="views"
-                      name="Просмотры"
+                      name={t('admin.views')}
                       stroke={COLORS.views}
                       fill={COLORS.views}
                       fillOpacity={0.3}
@@ -655,7 +682,7 @@ return (
                     <Area
                       type="monotone"
                       dataKey="clicks"
-                      name="Клики"
+                      name={t('admin.clicks')}
                       stroke={COLORS.clicks}
                       fill={COLORS.clicks}
                       fillOpacity={0.3}
@@ -673,14 +700,14 @@ return (
             {/* Event Types */}
             <Card className="overflow-hidden">
               <CardHeader className="pb-2 md:pb-4">
-                <CardTitle className="text-base md:text-lg">Типы событий</CardTitle>
+                <CardTitle className="text-base md:text-lg">{t('admin.eventTypes')}</CardTitle>
               </CardHeader>
               <CardContent className="p-3 md:p-6 pt-0">
                 <div className="h-[160px] md:h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={analytics.eventsByType}
+                        data={translatedEventsByType}
                         cx="50%"
                         cy="50%"
                         innerRadius={35}
@@ -688,7 +715,7 @@ return (
                         paddingAngle={2}
                         dataKey="count"
                       >
-                        {analytics.eventsByType.map((entry, index) => (
+                        {translatedEventsByType.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -697,7 +724,7 @@ return (
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-1.5 mt-2">
-                  {analytics.eventsByType.map((item) => (
+                  {translatedEventsByType.map((item) => (
                     <div key={item.name} className="flex items-center justify-between text-xs md:text-sm">
                       <div className="flex items-center gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
@@ -715,7 +742,7 @@ return (
               <CardHeader className="pb-2 md:pb-4">
                 <CardTitle className="text-base md:text-lg flex items-center gap-2">
                   <Monitor className="h-4 w-4" />
-                  Устройства
+                  {t('admin.devices')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 md:p-6 pt-0">
@@ -760,7 +787,7 @@ return (
               <CardHeader className="pb-2 md:pb-4">
                 <CardTitle className="text-base md:text-lg flex items-center gap-2">
                   <Globe className="h-4 w-4" />
-                  Источники
+                  {t('admin.sources')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 md:p-6 pt-0">
@@ -806,8 +833,8 @@ return (
             {/* By Hour of Day */}
             <Card className="overflow-hidden">
               <CardHeader className="pb-2 md:pb-4">
-                <CardTitle className="text-base md:text-lg">По часам</CardTitle>
-                <CardDescription className="text-xs md:text-sm">Активность в течение дня</CardDescription>
+                <CardTitle className="text-base md:text-lg">{t('admin.byHours')}</CardTitle>
+                <CardDescription className="text-xs md:text-sm">{t('admin.activityDuringDay')}</CardDescription>
               </CardHeader>
               <CardContent className="p-2 md:p-6 pt-0">
                 <div className="h-[200px] md:h-[280px] -mx-2 md:mx-0">
@@ -825,7 +852,7 @@ return (
                           fontSize: '12px'
                         }}
                       />
-                      <Bar dataKey="events" name="События" fill={COLORS.sessions} radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="events" name={t('admin.events')} fill={COLORS.sessions} radius={[2, 2, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -835,8 +862,8 @@ return (
             {/* By Day of Week */}
             <Card className="overflow-hidden">
               <CardHeader className="pb-2 md:pb-4">
-                <CardTitle className="text-base md:text-lg">По дням недели</CardTitle>
-                <CardDescription className="text-xs md:text-sm">Распределение активности</CardDescription>
+                <CardTitle className="text-base md:text-lg">{t('admin.byDaysOfWeek')}</CardTitle>
+                <CardDescription className="text-xs md:text-sm">{t('admin.activityDistribution')}</CardDescription>
               </CardHeader>
               <CardContent className="p-2 md:p-6 pt-0">
                 <div className="h-[200px] md:h-[280px] -mx-2 md:mx-0">
@@ -853,7 +880,7 @@ return (
                           fontSize: '12px'
                         }}
                       />
-                      <Bar dataKey="events" name="События" fill={COLORS.visitors} radius={[0, 4, 4, 0]} />
+                      <Bar dataKey="events" name={t('admin.events')} fill={COLORS.visitors} radius={[0, 4, 4, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -868,13 +895,13 @@ return (
             {/* Top Pages */}
             <Card className="overflow-hidden">
               <CardHeader className="pb-2 md:pb-4">
-                <CardTitle className="text-base md:text-lg">Топ страницы</CardTitle>
-                <CardDescription className="text-xs md:text-sm">По просмотрам</CardDescription>
+                <CardTitle className="text-base md:text-lg">{t('admin.topPages')}</CardTitle>
+                <CardDescription className="text-xs md:text-sm">{t('admin.byViews')}</CardDescription>
               </CardHeader>
               <CardContent className="p-3 md:p-6 pt-0">
                 <div className="space-y-2 md:space-y-3 max-h-[350px] overflow-y-auto">
                   {analytics.topPages.length === 0 ? (
-                    <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">Нет данных</p>
+                    <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">{t('admin.noData')}</p>
                   ) : (
                     analytics.topPages.map((page, index) => (
                       <div key={page.page_id} className="flex items-center justify-between py-1.5 md:py-2 border-b border-border/50 last:border-0">
@@ -883,8 +910,8 @@ return (
                           <div className="min-w-0 flex-1">
                             <p className="font-medium text-xs md:text-sm truncate">/{page.slug}</p>
                             <div className="flex gap-2 md:gap-4 text-[10px] md:text-xs text-muted-foreground">
-                              <span>{formatNumber(page.views)} просм.</span>
-                              <span>{formatNumber(page.clicks)} клик.</span>
+                              <span>{formatNumber(page.views)} {t('admin.viewsShort')}</span>
+                              <span>{formatNumber(page.clicks)} {t('admin.clicksShort')}</span>
                             </div>
                           </div>
                         </div>
@@ -901,13 +928,13 @@ return (
             {/* Top Blocks */}
             <Card className="overflow-hidden">
               <CardHeader className="pb-2 md:pb-4">
-                <CardTitle className="text-base md:text-lg">Топ блоки</CardTitle>
-                <CardDescription className="text-xs md:text-sm">По кликам</CardDescription>
+                <CardTitle className="text-base md:text-lg">{t('admin.topBlocks')}</CardTitle>
+                <CardDescription className="text-xs md:text-sm">{t('admin.byClicks')}</CardDescription>
               </CardHeader>
               <CardContent className="p-3 md:p-6 pt-0">
                 <div className="space-y-2 md:space-y-3 max-h-[350px] overflow-y-auto">
                   {analytics.topBlocks.length === 0 ? (
-                    <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">Нет данных</p>
+                    <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">{t('admin.noData')}</p>
                   ) : (
                     analytics.topBlocks.map((block, index) => (
                       <div key={block.block_id} className="flex items-center justify-between py-1.5 md:py-2 border-b border-border/50 last:border-0">
