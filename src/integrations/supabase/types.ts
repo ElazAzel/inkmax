@@ -435,6 +435,45 @@ export type Database = {
           },
         ]
       }
+      page_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          ip_hash: string | null
+          page_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          ip_hash?: string | null
+          page_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          ip_hash?: string | null
+          page_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_likes_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_likes_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pages: {
         Row: {
           avatar_style: Json | null
@@ -984,6 +1023,45 @@ export type Database = {
           title?: string | null
           updated_at?: string | null
           view_count?: number | null
+        }
+        Relationships: []
+      }
+      public_user_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          current_streak: number | null
+          display_name: string | null
+          friends_count: number | null
+          id: string | null
+          is_premium: boolean | null
+          longest_streak: number | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          current_streak?: number | null
+          display_name?: string | null
+          friends_count?: number | null
+          id?: string | null
+          is_premium?: boolean | null
+          longest_streak?: number | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          current_streak?: number | null
+          display_name?: string | null
+          friends_count?: number | null
+          id?: string | null
+          is_premium?: boolean | null
+          longest_streak?: number | null
+          username?: string | null
         }
         Relationships: []
       }
