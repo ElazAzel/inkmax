@@ -166,6 +166,38 @@ Include 3-6 relevant blocks based on the description. Return ONLY valid JSON, no
         userPrompt = `Создай страницу для: ${input.niche}. Имя: ${input.name}. Детали: ${input.details || 'нет'}`;
         break;
 
+      case 'personalize-template':
+        systemPrompt = `Ты AI для персонализации шаблонов страниц. Получаешь шаблон и информацию о бизнесе.
+        
+Задача: адаптировать ВСЕ текстовое содержимое шаблона под конкретный бизнес, сохраняя структуру.
+
+Верни JSON:
+{
+  "profile": { "name": "Название бизнеса", "bio": "Профессиональное описание" },
+  "blocks": [
+    // Та же структура что во входных данных, но с персонализированным контентом
+  ]
+}
+
+Правила:
+1. Сохрани ВСЕ типы блоков и структуру из входного шаблона
+2. Замени плейсхолдеры на контент для конкретного бизнеса
+3. Обнови цены на реалистичные для типа бизнеса
+4. Сохрани мультиязычный формат: { "ru": "...", "en": "...", "kk": "..." }
+5. Сделай отзывы аутентичными для данного бизнеса
+6. Обнови FAQ под специфику бизнеса
+7. НЕ меняй URL изображений
+
+Return ONLY valid JSON, no markdown.`;
+        
+        userPrompt = `Бизнес: ${input.businessName}
+Описание: ${input.businessDescription || "Нет описания"}
+Шаблон: ${input.templateName}
+Блоки шаблона: ${JSON.stringify(input.templateBlocks)}
+
+Персонализируй этот шаблон. Сохрани те же типы и количество блоков, обнови только контент.`;
+        break;
+
       case 'search':
         systemPrompt = `Ты - умный поисковой помощник. Отвечай на вопросы пользователя кратко, информативно и полезно. 
 Если вопрос требует фактической информации, старайся давать точные ответы.
@@ -216,8 +248,8 @@ Include 3-6 relevant blocks based on the description. Return ONLY valid JSON, no
     const data = await response.json();
     const content = data.choices[0].message.content;
 
-    // For SEO and AI Builder, parse JSON response
-    if (type === 'seo' || type === 'ai-builder' || type === 'niche-builder') {
+    // For SEO, AI Builder, niche-builder and personalize-template, parse JSON response
+    if (type === 'seo' || type === 'ai-builder' || type === 'niche-builder' || type === 'personalize-template') {
       try {
         const cleanContent = content.replace(/```json\n?|\n?```/g, '').trim();
         const parsed = JSON.parse(cleanContent);
@@ -227,8 +259,8 @@ Include 3-6 relevant blocks based on the description. Return ONLY valid JSON, no
         );
       } catch (e) {
         console.error('Failed to parse JSON:', content);
-        // For niche-builder, return error if JSON fails
-        if (type === 'niche-builder') {
+        // For niche-builder and personalize-template, return error if JSON fails
+        if (type === 'niche-builder' || type === 'personalize-template') {
           throw new Error('Invalid JSON response from AI');
         }
         // For others, return raw content
