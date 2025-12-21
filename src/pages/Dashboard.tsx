@@ -21,6 +21,7 @@ import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublishDialog';
 import { FriendsPanel } from '@/components/friends/FriendsPanel';
 import { MyTemplatesPanel } from '@/components/templates/MyTemplatesPanel';
+import { TokensPanel } from '@/components/tokens/TokensPanel';
 import {
   DashboardHeader,
   MobileHeader,
@@ -45,6 +46,7 @@ export default function Dashboard() {
   const [showFriends, setShowFriends] = useState(false);
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
   const [showMyTemplates, setShowMyTemplates] = useState(false);
+  const [showTokens, setShowTokens] = useState(false);
 
   const handleOpenGallery = () => navigate('/gallery');
 
@@ -323,6 +325,9 @@ export default function Dashboard() {
         onOpenChange={setShowMyTemplates}
         onApplyTemplate={dashboard.handleApplyTemplate}
       />
+
+      {/* Tokens Panel */}
+      <TokensPanel open={showTokens} onOpenChange={setShowTokens} />
 
       {/* Leads Panel (CRM) */}
       <LeadsPanel open={showLeads} onOpenChange={setShowLeads} />
