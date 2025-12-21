@@ -502,6 +502,36 @@ export function SettingsSidebar({
           </div>
         </Card>
 
+        {/* Templates Section */}
+        <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="p-1.5 rounded-lg bg-orange-500/10">
+              <Package className="h-4 w-4 text-orange-500" />
+            </div>
+            <h3 className="font-semibold">{t('settings.templates', 'Templates')}</h3>
+          </div>
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start bg-background/50 hover:bg-background/70"
+              onClick={onOpenSaveTemplate}
+            >
+              <Save className="h-3 w-3 mr-2" />
+              {t('settings.saveAsTemplate', 'Save as template')}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start bg-background/50 hover:bg-background/70"
+              onClick={onOpenMyTemplates}
+            >
+              <Package className="h-3 w-3 mr-2" />
+              {t('settings.myTemplates', 'My templates')}
+            </Button>
+          </div>
+        </Card>
+
         {/* AI Tools */}
         <Card className="p-4 bg-gradient-to-br from-primary/10 via-violet-500/5 to-blue-500/10 backdrop-blur-xl border-primary/20">
           <div className="flex items-center gap-2 mb-3">

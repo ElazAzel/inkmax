@@ -43,6 +43,8 @@ export default function Dashboard() {
   const [showLeads, setShowLeads] = useState(false);
   const [showReferral, setShowReferral] = useState(false);
   const [showFriends, setShowFriends] = useState(false);
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+  const [showMyTemplates, setShowMyTemplates] = useState(false);
 
   const handleOpenGallery = () => navigate('/gallery');
 
@@ -144,6 +146,8 @@ export default function Dashboard() {
           }}
           pageId={dashboard.pageData?.id}
           onOpenFriends={() => setShowFriends(true)}
+          onOpenSaveTemplate={() => setShowSaveTemplate(true)}
+          onOpenMyTemplates={() => setShowMyTemplates(true)}
         />
 
         {/* Referral Panel in Settings Area */}
@@ -304,6 +308,21 @@ export default function Dashboard() {
       {showFriends && (
         <FriendsPanel onClose={() => setShowFriends(false)} />
       )}
+
+      {/* Save Template Dialog */}
+      <SaveTemplateDialog
+        open={showSaveTemplate}
+        onClose={() => setShowSaveTemplate(false)}
+        blocks={dashboard.pageData.blocks}
+        previewContainerId="preview-container"
+      />
+
+      {/* My Templates Panel */}
+      <MyTemplatesPanel
+        open={showMyTemplates}
+        onOpenChange={setShowMyTemplates}
+        onApplyTemplate={dashboard.handleApplyTemplate}
+      />
 
       {/* Leads Panel (CRM) */}
       <LeadsPanel open={showLeads} onOpenChange={setShowLeads} />
