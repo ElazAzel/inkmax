@@ -117,6 +117,7 @@ export function useDashboard() {
       }
     },
     onAddBlock: addBlock,
+    onReplaceBlocks: pageState.replaceBlocks,
     onQuestComplete: dailyQuests.markQuestComplete,
   });
 
