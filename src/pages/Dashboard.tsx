@@ -96,6 +96,7 @@ export default function Dashboard() {
         onOpenCRM={() => setShowLeads(true)}
         onOpenGallery={handleOpenGallery}
         userId={dashboard.user?.id}
+        onOpenTokens={() => setShowTokens(true)}
       />
 
       {/* Mobile Header */}

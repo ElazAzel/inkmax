@@ -5,6 +5,7 @@ import { AutoSaveIndicator, SaveStatus } from '@/components/editor/AutoSaveIndic
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { EditorModeToggle } from '@/components/editor/EditorModeToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
+import { TokenBalanceDisplay } from '@/components/tokens/TokenBalanceDisplay';
 import type { EditorMode } from '@/types/page';
 import {
   LogOut,
@@ -37,6 +38,7 @@ interface DashboardHeaderProps {
   onOpenCRM: () => void;
   userId?: string;
   onOpenGallery: () => void;
+  onOpenTokens: () => void;
 }
 
 export function DashboardHeader({
@@ -57,6 +59,7 @@ export function DashboardHeader({
   onOpenCRM,
   onOpenGallery,
   userId,
+  onOpenTokens,
 }: DashboardHeaderProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -99,6 +102,9 @@ export function DashboardHeader({
 
               {/* Compact Streak */}
               <StreakDisplay userId={userId} compact />
+
+              {/* Token Balance */}
+              <TokenBalanceDisplay onClick={onOpenTokens} compact />
 
               <LanguageSwitcher />
 
