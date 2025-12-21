@@ -25,6 +25,7 @@ interface UserStatusData {
   name: string;
   value: number;
   color: string;
+  [key: string]: string | number;
 }
 
 interface EventTypeData {
