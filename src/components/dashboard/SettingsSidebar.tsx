@@ -416,70 +416,72 @@ export function SettingsSidebar({
               />
             </div>
             
-            {/* Telegram */}
-            <div className="p-3 rounded-xl bg-background/30 border border-border/20 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Send className="h-4 w-4 text-blue-500" />
-                  <div>
-                    <Label className="text-sm font-medium">Telegram</Label>
-                    <p className="text-xs text-muted-foreground">{t('settings.telegramDesc', 'Instant notifications')}</p>
+            {/* Telegram - Premium only */}
+            {isPremium && (
+              <div className="p-3 rounded-xl bg-background/30 border border-border/20 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Send className="h-4 w-4 text-blue-500" />
+                    <div>
+                      <Label className="text-sm font-medium">Telegram</Label>
+                      <p className="text-xs text-muted-foreground">{t('settings.telegramDesc', 'Instant notifications')}</p>
+                    </div>
+                  </div>
+                  <Switch
+                    checked={telegramEnabled ?? false}
+                    onCheckedChange={(enabled) => {
+                      if (!enabled) {
+                        onTelegramChange?.(false, null);
+                      } else if (localTelegramChatId.trim()) {
+                        onTelegramChange?.(true, localTelegramChatId.trim());
+                      }
+                    }}
+                  />
+                </div>
+                
+                {/* Telegram Setup */}
+                <div className="space-y-2 pt-2 border-t border-border/20">
+                  <Label className="text-xs text-muted-foreground">{t('settings.telegramChatId', 'Your Chat ID')}</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="123456789"
+                      value={localTelegramChatId}
+                      onChange={(e) => {
+                        setLocalTelegramChatId(e.target.value.replace(/\D/g, ''));
+                        setTelegramValidated(false);
+                      }}
+                      className="bg-background/50 text-sm font-mono"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={handleValidateAndSaveTelegram}
+                      disabled={!localTelegramChatId.trim() || telegramValidating || telegramValidated}
+                      className="shrink-0"
+                    >
+                      {telegramValidating ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : telegramValidated ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        t('settings.telegramVerify', 'Verify')
+                      )}
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span>{t('settings.telegramHelp', 'Get your ID from')}</span>
+                    <a 
+                      href="https://t.me/userinfobot" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:text-blue-400 inline-flex items-center gap-0.5"
+                    >
+                      @userinfobot
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
                   </div>
                 </div>
-                <Switch
-                  checked={telegramEnabled ?? false}
-                  onCheckedChange={(enabled) => {
-                    if (!enabled) {
-                      onTelegramChange?.(false, null);
-                    } else if (localTelegramChatId.trim()) {
-                      onTelegramChange?.(true, localTelegramChatId.trim());
-                    }
-                  }}
-                />
               </div>
-              
-              {/* Telegram Setup */}
-              <div className="space-y-2 pt-2 border-t border-border/20">
-                <Label className="text-xs text-muted-foreground">{t('settings.telegramChatId', 'Your Chat ID')}</Label>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="123456789"
-                    value={localTelegramChatId}
-                    onChange={(e) => {
-                      setLocalTelegramChatId(e.target.value.replace(/\D/g, ''));
-                      setTelegramValidated(false);
-                    }}
-                    className="bg-background/50 text-sm font-mono"
-                  />
-                  <Button
-                    size="sm"
-                    onClick={handleValidateAndSaveTelegram}
-                    disabled={!localTelegramChatId.trim() || telegramValidating || telegramValidated}
-                    className="shrink-0"
-                  >
-                    {telegramValidating ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : telegramValidated ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      t('settings.telegramVerify', 'Verify')
-                    )}
-                  </Button>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <span>{t('settings.telegramHelp', 'Get your ID from')}</span>
-                  <a 
-                    href="https://t.me/userinfobot" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-400 inline-flex items-center gap-0.5"
-                  >
-                    @userinfobot
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </Card>
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
