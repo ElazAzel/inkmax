@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
+import { createBlock } from '@/lib/block-factory';
 
 export type AIGeneratorType = 'magic-title' | 'sales-copy' | 'seo' | 'ai-builder';
 
@@ -18,13 +19,39 @@ interface AIBuilderResult {
 interface UseDashboardAIOptions {
   onUpdateProfile: (updates: { name: string; bio: string }) => void;
   onAddBlock: (block: Block) => void;
+  onReplaceBlocks?: (blocks: Block[]) => void;
   onQuestComplete?: (questKey: string) => void;
+}
+
+/**
+ * Creates a proper block from AI-generated data by merging with factory defaults
+ */
+function createBlockFromAI(blockData: { type: string; [key: string]: any }, index: number): Block | null {
+  try {
+    // Create base block from factory
+    const baseBlock = createBlock(blockData.type);
+    
+    // Generate unique ID
+    const id = `${blockData.type}-${Date.now()}-${index}`;
+    
+    // Merge AI data with base block, AI data takes precedence
+    const mergedBlock = {
+      ...baseBlock,
+      ...blockData,
+      id,
+    };
+    
+    return mergedBlock as Block;
+  } catch (error) {
+    console.warn(`Unknown block type from AI: ${blockData.type}`, error);
+    return null;
+  }
 }
 
 /**
  * Hook to manage AI generator state and handlers
  */
-export function useDashboardAI({ onUpdateProfile, onAddBlock, onQuestComplete }: UseDashboardAIOptions) {
+export function useDashboardAI({ onUpdateProfile, onAddBlock, onReplaceBlocks, onQuestComplete }: UseDashboardAIOptions) {
   const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
   const [aiGeneratorType, setAiGeneratorType] = useState<AIGeneratorType>('ai-builder');
 
@@ -68,19 +95,31 @@ export function useDashboardAI({ onUpdateProfile, onAddBlock, onQuestComplete }:
           onUpdateProfile(profile);
         }
 
-        // Add generated blocks
+        // Convert AI blocks to proper Block objects
+        const validBlocks: Block[] = [];
+        
         blocks.forEach((blockData, index) => {
-          const newBlock: Block = {
-            id: `${blockData.type}-${Date.now()}-${index}`,
-            ...blockData,
-          } as Block;
-          onAddBlock(newBlock);
+          const block = createBlockFromAI(blockData, index);
+          if (block) {
+            validBlocks.push(block);
+          }
         });
 
-        toast.success(`Added ${blocks.length} blocks from AI`);
+        // If we have onReplaceBlocks, use it to replace all blocks at once
+        // This is better UX than adding one by one
+        if (onReplaceBlocks && validBlocks.length > 0) {
+          onReplaceBlocks(validBlocks);
+          toast.success(`✨ Создано ${validBlocks.length} блоков с помощью AI`);
+        } else {
+          // Fallback: add blocks one by one
+          validBlocks.forEach((block) => {
+            onAddBlock(block);
+          });
+          toast.success(`Добавлено ${validBlocks.length} блоков`);
+        }
       }
     },
-    [aiGeneratorType, onUpdateProfile, onAddBlock, onQuestComplete]
+    [aiGeneratorType, onUpdateProfile, onAddBlock, onReplaceBlocks, onQuestComplete]
   );
 
   return {
