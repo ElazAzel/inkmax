@@ -51,7 +51,7 @@ interface SettingsSidebarProps {
   userId?: string;
   dailyQuests?: Quest[];
   completedQuests?: string[];
-  questsProgress?: { completed: number; total: number; bonusEarned: number };
+  questsProgress?: { completed: number; total: number; tokensEarned: number };
   questsLoading?: boolean;
   niche?: Niche;
   onNicheChange?: (niche: Niche) => void;

@@ -9,11 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
-import { Sparkles, Gift, Mail, Check } from 'lucide-react';
+import { Gift, Mail, Check } from 'lucide-react';
 import { z } from 'zod';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { applyReferralCode } from '@/services/referral';
-import { TelegramVerification } from '@/components/auth/TelegramVerification';
 import { supabase } from '@/integrations/supabase/client';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
@@ -33,7 +32,6 @@ const authSchema = z.object({
     .regex(/[0-9]/, 'Password must contain at least one number'),
 });
 
-type SignupStep = 'credentials' | 'telegram';
 type AuthMode = 'signin' | 'signup' | 'reset' | 'reset-telegram' | 'update-password';
 type TelegramResetStep = 'request' | 'verify';
 
@@ -53,11 +51,6 @@ export default function Auth() {
   const [telegramResetStep, setTelegramResetStep] = useState<TelegramResetStep>('request');
   const [telegramChatId, setTelegramChatId] = useState('');
   const [resetToken, setResetToken] = useState('');
-  
-  // Signup flow state
-  const [signupStep, setSignupStep] = useState<SignupStep>('credentials');
-  const [pendingEmail, setPendingEmail] = useState('');
-  const [pendingPassword, setPendingPassword] = useState('');
   
   // Get referral code and mode from URL
   const refCode = searchParams.get('ref');
@@ -101,8 +94,10 @@ export default function Auth() {
     }
   }, [user, navigate, refCode, authMode]);
 
-  const handleSignUpStep1 = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Simplified signup - no Telegram required for free users
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get('signup-email') as string;
@@ -115,37 +110,24 @@ export default function Auth() {
       const firstError = validation.error.errors[0];
       toast.error(firstError.message);
       playError();
+      setIsLoading(false);
       return;
     }
 
-    // Save credentials and move to Telegram step
-    setPendingEmail(validation.data.email);
-    setPendingPassword(validation.data.password);
-    setSignupStep('telegram');
-  };
-
-  const handleTelegramVerified = async (telegramChatId: string) => {
-    setIsLoading(true);
-
-    const { error } = await signUp(pendingEmail, pendingPassword);
+    const { error } = await signUp(validation.data.email, validation.data.password);
 
     if (error) {
       console.error('Signup error:', error);
       toast.error(error.message || t('messages.failedToSignUp'));
       playError();
       setIsLoading(false);
-      setSignupStep('credentials');
       return;
     }
-
-    // Update user profile with telegram chat id after signup
-    // This will be handled by the auth state change and profile creation trigger
-    // We'll store the chat ID temporarily and update it after the user is created
-    localStorage.setItem('pending_telegram_chat_id', telegramChatId);
 
     playSuccess();
     toast.success(t('messages.accountCreated'));
     // Auth state change will trigger redirect
+    setIsLoading(false);
   };
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -675,58 +657,49 @@ export default function Auth() {
               </TabsContent>
 
               <TabsContent value="signup">
-                {signupStep === 'credentials' ? (
-                  <form onSubmit={handleSignUpStep1} className="space-y-4 pt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
-                      <Input
-                        id="signup-email"
-                        name="signup-email"
-                        type="email"
-                        placeholder="your@email.com"
-                        required
-                        className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
-                      <Input
-                        id="signup-password"
-                        name="signup-password"
-                        type="password"
-                        placeholder="••••••••"
-                        required
-                        className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
-                      />
-                      <p className="text-xs text-muted-foreground mt-2 bg-muted/20 backdrop-blur-xl p-2 rounded-lg">
-                        {t('auth.passwordHint')}
-                      </p>
-                    </div>
-                    <div className="flex items-start space-x-2">
-                      <Checkbox id="terms" required className="mt-0.5" />
-                      <label htmlFor="terms" className="text-sm text-muted-foreground leading-tight">
-                        {t('legal.agreeToTerms')}{' '}
-                        <TermsLink className="text-primary hover:underline">
-                          {t('legal.termsLink')}
-                        </TermsLink>
-                        {' '}{t('legal.andThe')}{' '}
-                        <PrivacyLink className="text-primary hover:underline">
-                          {t('legal.privacyLink')}
-                        </PrivacyLink>
-                      </label>
-                    </div>
-                    <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
-                      {t('auth.continue', 'Продолжить')}
-                    </Button>
-                  </form>
-                ) : (
-                  <div className="pt-4">
-                    <TelegramVerification 
-                      onVerified={handleTelegramVerified}
-                      onBack={() => setSignupStep('credentials')}
+                <form onSubmit={handleSignUp} className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email" className="text-sm text-muted-foreground">{t('auth.email')}</Label>
+                    <Input
+                      id="signup-email"
+                      name="signup-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
                     />
                   </div>
-                )}
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password" className="text-sm text-muted-foreground">{t('auth.password')}</Label>
+                    <Input
+                      id="signup-password"
+                      name="signup-password"
+                      type="password"
+                      placeholder="••••••••"
+                      required
+                      className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30 focus:border-primary/50"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2 bg-muted/20 backdrop-blur-xl p-2 rounded-lg">
+                      {t('auth.passwordHint')}
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Checkbox id="terms" required className="mt-0.5" />
+                    <label htmlFor="terms" className="text-sm text-muted-foreground leading-tight">
+                      {t('legal.agreeToTerms')}{' '}
+                      <TermsLink className="text-primary hover:underline">
+                        {t('legal.termsLink')}
+                      </TermsLink>
+                      {' '}{t('legal.andThe')}{' '}
+                      <PrivacyLink className="text-primary hover:underline">
+                        {t('legal.privacyLink')}
+                      </PrivacyLink>
+                    </label>
+                  </div>
+                  <Button type="submit" className="w-full h-12 rounded-xl shadow-glass-lg transition-all duration-300 hover:scale-[1.02]" disabled={isLoading || isOAuthLoading !== null}>
+                    {isLoading ? t('messages.loading', 'Loading...') : t('auth.signUp')}
+                  </Button>
+                </form>
               </TabsContent>
             </Tabs>
           </CardContent>

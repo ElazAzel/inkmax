@@ -896,6 +896,36 @@ export type Database = {
           },
         ]
       }
+      token_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          source: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          source: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          source?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_key: string
@@ -1067,6 +1097,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_tokens: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_earned: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_challenges: {
         Row: {
           challenge_key: string
@@ -1191,6 +1251,15 @@ export type Database = {
       }
     }
     Functions: {
+      add_linkkon_tokens: {
+        Args: {
+          p_amount: number
+          p_description?: string
+          p_source: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       apply_referral: {
         Args: { p_code: string; p_referred_user_id: string }
         Returns: Json
@@ -1205,6 +1274,7 @@ export type Database = {
         Args: { p_challenge_id: string }
         Returns: Json
       }
+      convert_tokens_to_premium: { Args: { p_user_id: string }; Returns: Json }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
       get_top_referrers: {
@@ -1239,6 +1309,15 @@ export type Database = {
       save_page_blocks: {
         Args: { p_blocks: Json; p_is_premium?: boolean; p_page_id: string }
         Returns: undefined
+      }
+      spend_linkkon_tokens: {
+        Args: {
+          p_amount: number
+          p_description?: string
+          p_source: string
+          p_user_id: string
+        }
+        Returns: Json
       }
       toggle_gallery_status: { Args: { p_user_id: string }; Returns: boolean }
       unlike_gallery_page: { Args: { p_page_id: string }; Returns: undefined }
