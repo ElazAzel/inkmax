@@ -10,10 +10,12 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Check, Sparkles } from 'lucide-react';
+import { Check, Sparkles, Store, Wand2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createBlock as createBaseBlock } from '@/lib/block-factory';
 import type { Block } from '@/types/page';
+import { TemplatePersonalization } from './TemplatePersonalization';
+import { TemplateMarketplace } from './TemplateMarketplace';
 
 interface Template {
   id: string;
@@ -543,6 +545,9 @@ export const TemplateGallery = memo(function TemplateGallery({
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [personalizationOpen, setPersonalizationOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [marketplaceOpen, setMarketplaceOpen] = useState(false);
 
   const handleSelect = (template: Template) => {
     // Generate blocks with full structure from block-factory + overrides
@@ -565,12 +570,23 @@ export const TemplateGallery = memo(function TemplateGallery({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] sm:max-h-[85vh] p-0 overflow-hidden">
         <DialogHeader className="p-4 sm:p-6 pb-0">
-          <DialogTitle className="text-lg sm:text-xl flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            {t('templates.title', 'Галерея шаблонов')}
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-lg sm:text-xl flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              {t('templates.title', 'Галерея шаблонов')}
+            </DialogTitle>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setMarketplaceOpen(true)}
+              className="gap-1"
+            >
+              <Store className="h-4 w-4" />
+              {t('templates.marketplace', 'Маркетплейс')}
+            </Button>
+          </div>
           <DialogDescription className="text-sm">
-            {t('templates.description', 'Выберите готовый шаблон и скопируйте в 1 клик')}
+            {t('templates.description', 'Выберите готовый шаблон — AI персонализирует под ваш бизнес')}
           </DialogDescription>
         </DialogHeader>
 
@@ -641,6 +657,32 @@ export const TemplateGallery = memo(function TemplateGallery({
           </Button>
         </div>
       </DialogContent>
+
+      {/* Personalization Dialog */}
+      {selectedTemplate && (
+        <TemplatePersonalization
+          open={personalizationOpen}
+          onClose={() => setPersonalizationOpen(false)}
+          templateBlocks={selectedTemplate.blocks}
+          templateName={selectedTemplate.name}
+          onApply={(blocks, profile) => {
+            onSelect(blocks);
+            setPersonalizationOpen(false);
+            onClose();
+          }}
+        />
+      )}
+
+      {/* Marketplace Dialog */}
+      <TemplateMarketplace
+        open={marketplaceOpen}
+        onClose={() => setMarketplaceOpen(false)}
+        onApplyTemplate={(blocks) => {
+          onSelect(blocks);
+          setMarketplaceOpen(false);
+          onClose();
+        }}
+      />
     </Dialog>
   );
 });

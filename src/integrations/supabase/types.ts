@@ -829,6 +829,73 @@ export type Database = {
         }
         Relationships: []
       }
+      template_likes: {
+        Row: {
+          created_at: string
+          id: string
+          template_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          template_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          template_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_likes_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "user_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_purchases: {
+        Row: {
+          buyer_id: string
+          currency: string
+          id: string
+          price: number
+          purchased_at: string
+          seller_id: string
+          template_id: string
+        }
+        Insert: {
+          buyer_id: string
+          currency?: string
+          id?: string
+          price: number
+          purchased_at?: string
+          seller_id: string
+          template_id: string
+        }
+        Update: {
+          buyer_id?: string
+          currency?: string
+          id?: string
+          price?: number
+          purchased_at?: string
+          seller_id?: string
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_purchases_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "user_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_achievements: {
         Row: {
           achievement_key: string
@@ -939,6 +1006,63 @@ export type Database = {
           created_at?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_templates: {
+        Row: {
+          blocks: Json
+          category: string
+          created_at: string
+          currency: string | null
+          description: string | null
+          downloads_count: number
+          id: string
+          is_for_sale: boolean
+          is_public: boolean
+          likes_count: number
+          name: string
+          preview_url: string | null
+          price: number | null
+          theme_settings: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          blocks: Json
+          category?: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          downloads_count?: number
+          id?: string
+          is_for_sale?: boolean
+          is_public?: boolean
+          likes_count?: number
+          name: string
+          preview_url?: string | null
+          price?: number | null
+          theme_settings?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          blocks?: Json
+          category?: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          downloads_count?: number
+          id?: string
+          is_for_sale?: boolean
+          is_public?: boolean
+          likes_count?: number
+          name?: string
+          preview_url?: string | null
+          price?: number | null
+          theme_settings?: Json | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -1110,6 +1234,8 @@ export type Database = {
       }
       increment_view_count: { Args: { page_slug: string }; Returns: undefined }
       like_gallery_page: { Args: { p_page_id: string }; Returns: undefined }
+      like_template: { Args: { p_template_id: string }; Returns: undefined }
+      purchase_template: { Args: { p_template_id: string }; Returns: Json }
       save_page_blocks: {
         Args: { p_blocks: Json; p_is_premium?: boolean; p_page_id: string }
         Returns: undefined
