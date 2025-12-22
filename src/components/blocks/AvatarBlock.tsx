@@ -27,12 +27,15 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
     square: 'rounded-none',
   };
 
-  const shadowClasses = {
-    none: '',
-    soft: '',
-    medium: '',
-    strong: '',
-    glow: '',
+  const getShadowStyle = () => {
+    const shadowStyles: Record<string, React.CSSProperties> = {
+      none: {},
+      soft: { boxShadow: '0 4px 14px -3px hsl(var(--primary) / 0.25)' },
+      medium: { boxShadow: '0 8px 24px -4px hsl(var(--primary) / 0.35)' },
+      strong: { boxShadow: '0 12px 32px -4px hsl(var(--primary) / 0.45)' },
+      glow: { boxShadow: '0 0 30px hsl(var(--primary) / 0.5), 0 0 60px hsl(var(--primary) / 0.3)' },
+    };
+    return shadowStyles[block.shadow || 'soft'];
   };
 
   const initials = name
@@ -56,23 +59,29 @@ export function AvatarBlock({ block }: AvatarBlockProps) {
         alignmentClass,
         block.blockStyle?.padding && paddingMap[block.blockStyle.padding],
         block.blockStyle?.margin && marginMap[block.blockStyle.margin],
-        getAnimationClass(block.blockStyle)
       )}
-      style={getAnimationStyle(block.blockStyle)}
     >
-      <div className={cn(
-        "relative",
-        block.border && "p-1 bg-gradient-to-br from-primary to-primary/50",
-        shapeClasses[block.shape || 'circle']
-      )}>
+      {/* Frame wrapper - animation and shadow apply only here */}
+      <div 
+        className={cn(
+          "relative",
+          block.border && "p-1 bg-gradient-to-br from-primary to-primary/50",
+          shapeClasses[block.shape || 'circle'],
+          getAnimationClass(block.blockStyle)
+        )}
+        style={{
+          ...getShadowStyle(),
+          ...getAnimationStyle(block.blockStyle)
+        }}
+      >
+        {/* Avatar - NO animation, NO shadow */}
         <Avatar 
           className={cn(
             sizeClasses[block.size || 'medium'],
             shapeClasses[block.shape || 'circle'],
-            shadowClasses[block.shadow || 'soft']
           )}
         >
-          <AvatarImage src={block.imageUrl} alt={name} />
+          <AvatarImage src={block.imageUrl} alt={name} className="object-cover" />
           <AvatarFallback className="text-lg font-semibold bg-primary/10">
             {initials}
           </AvatarFallback>
