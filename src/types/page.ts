@@ -34,6 +34,8 @@ export interface BlockSchedule {
   endDate?: string; // ISO date string
 }
 
+export type ProfileFrameStyle = 'default' | 'none' | 'solid' | 'gradient' | 'gradient-sunset' | 'gradient-ocean' | 'gradient-purple' | 'neon-blue' | 'neon-pink' | 'neon-green' | 'rainbow' | 'rainbow-spin' | 'double' | 'dashed' | 'dotted' | 'glow-pulse';
+
 export interface ProfileBlock {
   id: string;
   type: 'profile';
@@ -41,7 +43,8 @@ export interface ProfileBlock {
   name: string | MultilingualString;
   bio: string | MultilingualString;
   verified?: boolean;
-  avatarFrame?: 'default' | 'neon' | 'glitch' | 'aura' | 'gradient' | 'pulse' | 'rainbow' | 'double' | 'spinning' | 'dash' | 'wave';
+  avatarFrame?: ProfileFrameStyle;
+  avatarIcon?: string; // Lucide icon name
   coverImage?: string;
   coverGradient?: 'none' | 'dark' | 'light' | 'primary' | 'sunset' | 'ocean' | 'purple';
   coverHeight?: 'small' | 'medium' | 'large';
