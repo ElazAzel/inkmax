@@ -121,23 +121,68 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
           <Label>{t('fields.avatarFrame', 'Avatar Frame Style')}</Label>
           <Select
             value={formData.avatarFrame || 'default'}
-            onValueChange={(value) => onChange({ ...formData, avatarFrame: value })}
+            onValueChange={(value) => onChange({ ...formData, avatarFrame: value as any })}
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="default">{t('frames.default', 'Default - Simple Ring')}</SelectItem>
-              <SelectItem value="neon">{t('frames.neon', 'Neon - Glowing Effect')}</SelectItem>
-              <SelectItem value="glitch">{t('frames.glitch', 'Glitch - Digital Effect')}</SelectItem>
-              <SelectItem value="aura">{t('frames.aura', 'Aura - Soft Glow')}</SelectItem>
-              <SelectItem value="gradient">{t('frames.gradient', 'Gradient - Color Shift')}</SelectItem>
-              <SelectItem value="pulse">{t('frames.pulse', 'Pulse - Animated Beat')}</SelectItem>
-              <SelectItem value="rainbow">{t('frames.rainbow', 'Rainbow - Color Wave')}</SelectItem>
-              <SelectItem value="double">{t('frames.double', 'Double - Two Rings')}</SelectItem>
-              <SelectItem value="spinning">{t('frames.spinning', 'Spinning Border')}</SelectItem>
-              <SelectItem value="dash">{t('frames.dash', 'Dashed Animation')}</SelectItem>
-              <SelectItem value="wave">{t('frames.wave', 'Wave Border')}</SelectItem>
+              <SelectItem value="default">{t('frames.default', 'Default')}</SelectItem>
+              <SelectItem value="none">{t('frames.none', 'No Frame')}</SelectItem>
+              <SelectItem value="solid">{t('frames.solid', 'Solid')}</SelectItem>
+              <SelectItem value="gradient">{t('frames.gradient', 'Gradient')}</SelectItem>
+              <SelectItem value="gradient-sunset">{t('frames.gradientSunset', 'Sunset')}</SelectItem>
+              <SelectItem value="gradient-ocean">{t('frames.gradientOcean', 'Ocean')}</SelectItem>
+              <SelectItem value="gradient-purple">{t('frames.gradientPurple', 'Purple')}</SelectItem>
+              <SelectItem value="neon-blue">{t('frames.neonBlue', 'Neon Blue')}</SelectItem>
+              <SelectItem value="neon-pink">{t('frames.neonPink', 'Neon Pink')}</SelectItem>
+              <SelectItem value="neon-green">{t('frames.neonGreen', 'Neon Green')}</SelectItem>
+              <SelectItem value="rainbow">{t('frames.rainbow', 'Rainbow')}</SelectItem>
+              <SelectItem value="rainbow-spin">{t('frames.rainbowSpin', 'Rainbow Spin')}</SelectItem>
+              <SelectItem value="double">{t('frames.double', 'Double')}</SelectItem>
+              <SelectItem value="dashed">{t('frames.dashed', 'Dashed')}</SelectItem>
+              <SelectItem value="dotted">{t('frames.dotted', 'Dotted')}</SelectItem>
+              <SelectItem value="glow-pulse">{t('frames.glowPulse', 'Glow Pulse')}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label>{t('fields.avatarIcon', 'Avatar Icon')}</Label>
+          <Select
+            value={formData.avatarIcon || ''}
+            onValueChange={(value) => onChange({ ...formData, avatarIcon: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={t('fields.selectIcon', 'Select icon')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">{t('icons.none', 'No Icon')}</SelectItem>
+              <SelectItem value="crown">{t('icons.crown', 'Crown')}</SelectItem>
+              <SelectItem value="star">{t('icons.star', 'Star')}</SelectItem>
+              <SelectItem value="heart">{t('icons.heart', 'Heart')}</SelectItem>
+              <SelectItem value="sparkles">{t('icons.sparkles', 'Sparkles')}</SelectItem>
+              <SelectItem value="zap">{t('icons.zap', 'Zap')}</SelectItem>
+              <SelectItem value="flame">{t('icons.flame', 'Flame')}</SelectItem>
+              <SelectItem value="diamond">{t('icons.diamond', 'Diamond')}</SelectItem>
+              <SelectItem value="gem">{t('icons.gem', 'Gem')}</SelectItem>
+              <SelectItem value="trophy">{t('icons.trophy', 'Trophy')}</SelectItem>
+              <SelectItem value="medal">{t('icons.medal', 'Medal')}</SelectItem>
+              <SelectItem value="award">{t('icons.award', 'Award')}</SelectItem>
+              <SelectItem value="badge-check">{t('icons.verified', 'Verified')}</SelectItem>
+              <SelectItem value="shield-check">{t('icons.shield', 'Shield')}</SelectItem>
+              <SelectItem value="rocket">{t('icons.rocket', 'Rocket')}</SelectItem>
+              <SelectItem value="music">{t('icons.music', 'Music')}</SelectItem>
+              <SelectItem value="camera">{t('icons.camera', 'Camera')}</SelectItem>
+              <SelectItem value="palette">{t('icons.palette', 'Palette')}</SelectItem>
+              <SelectItem value="code">{t('icons.code', 'Code')}</SelectItem>
+              <SelectItem value="gamepad-2">{t('icons.gaming', 'Gaming')}</SelectItem>
+              <SelectItem value="dumbbell">{t('icons.fitness', 'Fitness')}</SelectItem>
+              <SelectItem value="utensils">{t('icons.food', 'Food')}</SelectItem>
+              <SelectItem value="plane">{t('icons.travel', 'Travel')}</SelectItem>
+              <SelectItem value="briefcase">{t('icons.business', 'Business')}</SelectItem>
+              <SelectItem value="graduation-cap">{t('icons.education', 'Education')}</SelectItem>
+              <SelectItem value="mic">{t('icons.podcast', 'Podcast')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
