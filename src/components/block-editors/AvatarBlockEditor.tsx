@@ -95,12 +95,33 @@ function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorPro
         </Select>
       </div>
 
-      <div className="flex items-center justify-between">
-        <Label>{t('fields.border', 'Border')}</Label>
-        <Switch
-          checked={formData.border || false}
-          onCheckedChange={(checked) => onChange({ border: checked })}
-        />
+      <div className="space-y-2">
+        <Label>{t('fields.frameStyle', 'Frame Style')}</Label>
+        <Select
+          value={formData.frameStyle || 'none'}
+          onValueChange={(value) => onChange({ frameStyle: value as any, border: value !== 'none' })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">{t('frames.none', 'No Frame')}</SelectItem>
+            <SelectItem value="solid">{t('frames.solid', 'Solid')}</SelectItem>
+            <SelectItem value="gradient">{t('frames.gradient', 'Gradient')}</SelectItem>
+            <SelectItem value="gradient-sunset">{t('frames.gradientSunset', 'Sunset Gradient')}</SelectItem>
+            <SelectItem value="gradient-ocean">{t('frames.gradientOcean', 'Ocean Gradient')}</SelectItem>
+            <SelectItem value="gradient-purple">{t('frames.gradientPurple', 'Purple Gradient')}</SelectItem>
+            <SelectItem value="neon-blue">{t('frames.neonBlue', 'Neon Blue')}</SelectItem>
+            <SelectItem value="neon-pink">{t('frames.neonPink', 'Neon Pink')}</SelectItem>
+            <SelectItem value="neon-green">{t('frames.neonGreen', 'Neon Green')}</SelectItem>
+            <SelectItem value="rainbow">{t('frames.rainbow', 'Rainbow')}</SelectItem>
+            <SelectItem value="rainbow-spin">{t('frames.rainbowSpin', 'Rainbow (Animated)')}</SelectItem>
+            <SelectItem value="double">{t('frames.double', 'Double Border')}</SelectItem>
+            <SelectItem value="dashed">{t('frames.dashed', 'Dashed')}</SelectItem>
+            <SelectItem value="dotted">{t('frames.dotted', 'Dotted')}</SelectItem>
+            <SelectItem value="glow-pulse">{t('frames.glowPulse', 'Glow Pulse')}</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">

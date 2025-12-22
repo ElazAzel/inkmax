@@ -273,6 +273,8 @@ export interface MapBlock {
   blockStyle?: BlockStyle;
 }
 
+export type AvatarFrameStyle = 'none' | 'solid' | 'gradient' | 'gradient-sunset' | 'gradient-ocean' | 'gradient-purple' | 'neon-blue' | 'neon-pink' | 'neon-green' | 'rainbow' | 'rainbow-spin' | 'double' | 'dashed' | 'dotted' | 'glow-pulse';
+
 export interface AvatarBlock {
   id: string;
   type: 'avatar';
@@ -282,6 +284,7 @@ export interface AvatarBlock {
   size?: 'small' | 'medium' | 'large' | 'xlarge';
   shape?: 'circle' | 'rounded' | 'square';
   border?: boolean;
+  frameStyle?: AvatarFrameStyle;
   borderColor?: string;
   shadow?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
   alignment?: 'left' | 'center' | 'right';
