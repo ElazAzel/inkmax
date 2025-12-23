@@ -179,6 +179,9 @@ export interface CustomCodeBlock {
   title?: string | MultilingualString;
   html: string;
   css?: string;
+  javascript?: string;
+  height?: 'auto' | 'small' | 'medium' | 'large' | 'full';
+  enableInteraction?: boolean;
   isPremium: true;
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
