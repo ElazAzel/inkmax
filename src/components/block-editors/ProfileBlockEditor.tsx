@@ -5,9 +5,16 @@ import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { FrameGridSelector } from '@/components/editor/FramePreview';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { AVATAR_ICON_OPTIONS } from '@/lib/avatar-frame-utils';
+import type { ProfileFrameStyle } from '@/types/page';
 
 function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  const [frameOpen, setFrameOpen] = useState(false);
   
   return (
     <div className="space-y-4">
@@ -117,35 +124,20 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
           </Select>
         </div>
 
-        <div>
-          <Label>{t('fields.avatarFrame', 'Avatar Frame Style')}</Label>
-          <Select
-            value={formData.avatarFrame || 'default'}
-            onValueChange={(value) => onChange({ ...formData, avatarFrame: value as any })}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">{t('frames.default', 'Default')}</SelectItem>
-              <SelectItem value="none">{t('frames.none', 'No Frame')}</SelectItem>
-              <SelectItem value="solid">{t('frames.solid', 'Solid')}</SelectItem>
-              <SelectItem value="gradient">{t('frames.gradient', 'Gradient')}</SelectItem>
-              <SelectItem value="gradient-sunset">{t('frames.gradientSunset', 'Sunset')}</SelectItem>
-              <SelectItem value="gradient-ocean">{t('frames.gradientOcean', 'Ocean')}</SelectItem>
-              <SelectItem value="gradient-purple">{t('frames.gradientPurple', 'Purple')}</SelectItem>
-              <SelectItem value="neon-blue">{t('frames.neonBlue', 'Neon Blue')}</SelectItem>
-              <SelectItem value="neon-pink">{t('frames.neonPink', 'Neon Pink')}</SelectItem>
-              <SelectItem value="neon-green">{t('frames.neonGreen', 'Neon Green')}</SelectItem>
-              <SelectItem value="rainbow">{t('frames.rainbow', 'Rainbow')}</SelectItem>
-              <SelectItem value="rainbow-spin">{t('frames.rainbowSpin', 'Rainbow Spin')}</SelectItem>
-              <SelectItem value="double">{t('frames.double', 'Double')}</SelectItem>
-              <SelectItem value="dashed">{t('frames.dashed', 'Dashed')}</SelectItem>
-              <SelectItem value="dotted">{t('frames.dotted', 'Dotted')}</SelectItem>
-              <SelectItem value="glow-pulse">{t('frames.glowPulse', 'Glow Pulse')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Collapsible open={frameOpen} onOpenChange={setFrameOpen}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full py-2 text-sm font-medium">
+            <span>{t('fields.avatarFrame', 'Avatar Frame Style')}</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${frameOpen ? 'rotate-180' : ''}`} />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="border rounded-lg bg-muted/30 mt-2">
+              <FrameGridSelector
+                value={(formData.avatarFrame || 'default') as ProfileFrameStyle}
+                onChange={(value) => onChange({ ...formData, avatarFrame: value as ProfileFrameStyle })}
+              />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <div>
           <Label>{t('fields.avatarIcon', 'Avatar Icon')}</Label>
@@ -157,32 +149,11 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
               <SelectValue placeholder={t('fields.selectIcon', 'Select icon')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('icons.none', 'No Icon')}</SelectItem>
-              <SelectItem value="crown">{t('icons.crown', 'Crown')}</SelectItem>
-              <SelectItem value="star">{t('icons.star', 'Star')}</SelectItem>
-              <SelectItem value="heart">{t('icons.heart', 'Heart')}</SelectItem>
-              <SelectItem value="sparkles">{t('icons.sparkles', 'Sparkles')}</SelectItem>
-              <SelectItem value="zap">{t('icons.zap', 'Zap')}</SelectItem>
-              <SelectItem value="flame">{t('icons.flame', 'Flame')}</SelectItem>
-              <SelectItem value="diamond">{t('icons.diamond', 'Diamond')}</SelectItem>
-              <SelectItem value="gem">{t('icons.gem', 'Gem')}</SelectItem>
-              <SelectItem value="trophy">{t('icons.trophy', 'Trophy')}</SelectItem>
-              <SelectItem value="medal">{t('icons.medal', 'Medal')}</SelectItem>
-              <SelectItem value="award">{t('icons.award', 'Award')}</SelectItem>
-              <SelectItem value="badge-check">{t('icons.verified', 'Verified')}</SelectItem>
-              <SelectItem value="shield-check">{t('icons.shield', 'Shield')}</SelectItem>
-              <SelectItem value="rocket">{t('icons.rocket', 'Rocket')}</SelectItem>
-              <SelectItem value="music">{t('icons.music', 'Music')}</SelectItem>
-              <SelectItem value="camera">{t('icons.camera', 'Camera')}</SelectItem>
-              <SelectItem value="palette">{t('icons.palette', 'Palette')}</SelectItem>
-              <SelectItem value="code">{t('icons.code', 'Code')}</SelectItem>
-              <SelectItem value="gamepad-2">{t('icons.gaming', 'Gaming')}</SelectItem>
-              <SelectItem value="dumbbell">{t('icons.fitness', 'Fitness')}</SelectItem>
-              <SelectItem value="utensils">{t('icons.food', 'Food')}</SelectItem>
-              <SelectItem value="plane">{t('icons.travel', 'Travel')}</SelectItem>
-              <SelectItem value="briefcase">{t('icons.business', 'Business')}</SelectItem>
-              <SelectItem value="graduation-cap">{t('icons.education', 'Education')}</SelectItem>
-              <SelectItem value="mic">{t('icons.podcast', 'Podcast')}</SelectItem>
+              {AVATAR_ICON_OPTIONS.map((icon) => (
+                <SelectItem key={icon.value} value={icon.value || 'none'}>
+                  {icon.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
