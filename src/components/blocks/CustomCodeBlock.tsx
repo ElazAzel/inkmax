@@ -22,25 +22,37 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
                      'ul', 'ol', 'li', 'br', 'hr', 'strong', 'em', 'b', 'i', 'u', 
                      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 
                      'pre', 'code', 'figure', 'figcaption', 'video', 'audio', 'source',
-                     'iframe', 'button', 'input', 'label', 'form', 'select', 'option'],
+                     'iframe', 'button', 'input', 'label', 'form', 'select', 'option',
+                     'style', 'nav', 'header', 'footer', 'main', 'section', 'article', 'aside',
+                     'svg', 'path', 'circle', 'rect', 'line', 'polygon', 'polyline', 'ellipse', 'g',
+                     'canvas', 'details', 'summary', 'mark', 'small', 'sub', 'sup', 'time', 'abbr',
+                     'address', 'cite', 'q', 'dl', 'dt', 'dd', 'caption', 'colgroup', 'col',
+                     'picture', 'track', 'wbr'],
       ALLOWED_ATTR: ['class', 'id', 'style', 'href', 'src', 'alt', 'title', 'target', 
                      'rel', 'width', 'height', 'type', 'value', 'placeholder', 'name',
                      'autoplay', 'controls', 'loop', 'muted', 'poster', 'frameborder',
-                     'allowfullscreen', 'allow', 'loading'],
-      ALLOW_DATA_ATTR: false,
-      FORBID_TAGS: ['script', 'style', 'object', 'embed', 'link', 'meta', 'base'],
+                     'allowfullscreen', 'allow', 'loading', 'srcset', 'sizes', 'media',
+                     'viewBox', 'fill', 'stroke', 'stroke-width', 'd', 'cx', 'cy', 'r', 'rx', 'ry',
+                     'x', 'y', 'x1', 'y1', 'x2', 'y2', 'points', 'transform', 'opacity',
+                     'aria-label', 'aria-hidden', 'role', 'tabindex', 'data-*',
+                     'min', 'max', 'step', 'pattern', 'required', 'disabled', 'readonly',
+                     'checked', 'selected', 'multiple', 'for', 'datetime', 'open'],
+      ALLOW_DATA_ATTR: true,
+      FORBID_TAGS: ['script', 'object', 'embed', 'link', 'meta', 'base', 'noscript'],
       FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur',
-                    'onsubmit', 'onkeydown', 'onkeyup', 'onkeypress', 'onchange', 'oninput'],
+                    'onsubmit', 'onkeydown', 'onkeyup', 'onkeypress', 'onchange', 'oninput',
+                    'onmousedown', 'onmouseup', 'onmousemove', 'onmouseout', 'ondblclick',
+                    'oncontextmenu', 'ondrag', 'ondrop', 'oncopy', 'oncut', 'onpaste',
+                    'onscroll', 'onresize', 'ontouchstart', 'ontouchmove', 'ontouchend'],
     });
   }, [block.html]);
 
   const sanitizedCss = useMemo(() => {
     if (!block.css) return '';
     
-    // Comprehensive CSS sanitization to prevent injection attacks
     let css = block.css;
     
-    // Remove dangerous at-rules
+    // Remove dangerous at-rules but keep safe ones
     css = css.replace(/@import\b/gi, '/* blocked */');
     css = css.replace(/@charset\b/gi, '/* blocked */');
     css = css.replace(/@namespace\b/gi, '/* blocked */');
@@ -51,20 +63,27 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
     css = css.replace(/behavior\s*:/gi, 'blocked:');
     
     // Block url() with dangerous protocols
-    css = css.replace(/url\s*\(\s*["']?\s*(javascript|data|vbscript):/gi, 'url(blocked:');
+    css = css.replace(/url\s*\(\s*["']?\s*(javascript|vbscript):/gi, 'url(blocked:');
     
     // Block browser-specific dangerous properties
     css = css.replace(/-moz-binding\s*:/gi, 'blocked:');
     css = css.replace(/-webkit-binding\s*:/gi, 'blocked:');
     
-    // Block content property with url() to prevent data exfiltration
-    css = css.replace(/content\s*:\s*url\s*\(/gi, 'content: none; /* blocked */ url(');
+    // Scope all CSS to the container to prevent global style leaks
+    const scopedCss = css.replace(/(^|})([^{]+)\{/g, (match, prefix, selector) => {
+      const trimmedSelector = selector.trim();
+      if (trimmedSelector.startsWith('@')) return match; // Keep at-rules intact
+      if (trimmedSelector.startsWith(':root') || trimmedSelector === '*') {
+        return `${prefix}.custom-code-container ${trimmedSelector} {`;
+      }
+      const scopedSelectors = trimmedSelector
+        .split(',')
+        .map((s: string) => `.custom-code-container ${s.trim()}`)
+        .join(', ');
+      return `${prefix}${scopedSelectors} {`;
+    });
     
-    // Block input-based selectors to prevent CSS keylogger attacks
-    css = css.replace(/input\s*\[.*value.*\]/gi, '/* blocked selector */');
-    css = css.replace(/input\s*:.*-placeholder/gi, 'input');
-    
-    return css;
+    return scopedCss;
   }, [block.css]);
 
   useEffect(() => {
@@ -87,9 +106,11 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
     };
   }, [sanitizedCss, block.id]);
 
+  const showHeader = title && title.trim() !== '';
+
   return (
     <Card className="overflow-hidden border-primary/20">
-      {title && (
+      {showHeader && (
         <CardHeader className="bg-primary/5">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">{title}</CardTitle>
@@ -100,7 +121,7 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
           </div>
         </CardHeader>
       )}
-      <CardContent className="p-0">
+      <CardContent className={showHeader ? "p-4" : "p-0"}>
         <div
           ref={containerRef}
           className="custom-code-container"
