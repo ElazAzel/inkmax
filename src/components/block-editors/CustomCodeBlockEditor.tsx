@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle, Code, Palette, Zap, Eye, EyeOff } from 'lucide-react';
+import { AlertTriangle, Code, Palette, Zap, Eye, EyeOff, Sparkles, Gamepad2, Calculator, Timer, Heart, Briefcase, Users } from 'lucide-react';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { validateCustomCodeBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
@@ -12,10 +12,23 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { useState, useMemo } from 'react';
+import { WIDGET_TEMPLATES, WIDGET_CATEGORIES, type WidgetTemplate } from '@/lib/widget-templates';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+const CATEGORY_ICONS = { games: Gamepad2, calculators: Calculator, timers: Timer, engagement: Heart, business: Briefcase, social: Users };
 
 function CustomCodeBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [showPreview, setShowPreview] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(!formData.html);
+  const [selectedCategory, setSelectedCategory] = useState<string>('games');
+
+  const applyTemplate = (template: WidgetTemplate) => {
+    onChange({ ...formData, html: template.html, css: template.css, javascript: template.javascript, title: i18n.language === 'ru' ? template.nameRu : template.name, enableInteraction: true });
+    setShowTemplates(false);
+  };
+
+  const filteredTemplates = WIDGET_TEMPLATES.filter(t => t.category === selectedCategory);
 
   const previewContent = useMemo(() => {
     const html = formData.html || '';
