@@ -89,6 +89,71 @@ function CustomCodeBlockEditorComponent({ formData, onChange }: BaseBlockEditorP
 
   return (
     <div className="space-y-4">
+      {/* Template Selector */}
+      <Card className="p-3">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <Label className="font-semibold">Готовые шаблоны</Label>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowTemplates(!showTemplates)}
+            className="text-xs text-primary hover:underline"
+          >
+            {showTemplates ? 'Скрыть' : 'Показать'}
+          </button>
+        </div>
+
+        {showTemplates && (
+          <div className="space-y-3">
+            {/* Category tabs */}
+            <div className="flex flex-wrap gap-1">
+              {Object.entries(WIDGET_CATEGORIES).map(([key, cat]) => {
+                const Icon = CATEGORY_ICONS[key as keyof typeof CATEGORY_ICONS];
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSelectedCategory(key)}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors ${
+                      selectedCategory === key 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'bg-muted hover:bg-muted/80'
+                    }`}
+                  >
+                    <Icon className="h-3 w-3" />
+                    {i18n.language === 'ru' ? cat.nameRu : cat.name}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Templates grid */}
+            <ScrollArea className="h-48">
+              <div className="grid grid-cols-2 gap-2">
+                {filteredTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => applyTemplate(template)}
+                    className="p-3 rounded-lg border bg-card hover:bg-accent hover:border-primary/50 transition-all text-left"
+                  >
+                    <div className="text-lg mb-1">{template.icon === 'Bomb' ? '💣' : template.icon === 'Cherry' ? '🍒' : template.icon === 'Brain' ? '🧠' : template.icon === 'RotateCw' ? '🎡' : template.icon === 'Receipt' ? '💵' : template.icon === 'Scale' ? '⚖️' : template.icon === 'Percent' ? '🏷️' : template.icon === 'Calendar' ? '🎂' : template.icon === 'Clock' ? '⏰' : template.icon === 'Timer' ? '🍅' : template.icon === 'Watch' ? '⏱️' : template.icon === 'Vote' ? '📊' : template.icon === 'Smile' ? '😊' : template.icon === 'HelpCircle' ? '❓' : template.icon === 'CalendarCheck' ? '📅' : template.icon === 'DollarSign' ? '💰' : template.icon === 'Users' ? '👥' : template.icon === 'MessageCircle' ? '💬' : '🎮'}</div>
+                    <div className="font-medium text-sm truncate">
+                      {i18n.language === 'ru' ? template.nameRu : template.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {i18n.language === 'ru' ? template.descriptionRu : template.description}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
+      </Card>
+
       <Alert variant="destructive">
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
