@@ -9,28 +9,35 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { searchUsers } from '@/services/collaboration';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
-import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+
+interface UserSearchResult {
+  id: string;
+  username: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
+}
 
 function ShoutoutBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Array<{
-    id: string;
-    username: string | null;
-    display_name: string | null;
-    avatar_url: string | null;
-  }>>([]);
+  const [searchResults, setSearchResults] = useState<UserSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim() || searchQuery.length < 2) {
+      setSearchError('Введите минимум 2 символа');
+      return;
+    }
     setSearching(true);
+    setSearchError(null);
     try {
       const results = await searchUsers(searchQuery);
-      setSearchResults(results);
+      setSearchResults(results || []);
     } catch (error) {
       console.error('Search error:', error);
+      setSearchError('Ошибка поиска. Попробуйте позже.');
+      setSearchResults([]);
     } finally {
       setSearching(false);
     }
@@ -126,7 +133,13 @@ function ShoutoutBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
             </div>
           )}
 
-          {searchQuery && searchResults.length === 0 && !searching && (
+          {searchError && (
+            <p className="text-sm text-destructive text-center py-2">
+              {searchError}
+            </p>
+          )}
+
+          {!searchError && searchQuery.length >= 2 && searchResults.length === 0 && !searching && (
             <p className="text-sm text-muted-foreground text-center py-4">
               Пользователи не найдены. Попробуйте другой запрос.
             </p>
