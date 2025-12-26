@@ -163,7 +163,10 @@ export function AdminAnalyticsDashboard() {
       
       events.forEach(e => {
         const meta = e.metadata as Record<string, any> | null;
+        // Support both naming conventions: visitorId/sessionId and visitor_id/session_id
+        if (meta?.visitorId) visitorIds.add(meta.visitorId);
         if (meta?.visitor_id) visitorIds.add(meta.visitor_id);
+        if (meta?.sessionId) sessionIds.add(meta.sessionId);
         if (meta?.session_id) sessionIds.add(meta.session_id);
       });
 
@@ -233,11 +236,11 @@ export function AdminAnalyticsDashboard() {
         { name: 'Шейры', count: shares, color: COLORS.shares }
       ];
 
-      // Device breakdown
+      // Device breakdown - support both device and device_type
       const deviceCounts: Record<string, number> = { desktop: 0, mobile: 0, tablet: 0, unknown: 0 };
       events.forEach(e => {
         const meta = e.metadata as Record<string, any> | null;
-        const device = meta?.device_type || 'unknown';
+        const device = meta?.device || meta?.device_type || 'unknown';
         deviceCounts[device] = (deviceCounts[device] || 0) + 1;
       });
 
@@ -248,11 +251,11 @@ export function AdminAnalyticsDashboard() {
         { name: 'Unknown', count: deviceCounts.unknown, color: COLORS.other }
       ].filter(d => d.count > 0);
 
-      // Source breakdown
+      // Source breakdown - support both source and referrer_source
       const sourceCounts: Record<string, number> = {};
       events.forEach(e => {
         const meta = e.metadata as Record<string, any> | null;
-        const source = meta?.referrer_source || 'direct';
+        const source = meta?.source || meta?.referrer_source || 'direct';
         sourceCounts[source] = (sourceCounts[source] || 0) + 1;
       });
 
