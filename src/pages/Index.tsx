@@ -246,18 +246,31 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* Liquid Glass Mesh Background */}
+      {/* Korner-style Grid Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-60 -left-60 w-[1000px] h-[1000px] bg-gradient-to-br from-primary/25 via-violet-500/15 to-transparent rounded-full blur-[180px] animate-morph" />
-        <div className="absolute top-1/4 -right-40 w-[800px] h-[800px] bg-gradient-to-bl from-blue-500/20 via-cyan-500/15 to-transparent rounded-full blur-[150px] animate-morph" style={{ animationDelay: '-5s' }} />
-        <div className="absolute -bottom-40 left-1/4 w-[900px] h-[900px] bg-gradient-to-tr from-purple-500/20 via-pink-500/15 to-transparent rounded-full blur-[160px] animate-morph" style={{ animationDelay: '-10s' }} />
+        {/* Subtle gradient blobs */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] sm:w-[1000px] sm:h-[1000px] bg-gradient-to-br from-primary/15 via-violet-500/10 to-transparent rounded-full blur-[120px] sm:blur-[180px]" />
+        <div className="absolute top-1/3 -right-20 w-[400px] h-[400px] sm:w-[800px] sm:h-[800px] bg-gradient-to-bl from-blue-500/12 via-cyan-500/8 to-transparent rounded-full blur-[100px] sm:blur-[150px]" />
+        <div className="absolute -bottom-20 left-1/4 w-[500px] h-[500px] sm:w-[900px] sm:h-[900px] bg-gradient-to-tr from-purple-500/12 via-pink-500/8 to-transparent rounded-full blur-[120px] sm:blur-[160px]" />
+        
+        {/* Korner-style thin grid */}
         <div 
-          className="absolute inset-0 opacity-[0.015]"
+          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]"
           style={{
             backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)`,
-            backgroundSize: '80px 80px'
+            backgroundSize: '60px 60px'
           }}
         />
+        
+        {/* Diagonal accent lines like korner */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.02]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="diagonal-lines" patternUnits="userSpaceOnUse" width="100" height="100" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="100" stroke="hsl(var(--foreground))" strokeWidth="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#diagonal-lines)" />
+        </svg>
       </div>
 
       {/* Navigation */}
@@ -311,7 +324,7 @@ export default function Index() {
       </nav>
 
       {/* Hero Section - Clean and focused */}
-      <section ref={heroSection.ref} className="relative pt-28 sm:pt-36 lg:pt-44 pb-20 sm:pb-32 px-4">
+      <section ref={heroSection.ref} className="relative pt-32 sm:pt-40 lg:pt-48 pb-16 sm:pb-24 lg:pb-32 px-5 sm:px-6">
         <div className="hidden lg:block">
           <Suspense fallback={null}>
             <Hero3D />
@@ -474,7 +487,7 @@ export default function Index() {
       </section>
 
       {/* Stats Bar */}
-      <section ref={statsSection.ref} className="py-8 sm:py-12 px-4 border-y border-border/30 bg-muted/20 backdrop-blur-sm">
+      <section ref={statsSection.ref} className="py-10 sm:py-14 px-5 sm:px-6 border-y border-border/30 bg-muted/20 backdrop-blur-sm">
         <div className="container mx-auto max-w-4xl">
           <div className="grid grid-cols-3 gap-3 sm:gap-8">
             {stats.map((stat, index) => (
@@ -483,10 +496,10 @@ export default function Index() {
                 className={`text-center opacity-0 ${statsSection.isVisible ? 'animate-stagger-in' : ''}`}
                 style={{ animationDelay: `${index * 150}ms` }}
               >
-                <div className="text-2xl sm:text-4xl font-bold text-gradient">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gradient">
                   {stat.value}{stat.suffix}
                 </div>
-                <div className="text-[10px] sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -494,9 +507,9 @@ export default function Index() {
       </section>
 
       {/* What makes LinkMAX unique */}
-      <section ref={uniqueSection.ref} className="py-12 sm:py-20 lg:py-28 px-4">
+      <section ref={uniqueSection.ref} className="py-16 sm:py-24 lg:py-32 px-5 sm:px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
+          <div className="text-center mb-10 sm:mb-14 lg:mb-20 space-y-4 sm:space-y-5">
             <h2 
               className={`text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${uniqueSection.isVisible ? 'animate-blur-in' : ''}`}
             >
@@ -510,11 +523,11 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {uniqueAdvantages.map((advantage, index) => (
               <div 
                 key={index}
-                className={`group relative p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-card/60 backdrop-blur-2xl border border-border/40 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-1 sm:hover:-translate-y-2 opacity-0 ${uniqueSection.isVisible ? 'animate-slide-in-up' : ''}`}
+                className={`group relative p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl bg-card/60 backdrop-blur-2xl border border-border/40 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-1 sm:hover:-translate-y-2 opacity-0 ${uniqueSection.isVisible ? 'animate-slide-in-up' : ''}`}
                 style={{ animationDelay: `${index * 120}ms` }}
               >
                 <div className={`absolute -inset-px rounded-2xl sm:rounded-3xl bg-gradient-to-br ${advantage.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
@@ -527,8 +540,8 @@ export default function Index() {
                   <advantage.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 
-                <h3 className="text-sm sm:text-lg font-bold mb-1 sm:mb-2">{advantage.title}</h3>
-                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed line-clamp-3 sm:line-clamp-none">{advantage.description}</p>
+                <h3 className="text-base sm:text-lg font-bold mb-2">{advantage.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{advantage.description}</p>
               </div>
             ))}
           </div>
@@ -536,9 +549,9 @@ export default function Index() {
       </section>
 
       {/* Target audiences carousel */}
-      <section ref={audiencesSection.ref} className="py-10 sm:py-16 lg:py-20 px-4 bg-muted/20">
+      <section ref={audiencesSection.ref} className="py-14 sm:py-20 lg:py-24 px-5 sm:px-6 bg-muted/20">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-6 sm:mb-10 space-y-2 sm:space-y-3">
+          <div className="text-center mb-8 sm:mb-12 space-y-3 sm:space-y-4">
             <h2 
               className={`text-xl sm:text-3xl lg:text-[2.75rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${audiencesSection.isVisible ? 'animate-blur-in' : ''}`}
             >
@@ -567,9 +580,9 @@ export default function Index() {
       </section>
 
       {/* Capabilities */}
-      <section ref={capabilitiesSection.ref} className="py-12 sm:py-20 lg:py-28 px-4">
+      <section ref={capabilitiesSection.ref} className="py-16 sm:py-24 lg:py-32 px-5 sm:px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
+          <div className="text-center mb-10 sm:mb-14 lg:mb-20 space-y-4 sm:space-y-5">
             <h2 
               className={`text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${capabilitiesSection.isVisible ? 'animate-blur-in' : ''}`}
             >
@@ -577,18 +590,18 @@ export default function Index() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {capabilities.map((cap, index) => (
               <div 
                 key={index}
-                className={`group p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card/50 backdrop-blur-xl border border-border/30 hover:border-primary/40 transition-all duration-300 hover:shadow-glass-lg hover:-translate-y-1 opacity-0 ${capabilitiesSection.isVisible ? 'animate-slide-in-up' : ''}`}
+                className={`group p-5 sm:p-6 lg:p-8 rounded-2xl bg-card/50 backdrop-blur-xl border border-border/30 hover:border-primary/40 transition-all duration-300 hover:shadow-glass-lg hover:-translate-y-1 opacity-0 ${capabilitiesSection.isVisible ? 'animate-slide-in-up' : ''}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
-                  <cap.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
+                  <cap.icon className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
                 </div>
-                <h3 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-2">{cap.title}</h3>
-                <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 sm:line-clamp-none">{cap.description}</p>
+                <h3 className="text-base sm:text-lg font-semibold mb-2">{cap.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{cap.description}</p>
               </div>
             ))}
           </div>
@@ -605,12 +618,12 @@ export default function Index() {
       <LandingGallerySection />
 
       {/* Pricing */}
-      <section ref={pricingSection.ref} className="py-12 sm:py-20 lg:py-28 px-4 relative">
+      <section ref={pricingSection.ref} className="py-16 sm:py-24 lg:py-32 px-5 sm:px-6 relative">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-r from-primary/10 via-transparent to-transparent rounded-full blur-[120px]" />
+          <div className="absolute top-1/4 left-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-to-r from-primary/8 via-transparent to-transparent rounded-full blur-[100px] sm:blur-[120px]" />
         </div>
         <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
+          <div className="text-center mb-10 sm:mb-14 lg:mb-20 space-y-4 sm:space-y-5">
             <div 
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${pricingSection.isVisible ? 'animate-fade-in' : ''}`}
             >

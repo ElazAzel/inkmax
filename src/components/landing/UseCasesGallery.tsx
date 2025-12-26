@@ -119,15 +119,15 @@ export function UseCasesGallery() {
   ];
 
   return (
-    <section ref={sectionAnimation.ref} className="py-12 sm:py-20 lg:py-28 px-4 relative">
+    <section ref={sectionAnimation.ref} className="py-16 sm:py-24 lg:py-32 px-5 sm:px-6 relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[600px] sm:h-[800px] bg-gradient-radial from-primary/5 via-transparent to-transparent rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[800px] h-[400px] sm:h-[800px] bg-gradient-radial from-primary/5 via-transparent to-transparent rounded-full" />
       </div>
       
       <div className="container mx-auto max-w-7xl relative z-10">
-        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-20 space-y-4 sm:space-y-5">
           <div 
-            className={`inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 text-xs sm:text-sm font-medium opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in' : ''}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in' : ''}`}
           >
             <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             <span className="text-primary">{t('landing.useCases.badge', 'Примеры использования')}</span>
@@ -146,7 +146,7 @@ export function UseCasesGallery() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
           {useCases.map((useCase, index) => (
             <div 
               key={useCase.id}
@@ -154,20 +154,20 @@ export function UseCasesGallery() {
               style={{ animationDelay: `${400 + index * 100}ms` }}
             >
               {/* Header with gradient */}
-              <div className={`h-16 sm:h-20 lg:h-24 bg-gradient-to-br ${useCase.gradient} relative`}>
+              <div className={`h-20 sm:h-24 lg:h-28 bg-gradient-to-br ${useCase.gradient} relative`}>
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent)]" />
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                  <div className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-full bg-card border-[3px] sm:border-4 border-card flex items-center justify-center text-xl sm:text-2xl lg:text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="h-14 w-14 sm:h-16 sm:w-16 lg:h-18 lg:w-18 rounded-full bg-card border-4 border-card flex items-center justify-center text-2xl sm:text-3xl shadow-lg group-hover:scale-110 transition-transform">
                     {useCase.avatar}
                   </div>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="pt-8 sm:pt-10 lg:pt-12 pb-4 sm:pb-5 lg:pb-6 px-3 sm:px-4 lg:px-6 text-center">
-                <h3 className="font-bold text-sm sm:text-base lg:text-lg mb-0.5 sm:mb-1 truncate">{useCase.name}</h3>
-                <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground mb-2 sm:mb-3">{useCase.role}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground/80 mb-3 sm:mb-4 line-clamp-2 hidden sm:block">{useCase.description}</p>
+              <div className="pt-10 sm:pt-12 lg:pt-14 pb-5 sm:pb-6 px-4 sm:px-5 lg:px-6 text-center">
+                <h3 className="font-bold text-base sm:text-lg mb-1 truncate">{useCase.name}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-3">{useCase.role}</p>
+                <p className="text-sm text-muted-foreground/80 mb-4 line-clamp-2">{useCase.description}</p>
 
                 {/* Mock links */}
                 <div className="space-y-1.5 sm:space-y-2">

@@ -48,11 +48,11 @@ export function FAQSection() {
   ];
 
   return (
-    <section ref={sectionAnimation.ref} className="py-12 sm:py-20 lg:py-28 px-4 relative">
+    <section ref={sectionAnimation.ref} className="py-16 sm:py-24 lg:py-32 px-5 sm:px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background pointer-events-none" />
       
       <div className="container mx-auto max-w-4xl relative z-10">
-        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-20 space-y-4 sm:space-y-5">
           <div 
             className={`inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 text-xs sm:text-sm font-medium opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in' : ''}`}
           >
@@ -77,19 +77,19 @@ export function FAQSection() {
           className={`opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
           style={{ animationDelay: '400ms' }}
         >
-          <Accordion type="single" collapsible className="w-full space-y-2 sm:space-y-3">
+          <Accordion type="single" collapsible className="w-full space-y-3 sm:space-y-4">
             {faqItems.map((item, index) => (
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="rounded-xl sm:rounded-2xl bg-card/50 backdrop-blur-xl border border-border/40 px-4 sm:px-6 overflow-hidden hover:border-primary/30 transition-colors"
+                className="rounded-2xl bg-card/50 backdrop-blur-xl border border-border/40 px-5 sm:px-6 overflow-hidden hover:border-primary/30 transition-colors"
               >
-                <AccordionTrigger className="text-left py-4 sm:py-5 hover:no-underline group">
-                  <span className="font-semibold text-sm sm:text-base lg:text-lg group-hover:text-primary transition-colors pr-2">
+                <AccordionTrigger className="text-left py-5 sm:py-6 hover:no-underline group">
+                  <span className="font-semibold text-base sm:text-lg group-hover:text-primary transition-colors pr-2">
                     {item.question}
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4 sm:pb-5 leading-relaxed text-sm sm:text-base">
+                <AccordionContent className="text-muted-foreground pb-5 sm:pb-6 leading-relaxed text-sm sm:text-base">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
