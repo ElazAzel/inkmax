@@ -50,6 +50,7 @@ import {
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { useEffect, useRef, useState, Suspense, lazy } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
 import { LandingFeaturedPages } from '@/components/landing/LandingFeaturedPages';
 import { LandingGallerySection } from '@/components/landing/LandingGallerySection';
@@ -90,6 +91,19 @@ export default function Index() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [username, setUsername] = useState('');
+  const [showFloatingCta, setShowFloatingCta] = useState(false);
+  const isMobile = useIsMobile();
+
+  // Show floating CTA after scrolling past hero section
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setShowFloatingCta(scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleCreatePage = () => {
     if (username.trim()) {
@@ -867,6 +881,25 @@ export default function Index() {
           </div>
         </div>
       </footer>
+
+      {/* Floating CTA Button for Mobile */}
+      {isMobile && (
+        <div 
+          className={`fixed bottom-6 left-4 right-4 z-50 transition-all duration-300 ${
+            showFloatingCta 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-10 pointer-events-none'
+          }`}
+        >
+          <Button 
+            onClick={() => navigate('/auth')}
+            className="w-full rounded-2xl py-6 font-bold text-base shadow-2xl shadow-primary/40 bg-gradient-to-r from-primary via-blue-500 to-violet-600 hover:shadow-primary/50 active:scale-[0.98] transition-all"
+          >
+            <Sparkles className="h-5 w-5 mr-2" />
+            {t('landing.floatingCta', 'Создать страницу бесплатно')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
