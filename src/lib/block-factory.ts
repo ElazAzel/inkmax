@@ -285,6 +285,20 @@ export function createBlock(type: string): Block {
         message: 'Рекомендую этого специалиста!',
       };
     
+    case 'booking':
+      return {
+        id: `booking-${timestamp}`,
+        type: 'booking',
+        title: 'Записаться на прием',
+        description: 'Выберите удобное время',
+        workingHoursStart: 9,
+        workingHoursEnd: 18,
+        slotDuration: 60,
+        maxBookingDays: 30,
+        disabledWeekdays: [0, 6],
+        isPremium: true,
+      };
+    
     default:
       throw new Error(`Unknown block type: ${type}`);
   }
