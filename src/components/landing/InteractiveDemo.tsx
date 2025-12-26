@@ -86,9 +86,9 @@ export function InteractiveDemo() {
   };
 
   return (
-    <section className="py-12 sm:py-20 lg:py-28 px-4">
+    <section className="py-16 sm:py-24 lg:py-32 px-5 sm:px-6">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-20 space-y-4 sm:space-y-5">
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 text-xs sm:text-sm font-medium">
             <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             <span className="text-primary">{t('landing.demo.badge', 'Try it now')}</span>
