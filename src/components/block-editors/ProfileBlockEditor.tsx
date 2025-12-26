@@ -9,7 +9,7 @@ import { FrameGridSelector } from '@/components/editor/FramePreview';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import { AVATAR_ICON_OPTIONS } from '@/lib/avatar-frame-utils';
+import { AVATAR_ICON_OPTIONS, VERIFICATION_COLOR_OPTIONS, VERIFICATION_POSITION_OPTIONS } from '@/lib/avatar-frame-utils';
 import type { ProfileFrameStyle } from '@/types/page';
 
 function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
@@ -178,15 +178,65 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="verified"
-          checked={formData.verified || false}
-          onChange={(e) => onChange({ ...formData, verified: e.target.checked })}
-          className="h-4 w-4"
-        />
-        <Label htmlFor="verified" className="cursor-pointer">{t('fields.verified', 'Verified badge')}</Label>
+      <div className="space-y-3 border-t pt-4">
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="verified"
+            checked={formData.verified || false}
+            onChange={(e) => onChange({ ...formData, verified: e.target.checked })}
+            className="h-4 w-4"
+          />
+          <Label htmlFor="verified" className="cursor-pointer">{t('fields.verified', 'Verified badge')}</Label>
+        </div>
+
+        {formData.verified && (
+          <div className="grid grid-cols-2 gap-3 pl-6">
+            <div>
+              <Label className="text-xs">{t('fields.verifiedColor', 'Badge Color')}</Label>
+              <Select
+                value={formData.verifiedColor || 'blue'}
+                onValueChange={(value) => onChange({ ...formData, verifiedColor: value })}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {VERIFICATION_COLOR_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded-full border border-border/50" 
+                          style={{ backgroundColor: option.color }}
+                        />
+                        {option.label}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label className="text-xs">{t('fields.verifiedPosition', 'Badge Position')}</Label>
+              <Select
+                value={formData.verifiedPosition || 'bottom-right'}
+                onValueChange={(value) => onChange({ ...formData, verifiedPosition: value })}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {VERIFICATION_POSITION_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

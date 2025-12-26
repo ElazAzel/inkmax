@@ -150,6 +150,50 @@ export const AVATAR_ICON_OPTIONS = [
   { value: 'check-circle', label: 'Verified Circle' },
 ] as const;
 
+// Verification icon color options
+export const VERIFICATION_COLOR_OPTIONS = [
+  { value: 'blue', label: 'Blue', color: '#3b82f6' },
+  { value: 'green', label: 'Green', color: '#22c55e' },
+  { value: 'gold', label: 'Gold', color: '#eab308' },
+  { value: 'purple', label: 'Purple', color: '#a855f7' },
+  { value: 'pink', label: 'Pink', color: '#ec4899' },
+  { value: 'red', label: 'Red', color: '#ef4444' },
+  { value: 'white', label: 'White', color: '#ffffff' },
+] as const;
+
+// Verification icon position options
+export const VERIFICATION_POSITION_OPTIONS = [
+  { value: 'top-right', label: 'Top Right' },
+  { value: 'top-left', label: 'Top Left' },
+  { value: 'bottom-right', label: 'Bottom Right' },
+  { value: 'bottom-left', label: 'Bottom Left' },
+] as const;
+
+// Get position classes for verification badge
+export const getVerificationPositionClasses = (position: string = 'bottom-right'): string => {
+  const positions: Record<string, string> = {
+    'top-right': '-top-1 -right-1',
+    'top-left': '-top-1 -left-1',
+    'bottom-right': '-bottom-1 -right-1',
+    'bottom-left': '-bottom-1 -left-1',
+  };
+  return positions[position] || positions['bottom-right'];
+};
+
+// Get verification icon color
+export const getVerificationColor = (color: string = 'blue'): string => {
+  const colors: Record<string, string> = {
+    blue: '#3b82f6',
+    green: '#22c55e',
+    gold: '#eab308',
+    purple: '#a855f7',
+    pink: '#ec4899',
+    red: '#ef4444',
+    white: '#ffffff',
+  };
+  return colors[color] || colors.blue;
+};
+
 export const FRAME_CSS = `
   @keyframes glow-pulse {
     0%, 100% {

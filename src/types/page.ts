@@ -36,6 +36,9 @@ export interface BlockSchedule {
 
 export type ProfileFrameStyle = 'default' | 'none' | 'solid' | 'gradient' | 'gradient-sunset' | 'gradient-ocean' | 'gradient-purple' | 'neon-blue' | 'neon-pink' | 'neon-green' | 'rainbow' | 'rainbow-spin' | 'double' | 'dashed' | 'dotted' | 'glow-pulse' | 'fire' | 'electric' | 'wave' | 'heartbeat' | 'sparkle' | 'glitch';
 
+export type VerificationIconColor = 'blue' | 'green' | 'gold' | 'purple' | 'pink' | 'red' | 'white';
+export type VerificationIconPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+
 export interface ProfileBlock {
   id: string;
   type: 'profile';
@@ -43,6 +46,8 @@ export interface ProfileBlock {
   name: string | MultilingualString;
   bio: string | MultilingualString;
   verified?: boolean;
+  verifiedColor?: VerificationIconColor;
+  verifiedPosition?: VerificationIconPosition;
   avatarFrame?: ProfileFrameStyle;
   avatarIcon?: string; // Lucide icon name
   coverImage?: string;
