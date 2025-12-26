@@ -98,12 +98,15 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
     }
   }, [block, isPreview, onBlockClick, i18n.language]);
 
-  // Wrapper component for clickable blocks
-  const ClickableWrapper = ({ children }: { children: React.ReactNode }) => (
-    <div className={animationClass} style={animationStyle} onClick={handleClick}>
+  // Wrapper component for all blocks - tracks clicks for interactive ones
+  const TrackableWrapper = ({ children, trackClicks = false }: { children: React.ReactNode; trackClicks?: boolean }) => (
+    <div className={animationClass} style={animationStyle} onClick={trackClicks ? handleClick : undefined}>
       {children}
     </div>
   );
+
+  // For blocks that need click tracking passed as prop
+  const handleTrackClick = handleClick;
 
   switch (block.type) {
     case 'profile':
@@ -114,27 +117,27 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
       );
     case 'link':
       return (
-        <ClickableWrapper>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
-            <LinkBlock block={block} onClick={handleClick} />
+            <LinkBlock block={block} onClick={handleTrackClick} />
           </Suspense>
-        </ClickableWrapper>
+        </TrackableWrapper>
       );
     case 'button':
       return (
-        <ClickableWrapper>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
-            <ButtonBlock block={block} onClick={handleClick} />
+            <ButtonBlock block={block} onClick={handleTrackClick} />
           </Suspense>
-        </ClickableWrapper>
+        </TrackableWrapper>
       );
     case 'socials':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <SocialsBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'text':
       return (
@@ -154,27 +157,27 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
       );
     case 'product':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <ProductBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'video':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <VideoBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'carousel':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <CarouselBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'search':
       return (
@@ -194,27 +197,27 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
       );
     case 'messenger':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <MessengerBlock block={block} pageOwnerId={pageOwnerId} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'form':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
             <FormBlock block={block} pageOwnerId={pageOwnerId} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'download':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <DownloadBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'newsletter':
       return (
@@ -266,58 +269,58 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
       );
     case 'catalog':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <CatalogBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'before_after':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <BeforeAfterBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'faq':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <FAQBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'countdown':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
             <CountdownBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'pricing':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <PricingBlock block={block} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
       case 'shoutout':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <ShoutoutBlock 
               userId={(block as any).userId} 
               message={(block as any).message}
             />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'booking':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <BookingBlock 
               block={block as any}
@@ -325,7 +328,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
               pageId={undefined}
             />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     default:
       return null;
