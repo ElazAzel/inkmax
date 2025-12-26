@@ -120,6 +120,132 @@ export type Database = {
           },
         ]
       }
+      booking_slots: {
+        Row: {
+          block_id: string
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: string
+          is_available: boolean
+          owner_id: string
+          page_id: string
+          specific_date: string | null
+          start_time: string
+        }
+        Insert: {
+          block_id: string
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_available?: boolean
+          owner_id: string
+          page_id: string
+          specific_date?: string | null
+          start_time: string
+        }
+        Update: {
+          block_id?: string
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_available?: boolean
+          owner_id?: string
+          page_id?: string
+          specific_date?: string | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_slots_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_slots_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          block_id: string
+          cancelled_by: string | null
+          client_email: string | null
+          client_name: string
+          client_notes: string | null
+          client_phone: string | null
+          created_at: string
+          id: string
+          owner_id: string
+          page_id: string
+          slot_date: string
+          slot_end_time: string | null
+          slot_time: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          block_id: string
+          cancelled_by?: string | null
+          client_email?: string | null
+          client_name: string
+          client_notes?: string | null
+          client_phone?: string | null
+          created_at?: string
+          id?: string
+          owner_id: string
+          page_id: string
+          slot_date: string
+          slot_end_time?: string | null
+          slot_time: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          block_id?: string
+          cancelled_by?: string | null
+          client_email?: string | null
+          client_name?: string
+          client_notes?: string | null
+          client_phone?: string | null
+          created_at?: string
+          id?: string
+          owner_id?: string
+          page_id?: string
+          slot_date?: string
+          slot_end_time?: string | null
+          slot_time?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_progress: {
         Row: {
           challenge_id: string

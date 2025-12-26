@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout' | 'booking';
 
 // Multilingual string support
 import type { MultilingualString } from '@/lib/i18n-helpers';
@@ -418,13 +418,38 @@ export interface ShoutoutBlock {
   blockStyle?: BlockStyle;
 }
 
+// Booking Block - appointment scheduling
+export interface BookingSlot {
+  id: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface BookingBlock {
+  id: string;
+  type: 'booking';
+  title?: string | MultilingualString;
+  description?: string | MultilingualString;
+  workingHoursStart?: number;
+  workingHoursEnd?: number;
+  slotDuration?: number;
+  slots?: BookingSlot[];
+  disabledWeekdays?: number[];
+  maxBookingDays?: number;
+  requirePhone?: boolean;
+  requireEmail?: boolean;
+  isPremium: true;
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
 // Base block type with optional grid layout
 interface BlockGridProps {
   gridLayout?: GridLayoutData;
   createdAt?: string;
 }
 
-export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock) & BlockGridProps;
+export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock | BookingBlock) & BlockGridProps;
 
 export interface PageTheme {
   backgroundColor: string;
