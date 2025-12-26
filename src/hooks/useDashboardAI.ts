@@ -24,20 +24,66 @@ interface UseDashboardAIOptions {
 }
 
 /**
+ * Normalizes socials block data from AI format to expected format
+ */
+function normalizeSocialsBlock(blockData: Record<string, any>): Record<string, any> {
+  if (blockData.type !== 'socials' || !Array.isArray(blockData.platforms)) {
+    return blockData;
+  }
+  
+  // Normalize platforms array - AI may use 'platform' instead of 'icon'
+  const normalizedPlatforms = blockData.platforms
+    .filter((p: any) => p && typeof p === 'object')
+    .map((p: any) => ({
+      name: p.name || p.platform || p.icon || 'Link',
+      url: p.url || '',
+      icon: p.icon || p.platform || 'globe',
+    }));
+  
+  return {
+    ...blockData,
+    platforms: normalizedPlatforms,
+  };
+}
+
+/**
+ * Normalizes any block data from AI to match expected structure
+ */
+function normalizeBlockData(blockData: Record<string, any>): Record<string, any> {
+  // Normalize socials blocks
+  if (blockData.type === 'socials') {
+    return normalizeSocialsBlock(blockData);
+  }
+  
+  // Normalize countdown blocks - AI may use 'endDate' instead of 'targetDate'
+  if (blockData.type === 'countdown') {
+    return {
+      ...blockData,
+      targetDate: blockData.targetDate || blockData.endDate,
+    };
+  }
+  
+  return blockData;
+}
+
+/**
  * Creates a proper block from AI-generated data by merging with factory defaults
  */
 function createBlockFromAI(blockData: { type: string; [key: string]: any }, index: number): Block | null {
   try {
+    // Normalize block data first
+    const normalizedData = normalizeBlockData(blockData);
+    
     // Create base block from factory
-    const baseBlock = createBlock(blockData.type);
+    const baseBlock = createBlock(normalizedData.type);
     
     // Generate unique ID
-    const id = `${blockData.type}-${Date.now()}-${index}`;
+    const id = `${normalizedData.type}-${Date.now()}-${index}`;
     
     // Merge AI data with base block, AI data takes precedence
     const mergedBlock = {
       ...baseBlock,
-      ...blockData,
+      ...normalizedData,
       id,
     };
     
