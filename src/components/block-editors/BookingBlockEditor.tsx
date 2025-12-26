@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Clock, Plus, Trash2, CalendarDays } from 'lucide-react';
+import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
+import { Clock, Plus, Trash2, CalendarDays, Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BlockEditorWrapper } from './BlockEditorWrapper';
 import type { BookingBlock } from '@/types/page';
@@ -295,6 +296,65 @@ export function BookingBlockEditor({ block, onChange, onDelete, onDuplicate }: B
               onCheckedChange={v => onChange({ requireEmail: v })}
             />
           </div>
+        </div>
+
+        <Separator />
+
+        {/* Prepayment Settings */}
+        <div className="space-y-4">
+          <h4 className="font-medium flex items-center gap-2">
+            <Wallet className="h-4 w-4" />
+            {t('blocks.booking.prepayment', 'Предоплата')}
+          </h4>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>{t('blocks.booking.requirePrepayment', 'Требовать предоплату')}</Label>
+              <p className="text-xs text-muted-foreground">
+                {t('blocks.booking.prepaymentDesc', 'После записи клиент перейдёт в WhatsApp для оплаты')}
+              </p>
+            </div>
+            <Switch
+              checked={block.requirePrepayment || false}
+              onCheckedChange={v => onChange({ requirePrepayment: v })}
+            />
+          </div>
+
+          {block.requirePrepayment && (
+            <>
+              <div className="space-y-2">
+                <Label>{t('blocks.booking.prepaymentPhone', 'WhatsApp для оплаты')}</Label>
+                <Input
+                  value={block.prepaymentPhone || ''}
+                  onChange={e => onChange({ prepaymentPhone: e.target.value })}
+                  placeholder="+7 777 123 45 67"
+                  type="tel"
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t('blocks.booking.phoneHint', 'Номер телефона с WhatsApp для приёма оплаты')}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>{t('blocks.booking.prepaymentAmount', 'Сумма предоплаты')}</Label>
+                  <Input
+                    type="number"
+                    value={block.prepaymentAmount || ''}
+                    onChange={e => onChange({ prepaymentAmount: Number(e.target.value) || undefined })}
+                    placeholder="5000"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t('blocks.booking.currency', 'Валюта')}</Label>
+                  <CurrencySelect
+                    value={block.prepaymentCurrency || 'KZT'}
+                    onValueChange={v => onChange({ prepaymentCurrency: v as any })}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </BlockEditorWrapper>

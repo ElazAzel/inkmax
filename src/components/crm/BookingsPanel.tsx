@@ -28,6 +28,8 @@ import {
   X,
   RefreshCw,
   CalendarDays,
+  Download,
+  CalendarPlus,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format, isToday, isTomorrow, isPast, parseISO } from 'date-fns';
@@ -174,6 +176,81 @@ export function BookingsPanel() {
     return formatted;
   };
 
+  // Export bookings to CSV
+  const exportToCSV = () => {
+    if (filteredBookings.length === 0) {
+      toast.error(t('bookings.noBookingsToExport', 'No bookings to export'));
+      return;
+    }
+
+    const headers = ['Date', 'Time', 'Name', 'Phone', 'Email', 'Notes', 'Status', 'Created'];
+    const rows = filteredBookings.map(booking => [
+      booking.slot_date,
+      booking.slot_time.slice(0, 5),
+      booking.client_name,
+      booking.client_phone || '',
+      booking.client_email || '',
+      booking.client_notes || '',
+      booking.status,
+      new Date(booking.created_at).toISOString().split('T')[0],
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `bookings-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    
+    toast.success(t('bookings.exportSuccess', 'Bookings exported successfully'));
+  };
+
+  // Generate ICS file for calendar
+  const generateICS = (booking: Booking) => {
+    const startDate = parseISO(booking.slot_date);
+    const [hours, minutes] = booking.slot_time.split(':').map(Number);
+    startDate.setHours(hours, minutes, 0, 0);
+    
+    let endDate = new Date(startDate);
+    if (booking.slot_end_time) {
+      const [endHours, endMinutes] = booking.slot_end_time.split(':').map(Number);
+      endDate.setHours(endHours, endMinutes, 0, 0);
+    } else {
+      endDate.setHours(hours + 1, minutes, 0, 0);
+    }
+
+    const formatICSDate = (date: Date) => {
+      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    };
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LinkMAX//Booking//EN
+BEGIN:VEVENT
+UID:${booking.id}@linkmax
+DTSTAMP:${formatICSDate(new Date())}
+DTSTART:${formatICSDate(startDate)}
+DTEND:${formatICSDate(endDate)}
+SUMMARY:${t('bookings.appointmentWith', 'Appointment with')} ${booking.client_name}
+DESCRIPTION:${booking.client_notes ? booking.client_notes.replace(/\n/g, '\\n') : ''}\\n${booking.client_phone ? `Tel: ${booking.client_phone}` : ''}\\n${booking.client_email ? `Email: ${booking.client_email}` : ''}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `booking-${booking.client_name.replace(/\s+/g, '-')}-${booking.slot_date}.ics`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    
+    toast.success(t('bookings.calendarExported', 'Added to calendar'));
+  };
+
   if (loading) {
     return (
       <div className="p-8 text-center text-muted-foreground">
@@ -284,6 +361,16 @@ export function BookingsPanel() {
 
                     {booking.status !== 'cancelled' && booking.status !== 'completed' && (
                       <div className="flex gap-1">
+                        {/* Add to Calendar */}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 w-7 p-0 text-primary hover:text-primary/80 hover:bg-primary/10"
+                          onClick={() => generateICS(booking)}
+                          title={t('bookings.addToCalendar', 'Add to Calendar')}
+                        >
+                          <CalendarPlus className="h-4 w-4" />
+                        </Button>
                         {booking.status === 'pending' && (
                           <Button
                             size="sm"
@@ -325,9 +412,13 @@ export function BookingsPanel() {
         )}
       </ScrollArea>
 
-      {/* Refresh Button */}
-      <div className="p-3 border-t">
-        <Button variant="outline" size="sm" className="w-full" onClick={fetchBookings}>
+      {/* Actions Row */}
+      <div className="p-3 border-t flex gap-2">
+        <Button variant="outline" size="sm" className="flex-1" onClick={exportToCSV}>
+          <Download className="h-4 w-4 mr-2" />
+          {t('bookings.exportCSV', 'CSV')}
+        </Button>
+        <Button variant="outline" size="sm" className="flex-1" onClick={fetchBookings}>
           <RefreshCw className="h-4 w-4 mr-2" />
           {t('bookings.refresh', 'Refresh')}
         </Button>
