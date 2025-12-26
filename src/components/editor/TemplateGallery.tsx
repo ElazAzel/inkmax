@@ -568,38 +568,38 @@ export const TemplateGallery = memo(function TemplateGallery({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] sm:max-h-[85vh] p-0 overflow-hidden">
-        <DialogHeader className="p-4 sm:p-6 pb-0">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-lg sm:text-xl flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              {t('templates.title', 'Галерея шаблонов')}
+      <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[85vh] p-0 overflow-hidden">
+        <DialogHeader className="p-3 sm:p-6 pb-0">
+          <div className="flex items-center justify-between gap-2">
+            <DialogTitle className="text-base sm:text-xl flex items-center gap-2">
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+              <span className="truncate">{t('templates.title', 'Галерея шаблонов')}</span>
             </DialogTitle>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => setMarketplaceOpen(true)}
-              className="gap-1"
+              className="gap-1 flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3"
             >
-              <Store className="h-4 w-4" />
-              {t('templates.marketplace', 'Маркетплейс')}
+              <Store className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">{t('templates.marketplace', 'Маркетплейс')}</span>
             </Button>
           </div>
-          <DialogDescription className="text-sm">
+          <DialogDescription className="text-xs sm:text-sm">
             {t('templates.description', 'Выберите готовый шаблон — AI персонализирует под ваш бизнес')}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Category Filter */}
-        <div className="px-4 sm:px-6 py-3 border-b">
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {/* Category Filter - Horizontal scroll on mobile */}
+        <div className="px-3 sm:px-6 py-2 sm:py-3 border-b overflow-hidden">
+          <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
             {CATEGORIES.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className="whitespace-nowrap text-xs sm:text-sm"
+                className="whitespace-nowrap text-[11px] sm:text-sm px-2.5 sm:px-3 h-7 sm:h-9 flex-shrink-0"
               >
                 {category}
               </Button>
@@ -607,41 +607,41 @@ export const TemplateGallery = memo(function TemplateGallery({
           </div>
         </div>
 
-        <ScrollArea className="h-[60vh] sm:h-[55vh]">
-          <div className="p-4 sm:p-6 pt-4">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <ScrollArea className="h-[55vh] sm:h-[55vh]">
+          <div className="p-3 sm:p-6 pt-3 sm:pt-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
               {filteredTemplates.map((template) => (
                 <Card
                   key={template.id}
-                  className={`relative p-3 sm:p-4 hover:border-primary cursor-pointer transition-all hover:shadow-lg group ${
+                  className={`relative p-2.5 sm:p-4 hover:border-primary cursor-pointer transition-all hover:shadow-lg group active:scale-[0.98] ${
                     copiedId === template.id ? 'border-green-500 bg-green-500/10' : ''
                   }`}
                   onClick={() => handleSelect(template)}
                 >
                   {template.isPremium && (
-                    <Badge className="absolute -top-2 -right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px]">
+                    <Badge className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] sm:text-[10px] px-1.5">
                       PRO
                     </Badge>
                   )}
                   
-                  <div className="text-3xl sm:text-4xl mb-2 text-center group-hover:scale-110 transition-transform">
+                  <div className="text-2xl sm:text-4xl mb-1.5 sm:mb-2 text-center group-hover:scale-110 transition-transform">
                     {copiedId === template.id ? (
-                      <Check className="h-8 w-8 mx-auto text-green-500" />
+                      <Check className="h-6 w-6 sm:h-8 sm:w-8 mx-auto text-green-500" />
                     ) : (
                       template.preview
                     )}
                   </div>
                   
-                  <h4 className="font-semibold text-xs sm:text-sm text-center mb-1 truncate">
+                  <h4 className="font-semibold text-[11px] sm:text-sm text-center mb-0.5 sm:mb-1 truncate">
                     {template.name}
                   </h4>
                   
-                  <p className="text-[10px] sm:text-xs text-muted-foreground text-center line-clamp-2 min-h-[2.5em]">
+                  <p className="text-[9px] sm:text-xs text-muted-foreground text-center line-clamp-2 min-h-[2em] sm:min-h-[2.5em]">
                     {template.description}
                   </p>
                   
-                  <div className="mt-2 sm:mt-3 text-center">
-                    <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                  <div className="mt-1.5 sm:mt-3 text-center">
+                    <Badge variant="secondary" className="text-[9px] sm:text-xs px-1.5 sm:px-2">
                       {template.blocks.length} {t('templates.blocks', 'блоков')}
                     </Badge>
                   </div>
@@ -651,8 +651,8 @@ export const TemplateGallery = memo(function TemplateGallery({
           </div>
         </ScrollArea>
 
-        <div className="flex justify-end gap-2 p-4 border-t bg-muted/30">
-          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
+        <div className="flex justify-end gap-2 p-3 sm:p-4 border-t bg-muted/30">
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto text-sm">
             {t('common.cancel', 'Отмена')}
           </Button>
         </div>

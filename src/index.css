@@ -3,6 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Shimmer animation for lazy loading */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* ============================================
    LIQUID GLASS DESIGN SYSTEM - Apple Style
    All colors MUST be HSL.
