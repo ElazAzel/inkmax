@@ -42,7 +42,8 @@ export const SocialsBlock = memo(function SocialsBlockComponent({ block }: Socia
       )}
       <div className={`flex items-center ${justifyClass} gap-4 flex-wrap`}>
         {block.platforms.map((platform, index) => {
-          const Icon = iconMap[platform.icon.toLowerCase()] || Globe;
+          const iconKey = platform.icon?.toLowerCase() || 'globe';
+          const Icon = iconMap[iconKey] || Globe;
           return (
             <button
               key={index}
