@@ -119,72 +119,77 @@ export function UseCasesGallery() {
   ];
 
   return (
-    <section ref={sectionAnimation.ref} className="py-20 sm:py-28 px-4 relative">
+    <section ref={sectionAnimation.ref} className="py-12 sm:py-20 lg:py-28 px-4 relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/5 via-transparent to-transparent rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[600px] sm:h-[800px] bg-gradient-radial from-primary/5 via-transparent to-transparent rounded-full" />
       </div>
       
       <div className="container mx-auto max-w-7xl relative z-10">
-        <div className="text-center mb-12 sm:mb-16 space-y-4">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
           <div 
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in' : ''}`}
+            className={`inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 text-xs sm:text-sm font-medium opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in' : ''}`}
           >
-            <Star className="h-4 w-4 text-primary" />
+            <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             <span className="text-primary">{t('landing.useCases.badge', 'Примеры использования')}</span>
           </div>
           <h2 
-            className={`text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight opacity-0 ${sectionAnimation.isVisible ? 'animate-blur-in' : ''}`}
+            className={`text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight opacity-0 ${sectionAnimation.isVisible ? 'animate-blur-in' : ''}`}
             style={{ animationDelay: '150ms' }}
           >
             {t('landing.useCases.title', 'Кто использует LinkMAX')}
           </h2>
           <p 
-            className={`text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
+            className={`text-sm sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
             style={{ animationDelay: '300ms' }}
           >
             {t('landing.useCases.subtitle', 'Реальные примеры страниц для разных профессий и бизнесов')}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
           {useCases.map((useCase, index) => (
             <div 
               key={useCase.id}
-              className={`group relative rounded-3xl bg-card/50 backdrop-blur-xl border border-border/40 overflow-hidden hover:border-primary/40 transition-all duration-500 hover:shadow-glass-lg hover:-translate-y-2 opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
+              className={`group relative rounded-2xl sm:rounded-3xl bg-card/50 backdrop-blur-xl border border-border/40 overflow-hidden hover:border-primary/40 transition-all duration-500 hover:shadow-glass-lg hover:-translate-y-1 sm:hover:-translate-y-2 opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
               style={{ animationDelay: `${400 + index * 100}ms` }}
             >
               {/* Header with gradient */}
-              <div className={`h-24 bg-gradient-to-br ${useCase.gradient} relative`}>
+              <div className={`h-16 sm:h-20 lg:h-24 bg-gradient-to-br ${useCase.gradient} relative`}>
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent)]" />
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                  <div className="h-16 w-16 rounded-full bg-card border-4 border-card flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-full bg-card border-[3px] sm:border-4 border-card flex items-center justify-center text-xl sm:text-2xl lg:text-3xl shadow-lg group-hover:scale-110 transition-transform">
                     {useCase.avatar}
                   </div>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="pt-12 pb-6 px-6 text-center">
-                <h3 className="font-bold text-lg mb-1">{useCase.name}</h3>
-                <p className="text-sm text-muted-foreground mb-3">{useCase.role}</p>
-                <p className="text-sm text-muted-foreground/80 mb-4">{useCase.description}</p>
+              <div className="pt-8 sm:pt-10 lg:pt-12 pb-4 sm:pb-5 lg:pb-6 px-3 sm:px-4 lg:px-6 text-center">
+                <h3 className="font-bold text-sm sm:text-base lg:text-lg mb-0.5 sm:mb-1 truncate">{useCase.name}</h3>
+                <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground mb-2 sm:mb-3">{useCase.role}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground/80 mb-3 sm:mb-4 line-clamp-2 hidden sm:block">{useCase.description}</p>
 
                 {/* Mock links */}
-                <div className="space-y-2">
-                  {useCase.links.map((link, linkIndex) => (
+                <div className="space-y-1.5 sm:space-y-2">
+                  {useCase.links.slice(0, 2).map((link, linkIndex) => (
                     <div 
                       key={linkIndex}
-                      className="py-2.5 px-4 rounded-xl bg-muted/50 hover:bg-muted text-sm font-medium transition-colors cursor-default"
+                      className="py-2 sm:py-2.5 px-2 sm:px-4 rounded-lg sm:rounded-xl bg-muted/50 hover:bg-muted text-[10px] sm:text-xs lg:text-sm font-medium transition-colors cursor-default truncate"
                     >
                       {link}
                     </div>
                   ))}
+                  {useCase.links.length > 2 && (
+                    <div className="hidden sm:block py-2.5 px-4 rounded-xl bg-muted/50 hover:bg-muted text-xs lg:text-sm font-medium transition-colors cursor-default">
+                      {useCase.links[2]}
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Icon badge */}
-              <div className={`absolute top-4 right-4 h-8 w-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center`}>
-                <useCase.icon className="h-4 w-4 text-white" />
+              <div className={`absolute top-2 sm:top-3 lg:top-4 right-2 sm:right-3 lg:right-4 h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 rounded-md sm:rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center`}>
+                <useCase.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-4 lg:w-4 text-white" />
               </div>
             </div>
           ))}
@@ -192,16 +197,16 @@ export function UseCasesGallery() {
 
         {/* CTA */}
         <div 
-          className={`text-center mt-12 opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
+          className={`text-center mt-8 sm:mt-12 opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
           style={{ animationDelay: '1000ms' }}
         >
           <Button
             size="lg"
             onClick={() => navigate('/gallery')}
-            className="rounded-2xl px-8 py-6 text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group"
+            className="rounded-xl sm:rounded-2xl px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all group active:scale-[0.98]"
           >
             {t('landing.useCases.cta', 'Смотреть все страницы в галерее')}
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </div>
