@@ -327,15 +327,15 @@ export default function Index() {
                   <span className="text-primary">{t('landing.hero.badge', 'AI-powered link-in-bio')}</span>
                 </div>
                 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
+                <h1 className="text-[2.5rem] sm:text-[3.5rem] lg:text-[4.5rem] font-extrabold tracking-[-0.02em] leading-[1.05]">
                   {t('landing.hero.title', 'Страница, которая')}
                   <br />
                   <span className="text-gradient bg-[length:200%_auto] animate-gradient-x">
-                    {t('landing.hero.titleHighlight', 'продаёт за вас')}
+                    {t('landing.hero.titleHighlight', 'продаёт за вас.')}
                   </span>
                 </h1>
                 
-                <p className="text-lg sm:text-xl text-muted-foreground/90 max-w-lg leading-relaxed">
+                <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-md leading-relaxed font-normal">
                   {t('landing.hero.description', 'Создайте профессиональную страницу за 2 минуты с помощью AI. Все ссылки, услуги и контакты — в одном месте.')}
                 </p>
               </div>
@@ -498,12 +498,12 @@ export default function Index() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
             <h2 
-              className={`text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight opacity-0 ${uniqueSection.isVisible ? 'animate-blur-in' : ''}`}
+              className={`text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${uniqueSection.isVisible ? 'animate-blur-in' : ''}`}
             >
-              {t('landing.unique.title', 'Почему выбирают LinkMAX')}
+              {t('landing.unique.title', 'Почему выбирают LinkMAX.')}
             </h2>
             <p 
-              className={`text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto opacity-0 ${uniqueSection.isVisible ? 'animate-fade-in-up' : ''}`}
+              className={`text-sm sm:text-base lg:text-lg text-muted-foreground max-w-xl mx-auto opacity-0 font-normal ${uniqueSection.isVisible ? 'animate-fade-in-up' : ''}`}
               style={{ animationDelay: '200ms' }}
             >
               {t('landing.unique.subtitle', 'Не просто конструктор — умный помощник для вашего бизнеса')}
@@ -540,11 +540,11 @@ export default function Index() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-6 sm:mb-10 space-y-2 sm:space-y-3">
             <h2 
-              className={`text-xl sm:text-2xl lg:text-4xl font-bold opacity-0 ${audiencesSection.isVisible ? 'animate-blur-in' : ''}`}
+              className={`text-xl sm:text-3xl lg:text-[2.75rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${audiencesSection.isVisible ? 'animate-blur-in' : ''}`}
             >
               {t('landing.audiences.title', 'Для кого LinkMAX?')}
             </h2>
-            <p className={`text-xs sm:text-base text-muted-foreground opacity-0 ${audiencesSection.isVisible ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '150ms' }}>
+            <p className={`text-xs sm:text-sm lg:text-base text-muted-foreground opacity-0 font-normal ${audiencesSection.isVisible ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '150ms' }}>
               {t('landing.audiences.subtitle', 'Идеально подходит для экспертов, фрилансеров и малого бизнеса')}
             </p>
           </div>
@@ -571,9 +571,9 @@ export default function Index() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-8 sm:mb-12 lg:mb-16 space-y-3 sm:space-y-4">
             <h2 
-              className={`text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight opacity-0 ${capabilitiesSection.isVisible ? 'animate-blur-in' : ''}`}
+              className={`text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${capabilitiesSection.isVisible ? 'animate-blur-in' : ''}`}
             >
-              {t('landing.capabilities.title', 'Всё для вашей страницы')}
+              {t('landing.capabilities.title', 'Всё для вашей страницы.')}
             </h2>
           </div>
 
@@ -618,7 +618,7 @@ export default function Index() {
               <span className="text-primary">{t('landing.pricing.badge')}</span>
             </div>
             <h2 
-              className={`text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight opacity-0 ${pricingSection.isVisible ? 'animate-blur-in' : ''}`}
+              className={`text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${pricingSection.isVisible ? 'animate-blur-in' : ''}`}
               style={{ animationDelay: '150ms' }}
             >
               {t('landing.pricing.title')}
@@ -821,8 +821,8 @@ export default function Index() {
                 <span>{t('landing.cta.badge', 'Готовы начать?')}</span>
               </div>
               
-              <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-white tracking-tight">
-                {t('landing.cta.title', 'Создайте страницу прямо сейчас')}
+              <h2 className="text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold text-white tracking-[-0.02em] leading-tight">
+                {t('landing.cta.title', 'Создайте страницу прямо сейчас.')}
               </h2>
               
               <div className="max-w-md mx-auto pt-2 sm:pt-4">

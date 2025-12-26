@@ -93,10 +93,10 @@ export function InteractiveDemo() {
             <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             <span className="text-primary">{t('landing.demo.badge', 'Try it now')}</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight">
-            {t('landing.demo.title', 'Experience the Magic')}
+          <h2 className="text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold tracking-[-0.02em] leading-tight">
+            {t('landing.demo.title', 'Experience the Magic.')}
           </h2>
-          <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-xl mx-auto font-normal">
             {t('landing.demo.subtitle', 'Play with the editor right here. Add blocks, edit content, and see changes in real-time.')}
           </p>
         </div>
