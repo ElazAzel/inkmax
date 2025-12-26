@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { CheckCircle2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
@@ -115,9 +114,9 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
       )}
       
       <div className={`flex flex-col ${getPositionClass()} gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
-        {/* Outer container for positioning icon */}
+        {/* Outer container for positioning icon - no animation here */}
         <div className="relative">
-          {/* Frame wrapper - shadow and frame styles apply here only */}
+          {/* Frame wrapper - animations and shadow apply here ONLY */}
           <div 
             className={cn(
               "flex items-center justify-center rounded-full",
@@ -128,7 +127,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
               ...getFrameStyles(frameStyle),
             }}
           >
-            {/* Avatar - NO animation, NO shadow */}
+            {/* Avatar - NO animation, NO shadow - completely static */}
             <Avatar className={cn(getAvatarSize(), "bg-background")}>
               <AvatarImage src={block.avatar} alt={name} className="object-cover" />
               <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
@@ -139,8 +138,15 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
 
           {/* Icon badge */}
           {IconComponent && (
-            <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full p-1.5 shadow-lg">
+            <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full p-1.5 shadow-lg z-10">
               <IconComponent className="h-4 w-4" />
+            </div>
+          )}
+          
+          {/* Verification badge on frame */}
+          {block.verified && (
+            <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white rounded-full p-1 shadow-lg z-10">
+              <CheckCircle2 className="h-4 w-4" />
             </div>
           )}
         </div>
@@ -148,12 +154,6 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2">
             <h1 className="text-2xl font-bold">{name}</h1>
-            {block.verified && (
-              <Badge variant="secondary" className="gap-1">
-                <CheckCircle2 className="h-3 w-3" />
-                {t('profile.verified', 'Verified')}
-              </Badge>
-            )}
           </div>
           
           {bio && (
