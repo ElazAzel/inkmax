@@ -221,6 +221,7 @@ export default function Index() {
 
   // Animation refs
   const heroSection = useScrollAnimation();
+  const statsSection = useScrollAnimation();
   const uniqueSection = useScrollAnimation();
   const audiencesSection = useScrollAnimation();
   const capabilitiesSection = useScrollAnimation();
@@ -459,11 +460,15 @@ export default function Index() {
       </section>
 
       {/* Stats Bar */}
-      <section className="py-12 px-4 border-y border-border/30 bg-muted/20 backdrop-blur-sm">
+      <section ref={statsSection.ref} className="py-12 px-4 border-y border-border/30 bg-muted/20 backdrop-blur-sm">
         <div className="container mx-auto max-w-4xl">
           <div className="grid grid-cols-3 gap-8">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+              <div 
+                key={index} 
+                className={`text-center opacity-0 ${statsSection.isVisible ? 'animate-stagger-in' : ''}`}
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
                 <div className="text-3xl sm:text-4xl font-bold text-gradient">
                   {stat.value}{stat.suffix}
                 </div>
@@ -495,16 +500,16 @@ export default function Index() {
             {uniqueAdvantages.map((advantage, index) => (
               <div 
                 key={index}
-                className={`group relative p-6 rounded-3xl bg-card/60 backdrop-blur-2xl border border-border/40 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-2 opacity-0 ${uniqueSection.isVisible ? 'animate-fade-in-up' : ''}`}
-                style={{ animationDelay: `${index * 100}ms` }}
+                className={`group relative p-6 rounded-3xl bg-card/60 backdrop-blur-2xl border border-border/40 hover:border-primary/50 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-2 opacity-0 ${uniqueSection.isVisible ? 'animate-slide-in-up' : ''}`}
+                style={{ animationDelay: `${index * 120}ms` }}
               >
                 <div className={`absolute -inset-px rounded-3xl bg-gradient-to-br ${advantage.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
                 
-                <div className="absolute top-4 right-4 text-2xl font-bold text-muted-foreground/20">
+                <div className={`absolute top-4 right-4 text-2xl font-bold text-muted-foreground/20 opacity-0 ${uniqueSection.isVisible ? 'animate-fade-in' : ''}`} style={{ animationDelay: `${300 + index * 120}ms` }}>
                   {advantage.stat}
                 </div>
                 
-                <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${advantage.gradient} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${advantage.gradient} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                   <advantage.icon className="h-6 w-6 text-white" />
                 </div>
                 
@@ -530,14 +535,12 @@ export default function Index() {
             </p>
           </div>
 
-          <div 
-            className={`flex flex-wrap justify-center gap-3 opacity-0 ${audiencesSection.isVisible ? 'animate-fade-in-up' : ''}`}
-            style={{ animationDelay: '300ms' }}
-          >
+          <div className="flex flex-wrap justify-center gap-3">
             {targetAudiences.map((audience, index) => (
               <div 
                 key={index}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-card/80 backdrop-blur-sm border border-border/40 hover:border-primary/50 hover:shadow-glass transition-all duration-300 cursor-default group"
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full bg-card/80 backdrop-blur-sm border border-border/40 hover:border-primary/50 hover:shadow-glass transition-all duration-300 cursor-default group opacity-0 ${audiencesSection.isVisible ? 'animate-stagger-in' : ''}`}
+                style={{ animationDelay: `${200 + index * 50}ms` }}
               >
                 <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${audience.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                   <audience.icon className="h-4 w-4 text-white" />
@@ -564,10 +567,10 @@ export default function Index() {
             {capabilities.map((cap, index) => (
               <div 
                 key={index}
-                className={`group p-6 rounded-2xl bg-card/50 backdrop-blur-xl border border-border/30 hover:border-primary/40 transition-all duration-300 hover:shadow-glass-lg opacity-0 ${capabilitiesSection.isVisible ? 'animate-fade-in-up' : ''}`}
-                style={{ animationDelay: `${index * 80}ms` }}
+                className={`group p-6 rounded-2xl bg-card/50 backdrop-blur-xl border border-border/30 hover:border-primary/40 transition-all duration-300 hover:shadow-glass-lg hover:-translate-y-1 opacity-0 ${capabilitiesSection.isVisible ? 'animate-slide-in-up' : ''}`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
                   <cap.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{cap.title}</h3>
