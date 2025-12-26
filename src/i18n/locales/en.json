@@ -316,6 +316,172 @@
           "marketingAddons": "Marketing add-ons (referrals, promo codes)"
         }
       }
+    },
+    "faq": {
+      "badge": "FAQ",
+      "title": "Frequently Asked Questions",
+      "subtitle": "Answers to common questions about LinkMAX",
+      "q1": {
+        "question": "What is LinkMAX and what is it for?",
+        "answer": "LinkMAX is an AI-powered link-in-bio page builder that lets you create a mini-website in 2 minutes. Perfect for experts, freelancers, and businesses to combine all links, social media, and contact info in one place."
+      },
+      "q2": {
+        "question": "How much does LinkMAX cost?",
+        "answer": "The Basic plan is free forever and includes unlimited links, basic blocks, and 3 AI requests per day. Premium plans start at $2.50/month with annual billing and unlock professional themes, analytics, CRM, and unlimited AI."
+      },
+      "q3": {
+        "question": "How does AI page generation work?",
+        "answer": "During registration, you choose your niche (barber, photographer, trainer, etc.), and AI automatically creates a ready page with profile, needed blocks, and texts adapted to your profession. This takes about 30 seconds."
+      },
+      "q4": {
+        "question": "Can I use my own domain?",
+        "answer": "Yes, the Business plan allows you to connect your own domain with an SSL certificate. On free and Pro plans, your page is available at linkmax.app/your-name."
+      },
+      "q5": {
+        "question": "How do I accept payments through my page?",
+        "answer": "The Business plan includes Stripe and Kaspi Pay integration. You can sell products, services, and digital products directly from your page, receive payment notifications, and track them in CRM."
+      },
+      "q6": {
+        "question": "Is there a mobile editor?",
+        "answer": "Yes! LinkMAX is built mobile-first. You can fully edit your page from your smartphone — add blocks, change design, view analytics, and manage leads."
+      },
+      "q7": {
+        "question": "What blocks are available?",
+        "answer": "20+ block types are available: profile, links, buttons, images, video, carousels, products, price lists, forms, maps, messengers, testimonials, timers, and more. Premium blocks unlock with paid plans."
+      },
+      "q8": {
+        "question": "Is there analytics and CRM?",
+        "answer": "Yes, LinkMAX includes built-in view and click analytics. Pro plan offers mini-CRM for up to 100 leads/month with Telegram notifications, and Business has full CRM without limits."
+      }
+    },
+    "useCases": {
+      "badge": "Use Cases",
+      "title": "Who Uses LinkMAX",
+      "subtitle": "Real page examples for different professions and businesses",
+      "cta": "View all pages in gallery",
+      "photographer": {
+        "name": "Alex Photo",
+        "role": "Photographer",
+        "desc": "Portfolio, pricing, booking",
+        "link1": "🎨 Portfolio",
+        "link2": "💰 Price List",
+        "link3": "📅 Book Now"
+      },
+      "barber": {
+        "name": "BarberShop MAX",
+        "role": "Barber Shop",
+        "desc": "Services, prices, online booking",
+        "link1": "✂️ Services",
+        "link2": "📍 Location",
+        "link3": "📱 WhatsApp"
+      },
+      "fitness": {
+        "name": "Maria Fitness",
+        "role": "Fitness Trainer",
+        "desc": "Training programs, online courses",
+        "link1": "🏋️ Programs",
+        "link2": "📹 Online Course",
+        "link3": "✉️ Telegram"
+      },
+      "psychologist": {
+        "name": "Anna Psychologist",
+        "role": "Psychologist",
+        "desc": "Consultations, therapy directions",
+        "link1": "💬 About Therapy",
+        "link2": "📋 Book Session",
+        "link3": "📚 Blog"
+      },
+      "musician": {
+        "name": "DJ Max",
+        "role": "Musician",
+        "desc": "Music, events, booking",
+        "link1": "🎧 Spotify",
+        "link2": "🎟️ Events",
+        "link3": "📞 Booking"
+      },
+      "shop": {
+        "name": "Fashion Boutique",
+        "role": "Clothing Store",
+        "desc": "Catalog, delivery, sales",
+        "link1": "👗 Catalog",
+        "link2": "🏷️ Sales",
+        "link3": "🚚 Delivery"
+      }
+    },
+    "capabilities": {
+      "noCode": {
+        "title": "No-Code Builder",
+        "desc": "Create pages easily and quickly"
+      },
+      "ai": {
+        "title": "AI Creates for You",
+        "desc": "Choose your niche — AI builds the page"
+      },
+      "sell": {
+        "title": "Sell Effectively",
+        "desc": "Products, services, and digital goods"
+      },
+      "tickets": {
+        "title": "Tickets & Donations",
+        "desc": "Engage your audience and collect funds"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "desc": "Only useful data — no clutter"
+      },
+      "partnership": {
+        "title": "Partner Program",
+        "desc": "Grow together with partners"
+      }
+    },
+    "segments": {
+      "creators": {
+        "title": "Creators",
+        "desc": "Create pages, sell tickets, digital content or publish premium materials. Easy and without technical hassles.",
+        "cta": "Start Creating"
+      },
+      "influencers": {
+        "title": "Influencers",
+        "desc": "Share content and promote favorite brands on your page. Convenient way to interact with audience and partners.",
+        "cta": "Become an Ambassador"
+      },
+      "business": {
+        "title": "Business",
+        "desc": "Unite bloggers, fans and ambassadors in one space. Simplify communication and promote your product without bureaucracy.",
+        "cta": "Contact Us"
+      }
+    },
+    "advantages": {
+      "ai": {
+        "title": "AI Creates Everything",
+        "desc": "LinkMAX uses AI to generate content, copy, and structure"
+      },
+      "price": {
+        "title": "10x Cheaper",
+        "desc": "Just $2.50/mo instead of $10-15 at competitors"
+      },
+      "verified": {
+        "title": "Verification Badge",
+        "desc": "Premium users get a trust badge on their page"
+      },
+      "demo": {
+        "title": "Try It Now",
+        "desc": "Interactive demo right on the site — no registration needed"
+      }
+    },
+    "hero": {
+      "usernamePlaceholder": "yourname",
+      "create": "Create",
+      "free": "Free forever",
+      "noCode": "No coding",
+      "aiPowered": "AI-powered",
+      "subtitle2": "One link for all your socials, portfolio and business"
+    },
+    "howItWorks": {
+      "step4": {
+        "title": "Share your link",
+        "desc": "In bio, socials, everywhere"
+      }
     }
   },
   "auth": {

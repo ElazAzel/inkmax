@@ -57,6 +57,8 @@ import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
 import { LandingFeaturedPages } from '@/components/landing/LandingFeaturedPages';
 import { LandingGallerySection } from '@/components/landing/LandingGallerySection';
+import { FAQSection } from '@/components/landing/FAQSection';
+import { UseCasesGallery } from '@/components/landing/UseCasesGallery';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 
