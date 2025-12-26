@@ -60,13 +60,13 @@ export function FAQSection() {
             <span className="text-primary">{t('landing.faq.badge', 'Вопросы и ответы')}</span>
           </div>
           <h2 
-            className={`text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight opacity-0 ${sectionAnimation.isVisible ? 'animate-blur-in' : ''}`}
+            className={`text-2xl sm:text-4xl lg:text-[3.5rem] font-extrabold tracking-[-0.02em] leading-tight opacity-0 ${sectionAnimation.isVisible ? 'animate-blur-in' : ''}`}
             style={{ animationDelay: '150ms' }}
           >
-            {t('landing.faq.title', 'Часто задаваемые вопросы')}
+            {t('landing.faq.title', 'Часто задаваемые вопросы.')}
           </h2>
           <p 
-            className={`text-sm sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
+            className={`text-sm sm:text-base lg:text-lg text-muted-foreground max-w-xl mx-auto opacity-0 font-normal ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
             style={{ animationDelay: '300ms' }}
           >
             {t('landing.faq.subtitle', 'Ответы на популярные вопросы о LinkMAX')}
