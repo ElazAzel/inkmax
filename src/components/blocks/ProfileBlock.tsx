@@ -5,7 +5,7 @@ import { CheckCircle2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { parseRichText } from '@/lib/rich-text-parser';
-import { getFrameStyles, getShadowStyles, isGradientFrame, FRAME_CSS } from '@/lib/avatar-frame-utils';
+import { getFrameStyles, getShadowStyles, isGradientFrame, FRAME_CSS, getVerificationPositionClasses, getVerificationColor } from '@/lib/avatar-frame-utils';
 import { cn } from '@/lib/utils';
 import type { ProfileBlock as ProfileBlockType, ProfileFrameStyle } from '@/types/page';
 
@@ -145,8 +145,14 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           
           {/* Verification badge on frame */}
           {block.verified && (
-            <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white rounded-full p-1 shadow-lg z-10">
-              <CheckCircle2 className="h-4 w-4" />
+            <div 
+              className={cn(
+                "absolute rounded-full p-1 shadow-lg z-10",
+                getVerificationPositionClasses(block.verifiedPosition)
+              )}
+              style={{ backgroundColor: getVerificationColor(block.verifiedColor) }}
+            >
+              <CheckCircle2 className="h-4 w-4 text-white" />
             </div>
           )}
         </div>
