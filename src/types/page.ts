@@ -438,6 +438,10 @@ export interface BookingBlock {
   maxBookingDays?: number;
   requirePhone?: boolean;
   requireEmail?: boolean;
+  requirePrepayment?: boolean;
+  prepaymentPhone?: string; // WhatsApp phone for payment
+  prepaymentAmount?: number;
+  prepaymentCurrency?: Currency;
   isPremium: true;
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;

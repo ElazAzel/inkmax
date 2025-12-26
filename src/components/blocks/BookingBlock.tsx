@@ -8,8 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Clock, CalendarDays, User, Phone, Mail, Check, Loader2 } from 'lucide-react';
+import { Clock, CalendarDays, User, Phone, Mail, Check, Loader2, MessageCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { getCurrencySymbol } from '@/components/form-fields/CurrencySelect';
 import { toast } from 'sonner';
 import { format, addDays, isBefore, startOfDay } from 'date-fns';
 import { ru, kk } from 'date-fns/locale';
@@ -205,6 +206,20 @@ export const BookingBlock = memo(function BookingBlockComponent({
       toast.success(t('booking.success', 'Вы успешно записались!'));
       setShowForm(false);
       setSelectedSlot(null);
+      
+      // If prepayment is required, redirect to WhatsApp
+      if (block.requirePrepayment && block.prepaymentPhone) {
+        const phone = block.prepaymentPhone.replace(/[^0-9]/g, '');
+        const amount = block.prepaymentAmount || 0;
+        const currency = getCurrencySymbol(block.prepaymentCurrency || 'KZT');
+        const message = encodeURIComponent(
+          `Здравствуйте! Я записался(ась) на ${format(selectedDate, 'd MMMM', { locale })} в ${selectedSlot.time.substring(0, 5)}.\n` +
+          `Имя: ${formData.name}\n` +
+          `${amount > 0 ? `Сумма предоплаты: ${amount} ${currency}` : 'Хочу оплатить запись.'}`
+        );
+        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+      }
+      
       setFormData({ name: '', phone: '', email: '', notes: '' });
       
       // Refresh slots
@@ -408,10 +423,22 @@ export const BookingBlock = memo(function BookingBlockComponent({
               <Button type="submit" disabled={submitting} className="flex-1">
                 {submitting ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : block.requirePrepayment ? (
+                  <MessageCircle className="h-4 w-4 mr-2" />
                 ) : null}
-                {t('booking.confirm', 'Записаться')}
+                {block.requirePrepayment 
+                  ? t('booking.confirmAndPay', 'Записаться и оплатить')
+                  : t('booking.confirm', 'Записаться')
+                }
               </Button>
             </div>
+
+            {block.requirePrepayment && block.prepaymentAmount && (
+              <p className="text-xs text-muted-foreground text-center">
+                {t('booking.prepaymentNote', 'После записи вы будете перенаправлены в WhatsApp для оплаты')}
+                {' '}({block.prepaymentAmount} {getCurrencySymbol(block.prepaymentCurrency || 'KZT')})
+              </p>
+            )}
           </form>
         </DialogContent>
       </Dialog>
