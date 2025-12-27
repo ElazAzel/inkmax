@@ -289,7 +289,7 @@
 
 - [Документация](https://docs.lovable.dev)
 - [Discord сообщество](https://discord.com)
-- Email: support@lnkmx.my
+- Email: support@linkmax.app
 - Telegram: @linkmax_support
 
 ---
