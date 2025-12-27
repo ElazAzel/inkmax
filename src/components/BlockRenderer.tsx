@@ -59,6 +59,7 @@ interface BlockRendererProps {
   block: Block;
   isPreview?: boolean;
   pageOwnerId?: string;
+  isOwnerPremium?: boolean;
 }
 
 // Loading skeleton for blocks
@@ -77,7 +78,7 @@ function getBlockTitle(block: Block, lang: SupportedLanguage): string {
   return typeof rawTitle === 'object' ? getTranslatedString(rawTitle, lang) : String(rawTitle || block.type);
 }
 
-export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererProps) {
+export function BlockRenderer({ block, isPreview, pageOwnerId, isOwnerPremium }: BlockRendererProps) {
   const { onBlockClick } = useAnalytics();
   const { i18n } = useTranslation();
   
@@ -112,7 +113,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId }: BlockRendererPr
     case 'profile':
       return (
         <Suspense fallback={<BlockSkeleton />}>
-          <ProfileBlock block={block} isPreview={isPreview} />
+          <ProfileBlock block={block} isPreview={isPreview} isOwnerPremium={isOwnerPremium} />
         </Suspense>
       );
     case 'link':

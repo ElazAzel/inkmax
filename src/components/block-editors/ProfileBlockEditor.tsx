@@ -182,15 +182,28 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
+            id="autoVerifyPremium"
+            checked={formData.autoVerifyPremium || false}
+            onChange={(e) => onChange({ ...formData, autoVerifyPremium: e.target.checked })}
+            className="h-4 w-4"
+          />
+          <Label htmlFor="autoVerifyPremium" className="cursor-pointer text-sm">
+            {t('fields.autoVerifyPremium', 'Auto-verify for Premium users')}
+          </Label>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
             id="verified"
             checked={formData.verified || false}
             onChange={(e) => onChange({ ...formData, verified: e.target.checked })}
             className="h-4 w-4"
           />
-          <Label htmlFor="verified" className="cursor-pointer">{t('fields.verified', 'Verified badge')}</Label>
+          <Label htmlFor="verified" className="cursor-pointer">{t('fields.verified', 'Manual verified badge')}</Label>
         </div>
 
-        {formData.verified && (
+        {(formData.verified || formData.autoVerifyPremium) && (
           <div className="grid grid-cols-2 gap-3 pl-6">
             <div>
               <Label className="text-xs">{t('fields.verifiedColor', 'Badge Color')}</Label>

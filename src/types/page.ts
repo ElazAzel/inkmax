@@ -48,6 +48,7 @@ export interface ProfileBlock {
   verified?: boolean;
   verifiedColor?: VerificationIconColor;
   verifiedPosition?: VerificationIconPosition;
+  autoVerifyPremium?: boolean; // Auto-verify if page owner is premium
   avatarFrame?: ProfileFrameStyle;
   avatarIcon?: string; // Lucide icon name
   coverImage?: string;

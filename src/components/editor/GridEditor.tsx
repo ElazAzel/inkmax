@@ -29,6 +29,7 @@ interface GridBlockItemProps {
   isResizing: boolean;
   onDragStart: (e: React.MouseEvent | React.TouchEvent) => void;
   onResizeStart: (handle: 'se', e: React.MouseEvent | React.TouchEvent) => void;
+  isPremium?: boolean;
 }
 
 function GridBlockItem({
@@ -40,6 +41,7 @@ function GridBlockItem({
   isResizing,
   onDragStart,
   onResizeStart,
+  isPremium,
 }: GridBlockItemProps) {
   return (
     <div
@@ -56,7 +58,7 @@ function GridBlockItem({
         className="w-full h-full overflow-hidden p-2 cursor-pointer"
         onClick={() => onEdit(block)}
       >
-        <BlockRenderer block={block} isPreview />
+        <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} />
       </div>
 
       {/* Drag handle */}
@@ -287,6 +289,7 @@ export const GridEditor = memo(function GridEditor({
             isResizing={dragState.blockId === block.id && dragState.isResizing}
             onDragStart={(e) => onDragStart(block.id, e, block.gridLayout || {})}
             onResizeStart={(handle, e) => onResizeStart(block.id, handle, e, block.gridLayout || {})}
+            isPremium={isPremium}
           />
         ))}
       </div>
