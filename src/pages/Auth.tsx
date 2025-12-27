@@ -86,7 +86,7 @@ export default function Auth() {
       if (refCode) {
         applyReferralCode(refCode, user.id).then((result) => {
           if (result.success) {
-            toast.success(`🎉 +${result.bonusDays} дней Premium за реферальный код!`);
+            toast.success(t('auth.referral.success', '🎉 +{{days}} days Premium for referral code!', { days: result.bonusDays }));
           }
         });
       }
@@ -198,7 +198,7 @@ export default function Auth() {
 
   const handleTelegramResetRequest = async () => {
     if (!telegramChatId || !/^\d+$/.test(telegramChatId)) {
-      toast.error('Введите корректный Telegram Chat ID');
+      toast.error(t('auth.telegram.invalidChatId', 'Enter a valid Telegram Chat ID'));
       playError();
       return;
     }
@@ -211,18 +211,18 @@ export default function Auth() {
 
       if (error || !data?.success) {
         const errorMessages: Record<string, string> = {
-          telegram_not_found: 'Аккаунт с таким Telegram не найден',
-          telegram_send_failed: 'Не удалось отправить сообщение'
+          telegram_not_found: t('auth.telegram.notFound', 'Account with this Telegram not found'),
+          telegram_send_failed: t('auth.telegram.sendFailed', 'Failed to send message')
         };
-        toast.error(errorMessages[data?.error] || 'Ошибка отправки кода');
+        toast.error(errorMessages[data?.error] || t('auth.telegram.codeSendError', 'Error sending code'));
         playError();
       } else {
         playSuccess();
         setTelegramResetStep('verify');
-        toast.success('Код отправлен в Telegram!');
+        toast.success(t('auth.telegram.codeSent', 'Code sent to Telegram!'));
       }
     } catch (e) {
-      toast.error('Ошибка соединения');
+      toast.error(t('auth.telegram.connectionError', 'Connection error'));
       playError();
     }
     setIsLoading(false);
@@ -247,18 +247,18 @@ export default function Auth() {
       });
 
       if (error || !data?.success) {
-        toast.error(data?.error === 'invalid_token' ? 'Неверный или истёкший код' : 'Ошибка сброса пароля');
+        toast.error(data?.error === 'invalid_token' ? t('auth.telegram.invalidToken', 'Invalid or expired code') : t('auth.telegram.resetError', 'Password reset error'));
         playError();
       } else {
         playSuccess();
-        toast.success('Пароль успешно изменён!');
+        toast.success(t('auth.telegram.passwordChanged', 'Password successfully changed!'));
         setAuthMode('signin');
         setTelegramResetStep('request');
         setTelegramChatId('');
         setResetToken('');
       }
     } catch (e) {
-      toast.error('Ошибка соединения');
+      toast.error(t('auth.telegram.connectionError', 'Connection error'));
       playError();
     }
     setIsLoading(false);
@@ -342,9 +342,9 @@ export default function Auth() {
                 <Gift className="h-5 w-5 text-violet-400" />
               </div>
               <div>
-                <p className="font-medium text-sm">Вас пригласили!</p>
+                <p className="font-medium text-sm">{t('auth.referral.invited', 'You have been invited!')}</p>
                 <p className="text-xs text-muted-foreground">
-                  Зарегистрируйтесь и получите +3 дня Premium
+                  {t('auth.referral.bonus', 'Sign up and get +3 days Premium')}
                 </p>
               </div>
             </div>

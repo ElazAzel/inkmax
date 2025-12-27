@@ -92,7 +92,19 @@
       "free": "Free",
       "noCode": "No code",
       "aiHelps": "AI helps",
-      "create": "Create"
+      "create": "Create",
+      "badges": {
+        "aiReady": "AI Ready",
+        "autoGenerate": "Auto-generate",
+        "clicks": "Clicks",
+        "verified": "Verified",
+        "premium": "Premium"
+      },
+      "mockup": {
+        "name": "Alex Creator",
+        "role": "Digital Artist",
+        "portfolio": "Portfolio"
+      }
     },
     "problems": {
       "title": "Sound Familiar?",
@@ -566,7 +578,23 @@
     "passwordUpdatedDesc": "Your password has been successfully updated",
     "goToDashboard": "Go to Dashboard",
     "passwordsDoNotMatch": "Passwords do not match",
-    "updateFailed": "Failed to update password"
+    "updateFailed": "Failed to update password",
+    "telegram": {
+      "invalidChatId": "Enter a valid Telegram Chat ID",
+      "notFound": "Account with this Telegram not found",
+      "sendFailed": "Failed to send message",
+      "codeSendError": "Error sending code",
+      "codeSent": "Code sent to Telegram!",
+      "connectionError": "Connection error",
+      "invalidToken": "Invalid or expired code",
+      "resetError": "Password reset error",
+      "passwordChanged": "Password successfully changed!"
+    },
+    "referral": {
+      "invited": "You have been invited!",
+      "bonus": "Sign up and get +3 days Premium",
+      "success": "🎉 +{{days}} days Premium for referral code!"
+    }
   },
   "editor": {
     "title": "Page Editor",
