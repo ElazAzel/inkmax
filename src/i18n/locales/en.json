@@ -1100,6 +1100,72 @@
     "adminRoleDesc": "Access to admin panel"
   },
   "dashboard": {
+    "pageRefreshed": "Page refreshed",
+    "addFirstBlock": "Click + to add your first block"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "preview": "Preview",
+    "share": "Share",
+    "more": "More",
+    "settings": "Settings",
+    "language": "Language",
+    "noResults": "No results found"
+  },
+  "menu": {
+    "gamification": "Gamification",
+    "community": "Community",
+    "signOut": "Sign Out"
+  },
+  "mobileToolbar": {
+    "save": "Save",
+    "preview": "Preview",
+    "share": "Share",
+    "settings": "Settings",
+    "more": "More",
+    "moreOptions": "More Options",
+    "aiBuilder": "AI Builder",
+    "aiBuilderDesc": "Create page with AI",
+    "templates": "Templates",
+    "templatesDesc": "Ready templates",
+    "achievements": "Achievements",
+    "achievementsDesc": "Your progress",
+    "crm": "CRM",
+    "crmDesc": "Manage leads"
+  },
+  "tokens": {
+    "title": "Tokens",
+    "balance": "Balance",
+    "earn": "Earn",
+    "spend": "Spend"
+  },
+  "achievements": {
+    "title": "Achievements",
+    "progress": "Progress"
+  },
+  "freemium": {
+    "left": "left",
+    "limit": "limit",
+    "blockLimitReached": "Block limit reached. Upgrade to Premium for unlimited blocks.",
+    "blocksRemaining": "Blocks remaining: {{count}} of {{max}}",
+    "upgradeToPremium": "Upgrade to Premium",
+    "aiLimitReached": "AI request limit reached",
+    "aiRequestsRemaining": "AI requests remaining this week: {{count}}",
+    "aiLimitResetsWeekly": "Limit resets every week",
+    "unlimitedAI": "Unlimited AI",
+    "premiumBlockRequired": "This block requires Premium",
+    "viewOnly": "View only",
+    "viewOnlyHint": "Requires {{tier}} to edit",
+    "upgradeToEdit": "Upgrade to {{tier}} to edit",
+    "proRequired": "Requires PRO",
+    "businessRequired": "Requires BUSINESS"
+  },
+  "editor": {
+    "addBlock": "Add Block",
+    "selectBlock": "Select a block",
+    "searchBlocks": "Search blocks..."
   },
   "toasts": {
     "collaboration": {

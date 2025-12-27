@@ -1094,7 +1094,72 @@
     "adminRoleDesc": "Әкімші панеліне кіру"
   },
   "dashboard": {
-    "pageRefreshed": "Бет жаңартылды"
+    "pageRefreshed": "Бет жаңартылды",
+    "addFirstBlock": "Бірінші блокты қосу үшін + басыңыз"
+  },
+  "common": {
+    "save": "Сақтау",
+    "cancel": "Болдырмау",
+    "close": "Жабу",
+    "preview": "Алдын ала қарау",
+    "share": "Бөлісу",
+    "more": "Тағы",
+    "settings": "Баптаулар",
+    "language": "Тіл",
+    "noResults": "Нәтижелер табылмады"
+  },
+  "menu": {
+    "gamification": "Геймификация",
+    "community": "Қоғамдастық",
+    "signOut": "Шығу"
+  },
+  "mobileToolbar": {
+    "save": "Сақтау",
+    "preview": "Қарау",
+    "share": "Бөлісу",
+    "settings": "Баптаулар",
+    "more": "Тағы",
+    "moreOptions": "Қосымша",
+    "aiBuilder": "AI Құрастырушы",
+    "aiBuilderDesc": "AI арқылы бет жасау",
+    "templates": "Шаблондар",
+    "templatesDesc": "Дайын шаблондар",
+    "achievements": "Жетістіктер",
+    "achievementsDesc": "Сіздің прогресіңіз",
+    "crm": "CRM",
+    "crmDesc": "Лидтерді басқару"
+  },
+  "tokens": {
+    "title": "Токендер",
+    "balance": "Баланс",
+    "earn": "Табу",
+    "spend": "Жұмсау"
+  },
+  "achievements": {
+    "title": "Жетістіктер",
+    "progress": "Прогресс"
+  },
+  "freemium": {
+    "left": "қалды",
+    "limit": "лимит",
+    "blockLimitReached": "Блок лимитіне жетті. Шексіз блоктар үшін Premium-ға көтеріліңіз.",
+    "blocksRemaining": "Қалған блоктар: {{count}} / {{max}}",
+    "upgradeToPremium": "Premium-ға көтерілу",
+    "aiLimitReached": "AI сұрау лимитіне жетті",
+    "aiRequestsRemaining": "Осы аптада қалған AI сұраулары: {{count}}",
+    "aiLimitResetsWeekly": "Лимит апта сайын қалпына келеді",
+    "unlimitedAI": "Шексіз AI",
+    "premiumBlockRequired": "Бұл блок Premium қажет етеді",
+    "viewOnly": "Тек қарау",
+    "viewOnlyHint": "Өңдеу үшін {{tier}} қажет",
+    "upgradeToEdit": "Өңдеу үшін {{tier}}-ға көтеріліңіз",
+    "proRequired": "PRO қажет",
+    "businessRequired": "BUSINESS қажет"
+  },
+  "editor": {
+    "addBlock": "Блок қосу",
+    "selectBlock": "Блокты таңдаңыз",
+    "searchBlocks": "Блоктарды іздеу..."
   },
   "toasts": {
     "collaboration": {
