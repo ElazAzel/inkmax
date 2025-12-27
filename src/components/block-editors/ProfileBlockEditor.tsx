@@ -7,14 +7,25 @@ import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { FrameGridSelector } from '@/components/editor/FramePreview';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Crown, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { AVATAR_ICON_OPTIONS, VERIFICATION_COLOR_OPTIONS, VERIFICATION_POSITION_OPTIONS } from '@/lib/avatar-frame-utils';
 import type { ProfileFrameStyle } from '@/types/page';
+import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
+import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 
 function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [frameOpen, setFrameOpen] = useState(false);
+  const { canUseVerificationBadge, canUsePremiumFrames, canUseAdvancedThemes, currentTier } = useFreemiumLimits();
+  
+  const isPremiumFrameType = (frame: string) => {
+    const freeFrames = ['default', 'circle', 'rounded', 'square'];
+    return !freeFrames.includes(frame);
+  };
+  
   
   return (
     <div className="space-y-4">
@@ -126,14 +137,36 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
 
         <Collapsible open={frameOpen} onOpenChange={setFrameOpen}>
           <CollapsibleTrigger className="flex items-center justify-between w-full py-2 text-sm font-medium">
-            <span>{t('fields.avatarFrame', 'Avatar Frame Style')}</span>
+            <span className="flex items-center gap-2">
+              {t('fields.avatarFrame', 'Avatar Frame Style')}
+              {!canUsePremiumFrames() && (
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-violet-500 text-violet-500">
+                  <Crown className="h-2.5 w-2.5 mr-0.5" />
+                  PRO
+                </Badge>
+              )}
+            </span>
             <ChevronDown className={`h-4 w-4 transition-transform ${frameOpen ? 'rotate-180' : ''}`} />
           </CollapsibleTrigger>
           <CollapsibleContent>
             <div className="border rounded-lg bg-muted/30 mt-2">
+              {!canUsePremiumFrames() && isPremiumFrameType(formData.avatarFrame || 'default') && (
+                <div className="p-3 bg-violet-50 dark:bg-violet-900/20 border-b border-violet-200 dark:border-violet-800 rounded-t-lg">
+                  <p className="text-xs text-violet-600 dark:text-violet-400 flex items-center gap-1">
+                    <Lock className="h-3 w-3" />
+                    {t('premium.premiumFramesLocked', 'Premium frames require PRO subscription')}
+                  </p>
+                </div>
+              )}
               <FrameGridSelector
                 value={(formData.avatarFrame || 'default') as ProfileFrameStyle}
-                onChange={(value) => onChange({ ...formData, avatarFrame: value as ProfileFrameStyle })}
+                onChange={(value) => {
+                  if (!canUsePremiumFrames() && isPremiumFrameType(value)) {
+                    navigate('/pricing');
+                    return;
+                  }
+                  onChange({ ...formData, avatarFrame: value as ProfileFrameStyle });
+                }}
               />
             </div>
           </CollapsibleContent>
@@ -179,31 +212,58 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       </div>
 
       <div className="space-y-3 border-t pt-4">
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="autoVerifyPremium"
-            checked={formData.autoVerifyPremium || false}
-            onChange={(e) => onChange({ ...formData, autoVerifyPremium: e.target.checked })}
-            className="h-4 w-4"
-          />
-          <Label htmlFor="autoVerifyPremium" className="cursor-pointer text-sm">
-            {t('fields.autoVerifyPremium', 'Auto-verify for Premium users')}
-          </Label>
+        <div className="flex items-center justify-between">
+          <Label className="font-medium">{t('fields.verificationBadge', 'Verification Badge')}</Label>
+          {!canUseVerificationBadge() && (
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-violet-500 text-violet-500">
+              <Crown className="h-2.5 w-2.5 mr-0.5" />
+              PRO
+            </Badge>
+          )}
         </div>
         
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="verified"
-            checked={formData.verified || false}
-            onChange={(e) => onChange({ ...formData, verified: e.target.checked })}
-            className="h-4 w-4"
-          />
-          <Label htmlFor="verified" className="cursor-pointer">{t('fields.verified', 'Manual verified badge')}</Label>
-        </div>
+        {!canUseVerificationBadge() ? (
+          <div className="p-3 bg-muted/50 rounded-lg border border-dashed">
+            <p className="text-xs text-muted-foreground flex items-center gap-2">
+              <Lock className="h-4 w-4" />
+              {t('premium.verificationRequiresPro', 'Verification badge is available for PRO users')}
+            </p>
+            <button
+              onClick={() => navigate('/pricing')}
+              className="mt-2 text-xs text-primary hover:underline"
+            >
+              {t('premium.upgradeToPro', 'Upgrade to PRO →')}
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="autoVerifyPremium"
+                checked={formData.autoVerifyPremium || false}
+                onChange={(e) => onChange({ ...formData, autoVerifyPremium: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <Label htmlFor="autoVerifyPremium" className="cursor-pointer text-sm">
+                {t('fields.autoVerifyPremium', 'Auto-verify for Premium users')}
+              </Label>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="verified"
+                checked={formData.verified || false}
+                onChange={(e) => onChange({ ...formData, verified: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <Label htmlFor="verified" className="cursor-pointer">{t('fields.verified', 'Manual verified badge')}</Label>
+            </div>
+          </>
+        )}
 
-        {(formData.verified || formData.autoVerifyPremium) && (
+        {canUseVerificationBadge() && (formData.verified || formData.autoVerifyPremium) && (
           <div className="grid grid-cols-2 gap-3 pl-6">
             <div>
               <Label className="text-xs">{t('fields.verifiedColor', 'Badge Color')}</Label>

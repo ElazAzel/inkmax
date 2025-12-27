@@ -1089,6 +1089,8 @@ export type Database = {
           is_premium: boolean | null
           last_active_date: string | null
           longest_streak: number | null
+          premium_expires_at: string | null
+          premium_tier: string | null
           push_notifications_enabled: boolean | null
           push_subscription: Json | null
           streak_bonus_days: number | null
@@ -1111,6 +1113,8 @@ export type Database = {
           is_premium?: boolean | null
           last_active_date?: string | null
           longest_streak?: number | null
+          premium_expires_at?: string | null
+          premium_tier?: string | null
           push_notifications_enabled?: boolean | null
           push_subscription?: Json | null
           streak_bonus_days?: number | null
@@ -1133,6 +1137,8 @@ export type Database = {
           is_premium?: boolean | null
           last_active_date?: string | null
           longest_streak?: number | null
+          premium_expires_at?: string | null
+          premium_tier?: string | null
           push_notifications_enabled?: boolean | null
           push_subscription?: Json | null
           streak_bonus_days?: number | null
