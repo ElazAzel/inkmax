@@ -727,7 +727,9 @@
     "translateToOthers": "Басқа тілдерге аудару",
     "noTextToTranslate": "Аудару үшін мәтін енгізіңіз",
     "translationSuccess": "Аударма орындалды",
-    "translationError": "Аударма қатесі"
+    "translationError": "Аударма қатесі",
+    "translating": "Аударылуда...",
+    "autoTranslate": "Контентті авто-аудару"
   },
   "freemium": {
     "blockLimitReached": "Блоктар лимитіне жеттіңіз. Premium-ға көшіңіз.",
