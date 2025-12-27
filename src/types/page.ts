@@ -28,6 +28,9 @@ export interface BlockStyle {
   // Content alignment (vertical)
   contentAlignment?: 'top' | 'center' | 'bottom';
   
+  // Text/Element colors for visibility on any background
+  textColor?: string;
+  
   // Animation
   hoverEffect?: 'none' | 'scale' | 'glow' | 'lift' | 'fade';
   animation?: 'none' | 'fade-in' | 'slide-up' | 'scale-in' | 'bounce';
