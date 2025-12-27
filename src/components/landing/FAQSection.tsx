@@ -27,7 +27,7 @@ export function FAQSection() {
     },
     {
       question: t('landing.faq.q4.question', 'Можно ли использовать свой домен?'),
-      answer: t('landing.faq.q4.answer', 'Да, в тарифе Business вы можете подключить собственный домен с SSL-сертификатом. В бесплатном и Pro тарифах ваша страница будет доступна по адресу linkmax.app/ваше-имя.')
+      answer: t('landing.faq.q4.answer', 'Да, в тарифе Business вы можете подключить собственный домен с SSL-сертификатом. В бесплатном и Pro тарифах ваша страница будет доступна по адресу lnkmx.my/ваше-имя.')
     },
     {
       question: t('landing.faq.q5.question', 'Как принимать оплату через страницу?'),

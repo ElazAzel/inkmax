@@ -75,7 +75,7 @@ export function PrivacyPolicyModal({ open, onOpenChange }: PrivacyPolicyModalPro
           <p className="text-sm text-muted-foreground mb-2">9.2. Cookie types used: strictly necessary (for operation and authorization); analytical (for usage statistics collection); functional (for remembering preferences).</p>
           
           <h3 className="font-semibold mt-6 mb-2">10. Contact Information</h3>
-          <p className="text-sm text-muted-foreground mb-2">For questions, requests, or complaints regarding personal data processing, please contact: support@linkmax.app</p>
+          <p className="text-sm text-muted-foreground mb-2">For questions, requests, or complaints regarding personal data processing, please contact: support@lnkmx.my</p>
           <p className="text-sm text-muted-foreground mb-2">The current version of this Policy is always available at: https://lnkmx.my/privacy</p>
         </>
       );
@@ -128,7 +128,7 @@ export function PrivacyPolicyModal({ open, onOpenChange }: PrivacyPolicyModalPro
           <p className="text-sm text-muted-foreground mb-2">9.1. Платформа дұрыс жұмыс істеуді, аутентификацияны және аналитиканы қамтамасыз ету үшін cookie файлдарын пайдаланады.</p>
           
           <h3 className="font-semibold mt-6 mb-2">10. Байланыс ақпараты</h3>
-          <p className="text-sm text-muted-foreground mb-2">Дербес деректерді өңдеуге қатысты сұрақтар, сұраныстар немесе шағымдар бойынша хабарласыңыз: support@linkmax.app</p>
+          <p className="text-sm text-muted-foreground mb-2">Дербес деректерді өңдеуге қатысты сұрақтар, сұраныстар немесе шағымдар бойынша хабарласыңыз: support@lnkmx.my</p>
           <p className="text-sm text-muted-foreground mb-2">Осы Саясаттың ағымдағы нұсқасы әрқашан мына мекенжайда қол жетімді: https://lnkmx.my/privacy</p>
         </>
       );
@@ -192,7 +192,7 @@ export function PrivacyPolicyModal({ open, onOpenChange }: PrivacyPolicyModalPro
         <p className="text-sm text-muted-foreground mb-2">9.2. Типы используемых cookies: строго необходимые (для работы и авторизации); аналитические (для сбора статистики использования); функциональные (для запоминания предпочтений).</p>
         
         <h3 className="font-semibold mt-6 mb-2">10. Контактные данные</h3>
-        <p className="text-sm text-muted-foreground mb-2">По вопросам, запросам или жалобам относительно обработки персональных данных обращайтесь: support@linkmax.app</p>
+        <p className="text-sm text-muted-foreground mb-2">По вопросам, запросам или жалобам относительно обработки персональных данных обращайтесь: support@lnkmx.my</p>
         <p className="text-sm text-muted-foreground mb-2">Актуальная версия настоящей Политики всегда доступна по адресу: https://lnkmx.my/privacy</p>
       </>
     );
