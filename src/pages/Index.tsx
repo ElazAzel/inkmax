@@ -406,8 +406,8 @@ export default function Index() {
                       <Wand2 className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-bold">AI Ready</span>
-                      <div className="text-xs text-muted-foreground">Auto-generate</div>
+                      <span className="text-sm font-bold">{t('landing.hero.badges.aiReady', 'AI Ready')}</span>
+                      <div className="text-xs text-muted-foreground">{t('landing.hero.badges.autoGenerate', 'Auto-generate')}</div>
                     </div>
                   </div>
                 </div>
@@ -419,7 +419,7 @@ export default function Index() {
                     </div>
                     <div>
                       <span className="text-sm font-bold text-emerald-500">+247%</span>
-                      <div className="text-xs text-muted-foreground">Clicks</div>
+                      <div className="text-xs text-muted-foreground">{t('landing.hero.badges.clicks', 'Clicks')}</div>
                     </div>
                   </div>
                 </div>
@@ -430,8 +430,8 @@ export default function Index() {
                       <BadgeCheck className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-bold">Verified</span>
-                      <div className="text-xs text-muted-foreground">Premium</div>
+                      <span className="text-sm font-bold">{t('landing.hero.badges.verified', 'Verified')}</span>
+                      <div className="text-xs text-muted-foreground">{t('landing.hero.badges.premium', 'Premium')}</div>
                     </div>
                   </div>
                 </div>
@@ -454,14 +454,14 @@ export default function Index() {
                           </div>
                         </div>
                         <div className="text-center">
-                          <h3 className="font-bold text-lg">Alex Creator</h3>
-                          <p className="text-xs text-muted-foreground">Digital Artist</p>
+                          <h3 className="font-bold text-lg">{t('landing.hero.mockup.name', 'Alex Creator')}</h3>
+                          <p className="text-xs text-muted-foreground">{t('landing.hero.mockup.role', 'Digital Artist')}</p>
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <div className="p-3 rounded-xl bg-gradient-to-r from-primary to-blue-500 text-white text-center font-semibold text-sm shadow-lg">
-                          🎨 Portfolio
+                          🎨 {t('landing.hero.mockup.portfolio', 'Portfolio')}
                         </div>
                         <div className="p-3 rounded-xl bg-card border border-border/50 text-center font-medium text-sm">
                           📸 Instagram
