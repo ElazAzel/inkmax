@@ -282,8 +282,11 @@ export default function Index() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/30 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500" />
                   <img 
-                    src="/pwa-maskable-512x512.png" 
+                    src="/logo-64.png" 
                     alt="LinkMAX" 
+                    width="40"
+                    height="40"
+                    fetchPriority="high"
                     className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300" 
                   />
                 </div>
@@ -325,11 +328,14 @@ export default function Index() {
 
       {/* Hero Section - Clean and focused */}
       <section ref={heroSection.ref} className="relative pt-32 sm:pt-40 lg:pt-48 pb-16 sm:pb-24 lg:pb-32 px-5 sm:px-6">
-        <div className="hidden lg:block">
-          <Suspense fallback={null}>
-            <Hero3D />
-          </Suspense>
-        </div>
+        {/* Defer Hero3D until visible for better LCP */}
+        {!isMobile && heroSection.isVisible && (
+          <div className="hidden lg:block">
+            <Suspense fallback={null}>
+              <Hero3D />
+            </Suspense>
+          </div>
+        )}
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
             {/* Left - Text content */}
