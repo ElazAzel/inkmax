@@ -43,9 +43,9 @@ interface GridEditorProps {
 
 // Check if block is full width
 function isFullWidthBlock(blockSize?: BlockSizePreset): boolean {
-  const size = blockSize || 'full-medium';
+  const size = blockSize || 'full';
   const dims = BLOCK_SIZE_DIMENSIONS[size];
-  return dims.gridCols === 1;
+  return dims?.gridCols === 1;
 }
 
 interface SortableGridBlockItemProps {
@@ -73,12 +73,9 @@ function SortableGridBlockItem({
     isDragging,
   } = useSortable({ id: block.id });
 
-  const sizeInfo = BLOCK_SIZE_DIMENSIONS[block.blockSize || 'full-medium'];
-  
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    aspectRatio: `${sizeInfo.width} / ${sizeInfo.height}`,
   };
 
   return (
@@ -102,18 +99,13 @@ function SortableGridBlockItem({
         </div>
       </div>
 
-      {/* Block content */}
+      {/* Block content - fills entire space */}
       <div 
-        className="w-full h-full overflow-hidden p-3 cursor-pointer"
+        className="w-full h-full overflow-hidden cursor-pointer flex"
         onClick={() => onEdit(block)}
       >
-        <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} />
-      </div>
-
-      {/* Size indicator badge */}
-      <div className="absolute top-2 left-12 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-        <div className="bg-background/90 backdrop-blur-sm rounded-md px-2 py-1 shadow-sm border border-border text-[10px] text-muted-foreground">
-          {sizeInfo.width}×{sizeInfo.height}
+        <div className="w-full h-full flex-1">
+          <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} />
         </div>
       </div>
 
@@ -145,7 +137,6 @@ function SortableGridBlockItem({
 
 // Drag overlay component (ghost element while dragging)
 function DragOverlayBlockItem({ block, isPremium }: { block: Block; isPremium?: boolean }) {
-  const sizeInfo = BLOCK_SIZE_DIMENSIONS[block.blockSize || 'full-medium'];
   const isFullWidth = isFullWidthBlock(block.blockSize);
   
   return (
@@ -155,11 +146,10 @@ function DragOverlayBlockItem({ block, isPremium }: { block: Block; isPremium?: 
         isFullWidth ? 'w-full' : 'w-1/2'
       )}
       style={{
-        aspectRatio: `${sizeInfo.width} / ${sizeInfo.height}`,
         maxWidth: isFullWidth ? '640px' : '320px',
       }}
     >
-      <div className="w-full h-full overflow-hidden p-3 opacity-80">
+      <div className="w-full h-full overflow-hidden opacity-80">
         <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} />
       </div>
     </div>
