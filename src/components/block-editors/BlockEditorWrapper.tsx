@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Info, Calendar as CalendarIcon, X, Maximize2 } from 'lucide-react';
+import { Crown, Info, Calendar as CalendarIcon, X, Maximize2, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { AnimationSettings } from '@/components/editor/AnimationSettings';
@@ -112,8 +112,19 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
       });
     };
 
+    const handleContentAlignmentChange = (alignment: BlockStyle['contentAlignment']) => {
+      handleChange({
+        ...formData,
+        blockStyle: {
+          ...(formData.blockStyle || {}),
+          contentAlignment: alignment
+        }
+      });
+    };
+
     const currentSize = formData.blockSize || 'full-medium';
     const sizeInfo = BLOCK_SIZE_DIMENSIONS[currentSize as BlockSizePreset];
+    const currentContentAlignment = formData.blockStyle?.contentAlignment || 'center';
 
     return (
       <BlockEditorWrapper
@@ -163,6 +174,47 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
               </AlertDescription>
             </Alert>
           )}
+        </div>
+
+        {/* Content Alignment */}
+        <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border/50">
+          <div className="flex items-center gap-2">
+            <AlignVerticalJustifyCenter className="h-4 w-4 text-primary" />
+            <Label className="text-base font-semibold">Выравнивание контента</Label>
+          </div>
+          
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={currentContentAlignment === 'top' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleContentAlignmentChange('top')}
+              className="flex-1"
+            >
+              <AlignVerticalJustifyStart className="h-4 w-4 mr-1" />
+              Верх
+            </Button>
+            <Button
+              type="button"
+              variant={currentContentAlignment === 'center' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleContentAlignmentChange('center')}
+              className="flex-1"
+            >
+              <AlignVerticalJustifyCenter className="h-4 w-4 mr-1" />
+              Центр
+            </Button>
+            <Button
+              type="button"
+              variant={currentContentAlignment === 'bottom' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleContentAlignmentChange('bottom')}
+              className="flex-1"
+            >
+              <AlignVerticalJustifyEnd className="h-4 w-4 mr-1" />
+              Низ
+            </Button>
+          </div>
         </div>
         
         <Separator className="my-4" />

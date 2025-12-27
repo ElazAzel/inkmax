@@ -13,7 +13,7 @@ import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
 import { trackShare } from '@/services/analytics';
 import { checkPremiumStatus } from '@/services/user';
 import { toast } from 'sonner';
-import type { PageData } from '@/types/page';
+import type { PageData, PageBackground } from '@/types/page';
 import {
   Dialog,
   DialogContent,
@@ -111,9 +111,39 @@ export default function PublicPage() {
     );
   }
 
+  // Get background style from theme
+  const getPageBackgroundStyle = (background?: PageBackground): React.CSSProperties => {
+    if (!background) return {};
+    
+    switch (background.type) {
+      case 'solid':
+        return { backgroundColor: background.value };
+      case 'gradient':
+        const colors = background.value.split(',').map(c => c.trim());
+        return { 
+          background: `linear-gradient(${background.gradientAngle || 135}deg, ${colors.join(', ')})` 
+        };
+      case 'image':
+        return { 
+          backgroundImage: `url(${background.value})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        };
+      default:
+        return {};
+    }
+  };
+
+  const customBackground = pageData.theme?.customBackground;
+  const backgroundStyle = getPageBackgroundStyle(customBackground);
+
   return (
     <AnalyticsProvider pageId={pageData?.id} enabled={!!slug}>
-      <div className="min-h-screen bg-background">
+      <div 
+        className="min-h-screen bg-background"
+        style={backgroundStyle}
+      >
         {/* Language Switcher - Top Right */}
         <div className="fixed top-4 right-4 z-50">
           <LanguageSwitcher />

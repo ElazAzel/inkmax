@@ -37,6 +37,7 @@ export interface TierFeatures {
   canUseVerificationBadge: boolean;
   canUsePremiumFrames: boolean;
   canUseAdvancedThemes: boolean;
+  canUseCustomPageBackground: boolean;
 }
 
 export const FREE_LIMITS: TierFeatures = {
@@ -59,6 +60,7 @@ export const FREE_LIMITS: TierFeatures = {
   canUseVerificationBadge: false,
   canUsePremiumFrames: false,
   canUseAdvancedThemes: false,
+  canUseCustomPageBackground: false,
 };
 
 export const PRO_LIMITS: TierFeatures = {
@@ -81,6 +83,7 @@ export const PRO_LIMITS: TierFeatures = {
   canUseVerificationBadge: true,
   canUsePremiumFrames: true,
   canUseAdvancedThemes: true,
+  canUseCustomPageBackground: false,
 };
 
 export const BUSINESS_LIMITS: TierFeatures = {
@@ -103,6 +106,7 @@ export const BUSINESS_LIMITS: TierFeatures = {
   canUseVerificationBadge: true,
   canUsePremiumFrames: true,
   canUseAdvancedThemes: true,
+  canUseCustomPageBackground: true,
 };
 
 // Helper to get block tier
@@ -211,6 +215,7 @@ export function useFreemiumLimits() {
   const canUseVerificationBadge = () => limits.canUseVerificationBadge;
   const canUsePremiumFrames = () => limits.canUsePremiumFrames;
   const canUseAdvancedThemes = () => limits.canUseAdvancedThemes;
+  const canUseCustomPageBackground = () => limits.canUseCustomPageBackground;
   
   const getMaxLeads = () => limits.maxLeadsPerMonth;
 
@@ -244,6 +249,7 @@ export function useFreemiumLimits() {
     canUseVerificationBadge,
     canUsePremiumFrames,
     canUseAdvancedThemes,
+    canUseCustomPageBackground,
     getMaxLeads,
   };
 }

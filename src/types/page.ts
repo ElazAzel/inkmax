@@ -25,6 +25,9 @@ export interface BlockStyle {
   backgroundGradient?: string;
   backgroundOpacity?: number;
   
+  // Content alignment (vertical)
+  contentAlignment?: 'top' | 'center' | 'bottom';
+  
   // Animation
   hoverEffect?: 'none' | 'scale' | 'glow' | 'lift' | 'fade';
   animation?: 'none' | 'fade-in' | 'slide-up' | 'scale-in' | 'bounce';
@@ -479,6 +482,13 @@ interface BlockGridProps {
 
 export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock | BookingBlock) & BlockGridProps;
 
+// Page background configuration
+export interface PageBackground {
+  type: 'solid' | 'gradient' | 'image';
+  value: string; // color hex, gradient css, or image url
+  gradientAngle?: number;
+}
+
 export interface PageTheme {
   backgroundColor: string;
   backgroundGradient?: string;
@@ -486,6 +496,8 @@ export interface PageTheme {
   buttonStyle: 'default' | 'rounded' | 'pill' | 'gradient';
   fontFamily: 'sans' | 'serif' | 'mono';
   darkMode?: boolean;
+  // Custom page background (business only)
+  customBackground?: PageBackground;
 }
 
 export interface PageMetrics {
