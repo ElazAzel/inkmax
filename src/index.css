@@ -13,7 +13,7 @@
   }
 }
 
-/* Chaotic grid animations - multiple layers for depth effect */
+/* Chaotic grid animations - slower for calm effect */
 @keyframes grid-morph-1 {
   0%, 100% { background-size: 60px 60px; }
   12% { background-size: 85px 42px; }
@@ -42,17 +42,23 @@
 }
 
 .animate-grid-morph-1 {
-  animation: grid-morph-1 25s ease-in-out infinite;
+  animation: grid-morph-1 45s ease-in-out infinite;
 }
 
 .animate-grid-morph-2 {
-  animation: grid-morph-2 18s ease-in-out infinite;
-  animation-delay: -7s;
+  animation: grid-morph-2 38s ease-in-out infinite;
+  animation-delay: -15s;
 }
 
 .animate-grid-morph-3 {
-  animation: grid-morph-3 22s ease-in-out infinite;
-  animation-delay: -12s;
+  animation: grid-morph-3 42s ease-in-out infinite;
+  animation-delay: -25s;
+}
+
+/* Grid edge fade effect */
+.grid-fade-edges {
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
 }
 
 /* ============================================
