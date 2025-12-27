@@ -1,5 +1,24 @@
-import { memo, useCallback, useState, useEffect } from 'react';
-import { Plus, Move, Edit2, Trash2 } from 'lucide-react';
+import { memo, useCallback, useState } from 'react';
+import { Edit2, Trash2, GripVertical } from 'lucide-react';
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { BlockInsertButton } from './BlockInsertButton';
@@ -19,13 +38,7 @@ interface GridEditorProps {
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
   onUpdateBlock: (id: string, updates: Partial<Block>) => void;
-}
-
-// Get aspect ratio from block size
-function getBlockAspectRatio(blockSize?: BlockSizePreset): number {
-  const size = blockSize || 'full-medium';
-  const dims = BLOCK_SIZE_DIMENSIONS[size];
-  return dims.height / dims.width;
+  onReorderBlocks?: (blocks: Block[]) => void;
 }
 
 // Check if block is full width
@@ -35,35 +48,60 @@ function isFullWidthBlock(blockSize?: BlockSizePreset): boolean {
   return dims.gridCols === 1;
 }
 
-interface GridBlockItemProps {
+interface SortableGridBlockItemProps {
   block: Block;
   isFullWidth: boolean;
-  aspectRatio: number;
   onEdit: (block: Block) => void;
   onDelete: (id: string) => void;
   isPremium?: boolean;
+  isDragging?: boolean;
 }
 
-function GridBlockItem({
+function SortableGridBlockItem({
   block,
   isFullWidth,
-  aspectRatio,
   onEdit,
   onDelete,
   isPremium,
-}: GridBlockItemProps) {
+}: SortableGridBlockItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: block.id });
+
   const sizeInfo = BLOCK_SIZE_DIMENSIONS[block.blockSize || 'full-medium'];
   
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    aspectRatio: `${sizeInfo.width} / ${sizeInfo.height}`,
+  };
+
   return (
     <div
+      ref={setNodeRef}
+      style={style}
       className={cn(
         'relative group bg-card rounded-xl border border-border shadow-sm overflow-hidden transition-all hover:shadow-md',
-        isFullWidth ? 'col-span-2' : 'col-span-1'
+        isFullWidth ? 'col-span-2' : 'col-span-1',
+        isDragging && 'opacity-50 ring-2 ring-primary z-50'
       )}
-      style={{
-        aspectRatio: `${sizeInfo.width} / ${sizeInfo.height}`,
-      }}
     >
+      {/* Drag handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-grab active:cursor-grabbing"
+      >
+        <div className="bg-background/90 backdrop-blur-sm rounded-md p-1.5 shadow-sm border border-border">
+          <GripVertical className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </div>
+
       {/* Block content */}
       <div 
         className="w-full h-full overflow-hidden p-3 cursor-pointer"
@@ -73,7 +111,7 @@ function GridBlockItem({
       </div>
 
       {/* Size indicator badge */}
-      <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-2 left-12 opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <div className="bg-background/90 backdrop-blur-sm rounded-md px-2 py-1 shadow-sm border border-border text-[10px] text-muted-foreground">
           {sizeInfo.width}×{sizeInfo.height}
         </div>
@@ -100,6 +138,29 @@ function GridBlockItem({
         >
           <Trash2 className="h-3.5 w-3.5" />
         </Button>
+      </div>
+    </div>
+  );
+}
+
+// Drag overlay component (ghost element while dragging)
+function DragOverlayBlockItem({ block, isPremium }: { block: Block; isPremium?: boolean }) {
+  const sizeInfo = BLOCK_SIZE_DIMENSIONS[block.blockSize || 'full-medium'];
+  const isFullWidth = isFullWidthBlock(block.blockSize);
+  
+  return (
+    <div
+      className={cn(
+        'relative bg-card rounded-xl border-2 border-primary shadow-2xl overflow-hidden',
+        isFullWidth ? 'w-full' : 'w-1/2'
+      )}
+      style={{
+        aspectRatio: `${sizeInfo.width} / ${sizeInfo.height}`,
+        maxWidth: isFullWidth ? '640px' : '320px',
+      }}
+    >
+      <div className="w-full h-full overflow-hidden p-3 opacity-80">
+        <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} />
       </div>
     </div>
   );
@@ -149,7 +210,7 @@ function organizeBlocksIntoRows(blocks: Block[]): BlockRow[] {
       if (currentRow.length > 0) {
         rows.push({
           blocks: currentRow,
-          hasEmptySlot: currentRowCols === 1, // Has empty slot if only 1 col used
+          hasEmptySlot: currentRowCols === 1,
         });
       }
       currentRow = [block];
@@ -190,14 +251,58 @@ export const GridEditor = memo(function GridEditor({
   onEditBlock,
   onDeleteBlock,
   onUpdateBlock,
+  onReorderBlocks,
 }: GridEditorProps) {
   const isMobile = useIsMobile();
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const profileBlock = blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
   const contentBlocks = blocks.filter(b => b.type !== 'profile');
 
-  // Organize blocks into rows
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Organize blocks into rows for display
   const rows = organizeBlocksIntoRows(contentBlocks);
+
+  // Find active block for overlay
+  const activeBlock = activeId ? contentBlocks.find(b => b.id === activeId) : null;
+
+  // Handle drag start
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  }, []);
+
+  // Handle drag end
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+
+    if (over && active.id !== over.id) {
+      const oldIndex = contentBlocks.findIndex(b => b.id === active.id);
+      const newIndex = contentBlocks.findIndex(b => b.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const reorderedContent = arrayMove(contentBlocks, oldIndex, newIndex);
+        
+        // Reconstruct full blocks array with profile first
+        const newBlocks = profileBlock 
+          ? [profileBlock, ...reorderedContent]
+          : reorderedContent;
+        
+        onReorderBlocks?.(newBlocks);
+      }
+    }
+  }, [contentBlocks, profileBlock, onReorderBlocks]);
 
   // Handle adding block
   const handleInsertBlock = useCallback((blockType: string, afterIndex?: number) => {
@@ -217,51 +322,69 @@ export const GridEditor = memo(function GridEditor({
         </div>
       )}
 
-      {/* Grid container - 2 columns */}
-      <div className="space-y-3">
-        {rows.map((row, rowIndex) => (
-          <div
-            key={rowIndex}
-            className="grid grid-cols-2 gap-3"
-          >
-            {row.blocks.map((block) => (
-              <GridBlockItem
-                key={block.id}
-                block={block}
-                isFullWidth={isFullWidthBlock(block.blockSize)}
-                aspectRatio={getBlockAspectRatio(block.blockSize)}
-                onEdit={onEditBlock}
-                onDelete={onDeleteBlock}
-                isPremium={isPremium}
-              />
+      {/* Grid container with DnD */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={contentBlocks.map(b => b.id)}
+          strategy={rectSortingStrategy}
+        >
+          <div className="space-y-3">
+            {rows.map((row, rowIndex) => (
+              <div
+                key={rowIndex}
+                className="grid grid-cols-2 gap-3"
+              >
+                {row.blocks.map((block) => (
+                  <SortableGridBlockItem
+                    key={block.id}
+                    block={block}
+                    isFullWidth={isFullWidthBlock(block.blockSize)}
+                    onEdit={onEditBlock}
+                    onDelete={onDeleteBlock}
+                    isPremium={isPremium}
+                  />
+                ))}
+                
+                {/* Show add button in empty slot */}
+                {row.hasEmptySlot && (
+                  <AddBlockSlot
+                    onInsert={(type) => handleInsertBlock(type, rowIndex)}
+                    isPremium={isPremium}
+                    currentTier={currentTier}
+                    blockCount={blocks.length}
+                  />
+                )}
+              </div>
             ))}
-            
-            {/* Show add button in empty slot */}
-            {row.hasEmptySlot && (
-              <AddBlockSlot
-                onInsert={(type) => handleInsertBlock(type, rowIndex)}
-                isPremium={isPremium}
-                currentTier={currentTier}
-                blockCount={blocks.length}
-              />
-            )}
-          </div>
-        ))}
 
-        {/* Add row for new blocks */}
-        {rows.length === 0 || !rows[rows.length - 1]?.hasEmptySlot ? (
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2 border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center bg-muted/20 hover:bg-muted/30 transition-colors py-8">
-              <BlockInsertButton
-                onInsert={(type) => handleInsertBlock(type)}
-                isPremium={isPremium}
-                currentTier={currentTier}
-                currentBlockCount={blocks.length}
-              />
-            </div>
+            {/* Add row for new blocks */}
+            {rows.length === 0 || !rows[rows.length - 1]?.hasEmptySlot ? (
+              <div className="grid grid-cols-2 gap-3">
+                <div className="col-span-2 border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center bg-muted/20 hover:bg-muted/30 transition-colors py-8">
+                  <BlockInsertButton
+                    onInsert={(type) => handleInsertBlock(type)}
+                    isPremium={isPremium}
+                    currentTier={currentTier}
+                    currentBlockCount={blocks.length}
+                  />
+                </div>
+              </div>
+            ) : null}
           </div>
-        ) : null}
-      </div>
+        </SortableContext>
+
+        {/* Drag overlay */}
+        <DragOverlay>
+          {activeBlock && (
+            <DragOverlayBlockItem block={activeBlock} isPremium={isPremium} />
+          )}
+        </DragOverlay>
+      </DndContext>
 
       {/* Empty state */}
       {contentBlocks.length === 0 && (
