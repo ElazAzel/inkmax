@@ -79,9 +79,9 @@ export function DashboardHeader({
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/30 rounded-2xl blur-xl" />
                 <img
-                  src="/pwa-maskable-512x512.png"
+                  src="/logo.png"
                   alt="LinkMAX"
-                  className="relative h-10 w-10 animate-scale-in hover-scale rounded-2xl shadow-glass"
+                  className="relative h-10 w-10 animate-scale-in hover-scale rounded-2xl shadow-glass object-contain"
                 />
               </div>
               <h1 className="text-2xl font-black text-primary tracking-tight">LinkMAX</h1>
