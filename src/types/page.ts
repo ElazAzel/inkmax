@@ -53,6 +53,7 @@ export interface ProfileBlock {
   verifiedColor?: VerificationIconColor;
   verifiedPosition?: VerificationIconPosition;
   verifiedIcon?: VerificationIconType; // Custom verification icon
+  verifiedCustomIcon?: string; // Custom uploaded icon URL (PNG/SVG/GIF)
   autoVerifyPremium?: boolean; // Auto-verify if page owner is premium
   avatarFrame?: ProfileFrameStyle;
   avatarIcon?: string; // Lucide icon name
