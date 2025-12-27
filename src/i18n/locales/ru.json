@@ -1095,7 +1095,9 @@
     "save": "Сохранить",
     "tierUpdated": "Тир обновлён",
     "tierUpdateError": "Ошибка обновления тира",
-    "loadError": "Ошибка загрузки"
+    "loadError": "Ошибка загрузки",
+    "adminRole": "Администратор",
+    "adminRoleDesc": "Доступ к админ-панели"
   },
   "dashboard": {
     "pageRefreshed": "Страница обновлена"

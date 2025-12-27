@@ -9,8 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Search, Loader2, Crown, Edit, Calendar, User, RefreshCw } from 'lucide-react';
+import { Search, Loader2, Crown, Edit, Calendar, User, RefreshCw, Shield } from 'lucide-react';
 import { format, addDays, addMonths, addYears } from 'date-fns';
 import { ru, enUS, kk } from 'date-fns/locale';
 
@@ -25,6 +26,7 @@ interface UserTierData {
   is_premium: boolean;
   trial_ends_at: string | null;
   created_at: string;
+  isAdmin?: boolean;
 }
 
 export function UserTierManager() {
@@ -36,6 +38,7 @@ export function UserTierManager() {
   const [newTier, setNewTier] = useState<PremiumTier>('free');
   const [expiresAt, setExpiresAt] = useState('');
   const [saving, setSaving] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const getDateLocale = () => {
     switch (i18n.language) {
@@ -52,14 +55,31 @@ export function UserTierManager() {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Load user profiles
+      const { data: profilesData, error: profilesError } = await supabase
         .from('user_profiles')
         .select('id, username, display_name, premium_tier, premium_expires_at, is_premium, trial_ends_at, created_at')
         .order('created_at', { ascending: false })
         .limit(200);
 
-      if (error) throw error;
-      setUsers((data as UserTierData[]) || []);
+      if (profilesError) throw profilesError;
+
+      // Load admin roles
+      const { data: rolesData, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role')
+        .eq('role', 'admin');
+
+      if (rolesError) throw rolesError;
+
+      const adminUserIds = new Set(rolesData?.map(r => r.user_id) || []);
+      
+      const usersWithRoles = (profilesData || []).map(user => ({
+        ...user,
+        isAdmin: adminUserIds.has(user.id)
+      })) as UserTierData[];
+
+      setUsers(usersWithRoles);
     } catch (error) {
       console.error('Error loading users:', error);
       toast.error(t('admin.loadError'));
@@ -72,6 +92,7 @@ export function UserTierManager() {
     setEditingUser(user);
     setNewTier((user.premium_tier as PremiumTier) || 'free');
     setExpiresAt(user.premium_expires_at ? user.premium_expires_at.split('T')[0] : '');
+    setIsAdmin(user.isAdmin || false);
   };
 
   const handleSave = async () => {
@@ -79,18 +100,37 @@ export function UserTierManager() {
     
     setSaving(true);
     try {
+      // Update user profile
       const updateData: Record<string, any> = {
         premium_tier: newTier,
         premium_expires_at: expiresAt ? new Date(expiresAt).toISOString() : null,
         is_premium: newTier !== 'free'
       };
 
-      const { error } = await supabase
+      const { error: profileError } = await supabase
         .from('user_profiles')
         .update(updateData)
         .eq('id', editingUser.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // Handle admin role
+      const wasAdmin = editingUser.isAdmin || false;
+      if (isAdmin && !wasAdmin) {
+        // Add admin role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: editingUser.id, role: 'admin' });
+        if (roleError) throw roleError;
+      } else if (!isAdmin && wasAdmin) {
+        // Remove admin role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .delete()
+          .eq('user_id', editingUser.id)
+          .eq('role', 'admin');
+        if (roleError) throw roleError;
+      }
 
       toast.success(t('admin.tierUpdated'));
       setEditingUser(null);
@@ -234,9 +274,20 @@ export function UserTierManager() {
                   <TableRow key={user.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-muted-foreground" />
+                        {user.isAdmin ? (
+                          <Shield className="h-4 w-4 text-yellow-500" />
+                        ) : (
+                          <User className="h-4 w-4 text-muted-foreground" />
+                        )}
                         <div>
-                          <div className="font-medium">{user.display_name || user.username || 'No name'}</div>
+                          <div className="font-medium flex items-center gap-1.5">
+                            {user.display_name || user.username || 'No name'}
+                            {user.isAdmin && (
+                              <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 border-yellow-500 text-yellow-500">
+                                Admin
+                              </Badge>
+                            )}
+                          </div>
                           {user.username && (
                             <div className="text-xs text-muted-foreground">@{user.username}</div>
                           )}
@@ -291,6 +342,21 @@ export function UserTierManager() {
                                     <SelectItem value="business">{t('admin.tierBusiness')}</SelectItem>
                                   </SelectContent>
                                 </Select>
+                              </div>
+
+                              {/* Admin toggle */}
+                              <div className="flex items-center justify-between p-3 rounded-lg border">
+                                <div className="flex items-center gap-2">
+                                  <Shield className="h-4 w-4 text-yellow-500" />
+                                  <div>
+                                    <Label className="font-medium">{t('admin.adminRole')}</Label>
+                                    <p className="text-xs text-muted-foreground">{t('admin.adminRoleDesc')}</p>
+                                  </div>
+                                </div>
+                                <Switch
+                                  checked={isAdmin}
+                                  onCheckedChange={setIsAdmin}
+                                />
                               </div>
 
                               {newTier !== 'free' && (
