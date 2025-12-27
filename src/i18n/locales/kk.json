@@ -1064,7 +1064,32 @@
       "thu": "Бс",
       "fri": "Жм",
       "sat": "Сн"
-    }
+    },
+    "tiers": "Тирлер",
+    "tierManagement": "Тирлерді басқару",
+    "searchUsers": "Пайдаланушыларды іздеу",
+    "tierFree": "Free",
+    "tierPro": "Pro",
+    "tierBusiness": "Business",
+    "user": "Пайдаланушы",
+    "tier": "Тир",
+    "expiry": "Мерзімі",
+    "edit": "Өзгерту",
+    "editUserTier": "Пайдаланушы тирін өзгерту",
+    "selectTier": "Тирді таңдаңыз",
+    "expiryDate": "Аяқталу күні",
+    "week": "апта",
+    "month": "ай",
+    "year": "жыл",
+    "lifetime": "Мәңгілік",
+    "expiresOn": "дейін",
+    "expired": "Аяқталған",
+    "leaveEmptyLifetime": "Шексіз қолжетімділік үшін бос қалдырыңыз",
+    "cancel": "Болдырмау",
+    "save": "Сақтау",
+    "tierUpdated": "Тир жаңартылды",
+    "tierUpdateError": "Тирді жаңарту сәтсіз",
+    "loadError": "Жүктеу сәтсіз"
   },
   "dashboard": {
     "pageRefreshed": "Бет жаңартылды"

@@ -1070,10 +1070,34 @@
       "thu": "Thu",
       "fri": "Fri",
       "sat": "Sat"
-    }
+    },
+    "tiers": "Tiers",
+    "tierManagement": "Tier Management",
+    "searchUsers": "Search users",
+    "tierFree": "Free",
+    "tierPro": "Pro",
+    "tierBusiness": "Business",
+    "user": "User",
+    "tier": "Tier",
+    "expiry": "Expiry",
+    "edit": "Edit",
+    "editUserTier": "Edit User Tier",
+    "selectTier": "Select tier",
+    "expiryDate": "Expiry date",
+    "week": "week",
+    "month": "month",
+    "year": "year",
+    "lifetime": "Lifetime",
+    "expiresOn": "expires",
+    "expired": "Expired",
+    "leaveEmptyLifetime": "Leave empty for lifetime access",
+    "cancel": "Cancel",
+    "save": "Save",
+    "tierUpdated": "Tier updated",
+    "tierUpdateError": "Failed to update tier",
+    "loadError": "Failed to load"
   },
   "dashboard": {
-    "pageRefreshed": "Page refreshed"
   },
   "toasts": {
     "collaboration": {
