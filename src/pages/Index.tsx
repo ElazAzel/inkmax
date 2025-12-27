@@ -400,7 +400,7 @@ export default function Index() {
             >
               <div className="relative">
                 {/* Floating badges */}
-                <div className="absolute -top-4 -left-4 p-3 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-10">
+                <div className="absolute -top-4 -left-4 p-3 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-30">
                   <div className="flex items-center gap-2.5">
                     <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
                       <Wand2 className="h-5 w-5 text-white" />
@@ -412,7 +412,7 @@ export default function Index() {
                   </div>
                 </div>
                 
-                <div className="absolute -bottom-4 -left-8 p-3 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-10" style={{ animationDelay: '1s' }}>
+                <div className="absolute -bottom-4 -left-8 p-3 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-30" style={{ animationDelay: '1s' }}>
                   <div className="flex items-center gap-2.5">
                     <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
                       <TrendingUp className="h-5 w-5 text-white" />
@@ -424,7 +424,7 @@ export default function Index() {
                   </div>
                 </div>
 
-                <div className="absolute top-1/3 -right-4 p-3 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-10" style={{ animationDelay: '2s' }}>
+                <div className="absolute top-1/3 -right-4 p-3 rounded-2xl bg-card/90 backdrop-blur-xl border border-border/50 shadow-glass-lg animate-float z-30" style={{ animationDelay: '2s' }}>
                   <div className="flex items-center gap-2.5">
                     <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
                       <BadgeCheck className="h-5 w-5 text-white" />
