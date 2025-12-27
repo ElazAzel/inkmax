@@ -1070,7 +1070,32 @@
       "thu": "Чт",
       "fri": "Пт",
       "sat": "Сб"
-    }
+    },
+    "tiers": "Тиры",
+    "tierManagement": "Управление тирами",
+    "searchUsers": "Поиск пользователей",
+    "tierFree": "Free",
+    "tierPro": "Pro",
+    "tierBusiness": "Business",
+    "user": "Пользователь",
+    "tier": "Тир",
+    "expiry": "Срок",
+    "edit": "Изменить",
+    "editUserTier": "Изменить тир пользователя",
+    "selectTier": "Выберите тир",
+    "expiryDate": "Дата окончания",
+    "week": "нед",
+    "month": "мес",
+    "year": "год",
+    "lifetime": "Навсегда",
+    "expiresOn": "до",
+    "expired": "Истёк",
+    "leaveEmptyLifetime": "Оставьте пустым для бессрочного доступа",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "tierUpdated": "Тир обновлён",
+    "tierUpdateError": "Ошибка обновления тира",
+    "loadError": "Ошибка загрузки"
   },
   "dashboard": {
     "pageRefreshed": "Страница обновлена"
