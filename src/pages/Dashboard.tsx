@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useDashboard } from '@/hooks/useDashboard';
+import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { SaveTemplateDialog } from '@/components/editor/SaveTemplateDialog';
@@ -34,6 +35,7 @@ import {
 export default function Dashboard() {
   const navigate = useNavigate();
   const dashboard = useDashboard();
+  const { canUseCustomPageBackground } = useFreemiumLimits();
 
   // Local UI state
   const [migrationKey, setMigrationKey] = useState(0);
@@ -149,6 +151,16 @@ export default function Dashboard() {
           onOpenFriends={() => setShowFriends(true)}
           onOpenSaveTemplate={() => setShowSaveTemplate(true)}
           onOpenMyTemplates={() => setShowMyTemplates(true)}
+          pageBackground={dashboard.pageData?.theme?.customBackground}
+          onPageBackgroundChange={(background) => {
+            dashboard.updatePageDataPartial({ 
+              theme: { 
+                ...dashboard.pageData.theme, 
+                customBackground: background 
+              } 
+            });
+          }}
+          canUseCustomPageBackground={canUseCustomPageBackground()}
         />
 
         {/* Referral Panel in Settings Area */}
