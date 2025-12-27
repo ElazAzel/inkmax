@@ -42,9 +42,8 @@ import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import type { ProfileBlock, EditorMode, GridConfig, PageBackground } from '@/types/page';
+import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
 import type { Niche } from '@/lib/niches';
-import { PageBackgroundSettings } from '@/components/editor/PageBackgroundSettings';
 
 interface MobileSettingsSheetProps {
   open: boolean;
@@ -100,12 +99,6 @@ interface MobileSettingsSheetProps {
   previewUrl?: string;
   onPreviewUrlChange?: (url: string | null) => void;
   
-  // Page Background
-  pageBackground?: PageBackground;
-  onPageBackgroundChange?: (background: PageBackground | undefined) => void;
-  canUseCustomPageBackground?: boolean;
-  onAutoContrastColorChange?: (textColor: string | null) => void;
-  
   // Sign out
   onSignOut: () => void;
 }
@@ -139,10 +132,6 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   onNicheChange,
   previewUrl,
   onPreviewUrlChange,
-  pageBackground,
-  onPageBackgroundChange,
-  canUseCustomPageBackground = false,
-  onAutoContrastColorChange,
   onSignOut,
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
@@ -192,7 +181,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" hideCloseButton className="h-[90vh] p-0 rounded-t-[2.5rem] bg-card/90 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl">
+      <SheetContent side="bottom" className="h-[90vh] p-0 rounded-t-[2.5rem] bg-card/90 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl">
         <SheetHeader className="p-6 pb-4 border-b border-border/20 sticky top-0 bg-card/80 backdrop-blur-xl z-10">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-xl font-black">Settings</SheetTitle>
@@ -386,16 +375,6 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                     )}
                   </div>
                 </Card>
-              )}
-              
-              {/* Page Background Settings */}
-              {onPageBackgroundChange && (
-                <PageBackgroundSettings
-                  background={pageBackground}
-                  onChange={onPageBackgroundChange}
-                  canUseFeature={canUseCustomPageBackground}
-                  onAutoContrastChange={onAutoContrastColorChange}
-                />
               )}
             </TabsContent>
             

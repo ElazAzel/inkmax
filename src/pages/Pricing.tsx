@@ -76,8 +76,8 @@ export default function Pricing() {
       name: 'BUSINESS',
       icon: Sparkles,
       color: 'from-amber-500 to-orange-600',
-      prices: { 3: 14.25, 6: 10.50, 12: 7.50 },
-      totalPrices: { 3: 42.75, 6: 63, 12: 90 },
+      prices: { 3: 9.50, 6: 7.00, 12: 5.00 },
+      totalPrices: { 3: 28.50, 6: 42, 12: 60 },
       features: [
         t('pricing.features.allPro', 'Всё из PRO'),
         t('pricing.features.multiPage', 'Внутренние страницы (мульти-страничный сайт)'),

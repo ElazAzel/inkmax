@@ -88,46 +88,47 @@ export function DashboardHeader({
               <AutoSaveIndicator status={saveStatus} />
             </div>
 
-            {/* Actions - Compact with overflow handling */}
-            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
+            {/* Actions - BOLD */}
+            <div className="flex items-center gap-2">
               {/* Create Group */}
-              <Button variant="ghost" size="sm" onClick={onOpenAIBuilder} className="h-10 px-3 rounded-xl font-bold shrink-0">
-                <Wand2 className="h-4 w-4 lg:mr-1.5" />
-                <span className="hidden lg:inline">AI</span>
+              <Button variant="ghost" size="default" onClick={onOpenAIBuilder} className="h-11 px-4 rounded-2xl font-bold">
+                <Wand2 className="h-5 w-5 mr-2" />
+                AI
               </Button>
 
-              <Button variant="ghost" size="sm" onClick={onOpenTemplates} className="h-10 px-3 rounded-xl font-bold shrink-0">
-                <LayoutTemplate className="h-4 w-4 lg:mr-1.5" />
-                <span className="hidden xl:inline">{t('templates.title', 'Шаблоны')}</span>
+              <Button variant="ghost" size="default" onClick={onOpenTemplates} className="h-11 px-4 rounded-2xl font-bold">
+                <LayoutTemplate className="h-5 w-5 mr-2" />
+                {t('templates.title', 'Шаблоны')}
               </Button>
 
-              <div className="h-6 w-px bg-border/40 shrink-0" />
+              <div className="h-8 w-px bg-border/40" />
 
               {/* Business Group */}
-              <Button variant="ghost" size="sm" onClick={onOpenCRM} className="h-10 px-3 rounded-xl font-bold shrink-0">
-                <Users className="h-4 w-4 lg:mr-1.5" />
-                <span className="hidden lg:inline">CRM</span>
+              <Button variant="ghost" size="default" onClick={onOpenCRM} className="h-11 px-4 rounded-2xl font-bold">
+                <Users className="h-5 w-5 mr-2" />
+                CRM
               </Button>
 
               <Button
                 variant={showSettings ? 'default' : 'ghost'}
-                size="sm"
+                size="default"
                 onClick={onToggleSettings}
-                className="h-10 px-3 rounded-xl font-bold shrink-0"
+                className="h-11 px-4 rounded-2xl font-bold"
               >
-                <Settings className="h-4 w-4 lg:mr-1.5" />
-                <span className="hidden xl:inline">{t('common.settings', 'Настройки')}</span>
+                <Settings className="h-5 w-5 mr-2" />
+                {t('common.settings', 'Настройки')}
               </Button>
 
-              <div className="h-6 w-px bg-border/40 shrink-0" />
+              <div className="h-8 w-px bg-border/40" />
 
               {/* Gamification & Community Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="relative h-10 px-3 rounded-xl font-bold shrink-0">
-                    <MoreHorizontal className="h-4 w-4" />
+                  <Button variant="ghost" size="default" className="relative h-11 px-4 rounded-2xl font-bold">
+                    <MoreHorizontal className="h-5 w-5 mr-2" />
+                    {t('common.more', 'Ещё')}
                     {achievementCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-bold flex items-center justify-center text-primary-foreground shadow-glass">
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-xs font-bold flex items-center justify-center text-primary-foreground shadow-glass">
                         {achievementCount}
                       </span>
                     )}
@@ -172,31 +173,33 @@ export function DashboardHeader({
 
               <LanguageSwitcher />
 
-              <div className="h-6 w-px bg-border/40 shrink-0" />
+              <div className="h-8 w-px bg-border/40" />
 
               {/* Main Actions */}
-              <Button variant="outline" size="sm" onClick={onSave} disabled={saving} className="h-10 px-3 rounded-xl font-bold shrink-0">
-                <Save className="h-4 w-4 lg:mr-1.5" />
-                <span className="hidden lg:inline">{saving ? '...' : t('common.save', 'Сохранить')}</span>
+              <Button variant="outline" size="default" onClick={onSave} disabled={saving} className="h-11 px-5 rounded-2xl font-bold">
+                <Save className="h-5 w-5 mr-2" />
+                {saving ? '...' : t('common.save', 'Сохранить')}
               </Button>
 
-              <Button variant="outline" size="sm" onClick={onPreview} className="h-10 px-3 rounded-xl font-bold shrink-0">
-                <Eye className="h-4 w-4 xl:mr-1.5" />
-                <span className="hidden xl:inline">{t('common.preview', 'Предпросмотр')}</span>
+              <Button variant="outline" size="default" onClick={onPreview} className="h-11 px-5 rounded-2xl font-bold">
+                <Eye className="h-5 w-5 mr-2" />
+                {t('common.preview', 'Предпросмотр')}
               </Button>
 
-              <Button size="sm" onClick={onShare} data-onboarding="share-button" className="h-10 px-4 rounded-xl font-bold shadow-glass-lg shrink-0">
-                <Upload className="h-4 w-4 lg:mr-1.5" />
-                <span className="hidden lg:inline">{t('common.share', 'Поделиться')}</span>
+              <Button size="default" onClick={onShare} data-onboarding="share-button" className="h-11 px-5 rounded-2xl font-bold shadow-glass-lg">
+                <Upload className="h-5 w-5 mr-2" />
+                {t('common.share', 'Поделиться')}
               </Button>
+
+              <div className="h-8 w-px bg-border/40" />
 
               <Button
                 variant="ghost"
-                size="sm"
+                size="lg"
                 onClick={onSignOut}
-                className="hover:bg-destructive/10 hover:text-destructive h-10 w-10 rounded-xl shrink-0"
+                className="hover:bg-destructive/10 hover:text-destructive h-11 w-11 rounded-2xl"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-5 w-5" />
               </Button>
             </div>
           </div>
