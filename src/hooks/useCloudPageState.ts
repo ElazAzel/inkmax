@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import type { SaveStatus } from '@/components/editor/AutoSaveIndicator';
 
 export function useCloudPageState() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [chatbotContext, setChatbotContext] = useState<string>('');
@@ -17,8 +17,11 @@ export function useCloudPageState() {
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Use React Query for cached page loading
-  const { data: userData, isLoading: loading, refetch } = useUserPage(user?.id);
+  const { data: userData, isLoading: queryLoading, refetch } = useUserPage(user?.id);
   const savePageMutation = useSavePageMutation(user?.id);
+  
+  // Loading is true if auth is loading, or if we have a user but query is still loading
+  const loading = authLoading || (!!user && queryLoading) || (!!user && !userData && !queryLoading && !pageData);
   const publishPageMutation = usePublishPageMutation(user?.id);
 
   // Update local state when cached data loads
