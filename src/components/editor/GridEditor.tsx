@@ -9,10 +9,12 @@ import { useGridDragDrop } from '@/hooks/useGridDragDrop';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import type { Block, ProfileBlock, GridConfig, GridLayoutData } from '@/types/page';
+import type { FreeTier } from '@/hooks/useFreemiumLimits';
 
 interface GridEditorProps {
   blocks: Block[];
   isPremium: boolean;
+  currentTier?: FreeTier;
   gridConfig?: GridConfig;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
@@ -111,6 +113,7 @@ function GridBlockItem({
 export const GridEditor = memo(function GridEditor({
   blocks,
   isPremium,
+  currentTier = 'free',
   gridConfig = DEFAULT_GRID_CONFIG,
   onInsertBlock,
   onEditBlock,
@@ -308,6 +311,7 @@ export const GridEditor = memo(function GridEditor({
         <BlockInsertButton
           onInsert={handleInsertBlock}
           isPremium={isPremium}
+          currentTier={currentTier}
           currentBlockCount={blocks.length}
         />
       </div>

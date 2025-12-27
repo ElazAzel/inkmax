@@ -21,10 +21,12 @@ import { BlockHint } from '../onboarding/BlockHint';
 import { GridEditor } from './GridEditor';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { Block, ProfileBlock, EditorMode, GridConfig } from '@/types/page';
+import type { FreeTier } from '@/hooks/useFreemiumLimits';
 
 interface PreviewEditorProps {
   blocks: Block[];
   isPremium: boolean;
+  currentTier?: FreeTier;
   editorMode?: EditorMode;
   gridConfig?: GridConfig;
   onInsertBlock: (blockType: string, position: number) => void;
@@ -47,6 +49,7 @@ interface SortableBlockWrapperProps {
   onMoveDown: (id: string) => void;
   onInsertAfter: (blockType: string) => void;
   isPremium: boolean;
+  currentTier?: FreeTier;
 }
 
 interface PreviewEditorContext {
@@ -69,6 +72,7 @@ function SortableBlockWrapper({
   onMoveDown,
   onInsertAfter,
   isPremium,
+  currentTier,
   context,
 }: ExtendedSortableBlockWrapperProps) {
   const {
@@ -117,6 +121,7 @@ function SortableBlockWrapper({
       <BlockInsertButton
         onInsert={onInsertAfter}
         isPremium={isPremium}
+        currentTier={currentTier}
         currentBlockCount={totalBlocks}
         className="my-4"
       />
@@ -127,6 +132,7 @@ function SortableBlockWrapper({
 export const PreviewEditor = memo(function PreviewEditor({
   blocks,
   isPremium,
+  currentTier = 'free',
   editorMode = 'linear',
   gridConfig,
   onInsertBlock,
@@ -146,6 +152,7 @@ export const PreviewEditor = memo(function PreviewEditor({
       <GridEditor
         blocks={blocks}
         isPremium={isPremium}
+        currentTier={currentTier}
         gridConfig={gridConfig}
         onInsertBlock={onInsertBlock}
         onEditBlock={onEditBlock}
@@ -204,6 +211,7 @@ export const PreviewEditor = memo(function PreviewEditor({
             <BlockInsertButton
               onInsert={(type) => onInsertBlock(type, 0)}
               isPremium={isPremium}
+              currentTier={currentTier}
               currentBlockCount={blocks.length}
               className="my-4"
             />
@@ -234,6 +242,7 @@ export const PreviewEditor = memo(function PreviewEditor({
                   onMoveDown={handleMoveDown}
                   onInsertAfter={(type) => onInsertBlock(type, index + 1)}
                   isPremium={isPremium}
+                  currentTier={currentTier}
                   context={{ activeBlockHint, onDismissHint }}
                 />
               ))}
@@ -254,6 +263,7 @@ export const PreviewEditor = memo(function PreviewEditor({
           <BlockInsertButton
             onInsert={(type) => onInsertBlock(type, contentBlocks.length)}
             isPremium={isPremium}
+            currentTier={currentTier}
             currentBlockCount={blocks.length}
           />
         </div>
