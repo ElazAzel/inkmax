@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Share2, QrCode } from 'lucide-react';
-import { BlockRenderer } from '@/components/BlockRenderer';
+import { GridBlocksRenderer } from '@/components/blocks/GridBlocksRenderer';
 import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FreemiumWatermark } from '@/components/FreemiumWatermark';
@@ -120,46 +120,13 @@ export default function PublicPage() {
         </div>
 
         <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
-          {/* Content - Respects editor mode */}
-          {pageData.editorMode === 'grid' ? (
-            <>
-              <style>{`
-                .public-grid-container {
-                  display: grid;
-                  gap: 0.75rem;
-                  grid-template-columns: repeat(${pageData.gridConfig?.columnsMobile || 2}, 1fr);
-                }
-                @media (min-width: 640px) {
-                  .public-grid-container { gap: 1rem; }
-                }
-                @media (min-width: 768px) {
-                  .public-grid-container {
-                    grid-template-columns: repeat(${pageData.gridConfig?.columnsDesktop || 3}, 1fr);
-                  }
-                }
-              `}</style>
-              <div className="public-grid-container">
-                {pageData.blocks.map(block => {
-                  const gridLayout = block.gridLayout;
-                  const style = gridLayout ? {
-                    gridColumn: `${gridLayout.gridColumn} / span ${gridLayout.gridWidth || 1}`,
-                    gridRow: `${gridLayout.gridRow} / span ${gridLayout.gridHeight || 1}`,
-                  } : {};
-                  return (
-                    <div key={block.id} style={style}>
-                      <BlockRenderer block={block} pageOwnerId={pageData?.userId} isOwnerPremium={isOwnerPremium} />
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            <div className="space-y-3 sm:space-y-4">
-              {pageData.blocks.map(block => (
-                <BlockRenderer key={block.id} block={block} pageOwnerId={pageData?.userId} isOwnerPremium={isOwnerPremium} />
-              ))}
-            </div>
-          )}
+          {/* Grid Blocks - Same layout as editor */}
+          <GridBlocksRenderer
+            blocks={pageData.blocks}
+            pageOwnerId={pageData?.userId}
+            isOwnerPremium={isOwnerPremium}
+            isPreview={false}
+          />
 
           {/* Share Section - Mobile Optimized */}
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2 justify-center">
