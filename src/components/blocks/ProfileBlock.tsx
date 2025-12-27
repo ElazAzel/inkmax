@@ -1,19 +1,45 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CheckCircle2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { parseRichText } from '@/lib/rich-text-parser';
-import { getFrameStyles, getShadowStyles, isGradientFrame, FRAME_CSS, getVerificationPositionClasses, getVerificationColor } from '@/lib/avatar-frame-utils';
+import { getFrameStyles, getShadowStyles, isGradientFrame, FRAME_CSS, getVerificationPositionClasses, getVerificationColor, VERIFICATION_ICON_OPTIONS } from '@/lib/avatar-frame-utils';
 import { cn } from '@/lib/utils';
-import type { ProfileBlock as ProfileBlockType, ProfileFrameStyle } from '@/types/page';
+import type { ProfileBlock as ProfileBlockType, ProfileFrameStyle, VerificationIconType } from '@/types/page';
 
 interface ProfileBlockProps {
   block: ProfileBlockType;
   isPreview?: boolean;
   isOwnerPremium?: boolean;
 }
+
+// Verification badge component with custom icon support
+const VerificationBadge = memo(function VerificationBadgeComponent({ 
+  iconType, 
+  color, 
+  position 
+}: { 
+  iconType?: VerificationIconType; 
+  color?: string; 
+  position?: string; 
+}) {
+  const iconOption = VERIFICATION_ICON_OPTIONS.find(opt => opt.value === (iconType || 'check-circle'));
+  const iconName = iconOption?.icon || 'CheckCircle2';
+  const IconComponent = (LucideIcons as any)[iconName] || LucideIcons.CheckCircle2;
+  
+  return (
+    <div 
+      className={cn(
+        "absolute rounded-full p-1 shadow-lg z-10",
+        getVerificationPositionClasses(position)
+      )}
+      style={{ backgroundColor: getVerificationColor(color) }}
+    >
+      <IconComponent className="h-4 w-4 text-white" fill="currentColor" />
+    </div>
+  );
+});
 
 export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview, isOwnerPremium }: ProfileBlockProps) {
   const { t, i18n } = useTranslation();
@@ -149,15 +175,11 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           
           {/* Verification badge on frame */}
           {showVerified && (
-            <div 
-              className={cn(
-                "absolute rounded-full p-1 shadow-lg z-10",
-                getVerificationPositionClasses(block.verifiedPosition)
-              )}
-              style={{ backgroundColor: getVerificationColor(block.verifiedColor) }}
-            >
-              <CheckCircle2 className="h-4 w-4 text-white" />
-            </div>
+            <VerificationBadge 
+              iconType={block.verifiedIcon}
+              color={block.verifiedColor}
+              position={block.verifiedPosition}
+            />
           )}
         </div>
         

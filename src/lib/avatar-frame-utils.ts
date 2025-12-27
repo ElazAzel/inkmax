@@ -169,6 +169,25 @@ export const VERIFICATION_POSITION_OPTIONS = [
   { value: 'bottom-left', label: 'Bottom Left' },
 ] as const;
 
+// Verification icon type options
+export const VERIFICATION_ICON_OPTIONS = [
+  { value: 'check-circle', label: 'Check Circle', icon: 'CheckCircle2' },
+  { value: 'badge-check', label: 'Badge Check', icon: 'BadgeCheck' },
+  { value: 'shield-check', label: 'Shield Check', icon: 'ShieldCheck' },
+  { value: 'verified', label: 'Verified', icon: 'Verified' },
+  { value: 'star', label: 'Star', icon: 'Star' },
+  { value: 'crown', label: 'Crown', icon: 'Crown' },
+  { value: 'award', label: 'Award', icon: 'Award' },
+  { value: 'medal', label: 'Medal', icon: 'Medal' },
+  { value: 'trophy', label: 'Trophy', icon: 'Trophy' },
+  { value: 'gem', label: 'Gem', icon: 'Gem' },
+  { value: 'diamond', label: 'Diamond', icon: 'Diamond' },
+  { value: 'sparkles', label: 'Sparkles', icon: 'Sparkles' },
+  { value: 'heart', label: 'Heart', icon: 'Heart' },
+  { value: 'flame', label: 'Flame', icon: 'Flame' },
+  { value: 'zap', label: 'Zap', icon: 'Zap' },
+] as const;
+
 // Get position classes for verification badge
 export const getVerificationPositionClasses = (position: string = 'bottom-right'): string => {
   const positions: Record<string, string> = {
