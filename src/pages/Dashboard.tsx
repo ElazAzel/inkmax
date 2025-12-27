@@ -50,6 +50,7 @@ export default function Dashboard() {
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
   const [showMyTemplates, setShowMyTemplates] = useState(false);
   const [showTokens, setShowTokens] = useState(false);
+  const [autoContrastColor, setAutoContrastColor] = useState<string | null>(null);
 
   const handleOpenGallery = () => navigate('/gallery');
 
@@ -187,6 +188,7 @@ export default function Dashboard() {
             });
           }}
           canUseCustomPageBackground={canUseCustomPageBackground()}
+          onAutoContrastColorChange={setAutoContrastColor}
         />
 
         {/* Referral Panel in Settings Area */}
@@ -213,7 +215,10 @@ export default function Dashboard() {
           >
             <div 
               className="py-4 pb-24 md:pb-8 min-h-[60vh] rounded-2xl mx-2 md:mx-4 transition-all duration-300"
-              style={previewBackgroundStyle}
+              style={{
+                ...previewBackgroundStyle,
+                ...(autoContrastColor ? { color: autoContrastColor } : {})
+              }}
             >
               <PreviewEditor
                 blocks={dashboard.pageData.blocks}
