@@ -179,6 +179,7 @@ export default function Dashboard() {
               <PreviewEditor
                 blocks={dashboard.pageData.blocks}
                 isPremium={dashboard.isPremium}
+                currentTier={dashboard.currentTier}
                 editorMode={dashboard.pageData.editorMode || 'linear'}
                 gridConfig={dashboard.pageData.gridConfig}
                 onInsertBlock={dashboard.blockEditor.handleInsertBlock}

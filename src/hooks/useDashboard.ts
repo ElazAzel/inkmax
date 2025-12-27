@@ -26,7 +26,7 @@ import type { UserStats } from '@/types/achievements';
 export function useDashboard() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
-  const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
+  const { isPremium, isLoading: premiumLoading, tier: currentTier = 'free' } = usePremiumStatus();
   const blockHints = useBlockHints();
   const achievements = useAchievements();
   const { playAdd, playDelete, playError } = useSoundEffects();
@@ -208,6 +208,7 @@ export function useDashboard() {
     loading: loading || authLoading,
     isMobile,
     isPremium,
+    currentTier,
     premiumLoading,
 
     // Page operations

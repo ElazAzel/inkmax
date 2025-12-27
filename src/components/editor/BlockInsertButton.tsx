@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Plus, Search, Lock, Crown } from 'lucide-react';
+import { Plus, Search, Lock, Crown, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -20,70 +20,99 @@ import {
 } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { FREE_LIMITS } from '@/hooks/useFreemiumLimits';
+import { FREE_LIMITS, getBlockTier, type FreeTier } from '@/hooks/useFreemiumLimits';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface BlockInsertButtonProps {
   onInsert: (blockType: string) => void;
   isPremium?: boolean;
   currentBlockCount?: number;
   className?: string;
+  currentTier?: FreeTier;
 }
 
-const ALL_BLOCKS = [
+type BlockTier = 'free' | 'pro' | 'business';
+
+interface BlockConfig {
+  type: string;
+  label: string;
+  icon: string;
+  category: string;
+  tier: BlockTier;
+}
+
+const ALL_BLOCKS: BlockConfig[] = [
   // Links & Navigation
-  { type: 'link', label: 'Link', icon: '🔗', category: 'Links', premium: false },
-  { type: 'button', label: 'Button', icon: '🔘', category: 'Links', premium: false },
-  { type: 'socials', label: 'Social Links', icon: '👥', category: 'Links', premium: false },
+  { type: 'link', label: 'Link', icon: '🔗', category: 'Links', tier: 'free' },
+  { type: 'button', label: 'Button', icon: '🔘', category: 'Links', tier: 'free' },
+  { type: 'socials', label: 'Social Links', icon: '👥', category: 'Links', tier: 'free' },
   
   // Content
-  { type: 'text', label: 'Text', icon: '📝', category: 'Content', premium: false },
-  { type: 'image', label: 'Image', icon: '🖼️', category: 'Content', premium: false },
-  { type: 'video', label: 'Video', icon: '🎬', category: 'Content', premium: true },
-  { type: 'carousel', label: 'Carousel', icon: '📸', category: 'Content', premium: true },
-  { type: 'avatar', label: 'Avatar', icon: '👤', category: 'Content', premium: false },
-  { type: 'separator', label: 'Separator', icon: '➖', category: 'Content', premium: false },
-  { type: 'map', label: 'Map', icon: '🗺️', category: 'Content', premium: false },
-  { type: 'before_after', label: 'Before/After', icon: '🔄', category: 'Content', premium: false },
-  { type: 'faq', label: 'FAQ', icon: '❓', category: 'Content', premium: false },
+  { type: 'text', label: 'Text', icon: '📝', category: 'Content', tier: 'free' },
+  { type: 'image', label: 'Image', icon: '🖼️', category: 'Content', tier: 'free' },
+  { type: 'video', label: 'Video', icon: '🎬', category: 'Content', tier: 'pro' },
+  { type: 'carousel', label: 'Carousel', icon: '📸', category: 'Content', tier: 'pro' },
+  { type: 'avatar', label: 'Avatar', icon: '👤', category: 'Content', tier: 'free' },
+  { type: 'separator', label: 'Separator', icon: '➖', category: 'Content', tier: 'free' },
+  { type: 'map', label: 'Map', icon: '🗺️', category: 'Content', tier: 'free' },
+  { type: 'before_after', label: 'Before/After', icon: '🔄', category: 'Content', tier: 'pro' },
+  { type: 'faq', label: 'FAQ', icon: '❓', category: 'Content', tier: 'pro' },
   
   // Shop & Products
-  { type: 'product', label: 'Product', icon: '🛍️', category: 'Shop', premium: false },
-  { type: 'catalog', label: 'Catalog', icon: '📋', category: 'Shop', premium: true },
-  { type: 'pricing', label: 'Pricing', icon: '💰', category: 'Shop', premium: false },
-  { type: 'download', label: 'Download', icon: '📥', category: 'Shop', premium: true },
+  { type: 'product', label: 'Product', icon: '🛍️', category: 'Shop', tier: 'pro' },
+  { type: 'catalog', label: 'Catalog', icon: '📋', category: 'Shop', tier: 'pro' },
+  { type: 'pricing', label: 'Pricing', icon: '💰', category: 'Shop', tier: 'pro' },
+  { type: 'download', label: 'Download', icon: '📥', category: 'Shop', tier: 'business' },
   
-  // Forms & Communication
-  { type: 'form', label: 'Form', icon: '📝', category: 'Forms', premium: true },
-  { type: 'newsletter', label: 'Newsletter', icon: '✉️', category: 'Forms', premium: true },
-  { type: 'messenger', label: 'Messengers', icon: '💬', category: 'Forms', premium: true },
+  // Forms & Communication (Business tier)
+  { type: 'form', label: 'Form', icon: '📝', category: 'Forms', tier: 'business' },
+  { type: 'newsletter', label: 'Newsletter', icon: '✉️', category: 'Forms', tier: 'pro' },
+  { type: 'messenger', label: 'Messengers', icon: '💬', category: 'Forms', tier: 'free' },
+  { type: 'booking', label: 'Booking', icon: '📅', category: 'Forms', tier: 'business' },
   
   // Interactive
-  { type: 'testimonial', label: 'Testimonials', icon: '⭐', category: 'Interactive', premium: true },
-  { type: 'scratch', label: 'Scratch Card', icon: '🎁', category: 'Interactive', premium: true },
-  { type: 'search', label: 'AI Search', icon: '🔍', category: 'Interactive', premium: true },
-  { type: 'countdown', label: 'Countdown', icon: '⏰', category: 'Interactive', premium: true },
+  { type: 'testimonial', label: 'Testimonials', icon: '⭐', category: 'Interactive', tier: 'pro' },
+  { type: 'scratch', label: 'Scratch Card', icon: '🎁', category: 'Interactive', tier: 'pro' },
+  { type: 'search', label: 'AI Search', icon: '🔍', category: 'Interactive', tier: 'pro' },
+  { type: 'countdown', label: 'Countdown', icon: '⏰', category: 'Interactive', tier: 'business' },
   
   // Social
-  { type: 'shoutout', label: 'Shoutout', icon: '📣', category: 'Social', premium: false },
+  { type: 'shoutout', label: 'Shoutout', icon: '📣', category: 'Social', tier: 'pro' },
   
   // Advanced
-  { type: 'custom_code', label: 'Custom Code', icon: '💻', category: 'Advanced', premium: true },
+  { type: 'custom_code', label: 'Custom Code', icon: '💻', category: 'Advanced', tier: 'pro' },
 ];
 
 export const BlockInsertButton = memo(function BlockInsertButton({ 
   onInsert, 
   isPremium = false,
   currentBlockCount = 0,
-  className 
+  className,
+  currentTier = 'free'
 }: BlockInsertButtonProps) {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const isAtBlockLimit = !isPremium && currentBlockCount >= FREE_LIMITS.maxBlocks;
   const remainingBlocks = isPremium ? Infinity : FREE_LIMITS.maxBlocks - currentBlockCount;
+
+  // Get tier level for comparison
+  const tierLevel = (tier: FreeTier): number => {
+    switch (tier) {
+      case 'business': return 3;
+      case 'pro': return 2;
+      default: return 1;
+    }
+  };
+
+  // Check if user can use this block based on their tier
+  const canUseBlock = (blockTier: BlockTier): boolean => {
+    return tierLevel(currentTier) >= tierLevel(blockTier);
+  };
 
   // Filter blocks based on search
   const filteredBlocks = ALL_BLOCKS.filter(block => 
@@ -100,9 +129,15 @@ export const BlockInsertButton = memo(function BlockInsertButton({
     return acc;
   }, {} as Record<string, typeof ALL_BLOCKS>);
 
-  const handleInsert = (blockType: string, premium: boolean) => {
-    if (premium && !isPremium) {
-      toast.error('Этот блок доступен только в Premium');
+  const handleInsert = (blockType: string, blockTier: BlockTier) => {
+    if (!canUseBlock(blockTier)) {
+      const tierName = blockTier === 'business' ? 'BUSINESS' : 'PRO';
+      toast.error(`Этот блок доступен только в ${tierName}`, {
+        action: {
+          label: 'Upgrade',
+          onClick: () => navigate('/pricing'),
+        },
+      });
       return;
     }
     
@@ -114,6 +149,19 @@ export const BlockInsertButton = memo(function BlockInsertButton({
     onInsert(blockType);
     setIsOpen(false);
     setSearchQuery('');
+  };
+
+  // Get tier badge for block
+  const getTierBadge = (blockTier: BlockTier) => {
+    if (blockTier === 'free') return null;
+    if (blockTier === 'business') {
+      return (
+        <Badge variant="secondary" className="text-[9px] px-1 py-0 bg-gradient-to-r from-amber-500/20 to-orange-600/20 text-amber-600 border-amber-500/30">
+          BIZ
+        </Badge>
+      );
+    }
+    return <Crown className="h-3 w-3 text-primary" />;
   };
 
   // Mobile Sheet Interface
@@ -167,28 +215,32 @@ export const BlockInsertButton = memo(function BlockInsertButton({
               <h3 className="text-sm font-semibold text-muted-foreground mb-3 px-1">
                 {category}
               </h3>
-              <div className="grid grid-cols-3 gap-2">
-                {blocks.map((block) => (
-                  <button
-                    key={block.type}
-                    onClick={() => handleInsert(block.type, block.premium)}
-                    disabled={block.premium && !isPremium}
-                    className={cn(
-                      "relative flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all active:scale-95",
-                      block.premium && !isPremium
-                        ? "bg-muted/30 border-border/30 cursor-not-allowed opacity-60 backdrop-blur-sm"
-                        : "bg-card/60 backdrop-blur-xl border-border/30 hover:border-primary/50 hover:bg-card/80 hover:shadow-glass cursor-pointer"
-                    )}
-                  >
-                    {block.premium && !isPremium && (
-                      <Lock className="absolute top-2 right-2 h-3 w-3 text-muted-foreground" />
-                    )}
-                    <span className="text-2xl">{block.icon}</span>
-                    <span className="text-xs font-medium text-center leading-tight">
-                      {block.label}
-                    </span>
-                  </button>
-                ))}
+                <div className="grid grid-cols-3 gap-2">
+                {blocks.map((block) => {
+                  const isLocked = !canUseBlock(block.tier);
+                  return (
+                    <button
+                      key={block.type}
+                      onClick={() => handleInsert(block.type, block.tier)}
+                      disabled={isLocked}
+                      className={cn(
+                        "relative flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all active:scale-95",
+                        isLocked
+                          ? "bg-muted/30 border-border/30 cursor-not-allowed opacity-60 backdrop-blur-sm"
+                          : "bg-card/60 backdrop-blur-xl border-border/30 hover:border-primary/50 hover:bg-card/80 hover:shadow-glass cursor-pointer"
+                      )}
+                    >
+                      <div className="absolute top-2 right-2 flex items-center gap-1">
+                        {isLocked && <Lock className="h-3 w-3 text-muted-foreground" />}
+                        {getTierBadge(block.tier)}
+                      </div>
+                      <span className="text-2xl">{block.icon}</span>
+                      <span className="text-xs font-medium text-center leading-tight">
+                        {block.label}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -243,23 +295,27 @@ export const BlockInsertButton = memo(function BlockInsertButton({
               <DropdownMenuLabel className="text-xs text-muted-foreground px-2 py-1.5 font-medium">
                 {category}
               </DropdownMenuLabel>
-              {blocks.map((block) => (
-                <DropdownMenuItem
-                  key={block.type}
-                  onClick={() => handleInsert(block.type, block.premium)}
-                  disabled={block.premium && !isPremium}
-                  className={cn(
-                    "cursor-pointer transition-all rounded-xl mx-1 my-0.5 hover:bg-card/80 hover:backdrop-blur-xl",
-                    block.premium && !isPremium && "opacity-60"
-                  )}
-                >
-                  <span className="mr-3 text-lg">{block.icon}</span>
-                  <span className="flex-1 font-medium">{block.label}</span>
-                  {block.premium && !isPremium && (
-                    <Lock className="h-3 w-3 text-muted-foreground ml-2" />
-                  )}
-                </DropdownMenuItem>
-              ))}
+              {blocks.map((block) => {
+                const isLocked = !canUseBlock(block.tier);
+                return (
+                  <DropdownMenuItem
+                    key={block.type}
+                    onClick={() => handleInsert(block.type, block.tier)}
+                    disabled={isLocked}
+                    className={cn(
+                      "cursor-pointer transition-all rounded-xl mx-1 my-0.5 hover:bg-card/80 hover:backdrop-blur-xl",
+                      isLocked && "opacity-60"
+                    )}
+                  >
+                    <span className="mr-3 text-lg">{block.icon}</span>
+                    <span className="flex-1 font-medium">{block.label}</span>
+                    <div className="flex items-center gap-1 ml-2">
+                      {getTierBadge(block.tier)}
+                      {isLocked && <Lock className="h-3 w-3 text-muted-foreground" />}
+                    </div>
+                  </DropdownMenuItem>
+                );
+              })}
             </div>
           ))}
           
