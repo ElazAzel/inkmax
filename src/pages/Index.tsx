@@ -296,7 +296,7 @@ export default function Index() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/30 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500" />
                   <img 
-                    src="/logo-64.png" 
+                    src="/logo.png" 
                     alt="LinkMAX" 
                     width="40"
                     height="40"
@@ -897,7 +897,7 @@ export default function Index() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <img 
-                src="/pwa-maskable-512x512.png" 
+                src="/logo.png" 
                 alt="LinkMAX" 
                 className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl" 
               />
