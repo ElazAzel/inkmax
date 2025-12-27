@@ -1074,5 +1074,92 @@
   },
   "dashboard": {
     "pageRefreshed": "Page refreshed"
+  },
+  "toasts": {
+    "collaboration": {
+      "requestSent": "Collaboration request sent!",
+      "requestError": "Failed to send request",
+      "accepted": "Collaboration accepted!",
+      "rejected": "Request rejected",
+      "deleted": "Collaboration deleted",
+      "error": "Error"
+    },
+    "team": {
+      "created": "Team created!",
+      "createError": "Failed to create team",
+      "memberInvited": "User invited to team!",
+      "inviteError": "Failed to invite",
+      "left": "You left the team",
+      "deleted": "Team deleted",
+      "memberRemoved": "Member removed",
+      "removeError": "Failed to remove",
+      "confirmRemove": "Remove {{name}} from team?"
+    },
+    "shoutout": {
+      "added": "Shoutout added!",
+      "deleted": "Shoutout deleted",
+      "error": "Error"
+    },
+    "social": {
+      "rewardClaimed": "Reward claimed: +{{hours}} hours Premium!",
+      "rewardError": "Failed to claim reward",
+      "giftActivated": "Gift activated: +{{days}} days Premium!",
+      "giftError": "Failed to activate gift"
+    },
+    "leads": {
+      "loadError": "Failed to load leads",
+      "created": "Lead created",
+      "createError": "Failed to create lead",
+      "updated": "Lead updated",
+      "updateError": "Failed to update lead",
+      "deleted": "Lead deleted",
+      "deleteError": "Failed to delete lead",
+      "interactionError": "Failed to add interaction",
+      "noLeadsExport": "No leads to export"
+    },
+    "gallery": {
+      "likeError": "Failed to like page",
+      "unlikeError": "Failed to unlike page",
+      "addedToGallery": "Your page is now in the community gallery!",
+      "removedFromGallery": "Your page has been removed from the gallery",
+      "updateError": "Failed to update gallery status"
+    },
+    "sharing": {
+      "linkCopied": "Link copied to clipboard!",
+      "copyError": "Failed to copy link"
+    },
+    "username": {
+      "authRequired": "User not authenticated",
+      "enterUsername": "Please enter a username",
+      "invalid": "Invalid username",
+      "updated": "Username updated successfully!",
+      "updateError": "Failed to update username"
+    },
+    "page": {
+      "saveError": "Failed to save",
+      "publishError": "Failed to publish page"
+    },
+    "ai": {
+      "enterUrl": "Please enter a URL",
+      "enterProduct": "Please enter product name and price",
+      "describePage": "Please describe your page",
+      "generationError": "Failed to generate content",
+      "generated": "Content generated!"
+    },
+    "upload": {
+      "authRequired": "Please sign in to upload",
+      "fileTooLarge": "File size must be less than 10MB",
+      "error": "Failed to upload image"
+    },
+    "bookings": {
+      "fetchError": "Failed to load bookings",
+      "cancelError": "Failed to cancel booking",
+      "cancelSuccess": "Booking cancelled",
+      "confirmError": "Failed to confirm booking",
+      "confirmSuccess": "Booking confirmed",
+      "completeError": "Failed to complete booking",
+      "completeSuccess": "Booking marked as completed",
+      "noBookingsExport": "No bookings to export"
+    }
   }
 }
