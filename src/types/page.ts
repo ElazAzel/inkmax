@@ -41,6 +41,7 @@ export type ProfileFrameStyle = 'default' | 'none' | 'solid' | 'gradient' | 'gra
 
 export type VerificationIconColor = 'blue' | 'green' | 'gold' | 'purple' | 'pink' | 'red' | 'white';
 export type VerificationIconPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+export type VerificationIconType = 'check-circle' | 'badge-check' | 'shield-check' | 'verified' | 'star' | 'crown' | 'award' | 'medal' | 'trophy' | 'gem' | 'diamond' | 'sparkles' | 'heart' | 'flame' | 'zap';
 
 export interface ProfileBlock {
   id: string;
@@ -51,6 +52,7 @@ export interface ProfileBlock {
   verified?: boolean;
   verifiedColor?: VerificationIconColor;
   verifiedPosition?: VerificationIconPosition;
+  verifiedIcon?: VerificationIconType; // Custom verification icon
   autoVerifyPremium?: boolean; // Auto-verify if page owner is premium
   avatarFrame?: ProfileFrameStyle;
   avatarIcon?: string; // Lucide icon name

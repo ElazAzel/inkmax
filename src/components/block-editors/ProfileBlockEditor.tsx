@@ -9,7 +9,8 @@ import { FrameGridSelector } from '@/components/editor/FramePreview';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, Crown, Lock } from 'lucide-react';
 import { useState } from 'react';
-import { AVATAR_ICON_OPTIONS, VERIFICATION_COLOR_OPTIONS, VERIFICATION_POSITION_OPTIONS } from '@/lib/avatar-frame-utils';
+import { AVATAR_ICON_OPTIONS, VERIFICATION_COLOR_OPTIONS, VERIFICATION_POSITION_OPTIONS, VERIFICATION_ICON_OPTIONS } from '@/lib/avatar-frame-utils';
+import * as LucideIcons from 'lucide-react';
 import type { ProfileFrameStyle } from '@/types/page';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { Badge } from '@/components/ui/badge';
@@ -264,49 +265,76 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         )}
 
         {canUseVerificationBadge() && (formData.verified || formData.autoVerifyPremium) && (
-          <div className="grid grid-cols-2 gap-3 pl-6">
+          <div className="space-y-3 pl-6">
             <div>
-              <Label className="text-xs">{t('fields.verifiedColor', 'Badge Color')}</Label>
+              <Label className="text-xs">{t('fields.verifiedIcon', 'Badge Icon')}</Label>
               <Select
-                value={formData.verifiedColor || 'blue'}
-                onValueChange={(value) => onChange({ ...formData, verifiedColor: value })}
+                value={formData.verifiedIcon || 'check-circle'}
+                onValueChange={(value) => onChange({ ...formData, verifiedIcon: value })}
               >
                 <SelectTrigger className="h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {VERIFICATION_COLOR_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full border border-border/50" 
-                          style={{ backgroundColor: option.color }}
-                        />
-                        {option.label}
-                      </div>
-                    </SelectItem>
-                  ))}
+                  {VERIFICATION_ICON_OPTIONS.map((option) => {
+                    const IconComponent = (LucideIcons as any)[option.icon];
+                    return (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center gap-2">
+                          {IconComponent && <IconComponent className="h-4 w-4" />}
+                          {option.label}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
             
-            <div>
-              <Label className="text-xs">{t('fields.verifiedPosition', 'Badge Position')}</Label>
-              <Select
-                value={formData.verifiedPosition || 'bottom-right'}
-                onValueChange={(value) => onChange({ ...formData, verifiedPosition: value })}
-              >
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {VERIFICATION_POSITION_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">{t('fields.verifiedColor', 'Badge Color')}</Label>
+                <Select
+                  value={formData.verifiedColor || 'blue'}
+                  onValueChange={(value) => onChange({ ...formData, verifiedColor: value })}
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {VERIFICATION_COLOR_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full border border-border/50" 
+                            style={{ backgroundColor: option.color }}
+                          />
+                          {option.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label className="text-xs">{t('fields.verifiedPosition', 'Badge Position')}</Label>
+                <Select
+                  value={formData.verifiedPosition || 'bottom-right'}
+                  onValueChange={(value) => onChange({ ...formData, verifiedPosition: value })}
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {VERIFICATION_POSITION_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         )}
