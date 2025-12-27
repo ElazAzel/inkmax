@@ -254,11 +254,23 @@ export default function Index() {
         <div className="hidden sm:block absolute top-1/3 -right-20 w-[400px] h-[400px] lg:w-[800px] lg:h-[800px] bg-gradient-to-bl from-blue-500/12 via-cyan-500/8 to-transparent rounded-full blur-[100px] lg:blur-[150px]" />
         <div className="hidden sm:block absolute -bottom-20 left-1/4 w-[500px] h-[500px] lg:w-[900px] lg:h-[900px] bg-gradient-to-tr from-purple-500/12 via-pink-500/8 to-transparent rounded-full blur-[120px] lg:blur-[160px]" />
         
-        {/* Korner-style thin grid - animated to symbolize flexibility */}
+        {/* Multi-layer animated grid for depth and flexibility effect */}
         <div 
-          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] animate-grid-morph"
+          className="absolute inset-0 opacity-[0.025] dark:opacity-[0.015] animate-grid-morph-1"
           style={{
             backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)`,
+          }}
+        />
+        <div 
+          className="absolute inset-0 opacity-[0.02] dark:opacity-[0.012] animate-grid-morph-2"
+          style={{
+            backgroundImage: `linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px)`,
+          }}
+        />
+        <div 
+          className="absolute inset-0 opacity-[0.015] dark:opacity-[0.01] animate-grid-morph-3"
+          style={{
+            backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 0.5px, transparent 0.5px), linear-gradient(to bottom, hsl(var(--foreground)) 0.5px, transparent 0.5px)`,
           }}
         />
         
