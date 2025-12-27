@@ -66,6 +66,7 @@ interface SettingsSidebarProps {
   pageBackground?: PageBackground;
   onPageBackgroundChange?: (background: PageBackground | undefined) => void;
   canUseCustomPageBackground?: boolean;
+  onAutoContrastColorChange?: (textColor: string | null) => void;
 }
 
 export function SettingsSidebar({
@@ -108,6 +109,7 @@ export function SettingsSidebar({
   pageBackground,
   onPageBackgroundChange,
   canUseCustomPageBackground = false,
+  onAutoContrastColorChange,
 }: SettingsSidebarProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -340,6 +342,7 @@ export function SettingsSidebar({
             background={pageBackground}
             onChange={onPageBackgroundChange}
             canUseFeature={canUseCustomPageBackground}
+            onAutoContrastChange={onAutoContrastColorChange}
           />
         )}
 
