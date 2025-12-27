@@ -1089,7 +1089,9 @@
     "save": "Сақтау",
     "tierUpdated": "Тир жаңартылды",
     "tierUpdateError": "Тирді жаңарту сәтсіз",
-    "loadError": "Жүктеу сәтсіз"
+    "loadError": "Жүктеу сәтсіз",
+    "adminRole": "Әкімші",
+    "adminRoleDesc": "Әкімші панеліне кіру"
   },
   "dashboard": {
     "pageRefreshed": "Бет жаңартылды"

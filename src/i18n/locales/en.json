@@ -1095,7 +1095,9 @@
     "save": "Save",
     "tierUpdated": "Tier updated",
     "tierUpdateError": "Failed to update tier",
-    "loadError": "Failed to load"
+    "loadError": "Failed to load",
+    "adminRole": "Administrator",
+    "adminRoleDesc": "Access to admin panel"
   },
   "dashboard": {
   },
