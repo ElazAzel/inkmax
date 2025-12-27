@@ -733,7 +733,9 @@
     "translateToOthers": "Перевести на другие языки",
     "noTextToTranslate": "Введите текст для перевода",
     "translationSuccess": "Перевод выполнен",
-    "translationError": "Ошибка перевода"
+    "translationError": "Ошибка перевода",
+    "translating": "Перевод...",
+    "autoTranslate": "Автоперевод контента"
   },
   "freemium": {
     "blockLimitReached": "Достигнут лимит блоков. Перейдите на Premium для неограниченного количества.",

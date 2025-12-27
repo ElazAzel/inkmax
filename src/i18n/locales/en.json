@@ -733,7 +733,9 @@
     "translateToOthers": "Translate to other languages",
     "noTextToTranslate": "Enter text to translate",
     "translationSuccess": "Translation completed",
-    "translationError": "Translation error"
+    "translationError": "Translation error",
+    "translating": "Translating...",
+    "autoTranslate": "Auto-translate content"
   },
   "freemium": {
     "blockLimitReached": "Block limit reached. Upgrade to Premium for unlimited blocks.",
