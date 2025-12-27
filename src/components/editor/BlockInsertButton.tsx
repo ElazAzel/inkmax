@@ -1,4 +1,5 @@
 import { memo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, Search, Lock, Crown, Type, Video, Link2, File, Music, ListOrdered, Image, ShoppingBag, Code, MessageCircle, Calendar, Star, Gift, Compass, MapPin, Clock, DollarSign, Megaphone, FormInput, Mail, HelpCircle, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -84,6 +85,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   className,
   currentTier = 'free'
 }: BlockInsertButtonProps) {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -158,17 +160,17 @@ export const BlockInsertButton = memo(function BlockInsertButton({
           {/* Header */}
           <SheetHeader className="px-6 pt-6 pb-4 border-b">
             <div className="flex items-center justify-between">
-              <SheetTitle className="text-xl font-bold">Добавить элемент</SheetTitle>
+              <SheetTitle className="text-xl font-bold">{t('editor.addBlock', 'Добавить элемент')}</SheetTitle>
               {!isPremium && (
                 <Badge 
                   variant={isAtBlockLimit ? 'destructive' : 'secondary'} 
                   className="text-sm px-3 py-1"
                 >
-                  {remainingBlocks > 0 ? `${remainingBlocks} осталось` : 'Лимит'}
+                  {remainingBlocks > 0 ? `${remainingBlocks} ${t('freemium.left', 'осталось')}` : t('freemium.limit', 'Лимит')}
                 </Badge>
               )}
             </div>
-            <SheetDescription className="sr-only">Выберите блок для добавления</SheetDescription>
+            <SheetDescription className="sr-only">{t('editor.selectBlock', 'Выберите блок для добавления')}</SheetDescription>
           </SheetHeader>
           
           {/* Search */}
@@ -176,7 +178,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
-                placeholder="Поиск блоков..."
+                placeholder={t('editor.searchBlocks', 'Поиск блоков...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 text-base rounded-xl bg-background border-border"
@@ -241,7 +243,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             
             {filteredBlocks.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">Ничего не найдено</p>
+                <p className="text-muted-foreground">{t('common.noResults', 'Ничего не найдено')}</p>
               </div>
             )}
           </div>

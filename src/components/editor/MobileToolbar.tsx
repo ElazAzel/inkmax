@@ -58,33 +58,33 @@ export const MobileToolbar = memo(function MobileToolbar({
   const mainActions = [
     {
       icon: Save,
-      label: 'Save',
+      label: t('mobileToolbar.save', 'Сохранить'),
       onClick: onSave,
       disabled: saving,
       variant: 'ghost' as const,
     },
     {
       icon: Eye,
-      label: 'Preview',
+      label: t('mobileToolbar.preview', 'Просмотр'),
       onClick: onPreview,
       variant: 'ghost' as const,
     },
     {
       icon: Upload,
-      label: 'Share',
+      label: t('mobileToolbar.share', 'Поделиться'),
       onClick: onShare,
       variant: 'default' as const,
       primary: true,
     },
     {
       icon: Settings,
-      label: 'Settings',
+      label: t('mobileToolbar.settings', 'Настройки'),
       onClick: onOpenSettings,
       variant: 'ghost' as const,
     },
     {
       icon: MoreHorizontal,
-      label: 'More',
+      label: t('mobileToolbar.more', 'Ещё'),
       onClick: () => setMoreOpen(true),
       variant: 'ghost' as const,
     },
@@ -93,8 +93,8 @@ export const MobileToolbar = memo(function MobileToolbar({
   const moreActions = [
     {
       icon: Wand2,
-      label: 'AI Builder',
-      description: 'Generate page with AI',
+      label: t('mobileToolbar.aiBuilder', 'AI Конструктор'),
+      description: t('mobileToolbar.aiBuilderDesc', 'Создать страницу с AI'),
       onClick: () => {
         setMoreOpen(false);
         onOpenAIBuilder();
@@ -102,8 +102,8 @@ export const MobileToolbar = memo(function MobileToolbar({
     },
     {
       icon: LayoutTemplate,
-      label: 'Templates',
-      description: 'Ready-made templates',
+      label: t('mobileToolbar.templates', 'Шаблоны'),
+      description: t('mobileToolbar.templatesDesc', 'Готовые шаблоны'),
       onClick: () => {
         setMoreOpen(false);
         onOpenTemplates();
@@ -111,8 +111,8 @@ export const MobileToolbar = memo(function MobileToolbar({
     },
     {
       icon: Trophy,
-      label: 'Achievements',
-      description: 'Your progress',
+      label: t('mobileToolbar.achievements', 'Достижения'),
+      description: t('mobileToolbar.achievementsDesc', 'Ваш прогресс'),
       onClick: () => {
         setMoreOpen(false);
         onOpenAchievements();
@@ -121,8 +121,8 @@ export const MobileToolbar = memo(function MobileToolbar({
     },
     {
       icon: Users,
-      label: 'CRM',
-      description: 'Manage your leads',
+      label: t('mobileToolbar.crm', 'CRM'),
+      description: t('mobileToolbar.crmDesc', 'Управление лидами'),
       onClick: () => {
         setMoreOpen(false);
         onOpenCRM();
@@ -166,12 +166,12 @@ export const MobileToolbar = memo(function MobileToolbar({
         <SheetContent side="bottom" className="h-auto max-h-[75vh] rounded-t-[2.5rem] p-0 bg-card/90 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl">
           <SheetHeader className="p-6 pb-4 border-b border-border/20">
             <div className="flex items-center justify-between">
-              <SheetTitle className="text-xl font-black">More Options</SheetTitle>
+              <SheetTitle className="text-xl font-black">{t('mobileToolbar.moreOptions', 'Дополнительно')}</SheetTitle>
               <Button variant="ghost" size="lg" onClick={() => setMoreOpen(false)} className="rounded-2xl hover:bg-card/60 h-12 w-12">
                 <X className="h-6 w-6" />
               </Button>
             </div>
-            <SheetDescription className="sr-only">Additional tools and features</SheetDescription>
+            <SheetDescription className="sr-only">{t('mobileToolbar.moreOptions', 'Дополнительные инструменты')}</SheetDescription>
           </SheetHeader>
           
           <div className="p-5 space-y-3 pb-safe">
@@ -205,7 +205,7 @@ export const MobileToolbar = memo(function MobileToolbar({
                   <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
                     <Globe className="h-6 w-6 text-muted-foreground" />
                   </div>
-                  <span className="text-lg font-bold">Language</span>
+                  <span className="text-lg font-bold">{t('common.language', 'Язык')}</span>
                 </div>
                 <LanguageSwitcher />
               </div>

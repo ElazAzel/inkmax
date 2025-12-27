@@ -1100,7 +1100,49 @@
     "adminRoleDesc": "Доступ к админ-панели"
   },
   "dashboard": {
-    "pageRefreshed": "Страница обновлена"
+    "pageRefreshed": "Страница обновлена",
+    "addFirstBlock": "Нажмите + чтобы добавить первый блок"
+  },
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "preview": "Предпросмотр",
+    "share": "Поделиться",
+    "more": "Ещё",
+    "settings": "Настройки",
+    "language": "Язык"
+  },
+  "menu": {
+    "gamification": "Геймификация",
+    "community": "Сообщество",
+    "signOut": "Выйти"
+  },
+  "mobileToolbar": {
+    "save": "Сохранить",
+    "preview": "Просмотр",
+    "share": "Поделиться",
+    "settings": "Настройки",
+    "more": "Ещё",
+    "moreOptions": "Дополнительно",
+    "aiBuilder": "AI Конструктор",
+    "aiBuilderDesc": "Создать страницу с AI",
+    "templates": "Шаблоны",
+    "templatesDesc": "Готовые шаблоны",
+    "achievements": "Достижения",
+    "achievementsDesc": "Ваш прогресс",
+    "crm": "CRM",
+    "crmDesc": "Управление лидами"
+  },
+  "tokens": {
+    "title": "Токены",
+    "balance": "Баланс",
+    "earn": "Заработать",
+    "spend": "Потратить"
+  },
+  "achievements": {
+    "title": "Достижения",
+    "progress": "Прогресс"
   },
   "toasts": {
     "collaboration": {
