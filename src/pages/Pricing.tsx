@@ -141,9 +141,9 @@ export default function Pricing() {
                 </Button>
                 <div className="flex items-center gap-2">
                   <img
-                    src="/pwa-maskable-512x512.png"
+                    src="/logo.png"
                     alt="LinkMAX"
-                    className="h-8 w-8 rounded-xl"
+                    className="h-8 w-8 rounded-xl object-contain"
                   />
                   <h1 className="text-xl font-bold text-primary">
                     {t('pricing.title', 'Тарифы')}
