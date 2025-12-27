@@ -456,20 +456,15 @@ export interface BookingBlock {
   blockStyle?: BlockStyle;
 }
 
-// Block size presets - width x height in pixels (used for cover/background size hints)
+// Block size presets - optimized for mobile-first responsive grid
+// gridCols: 1 = full width, 2 = half width (2 per row max)
 export type BlockSizePreset = 
-  | 'full-tall'    // 1044x1200 - full width, tall
-  | 'full-medium'  // 1044x600 - full width, medium height
-  | 'half-wide'    // 1200x675 - half width, wide aspect (2 per row)
-  | 'half-short'   // 1200x337 - half width, short (2 per row)
-  | 'half-tall';   // 1200x1348 - half width, tall (2 per row)
+  | 'full'        // Full width block
+  | 'half';       // Half width block (2 per row)
 
-export const BLOCK_SIZE_DIMENSIONS: Record<BlockSizePreset, { width: number; height: number; gridCols: 1 | 2; label: string }> = {
-  'full-tall': { width: 1044, height: 1200, gridCols: 1, label: '1044×1200 (Во всю ширину, высокий)' },
-  'full-medium': { width: 1044, height: 600, gridCols: 1, label: '1044×600 (Во всю ширину, средний)' },
-  'half-wide': { width: 1200, height: 675, gridCols: 2, label: '1200×675 (Половина ширины, широкий)' },
-  'half-short': { width: 1200, height: 337, gridCols: 2, label: '1200×337 (Половина ширины, узкий)' },
-  'half-tall': { width: 1200, height: 1348, gridCols: 2, label: '1200×1348 (Половина ширины, высокий)' },
+export const BLOCK_SIZE_DIMENSIONS: Record<BlockSizePreset, { gridCols: 1 | 2; label: string }> = {
+  'full': { gridCols: 1, label: 'Во всю ширину' },
+  'half': { gridCols: 2, label: 'Половина ширины' },
 };
 
 // Base block type with optional grid layout

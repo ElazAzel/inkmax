@@ -1,7 +1,7 @@
 import type { Block, BlockSizePreset } from '@/types/page';
 
 // Default size for new blocks
-const DEFAULT_BLOCK_SIZE: BlockSizePreset = 'full-medium';
+const DEFAULT_BLOCK_SIZE: BlockSizePreset = 'full';
 
 export function createBlock(type: string): Block {
   const timestamp = Date.now();

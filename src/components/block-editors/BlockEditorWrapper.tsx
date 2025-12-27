@@ -157,13 +157,9 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
             <Alert className="bg-primary/5 border-primary/20">
               <Info className="h-4 w-4 text-primary" />
               <AlertDescription className="text-sm">
-                <strong>Рекомендуемый размер обложки:</strong> {sizeInfo.width}×{sizeInfo.height} px
-                <br />
-                <span className="text-xs text-muted-foreground">
-                  {sizeInfo.gridCols === 1 
-                    ? 'Блок занимает всю ширину строки' 
-                    : 'Блок занимает половину ширины (2 блока в строке)'}
-                </span>
+                {sizeInfo.gridCols === 1 
+                  ? 'Блок занимает всю ширину строки' 
+                  : 'Блок занимает половину ширины (2 блока в строке)'}
               </AlertDescription>
             </Alert>
           )}
