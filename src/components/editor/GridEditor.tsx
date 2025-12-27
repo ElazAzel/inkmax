@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, useMemo } from 'react';
 import { Edit2, Trash2, GripVertical } from 'lucide-react';
 import {
   DndContext,
@@ -6,6 +6,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragStartEvent,
@@ -16,7 +17,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
-  rectSortingStrategy,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
@@ -41,10 +42,15 @@ interface GridEditorProps {
   onReorderBlocks?: (blocks: Block[]) => void;
 }
 
-// Check if block is full width
+// Check if block is full width (with fallback for legacy sizes)
 function isFullWidthBlock(blockSize?: BlockSizePreset): boolean {
-  const size = blockSize || 'full';
-  const dims = BLOCK_SIZE_DIMENSIONS[size];
+  if (!blockSize) return true; // Default to full width
+  
+  // Handle legacy sizes - convert to new format
+  if (blockSize.startsWith('full')) return true;
+  if (blockSize.startsWith('half')) return false;
+  
+  const dims = BLOCK_SIZE_DIMENSIONS[blockSize];
   return dims?.gridCols === 1;
 }
 
@@ -249,11 +255,17 @@ export const GridEditor = memo(function GridEditor({
   const profileBlock = blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
   const contentBlocks = blocks.filter(b => b.type !== 'profile');
 
-  // DnD sensors
+  // DnD sensors - optimized for both desktop and mobile
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 5,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -261,8 +273,8 @@ export const GridEditor = memo(function GridEditor({
     })
   );
 
-  // Organize blocks into rows for display
-  const rows = organizeBlocksIntoRows(contentBlocks);
+  // Memoize organized rows for better performance
+  const rows = useMemo(() => organizeBlocksIntoRows(contentBlocks), [contentBlocks]);
 
   // Find active block for overlay
   const activeBlock = activeId ? contentBlocks.find(b => b.id === activeId) : null;
@@ -321,7 +333,7 @@ export const GridEditor = memo(function GridEditor({
       >
         <SortableContext
           items={contentBlocks.map(b => b.id)}
-          strategy={rectSortingStrategy}
+          strategy={verticalListSortingStrategy}
         >
           <div className="space-y-3">
             {rows.map((row, rowIndex) => (
