@@ -101,6 +101,7 @@ function SortableBlockWrapper({
         isLast={isLast}
         isDragging={isDragging}
         dragHandleProps={{ ...attributes, ...listeners }}
+        isOwnerPremium={isPremium}
       />
       
       {/* Block hint */}

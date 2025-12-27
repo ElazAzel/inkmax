@@ -12,12 +12,16 @@ import type { ProfileBlock as ProfileBlockType, ProfileFrameStyle } from '@/type
 interface ProfileBlockProps {
   block: ProfileBlockType;
   isPreview?: boolean;
+  isOwnerPremium?: boolean;
 }
 
-export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview }: ProfileBlockProps) {
+export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview, isOwnerPremium }: ProfileBlockProps) {
   const { t, i18n } = useTranslation();
   const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
   const bio = getTranslatedString(block.bio, i18n.language as SupportedLanguage);
+  
+  // Determine if verified badge should show (manual or auto-premium)
+  const showVerified = block.verified || (block.autoVerifyPremium && isOwnerPremium);
   
   const initials = name
     .split(' ')
@@ -144,7 +148,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           )}
           
           {/* Verification badge on frame */}
-          {block.verified && (
+          {showVerified && (
             <div 
               className={cn(
                 "absolute rounded-full p-1 shadow-lg z-10",

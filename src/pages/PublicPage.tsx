@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Share2, QrCode } from 'lucide-react';
 import { BlockRenderer } from '@/components/BlockRenderer';
@@ -10,6 +11,7 @@ import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
 import { trackShare } from '@/services/analytics';
+import { checkPremiumStatus } from '@/services/user';
 import { toast } from 'sonner';
 import type { PageData } from '@/types/page';
 import {
@@ -42,6 +44,19 @@ export default function PublicPage() {
   // Determine which data source to use
   const pageData = slug ? cachedPageData : compressedPageData;
   const loading = slug ? isLoadingCached : false;
+  
+  // Check if page owner is premium (for auto-verification badge)
+  const { data: ownerPremiumStatus } = useQuery({
+    queryKey: ['ownerPremium', pageData?.userId],
+    queryFn: async () => {
+      if (!pageData?.userId) return { isPremium: false };
+      return checkPremiumStatus(pageData.userId);
+    },
+    enabled: !!pageData?.userId,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+  
+  const isOwnerPremium = ownerPremiumStatus?.isPremium || false;
 
   // Update document metadata when page data loads
   useEffect(() => {
@@ -132,7 +147,7 @@ export default function PublicPage() {
                   } : {};
                   return (
                     <div key={block.id} style={style}>
-                      <BlockRenderer block={block} pageOwnerId={pageData?.userId} />
+                      <BlockRenderer block={block} pageOwnerId={pageData?.userId} isOwnerPremium={isOwnerPremium} />
                     </div>
                   );
                 })}
@@ -141,7 +156,7 @@ export default function PublicPage() {
           ) : (
             <div className="space-y-3 sm:space-y-4">
               {pageData.blocks.map(block => (
-                <BlockRenderer key={block.id} block={block} pageOwnerId={pageData?.userId} />
+                <BlockRenderer key={block.id} block={block} pageOwnerId={pageData?.userId} isOwnerPremium={isOwnerPremium} />
               ))}
             </div>
           )}
