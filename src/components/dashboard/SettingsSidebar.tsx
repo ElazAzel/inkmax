@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users, UserPlus, Package, Save, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import type { ProfileBlock, GridConfig, EditorMode, Block } from '@/types/page';
+import type { ProfileBlock, GridConfig, EditorMode, Block, PageBackground } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { DailyQuestsPanel } from '@/components/quests/DailyQuestsPanel';
@@ -19,6 +19,7 @@ import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { CollaborationPanel } from '@/components/collaboration/CollaborationPanel';
+import { PageBackgroundSettings } from '@/components/editor/PageBackgroundSettings';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -62,6 +63,9 @@ interface SettingsSidebarProps {
   onOpenFriends?: () => void;
   onOpenSaveTemplate?: () => void;
   onOpenMyTemplates?: () => void;
+  pageBackground?: PageBackground;
+  onPageBackgroundChange?: (background: PageBackground | undefined) => void;
+  canUseCustomPageBackground?: boolean;
 }
 
 export function SettingsSidebar({
@@ -101,6 +105,9 @@ export function SettingsSidebar({
   onOpenFriends,
   onOpenSaveTemplate,
   onOpenMyTemplates,
+  pageBackground,
+  onPageBackgroundChange,
+  canUseCustomPageBackground = false,
 }: SettingsSidebarProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -325,6 +332,15 @@ export function SettingsSidebar({
               )}
             </div>
           </Card>
+        )}
+
+        {/* Page Background Settings (Business only) */}
+        {onPageBackgroundChange && (
+          <PageBackgroundSettings
+            background={pageBackground}
+            onChange={onPageBackgroundChange}
+            canUseFeature={canUseCustomPageBackground}
+          />
         )}
 
         {/* Premium Status */}
