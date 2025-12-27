@@ -347,17 +347,30 @@ export async function loadUserPage(userId: string): Promise<LoadUserPageResult> 
  */
 export async function publishPage(userId: string): Promise<PublishPageResult> {
   try {
-    const { data, error } = await supabase
+    // First check if page exists
+    const { data: existingPage, error: fetchError } = await supabase
       .from('pages')
-      .update({ is_published: true })
+      .select('slug, is_published')
       .eq('user_id', userId)
-      .select('slug')
       .maybeSingle();
 
-    if (error) return { slug: null, error: wrapError(error) };
-    if (!data) return { slug: null, error: new Error('Page not found') };
+    if (fetchError) return { slug: null, error: wrapError(fetchError) };
+    if (!existingPage) return { slug: null, error: new Error('Page not found') };
 
-    return { slug: data.slug, error: null };
+    // If already published, just return the slug
+    if (existingPage.is_published) {
+      return { slug: existingPage.slug, error: null };
+    }
+
+    // Update to published
+    const { error: updateError } = await supabase
+      .from('pages')
+      .update({ is_published: true })
+      .eq('user_id', userId);
+
+    if (updateError) return { slug: null, error: wrapError(updateError) };
+
+    return { slug: existingPage.slug, error: null };
   } catch (error) {
     return { slug: null, error: wrapError(error) };
   }
