@@ -115,21 +115,31 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
           <div key={rowIndex} className="grid grid-cols-2 gap-3">
             {row.blocks.map((block) => {
               const isFullWidth = isFullWidthBlock(block.blockSize);
+              const contentAlignment = block.blockStyle?.contentAlignment || 'center';
+              const alignmentClass = contentAlignment === 'top' 
+                ? 'items-start' 
+                : contentAlignment === 'bottom' 
+                ? 'items-end' 
+                : 'items-center';
+              
               return (
                 <div 
                   key={block.id} 
                   className={cn(
-                    'rounded-xl overflow-hidden',
+                    'rounded-xl overflow-hidden flex',
+                    alignmentClass,
                     isFullWidth ? 'col-span-2' : 'col-span-1'
                   )}
                 >
-                  <BlockRenderer 
-                    block={block} 
-                    isPreview={isPreview}
-                    pageOwnerId={pageOwnerId}
-                    pageId={pageId}
-                    isOwnerPremium={isOwnerPremium}
-                  />
+                  <div className="w-full">
+                    <BlockRenderer 
+                      block={block} 
+                      isPreview={isPreview}
+                      pageOwnerId={pageOwnerId}
+                      pageId={pageId}
+                      isOwnerPremium={isOwnerPremium}
+                    />
+                  </div>
                 </div>
               );
             })}
