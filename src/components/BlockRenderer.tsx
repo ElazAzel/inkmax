@@ -59,6 +59,7 @@ interface BlockRendererProps {
   block: Block;
   isPreview?: boolean;
   pageOwnerId?: string;
+  pageId?: string;
   isOwnerPremium?: boolean;
 }
 
@@ -78,7 +79,7 @@ function getBlockTitle(block: Block, lang: SupportedLanguage): string {
   return typeof rawTitle === 'object' ? getTranslatedString(rawTitle, lang) : String(rawTitle || block.type);
 }
 
-export function BlockRenderer({ block, isPreview, pageOwnerId, isOwnerPremium }: BlockRendererProps) {
+export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPremium }: BlockRendererProps) {
   const { onBlockClick } = useAnalytics();
   const { i18n } = useTranslation();
   
@@ -326,7 +327,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, isOwnerPremium }:
             <BookingBlock 
               block={block as any}
               pageOwnerId={pageOwnerId}
-              pageId={undefined}
+              pageId={pageId}
             />
           </Suspense>
         </TrackableWrapper>
