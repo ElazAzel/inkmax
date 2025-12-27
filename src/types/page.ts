@@ -1,5 +1,8 @@
 export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout' | 'booking';
 
+// Editor mode is now always 'grid'
+export type EditorMode = 'grid';
+
 // Multilingual string support
 import type { MultilingualString } from '@/lib/i18n-helpers';
 
@@ -509,9 +512,6 @@ export interface GridConfig {
   gapSize: number;          // gap between blocks in px
   cellHeight: number;       // cell height in px
 }
-
-// Editor mode type
-export type EditorMode = 'linear' | 'grid';
 
 export interface PageData {
   id: string;

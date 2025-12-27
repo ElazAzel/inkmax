@@ -83,8 +83,6 @@ export default function Dashboard() {
         saveStatus={dashboard.saveStatus}
         achievementCount={dashboard.achievements.getProgress().unlocked}
         showSettings={showSettings}
-        editorMode={dashboard.pageData?.editorMode || 'linear'}
-        onToggleEditorMode={dashboard.toggleEditorMode}
         onToggleSettings={() => setShowSettings(!showSettings)}
         onSave={dashboard.save}
         onPreview={dashboard.sharingState.handlePreview}
@@ -180,7 +178,6 @@ export default function Dashboard() {
                 blocks={dashboard.pageData.blocks}
                 isPremium={dashboard.isPremium}
                 currentTier={dashboard.currentTier}
-                editorMode={dashboard.pageData.editorMode || 'linear'}
                 gridConfig={dashboard.pageData.gridConfig}
                 onInsertBlock={dashboard.blockEditor.handleInsertBlock}
                 onEditBlock={dashboard.blockEditor.handleEditBlock}
@@ -200,7 +197,6 @@ export default function Dashboard() {
         <MobileToolbar
           saving={dashboard.saving}
           saveStatus={dashboard.saveStatus}
-          editorMode={dashboard.editorMode}
           onSave={dashboard.save}
           onPreview={dashboard.sharingState.handlePreview}
           onShare={dashboard.sharingState.handleShare}
@@ -209,7 +205,6 @@ export default function Dashboard() {
           onOpenTemplates={() => setTemplateGalleryOpen(true)}
           onOpenAchievements={() => setShowAchievements(true)}
           onOpenCRM={() => setShowLeads(true)}
-          onToggleEditorMode={dashboard.toggleEditorMode}
           achievementCount={dashboard.achievements.getProgress().unlocked}
         />
       )}

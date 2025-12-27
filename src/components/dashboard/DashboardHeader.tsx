@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { AutoSaveIndicator, SaveStatus } from '@/components/editor/AutoSaveIndicator';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { EditorModeToggle } from '@/components/editor/EditorModeToggle';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { TokenBalanceDisplay } from '@/components/tokens/TokenBalanceDisplay';
 import {
@@ -14,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
-import type { EditorMode } from '@/types/page';
 import {
   LogOut,
   Save,
@@ -36,8 +34,6 @@ interface DashboardHeaderProps {
   saveStatus: SaveStatus;
   achievementCount: number;
   showSettings: boolean;
-  editorMode: EditorMode;
-  onToggleEditorMode: () => void;
   onToggleSettings: () => void;
   onSave: () => void;
   onPreview: () => void;
@@ -57,8 +53,6 @@ export function DashboardHeader({
   saveStatus,
   achievementCount,
   showSettings,
-  editorMode,
-  onToggleEditorMode,
   onToggleSettings,
   onSave,
   onPreview,
@@ -106,11 +100,6 @@ export function DashboardHeader({
                 <LayoutTemplate className="h-4 w-4 mr-2" />
                 {t('templates.title', 'Templates')}
               </Button>
-
-              <EditorModeToggle
-                currentMode={editorMode}
-                onToggle={onToggleEditorMode}
-              />
 
               <div className="h-6 w-px bg-border/50" />
 
