@@ -1068,5 +1068,92 @@
   },
   "dashboard": {
     "pageRefreshed": "Бет жаңартылды"
+  },
+  "toasts": {
+    "collaboration": {
+      "requestSent": "Коллаборация сұрауы жіберілді!",
+      "requestError": "Сұрау жіберу сәтсіз",
+      "accepted": "Коллаборация қабылданды!",
+      "rejected": "Сұрау қабылданбады",
+      "deleted": "Коллаборация жойылды",
+      "error": "Қате"
+    },
+    "team": {
+      "created": "Команда құрылды!",
+      "createError": "Команда құру сәтсіз",
+      "memberInvited": "Пайдаланушы командаға шақырылды!",
+      "inviteError": "Шақыру сәтсіз",
+      "left": "Сіз команданы тастадыңыз",
+      "deleted": "Команда жойылды",
+      "memberRemoved": "Мүше алынып тасталды",
+      "removeError": "Алып тастау сәтсіз",
+      "confirmRemove": "{{name}} командадан алып тастау керек пе?"
+    },
+    "shoutout": {
+      "added": "Шаут-аут қосылды!",
+      "deleted": "Шаут-аут жойылды",
+      "error": "Қате"
+    },
+    "social": {
+      "rewardClaimed": "Сыйлық алынды: +{{hours}} сағат Premium!",
+      "rewardError": "Сыйлықты алу сәтсіз",
+      "giftActivated": "Сыйлық белсендірілді: +{{days}} күн Premium!",
+      "giftError": "Сыйлықты белсендіру сәтсіз"
+    },
+    "leads": {
+      "loadError": "Лидтерді жүктеу сәтсіз",
+      "created": "Лид құрылды",
+      "createError": "Лид құру сәтсіз",
+      "updated": "Лид жаңартылды",
+      "updateError": "Лидті жаңарту сәтсіз",
+      "deleted": "Лид жойылды",
+      "deleteError": "Лидті жою сәтсіз",
+      "interactionError": "Өзара әрекетті қосу сәтсіз",
+      "noLeadsExport": "Экспорттайтын лидтер жоқ"
+    },
+    "gallery": {
+      "likeError": "Лайк қою сәтсіз",
+      "unlikeError": "Лайкті алу сәтсіз",
+      "addedToGallery": "Сіздің бетіңіз қоғамдастық галереясында!",
+      "removedFromGallery": "Сіздің бетіңіз галереядан алынды",
+      "updateError": "Галерея күйін жаңарту сәтсіз"
+    },
+    "sharing": {
+      "linkCopied": "Сілтеме көшірілді!",
+      "copyError": "Сілтемені көшіру сәтсіз"
+    },
+    "username": {
+      "authRequired": "Пайдаланушы аутентификацияланбаған",
+      "enterUsername": "Пайдаланушы атын енгізіңіз",
+      "invalid": "Жарамсыз пайдаланушы аты",
+      "updated": "Пайдаланушы аты жаңартылды!",
+      "updateError": "Пайдаланушы атын жаңарту сәтсіз"
+    },
+    "page": {
+      "saveError": "Сақтау сәтсіз",
+      "publishError": "Бетті жариялау сәтсіз"
+    },
+    "ai": {
+      "enterUrl": "URL енгізіңіз",
+      "enterProduct": "Өнім атауы мен бағасын енгізіңіз",
+      "describePage": "Бетіңізді сипаттаңыз",
+      "generationError": "Мазмұн генерациялау сәтсіз",
+      "generated": "Мазмұн генерацияланды!"
+    },
+    "upload": {
+      "authRequired": "Жүктеу үшін кіріңіз",
+      "fileTooLarge": "Файл өлшемі 10МБ-тан аз болуы керек",
+      "error": "Суретті жүктеу сәтсіз"
+    },
+    "bookings": {
+      "fetchError": "Брондауларды жүктеу сәтсіз",
+      "cancelError": "Брондауды болдырмау сәтсіз",
+      "cancelSuccess": "Брондау болдырылмады",
+      "confirmError": "Брондауды растау сәтсіз",
+      "confirmSuccess": "Брондау расталды",
+      "completeError": "Брондауды аяқтау сәтсіз",
+      "completeSuccess": "Брондау аяқталды деп белгіленді",
+      "noBookingsExport": "Экспорттайтын брондаулар жоқ"
+    }
   }
 }
