@@ -89,19 +89,19 @@ function SortableGridBlockItem({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'relative group bg-card rounded-xl border border-border shadow-sm overflow-hidden transition-all hover:shadow-md',
+        'relative group bg-card/70 backdrop-blur-xl rounded-3xl border border-border/30 shadow-glass overflow-hidden transition-all hover:shadow-glass-lg',
         isFullWidth ? 'col-span-2' : 'col-span-1',
         isDragging && 'opacity-50 ring-2 ring-primary z-50'
       )}
     >
-      {/* Drag handle */}
+      {/* Drag handle - BOLD */}
       <div
         {...attributes}
         {...listeners}
-        className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-grab active:cursor-grabbing"
+        className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-grab active:cursor-grabbing"
       >
-        <div className="bg-background/90 backdrop-blur-sm rounded-md p-1.5 shadow-sm border border-border">
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
+        <div className="bg-background/90 backdrop-blur-xl rounded-2xl p-2 shadow-glass border border-border/30">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
       </div>
 
@@ -115,40 +115,40 @@ function SortableGridBlockItem({
         </div>
       </div>
 
-      {/* Edit/Delete actions */}
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 z-10">
+      {/* Edit/Delete actions - BOLD */}
+      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 z-10">
         <Button
-          size="icon"
+          size="lg"
           variant="secondary"
-          className="h-7 w-7"
+          className="h-10 w-10 rounded-2xl shadow-glass"
           onClick={() => onEdit(block)}
         >
-          <Edit2 className="h-3.5 w-3.5" />
+          <Edit2 className="h-5 w-5" />
         </Button>
         <Button
-          size="icon"
+          size="lg"
           variant="destructive"
-          className="h-7 w-7"
+          className="h-10 w-10 rounded-2xl shadow-glass"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(block.id);
           }}
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash2 className="h-5 w-5" />
         </Button>
       </div>
     </div>
   );
 }
 
-// Drag overlay component (ghost element while dragging)
+// Drag overlay component (ghost element while dragging) - BOLD
 function DragOverlayBlockItem({ block, isPremium }: { block: Block; isPremium?: boolean }) {
   const isFullWidth = isFullWidthBlock(block.blockSize);
   
   return (
     <div
       className={cn(
-        'relative bg-card rounded-xl border-2 border-primary shadow-2xl overflow-hidden',
+        'relative bg-card/90 backdrop-blur-xl rounded-3xl border-2 border-primary shadow-glass-xl overflow-hidden',
         isFullWidth ? 'w-full' : 'w-1/2'
       )}
       style={{
@@ -162,7 +162,7 @@ function DragOverlayBlockItem({ block, isPremium }: { block: Block; isPremium?: 
   );
 }
 
-// Component to show add button in empty half-slot
+// Component to show add button in empty half-slot - BOLD
 function AddBlockSlot({
   onInsert,
   isPremium,
@@ -175,7 +175,7 @@ function AddBlockSlot({
   blockCount: number;
 }) {
   return (
-    <div className="col-span-1 border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center bg-muted/20 hover:bg-muted/30 transition-colors min-h-[150px]">
+    <div className="col-span-1 border-2 border-dashed border-border/40 rounded-3xl flex items-center justify-center bg-muted/20 hover:bg-muted/30 transition-colors min-h-[180px] backdrop-blur-sm">
       <BlockInsertButton
         onInsert={onInsert}
         isPremium={isPremium}
@@ -313,7 +313,7 @@ export const GridEditor = memo(function GridEditor({
   }, [onInsertBlock, contentBlocks.length]);
 
   return (
-    <div className="max-w-2xl mx-auto px-3 py-4 space-y-4 pb-32 md:pb-24">
+    <div className="max-w-2xl mx-auto px-4 py-5 space-y-5 pb-36 md:pb-28">
       {/* Profile block (full width, not in grid) */}
       {profileBlock && (
         <div className="relative group" data-onboarding="profile-block">
@@ -335,11 +335,11 @@ export const GridEditor = memo(function GridEditor({
           items={contentBlocks.map(b => b.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="space-y-3">
+          <div className="space-y-4">
             {rows.map((row, rowIndex) => (
               <div
                 key={rowIndex}
-                className="grid grid-cols-2 gap-3"
+                className="grid grid-cols-2 gap-4"
               >
                 {row.blocks.map((block) => (
                   <SortableGridBlockItem
@@ -366,8 +366,8 @@ export const GridEditor = memo(function GridEditor({
 
             {/* Add row for new blocks */}
             {rows.length === 0 || !rows[rows.length - 1]?.hasEmptySlot ? (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="col-span-2 border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center bg-muted/20 hover:bg-muted/30 transition-colors py-8">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 border-2 border-dashed border-border/40 rounded-3xl flex items-center justify-center bg-muted/20 hover:bg-muted/30 transition-colors py-10 backdrop-blur-sm">
                   <BlockInsertButton
                     onInsert={(type) => handleInsertBlock(type)}
                     isPremium={isPremium}
@@ -388,11 +388,11 @@ export const GridEditor = memo(function GridEditor({
         </DragOverlay>
       </DndContext>
 
-      {/* Empty state */}
+      {/* Empty state - BOLD */}
       {contentBlocks.length === 0 && (
-        <div className="text-center py-10 border-2 border-dashed border-border/50 rounded-2xl mx-2 bg-card/30 backdrop-blur-sm">
-          <p className="text-sm text-muted-foreground mb-4 px-4">
-            Нажмите + чтобы добавить первый блок
+        <div className="text-center py-14 border-2 border-dashed border-border/40 rounded-3xl mx-2 bg-card/40 backdrop-blur-xl">
+          <p className="text-base text-muted-foreground mb-5 px-6 font-medium">
+            Tap + to add your first block
           </p>
           <BlockInsertButton
             onInsert={(type) => handleInsertBlock(type)}
@@ -403,9 +403,9 @@ export const GridEditor = memo(function GridEditor({
         </div>
       )}
 
-      {/* Fixed FAB for adding blocks on mobile */}
+      {/* Fixed FAB for adding blocks on mobile - BOLD */}
       {isMobile && contentBlocks.length > 0 && (
-        <div className="fixed bottom-20 right-4 z-40">
+        <div className="fixed bottom-24 right-5 z-40">
           <BlockInsertButton
             onInsert={(type) => handleInsertBlock(type)}
             isPremium={isPremium}
