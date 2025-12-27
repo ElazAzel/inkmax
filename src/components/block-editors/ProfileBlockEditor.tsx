@@ -266,34 +266,59 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
 
         {canUseVerificationBadge() && (formData.verified || formData.autoVerifyPremium) && (
           <div className="space-y-3 pl-6">
+            {/* Custom icon upload */}
             <div>
-              <Label className="text-xs">{t('fields.verifiedIcon', 'Badge Icon')}</Label>
-              <Select
-                value={formData.verifiedIcon || 'check-circle'}
-                onValueChange={(value) => onChange({ ...formData, verifiedIcon: value })}
-              >
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {VERIFICATION_ICON_OPTIONS.map((option) => {
-                    const IconComponent = (LucideIcons as any)[option.icon];
-                    return (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center gap-2">
-                          {IconComponent && <IconComponent className="h-4 w-4" />}
-                          {option.label}
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
+              <Label className="text-xs">{t('fields.verifiedCustomIcon', 'Custom Icon (PNG/SVG/GIF)')}</Label>
+              <div className="mt-1">
+                <MediaUpload
+                  value={formData.verifiedCustomIcon || ''}
+                  onChange={(value) => onChange({ ...formData, verifiedCustomIcon: value })}
+                  accept="image/png,image/svg+xml,image/gif"
+                  allowGif={true}
+                />
+              </div>
+              {formData.verifiedCustomIcon && (
+                <button
+                  type="button"
+                  onClick={() => onChange({ ...formData, verifiedCustomIcon: undefined })}
+                  className="text-xs text-destructive hover:underline mt-1"
+                >
+                  {t('actions.removeCustomIcon', 'Remove custom icon')}
+                </button>
+              )}
             </div>
+
+            {/* Preset icon selector - only show if no custom icon */}
+            {!formData.verifiedCustomIcon && (
+              <div>
+                <Label className="text-xs">{t('fields.verifiedIcon', 'Preset Icon')}</Label>
+                <Select
+                  value={formData.verifiedIcon || 'check-circle'}
+                  onValueChange={(value) => onChange({ ...formData, verifiedIcon: value })}
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {VERIFICATION_ICON_OPTIONS.map((option) => {
+                      const IconComponent = (LucideIcons as any)[option.icon];
+                      return (
+                        <SelectItem key={option.value} value={option.value}>
+                          <div className="flex items-center gap-2">
+                            {IconComponent && <IconComponent className="h-4 w-4" />}
+                            {option.label}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs">{t('fields.verifiedColor', 'Badge Color')}</Label>
+                <Label className="text-xs">{t('fields.verifiedColor', 'Badge Background')}</Label>
                 <Select
                   value={formData.verifiedColor || 'blue'}
                   onValueChange={(value) => onChange({ ...formData, verifiedColor: value })}

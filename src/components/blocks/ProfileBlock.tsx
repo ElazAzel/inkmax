@@ -17,13 +17,38 @@ interface ProfileBlockProps {
 // Verification badge component with custom icon support
 const VerificationBadge = memo(function VerificationBadgeComponent({ 
   iconType, 
+  customIcon,
   color, 
   position 
 }: { 
   iconType?: VerificationIconType; 
+  customIcon?: string;
   color?: string; 
   position?: string; 
 }) {
+  // If custom icon is provided, use it instead of preset icon
+  if (customIcon) {
+    return (
+      <div 
+        className={cn(
+          "absolute rounded-full shadow-lg z-10 overflow-hidden",
+          getVerificationPositionClasses(position)
+        )}
+        style={{ 
+          backgroundColor: getVerificationColor(color),
+          width: '24px',
+          height: '24px',
+        }}
+      >
+        <img 
+          src={customIcon} 
+          alt="Verified" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
   const iconOption = VERIFICATION_ICON_OPTIONS.find(opt => opt.value === (iconType || 'check-circle'));
   const iconName = iconOption?.icon || 'CheckCircle2';
   const IconComponent = (LucideIcons as any)[iconName] || LucideIcons.CheckCircle2;
@@ -177,6 +202,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
           {showVerified && (
             <VerificationBadge 
               iconType={block.verifiedIcon}
+              customIcon={block.verifiedCustomIcon}
               color={block.verifiedColor}
               position={block.verifiedPosition}
             />
