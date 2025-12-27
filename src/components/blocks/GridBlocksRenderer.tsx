@@ -6,6 +6,7 @@ import type { Block, BlockSizePreset } from '@/types/page';
 interface GridBlocksRendererProps {
   blocks: Block[];
   pageOwnerId?: string;
+  pageId?: string;
   isOwnerPremium?: boolean;
   isPreview?: boolean;
   className?: string;
@@ -83,6 +84,7 @@ function organizeBlocksIntoRows(blocks: Block[]): BlockRow[] {
 export const GridBlocksRenderer = memo(function GridBlocksRenderer({
   blocks,
   pageOwnerId,
+  pageId,
   isOwnerPremium,
   isPreview = false,
   className,
@@ -102,6 +104,7 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
                 block={row.blocks[0]} 
                 isPreview={isPreview}
                 pageOwnerId={pageOwnerId}
+                pageId={pageId}
                 isOwnerPremium={isOwnerPremium}
               />
             </div>
@@ -124,6 +127,7 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
                     block={block} 
                     isPreview={isPreview}
                     pageOwnerId={pageOwnerId}
+                    pageId={pageId}
                     isOwnerPremium={isOwnerPremium}
                   />
                 </div>

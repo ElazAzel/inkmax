@@ -124,6 +124,7 @@ export default function PublicPage() {
           <GridBlocksRenderer
             blocks={pageData.blocks}
             pageOwnerId={pageData?.userId}
+            pageId={pageData?.id}
             isOwnerPremium={isOwnerPremium}
             isPreview={false}
           />
