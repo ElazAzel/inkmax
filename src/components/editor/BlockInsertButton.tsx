@@ -164,58 +164,58 @@ export const BlockInsertButton = memo(function BlockInsertButton({
     return <Crown className="h-3 w-3 text-primary" />;
   };
 
-  // Mobile Sheet Interface
+  // Mobile Sheet Interface - BOLD Design
   const MobileSheet = () => (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <Button
         variant="default"
         size="lg"
         onClick={() => setIsOpen(true)}
-        className="h-14 w-14 rounded-2xl shadow-glass-lg backdrop-blur-xl hover:shadow-glass-xl transition-all active:scale-95 hover:-translate-y-1"
+        className="h-16 w-16 rounded-3xl shadow-glass-xl backdrop-blur-xl hover:shadow-glass-xl transition-all active:scale-95 hover:-translate-y-1"
         data-onboarding="add-block"
       >
-        <Plus className="h-6 w-6" />
+        <Plus className="h-8 w-8" />
       </Button>
-      <SheetContent side="bottom" className="h-[85vh] p-0 bg-card/80 backdrop-blur-2xl border-t border-border/30 rounded-t-3xl">
-        <SheetHeader className="p-4 pb-2 border-b border-border/30 sticky top-0 bg-card/60 backdrop-blur-xl z-10">
+      <SheetContent side="bottom" className="h-[85vh] p-0 bg-card/90 backdrop-blur-2xl border-t border-border/30 rounded-t-[2.5rem]">
+        <SheetHeader className="p-5 pb-3 border-b border-border/30 sticky top-0 bg-card/80 backdrop-blur-xl z-10">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg font-semibold">Add Block</SheetTitle>
+            <SheetTitle className="text-xl font-black">Add Block</SheetTitle>
             {!isPremium && (
-              <Badge variant={isAtBlockLimit ? 'destructive' : 'secondary'} className="text-xs backdrop-blur-sm">
-                {remainingBlocks > 0 ? `${remainingBlocks} осталось` : 'Лимит'}
+              <Badge variant={isAtBlockLimit ? 'destructive' : 'secondary'} className="text-sm px-3 py-1 backdrop-blur-sm font-bold">
+                {remainingBlocks > 0 ? `${remainingBlocks} left` : 'Limit'}
               </Badge>
             )}
           </div>
           <SheetDescription className="sr-only">Choose a block to add to your page</SheetDescription>
-          <div className="relative mt-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="relative mt-4">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder="Search blocks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-11 rounded-xl bg-background/50 backdrop-blur-sm border-border/30"
+              className="pl-12 h-14 text-lg rounded-2xl bg-background/50 backdrop-blur-sm border-border/30 font-medium"
             />
           </div>
           {isAtBlockLimit && (
             <button
               onClick={openPremiumPurchase}
-              className="mt-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl w-full text-left hover:bg-amber-500/20 transition-colors backdrop-blur-sm"
+              className="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl w-full text-left hover:bg-amber-500/20 transition-colors backdrop-blur-sm"
             >
-              <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                <Crown className="h-3.5 w-3.5" />
-                Перейдите на Premium для неограниченных блоков
+              <p className="text-sm text-amber-600 dark:text-amber-400 flex items-center gap-2 font-bold">
+                <Crown className="h-5 w-5" />
+                Upgrade to Premium for unlimited blocks
               </p>
             </button>
           )}
         </SheetHeader>
         
-        <div className="overflow-y-auto p-4 space-y-6 pb-safe" style={{ height: 'calc(100% - 130px)' }}>
+        <div className="overflow-y-auto p-5 space-y-6 pb-safe" style={{ height: 'calc(100% - 140px)' }}>
           {Object.entries(blocksByCategory).map(([category, blocks]) => (
             <div key={category}>
-              <h3 className="text-sm font-semibold text-muted-foreground mb-3 px-1">
+              <h3 className="text-base font-bold text-muted-foreground mb-4 px-1 uppercase tracking-wider">
                 {category}
               </h3>
-                <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {blocks.map((block) => {
                   const isLocked = !canUseBlock(block.tier);
                   return (
@@ -224,18 +224,18 @@ export const BlockInsertButton = memo(function BlockInsertButton({
                       onClick={() => handleInsert(block.type, block.tier)}
                       disabled={isLocked}
                       className={cn(
-                        "relative flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all active:scale-95",
+                        "relative flex flex-col items-center gap-3 p-5 rounded-3xl border transition-all active:scale-95",
                         isLocked
                           ? "bg-muted/30 border-border/30 cursor-not-allowed opacity-60 backdrop-blur-sm"
                           : "bg-card/60 backdrop-blur-xl border-border/30 hover:border-primary/50 hover:bg-card/80 hover:shadow-glass cursor-pointer"
                       )}
                     >
                       <div className="absolute top-2 right-2 flex items-center gap-1">
-                        {isLocked && <Lock className="h-3 w-3 text-muted-foreground" />}
+                        {isLocked && <Lock className="h-4 w-4 text-muted-foreground" />}
                         {getTierBadge(block.tier)}
                       </div>
-                      <span className="text-2xl">{block.icon}</span>
-                      <span className="text-xs font-medium text-center leading-tight">
+                      <span className="text-3xl">{block.icon}</span>
+                      <span className="text-sm font-bold text-center leading-tight">
                         {block.label}
                       </span>
                     </button>
@@ -246,8 +246,8 @@ export const BlockInsertButton = memo(function BlockInsertButton({
           ))}
           
           {filteredBlocks.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-sm text-muted-foreground">No blocks found</p>
+            <div className="text-center py-16">
+              <p className="text-base text-muted-foreground font-medium">No blocks found</p>
             </div>
           )}
         </div>
