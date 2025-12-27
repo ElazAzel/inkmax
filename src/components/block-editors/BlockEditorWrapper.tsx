@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Info, Calendar as CalendarIcon, X, Maximize2, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd, Palette } from 'lucide-react';
+import { Crown, Info, Calendar as CalendarIcon, X, Maximize2, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { AnimationSettings } from '@/components/editor/AnimationSettings';
@@ -122,27 +122,9 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
       });
     };
 
-    const handleTextColorChange = (color: string) => {
-      handleChange({
-        ...formData,
-        blockStyle: {
-          ...(formData.blockStyle || {}),
-          textColor: color || undefined
-        }
-      });
-    };
-
     const currentSize = formData.blockSize || 'full-medium';
     const sizeInfo = BLOCK_SIZE_DIMENSIONS[currentSize as BlockSizePreset];
     const currentContentAlignment = formData.blockStyle?.contentAlignment || 'center';
-    const currentTextColor = formData.blockStyle?.textColor || '';
-
-    const textColorPresets = [
-      { color: '#FFFFFF', label: 'Белый' },
-      { color: '#000000', label: 'Чёрный' },
-      { color: '#F5F5F5', label: 'Светлый' },
-      { color: '#1A1A1A', label: 'Тёмный' },
-    ];
 
     return (
       <BlockEditorWrapper
@@ -233,67 +215,6 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
               Низ
             </Button>
           </div>
-        </div>
-
-        {/* Text Color */}
-        <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border/50">
-          <div className="flex items-center gap-2">
-            <Palette className="h-4 w-4 text-primary" />
-            <Label className="text-base font-semibold">Цвет текста и элементов</Label>
-          </div>
-          
-          <div className="flex gap-2 flex-wrap">
-            {textColorPresets.map((preset) => (
-              <button
-                key={preset.color}
-                type="button"
-                onClick={() => handleTextColorChange(preset.color)}
-                className={cn(
-                  "w-10 h-10 rounded-lg border-2 transition-all",
-                  currentTextColor === preset.color 
-                    ? "border-primary ring-2 ring-primary/30" 
-                    : "border-border hover:border-primary/50"
-                )}
-                style={{ backgroundColor: preset.color }}
-                title={preset.label}
-              />
-            ))}
-            <div className="flex items-center gap-2 flex-1 min-w-[120px]">
-              <Input
-                type="color"
-                value={currentTextColor || '#000000'}
-                onChange={(e) => handleTextColorChange(e.target.value)}
-                className="w-10 h-10 p-1 cursor-pointer"
-              />
-              <Input
-                type="text"
-                value={currentTextColor}
-                onChange={(e) => handleTextColorChange(e.target.value)}
-                placeholder="Любой цвет"
-                className="flex-1"
-              />
-            </div>
-          </div>
-
-          {currentTextColor && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => handleTextColorChange('')}
-              className="text-muted-foreground"
-            >
-              <X className="h-4 w-4 mr-1" />
-              Сбросить цвет
-            </Button>
-          )}
-
-          <Alert className="bg-primary/5 border-primary/20">
-            <Info className="h-4 w-4 text-primary" />
-            <AlertDescription className="text-sm">
-              Цвет применяется ко всему тексту и элементам блока для видимости на любом фоне
-            </AlertDescription>
-          </Alert>
         </div>
         
         <Separator className="my-4" />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useDashboard } from '@/hooks/useDashboard';
@@ -23,7 +23,6 @@ import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublish
 import { FriendsPanel } from '@/components/friends/FriendsPanel';
 import { MyTemplatesPanel } from '@/components/templates/MyTemplatesPanel';
 import { TokensPanel } from '@/components/tokens/TokensPanel';
-import type { PageBackground } from '@/types/page';
 import {
   DashboardHeader,
   MobileHeader,
@@ -50,7 +49,6 @@ export default function Dashboard() {
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
   const [showMyTemplates, setShowMyTemplates] = useState(false);
   const [showTokens, setShowTokens] = useState(false);
-  const [autoContrastColor, setAutoContrastColor] = useState<string | null>(null);
 
   const handleOpenGallery = () => navigate('/gallery');
 
@@ -64,31 +62,6 @@ export default function Dashboard() {
   // Loading/Error states
   if (dashboard.loading) return <LoadingState />;
   if (!dashboard.pageData) return <ErrorState />;
-
-  // Get background style for live preview
-  const getBackgroundStyle = (background?: PageBackground): React.CSSProperties => {
-    if (!background) return {};
-    
-    switch (background.type) {
-      case 'solid':
-        return { backgroundColor: background.value };
-      case 'gradient':
-        const colors = background.value.split(',').map(c => c.trim());
-        return { 
-          background: `linear-gradient(${background.gradientAngle || 135}deg, ${colors.join(', ')})` 
-        };
-      case 'image':
-        return { 
-          backgroundImage: `url(${background.value})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        };
-      default:
-        return {};
-    }
-  };
-
-  const previewBackgroundStyle = getBackgroundStyle(dashboard.pageData?.theme?.customBackground);
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -188,7 +161,6 @@ export default function Dashboard() {
             });
           }}
           canUseCustomPageBackground={canUseCustomPageBackground()}
-          onAutoContrastColorChange={setAutoContrastColor}
         />
 
         {/* Referral Panel in Settings Area */}
@@ -198,7 +170,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Preview Editor with Live Background */}
+        {/* Preview Editor */}
         <div
           className={`transition-all duration-300 ${
             showSettings && !dashboard.isMobile ? 'md:ml-80' : ''
@@ -213,13 +185,7 @@ export default function Dashboard() {
             }}
             disabled={dashboard.loading || dashboard.saving}
           >
-            <div 
-              className="py-4 pb-24 md:pb-8 min-h-[60vh] rounded-2xl mx-2 md:mx-4 transition-all duration-300"
-              style={{
-                ...previewBackgroundStyle,
-                ...(autoContrastColor ? { color: autoContrastColor } : {})
-              }}
-            >
+            <div className="py-4 pb-24 md:pb-8">
               <PreviewEditor
                 blocks={dashboard.pageData.blocks}
                 isPremium={dashboard.isPremium}

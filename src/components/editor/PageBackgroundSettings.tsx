@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -8,23 +8,20 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
-import { Crown, Image, Palette, Sparkles, Lock, Wand2 } from 'lucide-react';
+import { Crown, Image, Palette, Sparkles, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { PageBackground } from '@/types/page';
-import { getContrastTextColorForBackground } from '@/lib/color-contrast';
 
 interface PageBackgroundSettingsProps {
   background?: PageBackground;
   onChange: (background: PageBackground | undefined) => void;
   canUseFeature: boolean;
-  onAutoContrastChange?: (textColor: string | null) => void;
 }
 
 export const PageBackgroundSettings = memo(function PageBackgroundSettings({
   background,
   onChange,
   canUseFeature,
-  onAutoContrastChange,
 }: PageBackgroundSettingsProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -32,19 +29,6 @@ export const PageBackgroundSettings = memo(function PageBackgroundSettings({
   const currentType = background?.type || 'solid';
   const currentValue = background?.value || '';
   const gradientAngle = background?.gradientAngle || 135;
-
-  // Calculate and notify about auto-contrast color when background changes
-  useEffect(() => {
-    if (background && onAutoContrastChange) {
-      const contrastColor = getContrastTextColorForBackground(
-        background.type,
-        background.value
-      );
-      onAutoContrastChange(contrastColor);
-    } else if (!background && onAutoContrastChange) {
-      onAutoContrastChange(null);
-    }
-  }, [background?.type, background?.value, onAutoContrastChange]);
 
   const handleTypeChange = (type: PageBackground['type']) => {
     onChange({
@@ -216,29 +200,9 @@ export const PageBackgroundSettings = memo(function PageBackgroundSettings({
           <div className="mt-3 p-2 rounded-lg border border-border/50 bg-muted/30">
             <Label className="text-xs text-muted-foreground">{t('settings.preview', 'Превью')}</Label>
             <div 
-              className="mt-2 h-20 rounded-lg border border-border/30 flex items-center justify-center"
+              className="mt-2 h-20 rounded-lg border border-border/30"
               style={getBackgroundPreviewStyle(background)}
-            >
-              {/* Show recommended text color */}
-              {background.type !== 'image' && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/20 backdrop-blur-sm">
-                  <Wand2 className="h-3.5 w-3.5 text-white" />
-                  <span 
-                    className="text-sm font-medium"
-                    style={{ color: getContrastTextColorForBackground(background.type, background.value) || '#FFFFFF' }}
-                  >
-                    {t('settings.autoContrast', 'Авто-контраст')}
-                  </span>
-                </div>
-              )}
-              {background.type === 'image' && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm">
-                  <span className="text-xs text-white/80">
-                    {t('settings.manualColorNeeded', 'Выберите цвет вручную')}
-                  </span>
-                </div>
-              )}
-            </div>
+            />
           </div>
         )}
       </div>

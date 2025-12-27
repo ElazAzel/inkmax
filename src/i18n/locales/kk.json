@@ -696,20 +696,7 @@
     "slug": "URL мекенжайы",
     "seo": "SEO",
     "analytics": "Аналитика",
-    "premium": "Премиум",
-    "pageBackground": "Бет фоны",
-    "pageBackgroundLocked": "Бет фонын өзгерту тек Business тарифінде қолжетімді. Түс, градиент, сурет немесе GIF орнатыңыз.",
-    "backgroundType": "Фон түрі",
-    "solidColor": "Біртекті түс",
-    "gradient": "Градиент",
-    "imageOrGif": "Сурет / GIF",
-    "backgroundColor": "Фон түсі",
-    "gradientColors": "Градиент түстері (үтір арқылы)",
-    "gradientHint": "2-3 түсті үтір арқылы енгізіңіз",
-    "gradientAngle": "Градиент бұрышы",
-    "backgroundImage": "Сурет немесе GIF",
-    "autoContrast": "Авто-контраст",
-    "manualColorNeeded": "Түсті қолмен таңдаңыз"
+    "premium": "Премиум"
   },
 "messages": {
     "saved": "Сақталды",

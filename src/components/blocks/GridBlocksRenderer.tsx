@@ -122,11 +122,6 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
                 ? 'items-end' 
                 : 'items-center';
               
-              // Apply text color for visibility on any background
-              const textColorStyle: React.CSSProperties = block.blockStyle?.textColor 
-                ? { color: block.blockStyle.textColor } 
-                : {};
-              
               return (
                 <div 
                   key={block.id} 
@@ -135,7 +130,6 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
                     alignmentClass,
                     isFullWidth ? 'col-span-2' : 'col-span-1'
                   )}
-                  style={textColorStyle}
                 >
                   <div className="w-full">
                     <BlockRenderer 

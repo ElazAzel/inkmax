@@ -702,20 +702,7 @@
     "slug": "URL адрес",
     "seo": "SEO",
     "analytics": "Аналитика",
-    "premium": "Премиум",
-    "pageBackground": "Фон страницы",
-    "pageBackgroundLocked": "Пользовательский фон страницы доступен только на тарифе Business. Установите цвет, градиент, изображение или GIF в качестве фона вашей страницы.",
-    "backgroundType": "Тип фона",
-    "solidColor": "Сплошной цвет",
-    "gradient": "Градиент",
-    "imageOrGif": "Изображение / GIF",
-    "backgroundColor": "Цвет фона",
-    "gradientColors": "Цвета градиента (через запятую)",
-    "gradientHint": "Укажите 2-3 цвета через запятую",
-    "gradientAngle": "Угол градиента",
-    "backgroundImage": "Изображение или GIF",
-    "autoContrast": "Авто-контраст",
-    "manualColorNeeded": "Выберите цвет вручную"
+    "premium": "Премиум"
   },
 "messages": {
     "saved": "Сохранено",

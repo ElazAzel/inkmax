@@ -141,7 +141,7 @@ export default function Pricing() {
                 </Button>
                 <div className="flex items-center gap-2">
                   <img
-                    src="/logo.png"
+                    src="/pwa-maskable-512x512.png"
                     alt="LinkMAX"
                     className="h-8 w-8 rounded-xl"
                   />

@@ -702,20 +702,7 @@
     "slug": "URL Slug",
     "seo": "SEO",
     "analytics": "Analytics",
-    "premium": "Premium",
-    "pageBackground": "Page Background",
-    "pageBackgroundLocked": "Custom page background is available only on Business plan. Set a color, gradient, image or GIF as your page background.",
-    "backgroundType": "Background Type",
-    "solidColor": "Solid Color",
-    "gradient": "Gradient",
-    "imageOrGif": "Image / GIF",
-    "backgroundColor": "Background Color",
-    "gradientColors": "Gradient colors (comma-separated)",
-    "gradientHint": "Enter 2-3 colors separated by comma",
-    "gradientAngle": "Gradient Angle",
-    "backgroundImage": "Image or GIF",
-    "autoContrast": "Auto-contrast",
-    "manualColorNeeded": "Choose color manually"
+    "premium": "Premium"
   },
 "messages": {
     "saved": "Saved",
