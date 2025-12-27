@@ -98,7 +98,7 @@ export function DashboardHeader({
 
               <Button variant="ghost" size="default" onClick={onOpenTemplates} className="h-11 px-4 rounded-2xl font-bold">
                 <LayoutTemplate className="h-5 w-5 mr-2" />
-                {t('templates.title', 'Templates')}
+                {t('templates.title', 'Шаблоны')}
               </Button>
 
               <div className="h-8 w-px bg-border/40" />
@@ -116,7 +116,7 @@ export function DashboardHeader({
                 className="h-11 px-4 rounded-2xl font-bold"
               >
                 <Settings className="h-5 w-5 mr-2" />
-                {t('settings.title', 'Settings')}
+                {t('common.settings', 'Настройки')}
               </Button>
 
               <div className="h-8 w-px bg-border/40" />
@@ -126,7 +126,7 @@ export function DashboardHeader({
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="default" className="relative h-11 px-4 rounded-2xl font-bold">
                     <MoreHorizontal className="h-5 w-5 mr-2" />
-                    {t('common.more', 'More')}
+                    {t('common.more', 'Ещё')}
                     {achievementCount > 0 && (
                       <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-xs font-bold flex items-center justify-center text-primary-foreground shadow-glass">
                         {achievementCount}
@@ -135,10 +135,10 @@ export function DashboardHeader({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2">
-                  <DropdownMenuLabel className="text-sm font-bold">{t('menu.gamification', 'Gamification')}</DropdownMenuLabel>
+                  <DropdownMenuLabel className="text-sm font-bold">{t('menu.gamification', 'Геймификация')}</DropdownMenuLabel>
                   <DropdownMenuItem onClick={onOpenAchievements} className="rounded-xl py-3 font-medium">
                     <Trophy className="h-5 w-5 mr-3" />
-                    {t('achievements.title', 'Achievements')}
+                    {t('achievements.title', 'Достижения')}
                     {achievementCount > 0 && (
                       <span className="ml-auto bg-primary text-primary-foreground text-sm px-2 py-0.5 rounded-lg font-bold">
                         {achievementCount}
@@ -147,20 +147,20 @@ export function DashboardHeader({
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={onOpenTokens} className="rounded-xl py-3 font-medium">
                     <Coins className="h-5 w-5 mr-3" />
-                    {t('tokens.title', 'Tokens')}
+                    {t('tokens.title', 'Токены')}
                   </DropdownMenuItem>
                   
                   <DropdownMenuSeparator className="my-2" />
-                  <DropdownMenuLabel className="text-sm font-bold">{t('menu.community', 'Community')}</DropdownMenuLabel>
+                  <DropdownMenuLabel className="text-sm font-bold">{t('menu.community', 'Сообщество')}</DropdownMenuLabel>
                   <DropdownMenuItem onClick={onOpenGallery} className="rounded-xl py-3 font-medium">
                     <ImageIcon className="h-5 w-5 mr-3" />
-                    {t('gallery.title', 'Gallery')}
+                    {t('gallery.title', 'Галерея')}
                   </DropdownMenuItem>
                   
                   <DropdownMenuSeparator className="my-2" />
                   <DropdownMenuItem onClick={() => navigate('/pricing')} className="rounded-xl py-3 font-medium">
                     <Crown className="h-5 w-5 mr-3" />
-                    {t('pricing.title', 'Pricing')}
+                    {t('pricing.title', 'Тарифы')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -175,20 +175,20 @@ export function DashboardHeader({
 
               <div className="h-8 w-px bg-border/40" />
 
-              {/* Main Actions - BOLD */}
+              {/* Main Actions */}
               <Button variant="outline" size="default" onClick={onSave} disabled={saving} className="h-11 px-5 rounded-2xl font-bold">
                 <Save className="h-5 w-5 mr-2" />
-                {saving ? '...' : t('common.save', 'Save')}
+                {saving ? '...' : t('common.save', 'Сохранить')}
               </Button>
 
               <Button variant="outline" size="default" onClick={onPreview} className="h-11 px-5 rounded-2xl font-bold">
                 <Eye className="h-5 w-5 mr-2" />
-                {t('common.preview', 'Preview')}
+                {t('common.preview', 'Предпросмотр')}
               </Button>
 
               <Button size="default" onClick={onShare} data-onboarding="share-button" className="h-11 px-5 rounded-2xl font-bold shadow-glass-lg">
                 <Upload className="h-5 w-5 mr-2" />
-                {t('common.share', 'Share')}
+                {t('common.share', 'Поделиться')}
               </Button>
 
               <div className="h-8 w-px bg-border/40" />

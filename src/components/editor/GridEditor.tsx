@@ -1,4 +1,5 @@
 import { memo, useCallback, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Edit2, Trash2, GripVertical } from 'lucide-react';
 import {
   DndContext,
@@ -250,6 +251,7 @@ export const GridEditor = memo(function GridEditor({
   onUpdateBlock,
   onReorderBlocks,
 }: GridEditorProps) {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -393,7 +395,7 @@ export const GridEditor = memo(function GridEditor({
       {contentBlocks.length === 0 && (
         <div className="text-center py-12 border-2 border-dashed border-border rounded-2xl mx-2 bg-card">
           <p className="text-base text-muted-foreground mb-4 px-6">
-            Нажмите + чтобы добавить первый блок
+            {t('dashboard.addFirstBlock', 'Нажмите + чтобы добавить первый блок')}
           </p>
           <BlockInsertButton
             onInsert={(type) => handleInsertBlock(type)}
