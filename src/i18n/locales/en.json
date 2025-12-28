@@ -532,6 +532,22 @@
         "link3": "🚚 Delivery"
       }
     },
+    "demo": {
+      "badge": "Try it now",
+      "title": "Experience the Magic.",
+      "subtitle": "Play with the editor right here. Add blocks, edit content, and see changes in real-time.",
+      "profile": "Profile",
+      "addBlocks": "Add Blocks",
+      "link": "Link",
+      "text": "Text",
+      "image": "Image",
+      "socials": "Socials",
+      "yourBlocks": "Your Blocks",
+      "dragToReorder": "drag to reorder",
+      "noBlocks": "No blocks yet. Add some above!",
+      "addBlocksHint": "Add blocks to see them here",
+      "livePreview": "Live Preview"
+    },
     "capabilities": {
       "noCode": {
         "title": "No-Code Builder",
