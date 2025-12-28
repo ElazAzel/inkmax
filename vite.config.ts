@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo.png', 'robots.txt'],
+      includeAssets: ['favicon.jpg', 'robots.txt'],
       manifest: {
         name: 'LinkMAX - AI-Powered Link-in-Bio',
         short_name: 'LinkMAX',
@@ -28,27 +28,27 @@ export default defineConfig(({ mode }) => ({
         start_url: '/',
         icons: [
           {
-            src: '/logo.png',
+            src: '/favicon.jpg',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/jpeg',
             purpose: 'any'
           },
           {
-            src: '/logo.png',
+            src: '/favicon.jpg',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/jpeg',
             purpose: 'any'
           },
           {
-            src: '/logo.png',
+            src: '/favicon.jpg',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/jpeg',
             purpose: 'maskable'
           },
           {
-            src: '/logo.png',
+            src: '/favicon.jpg',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/jpeg',
             purpose: 'maskable'
           }
         ],
