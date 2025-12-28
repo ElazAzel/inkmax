@@ -609,14 +609,6 @@
         "desc": "Interactive demo right on the site — no registration needed"
       }
     },
-    "hero": {
-      "usernamePlaceholder": "yourname",
-      "create": "Create",
-      "free": "Free forever",
-      "noCode": "No coding",
-      "aiPowered": "AI-powered",
-      "subtitle2": "One link for all your socials, portfolio and business"
-    },
     "howItWorks": {
       "step4": {
         "title": "Share your link",
