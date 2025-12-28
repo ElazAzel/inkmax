@@ -289,17 +289,7 @@ export default function Index() {
         <div className="mx-3 sm:mx-6 mt-3 sm:mt-4">
           <div className="backdrop-blur-2xl bg-card/70 border border-border/40 rounded-2xl shadow-glass-lg">
             <div className="container mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 sm:gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/30 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500" />
-                  <img 
-                    src="/logo.png" 
-                    alt="LinkMAX" 
-                    width="40"
-                    height="40"
-                    className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300 object-contain" 
-                  />
-                </div>
+              <div className="flex items-center group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <span className="text-lg sm:text-xl font-bold tracking-tight text-foreground">
                   Link<span className="text-gradient">MAX</span>
                 </span>
@@ -891,12 +881,7 @@ export default function Index() {
       <footer className="border-t border-border/40 py-8 sm:py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
-            <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <img 
-                src="/logo.png" 
-                alt="LinkMAX" 
-                className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl object-contain" 
-              />
+            <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <span className="text-lg sm:text-xl font-bold">
                 Link<span className="text-gradient">MAX</span>
               </span>
