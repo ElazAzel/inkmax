@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback } from 'react';
 import type { Block } from '@/types/page';
+import type { PremiumTier } from '@/hooks/usePremiumStatus';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 import { useAnalytics } from '@/hooks/useAnalyticsTracking';
@@ -61,6 +62,7 @@ interface BlockRendererProps {
   pageOwnerId?: string;
   pageId?: string;
   isOwnerPremium?: boolean;
+  ownerTier?: PremiumTier;
 }
 
 // Loading skeleton for blocks
@@ -79,7 +81,7 @@ function getBlockTitle(block: Block, lang: SupportedLanguage): string {
   return typeof rawTitle === 'object' ? getTranslatedString(rawTitle, lang) : String(rawTitle || block.type);
 }
 
-export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPremium }: BlockRendererProps) {
+export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPremium, ownerTier }: BlockRendererProps) {
   const { onBlockClick } = useAnalytics();
   const { i18n } = useTranslation();
   
@@ -114,7 +116,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
     case 'profile':
       return (
         <Suspense fallback={<BlockSkeleton />}>
-          <ProfileBlock block={block} isPreview={isPreview} isOwnerPremium={isOwnerPremium} />
+          <ProfileBlock block={block} isPreview={isPreview} isOwnerPremium={isOwnerPremium} ownerTier={ownerTier} />
         </Suspense>
       );
     case 'link':

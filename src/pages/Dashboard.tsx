@@ -190,6 +190,7 @@ export default function Dashboard() {
                 blocks={dashboard.pageData.blocks}
                 isPremium={dashboard.isPremium}
                 currentTier={dashboard.currentTier}
+                premiumTier={dashboard.currentTier}
                 gridConfig={dashboard.pageData.gridConfig}
                 onInsertBlock={dashboard.blockEditor.handleInsertBlock}
                 onEditBlock={dashboard.blockEditor.handleEditBlock}

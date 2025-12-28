@@ -7,11 +7,13 @@ import { parseRichText } from '@/lib/rich-text-parser';
 import { getFrameStyles, getShadowStyles, isGradientFrame, FRAME_CSS, getVerificationPositionClasses, getVerificationColor, VERIFICATION_ICON_OPTIONS } from '@/lib/avatar-frame-utils';
 import { cn } from '@/lib/utils';
 import type { ProfileBlock as ProfileBlockType, ProfileFrameStyle, VerificationIconType } from '@/types/page';
+import type { PremiumTier } from '@/hooks/usePremiumStatus';
 
 interface ProfileBlockProps {
   block: ProfileBlockType;
   isPreview?: boolean;
   isOwnerPremium?: boolean;
+  ownerTier?: PremiumTier;
 }
 
 // Verification badge component with custom icon support
@@ -66,13 +68,16 @@ const VerificationBadge = memo(function VerificationBadgeComponent({
   );
 });
 
-export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview, isOwnerPremium }: ProfileBlockProps) {
+export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPreview, isOwnerPremium, ownerTier }: ProfileBlockProps) {
   const { t, i18n } = useTranslation();
   const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
   const bio = getTranslatedString(block.bio, i18n.language as SupportedLanguage);
   
-  // Determine if verified badge should show (manual or auto-premium)
-  const showVerified = block.verified || (block.autoVerifyPremium && isOwnerPremium);
+  // Business tier always gets verification badge
+  const isBusinessTier = ownerTier === 'business';
+  
+  // Determine if verified badge should show (manual or auto-premium or business tier)
+  const showVerified = block.verified || (block.autoVerifyPremium && isOwnerPremium) || isBusinessTier;
   
   const initials = name
     .split(' ')
@@ -198,13 +203,13 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
             </div>
           )}
           
-          {/* Verification badge on frame */}
+          {/* Verification badge on frame - Business gets gold, others use settings */}
           {showVerified && (
             <VerificationBadge 
-              iconType={block.verifiedIcon}
-              customIcon={block.verifiedCustomIcon}
-              color={block.verifiedColor}
-              position={block.verifiedPosition}
+              iconType={isBusinessTier ? 'badge-check' : block.verifiedIcon}
+              customIcon={isBusinessTier ? undefined : block.verifiedCustomIcon}
+              color={isBusinessTier ? 'gold' : block.verifiedColor}
+              position={block.verifiedPosition || 'top-right'}
             />
           )}
         </div>

@@ -2,12 +2,14 @@ import { memo } from 'react';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { cn } from '@/lib/utils';
 import type { Block, BlockSizePreset } from '@/types/page';
+import type { PremiumTier } from '@/hooks/usePremiumStatus';
 
 interface GridBlocksRendererProps {
   blocks: Block[];
   pageOwnerId?: string;
   pageId?: string;
   isOwnerPremium?: boolean;
+  ownerTier?: PremiumTier;
   isPreview?: boolean;
   className?: string;
 }
@@ -86,6 +88,7 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
   pageOwnerId,
   pageId,
   isOwnerPremium,
+  ownerTier,
   isPreview = false,
   className,
 }: GridBlocksRendererProps) {
@@ -106,6 +109,7 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
                 pageOwnerId={pageOwnerId}
                 pageId={pageId}
                 isOwnerPremium={isOwnerPremium}
+                ownerTier={ownerTier}
               />
             </div>
           );
@@ -138,6 +142,7 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
                       pageOwnerId={pageOwnerId}
                       pageId={pageId}
                       isOwnerPremium={isOwnerPremium}
+                      ownerTier={ownerTier}
                     />
                   </div>
                 </div>

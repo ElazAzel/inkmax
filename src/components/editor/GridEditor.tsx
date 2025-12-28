@@ -30,11 +30,13 @@ import { cn } from '@/lib/utils';
 import type { Block, ProfileBlock, GridConfig, BlockSizePreset } from '@/types/page';
 import { BLOCK_SIZE_DIMENSIONS } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
+import type { PremiumTier } from '@/hooks/usePremiumStatus';
 
 interface GridEditorProps {
   blocks: Block[];
   isPremium: boolean;
   currentTier?: FreeTier;
+  premiumTier?: PremiumTier;
   gridConfig?: GridConfig;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
@@ -61,6 +63,7 @@ interface SortableGridBlockItemProps {
   onEdit: (block: Block) => void;
   onDelete: (id: string) => void;
   isPremium?: boolean;
+  premiumTier?: PremiumTier;
   isDragging?: boolean;
 }
 
@@ -70,6 +73,7 @@ function SortableGridBlockItem({
   onEdit,
   onDelete,
   isPremium,
+  premiumTier,
 }: SortableGridBlockItemProps) {
   const {
     attributes,
@@ -111,7 +115,7 @@ function SortableGridBlockItem({
         className="w-full h-full overflow-hidden cursor-pointer"
         onClick={() => onEdit(block)}
       >
-        <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} />
+        <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} ownerTier={premiumTier} />
       </div>
 
       {/* Edit/Delete - visible on hover, positioned clearly */}
@@ -144,7 +148,7 @@ function SortableGridBlockItem({
 }
 
 // Drag overlay component (ghost element while dragging) - BOLD
-function DragOverlayBlockItem({ block, isPremium }: { block: Block; isPremium?: boolean }) {
+function DragOverlayBlockItem({ block, isPremium, premiumTier }: { block: Block; isPremium?: boolean; premiumTier?: PremiumTier }) {
   const isFullWidth = isFullWidthBlock(block.blockSize);
   
   return (
@@ -158,7 +162,7 @@ function DragOverlayBlockItem({ block, isPremium }: { block: Block; isPremium?: 
       }}
     >
       <div className="w-full h-full overflow-hidden opacity-80">
-        <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} />
+        <BlockRenderer block={block} isPreview isOwnerPremium={isPremium} ownerTier={premiumTier} />
       </div>
     </div>
   );
@@ -244,6 +248,7 @@ export const GridEditor = memo(function GridEditor({
   blocks,
   isPremium,
   currentTier = 'free',
+  premiumTier,
   gridConfig,
   onInsertBlock,
   onEditBlock,
@@ -352,6 +357,7 @@ export const GridEditor = memo(function GridEditor({
                     onEdit={onEditBlock}
                     onDelete={onDeleteBlock}
                     isPremium={isPremium}
+                    premiumTier={premiumTier}
                   />
                 ))}
                 
@@ -386,7 +392,7 @@ export const GridEditor = memo(function GridEditor({
         {/* Drag overlay */}
         <DragOverlay>
           {activeBlock && (
-            <DragOverlayBlockItem block={activeBlock} isPremium={isPremium} />
+            <DragOverlayBlockItem block={activeBlock} isPremium={isPremium} premiumTier={premiumTier} />
           )}
         </DragOverlay>
       </DndContext>
