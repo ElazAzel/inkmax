@@ -214,14 +214,14 @@ export default function Index() {
 
   const pricingPlans = {
     pro: {
-      '3': { monthly: 5.00, total: 15 },
-      '6': { monthly: 3.50, total: 21 },
-      '12': { monthly: 2.50, total: 30 },
+      '3': { monthly: 6.25, total: 18.75 },
+      '6': { monthly: 4.40, total: 26.40 },
+      '12': { monthly: 3.15, total: 37.80 },
     },
     business: {
-      '3': { monthly: 9.50, total: 28.50 },
-      '6': { monthly: 7.00, total: 42 },
-      '12': { monthly: 5.00, total: 60 },
+      '3': { monthly: 14.25, total: 42.75 },
+      '6': { monthly: 10.50, total: 63 },
+      '12': { monthly: 7.50, total: 90 },
     }
   };
 
