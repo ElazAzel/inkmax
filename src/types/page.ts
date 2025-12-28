@@ -81,6 +81,11 @@ export interface LinkBlock {
   customIconUrl?: string; // User-uploaded custom icon for manual mode
   style?: 'default' | 'rounded' | 'pill';
   alignment?: 'left' | 'center' | 'right';
+  background?: {
+    type: 'solid' | 'gradient' | 'image';
+    value: string;
+    gradientAngle?: number;
+  };
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
