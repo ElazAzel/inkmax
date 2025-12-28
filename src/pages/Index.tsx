@@ -300,7 +300,6 @@ export default function Index() {
                     alt="LinkMAX" 
                     width="40"
                     height="40"
-                    fetchPriority="high"
                     className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300 object-contain" 
                   />
                 </div>
