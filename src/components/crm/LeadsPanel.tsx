@@ -32,6 +32,7 @@ import { AddLeadDialog } from './AddLeadDialog';
 import { LeadDetails } from './LeadDetails';
 import { AnalyticsPanel } from './AnalyticsPanel';
 import { BookingsPanel } from './BookingsPanel';
+import { FunnelAnalysis } from './FunnelAnalysis';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { Lead } from '@/hooks/useLeads';
 
@@ -72,7 +73,7 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [activeTab, setActiveTab] = useState<'leads' | 'bookings' | 'analytics'>('leads');
+  const [activeTab, setActiveTab] = useState<'leads' | 'bookings' | 'analytics' | 'funnel'>('leads');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
 
   const stats = getLeadStats();
@@ -196,19 +197,25 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
           </SheetHeader>
           
           {/* Tabs for Leads / Analytics */}
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'leads' | 'bookings' | 'analytics')} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mx-0 rounded-none border-b bg-transparent h-10 sm:h-11">
-              <TabsTrigger value="leads" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs sm:text-sm">
-                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5" />
-                {t('crm.leads', 'Leads')}
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'leads' | 'bookings' | 'analytics' | 'funnel')} className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mx-0 rounded-none border-b bg-transparent h-10 sm:h-11">
+              <TabsTrigger value="leads" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs sm:text-sm px-1">
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">{t('crm.leads', 'Leads')}</span>
               </TabsTrigger>
-              <TabsTrigger value="bookings" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs sm:text-sm">
-                <CalendarDays className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5" />
-                {t('crm.bookings', 'Bookings')}
+              <TabsTrigger value="bookings" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs sm:text-sm px-1">
+                <CalendarDays className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">{t('crm.bookings', 'Bookings')}</span>
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs sm:text-sm">
-                <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5" />
-                {t('analytics.title', 'Analytics')}
+              <TabsTrigger value="analytics" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs sm:text-sm px-1">
+                <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">{t('analytics.title', 'Analytics')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="funnel" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs sm:text-sm px-1">
+                <svg className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+                </svg>
+                <span className="hidden sm:inline">{t('funnel.title', 'Funnel')}</span>
               </TabsTrigger>
             </TabsList>
             
@@ -218,6 +225,10 @@ export function LeadsPanel({ open, onOpenChange }: LeadsPanelProps) {
             
             <TabsContent value="analytics" className="mt-0">
               <AnalyticsPanel />
+            </TabsContent>
+            
+            <TabsContent value="funnel" className="mt-0">
+              <FunnelAnalysis />
             </TabsContent>
             
             <TabsContent value="leads" className="mt-0">
