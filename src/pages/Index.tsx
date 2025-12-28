@@ -49,19 +49,16 @@ import {
 } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
-import { useEffect, useRef, useState, Suspense, lazy } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-// Lazy load heavy components for better mobile performance
-const InteractiveDemo = lazy(() => import('@/components/landing/InteractiveDemo').then(m => ({ default: m.InteractiveDemo })));
-const LandingFeaturedPages = lazy(() => import('@/components/landing/LandingFeaturedPages').then(m => ({ default: m.LandingFeaturedPages })));
-const LandingGallerySection = lazy(() => import('@/components/landing/LandingGallerySection').then(m => ({ default: m.LandingGallerySection })));
-const FAQSection = lazy(() => import('@/components/landing/FAQSection').then(m => ({ default: m.FAQSection })));
-const UseCasesGallery = lazy(() => import('@/components/landing/UseCasesGallery').then(m => ({ default: m.UseCasesGallery })));
+import { InteractiveDemo } from '@/components/landing/InteractiveDemo';
+import { LandingFeaturedPages } from '@/components/landing/LandingFeaturedPages';
+import { LandingGallerySection } from '@/components/landing/LandingGallerySection';
+import { FAQSection } from '@/components/landing/FAQSection';
+import { UseCasesGallery } from '@/components/landing/UseCasesGallery';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
-
-// Lazy load 3D component for better performance
-const Hero3D = lazy(() => import('@/components/landing/Hero3D').then(m => ({ default: m.Hero3D })));
+import { Hero3D } from '@/components/landing/Hero3D';
 
 // Intersection Observer hook for scroll animations
 function useScrollAnimation() {
