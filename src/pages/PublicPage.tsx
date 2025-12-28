@@ -51,7 +51,7 @@ export default function PublicPage() {
   const { data: ownerPremiumStatus } = useQuery({
     queryKey: ['ownerPremium', pageData?.userId],
     queryFn: async () => {
-      if (!pageData?.userId) return { isPremium: false };
+      if (!pageData?.userId) return { isPremium: false, tier: 'free' as const };
       return checkPremiumStatus(pageData.userId);
     },
     enabled: !!pageData?.userId,
@@ -59,6 +59,7 @@ export default function PublicPage() {
   });
   
   const isOwnerPremium = ownerPremiumStatus?.isPremium || false;
+  const ownerTier = ownerPremiumStatus?.tier || 'free';
 
   // Enable heatmap tracking for published pages
   useHeatmapTracking(pageData?.id, !!slug && !!pageData?.id);
@@ -161,6 +162,7 @@ export default function PublicPage() {
             pageOwnerId={pageData?.userId}
             pageId={pageData?.id}
             isOwnerPremium={isOwnerPremium}
+            ownerTier={ownerTier}
             isPreview={false}
           />
 

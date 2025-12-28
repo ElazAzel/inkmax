@@ -2,11 +2,13 @@ import { memo } from 'react';
 import { GridEditor } from './GridEditor';
 import type { Block, GridConfig } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
+import type { PremiumTier } from '@/hooks/usePremiumStatus';
 
 interface PreviewEditorProps {
   blocks: Block[];
   isPremium: boolean;
   currentTier?: FreeTier;
+  premiumTier?: PremiumTier;
   gridConfig?: GridConfig;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
@@ -21,6 +23,7 @@ export const PreviewEditor = memo(function PreviewEditor({
   blocks,
   isPremium,
   currentTier = 'free',
+  premiumTier,
   gridConfig,
   onInsertBlock,
   onEditBlock,
@@ -34,6 +37,7 @@ export const PreviewEditor = memo(function PreviewEditor({
       blocks={blocks}
       isPremium={isPremium}
       currentTier={currentTier}
+      premiumTier={premiumTier}
       gridConfig={gridConfig}
       onInsertBlock={onInsertBlock}
       onEditBlock={onEditBlock}
