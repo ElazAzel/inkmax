@@ -175,7 +175,7 @@ export default function Index() {
 
   // Stats
   const stats = [
-    { value: '2', suffix: ' мин', label: t('landing.stats.timeLabel', 'На создание страницы') },
+    { value: '2', suffix: t('landing.stats.minutesSuffix', ' мин'), label: t('landing.stats.timeLabel', 'На создание страницы') },
     { value: '20+', suffix: '', label: t('landing.stats.blocksLabel', 'Типов блоков') },
     { value: '0', suffix: '%', label: t('landing.stats.commissionLabel', 'Комиссия платформы') },
   ];
