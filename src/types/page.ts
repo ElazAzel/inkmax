@@ -76,6 +76,9 @@ export interface LinkBlock {
   title: string | MultilingualString;
   url: string;
   icon?: string;
+  iconMode?: 'auto' | 'manual'; // 'auto' = fetch favicon, 'manual' = use custom icon
+  faviconUrl?: string; // Cached favicon URL for auto mode
+  customIconUrl?: string; // User-uploaded custom icon for manual mode
   style?: 'default' | 'rounded' | 'pill';
   alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
