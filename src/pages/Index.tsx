@@ -59,6 +59,10 @@ import { UseCasesGallery } from '@/components/landing/UseCasesGallery';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 import { Hero3D } from '@/components/landing/Hero3D';
+import { SEOLandingHead } from '@/components/landing/SEOLandingHead';
+import { TableOfContents } from '@/components/landing/TableOfContents';
+import { LinkInBioSection } from '@/components/landing/LinkInBioSection';
+import { NichesDetailSection } from '@/components/landing/NichesDetailSection';
 
 // Intersection Observer hook for scroll animations
 function useScrollAnimation() {
@@ -87,7 +91,7 @@ function useScrollAnimation() {
 
 export default function Index() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [username, setUsername] = useState('');
   const [showFloatingCta, setShowFloatingCta] = useState(false);
   const isMobile = useIsMobile();
@@ -243,7 +247,9 @@ export default function Index() {
   const ctaSection = useScrollAnimation();
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <>
+      <SEOLandingHead currentLanguage={i18n.language} />
+      <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Korner-style Grid Background - Simplified on mobile for performance */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {/* Subtle gradient blobs - reduced blur on mobile */}
