@@ -10,6 +10,7 @@ import { FreemiumWatermark } from '@/components/FreemiumWatermark';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
+import { useHeatmapTracking } from '@/hooks/useHeatmapTracking';
 import { trackShare } from '@/services/analytics';
 import { checkPremiumStatus } from '@/services/user';
 import { toast } from 'sonner';
@@ -57,6 +58,9 @@ export default function PublicPage() {
   });
   
   const isOwnerPremium = ownerPremiumStatus?.isPremium || false;
+
+  // Enable heatmap tracking for published pages
+  useHeatmapTracking(pageData?.id, !!slug && !!pageData?.id);
 
   // Update document metadata when page data loads
   useEffect(() => {
