@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { GridBlocksRenderer } from '@/components/blocks/GridBlocksRenderer';
 import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FreemiumWatermark } from '@/components/FreemiumWatermark';
+import { SEOHead } from '@/components/SEOHead';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
@@ -62,16 +63,13 @@ export default function PublicPage() {
   // Enable heatmap tracking for published pages
   useHeatmapTracking(pageData?.id, !!slug && !!pageData?.id);
 
-  // Update document metadata when page data loads
-  useEffect(() => {
-    if (pageData) {
-      document.title = pageData.seo.title;
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', pageData.seo.description);
-      }
+  // Build canonical URL for SEO
+  const canonicalUrl = useMemo(() => {
+    if (slug) {
+      return `https://lnkmx.my/${slug}`;
     }
-  }, [pageData]);
+    return window.location.href;
+  }, [slug]);
 
   const handleShare = async () => {
     // Track share event
@@ -143,6 +141,9 @@ export default function PublicPage() {
   const backgroundStyle = getPageBackgroundStyle(customBackground);
 
   return (
+    <>
+      {/* Dynamic SEO meta tags */}
+      <SEOHead pageData={pageData} pageUrl={canonicalUrl} />
     <AnalyticsProvider pageId={pageData?.id} enabled={!!slug}>
       <div 
         className="min-h-screen bg-background"
@@ -213,5 +214,6 @@ export default function PublicPage() {
         {slug && <ChatbotWidget pageSlug={slug} />}
       </div>
     </AnalyticsProvider>
+    </>
   );
 }
