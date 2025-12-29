@@ -191,10 +191,10 @@ export const VERIFICATION_ICON_OPTIONS = [
 // Get position classes for verification badge
 export const getVerificationPositionClasses = (position: string = 'bottom-right'): string => {
   const positions: Record<string, string> = {
-    'top-right': '-top-1 -right-1',
-    'top-left': '-top-1 -left-1',
-    'bottom-right': '-bottom-1 -right-1',
-    'bottom-left': '-bottom-1 -left-1',
+    'top-right': 'top-0 right-0 translate-x-1/4 -translate-y-1/4',
+    'top-left': 'top-0 left-0 -translate-x-1/4 -translate-y-1/4',
+    'bottom-right': 'bottom-0 right-0 translate-x-1/4 translate-y-1/4',
+    'bottom-left': 'bottom-0 left-0 -translate-x-1/4 translate-y-1/4',
   };
   return positions[position] || positions['bottom-right'];
 };
