@@ -33,13 +33,12 @@ const VerificationBadge = memo(function VerificationBadgeComponent({
     return (
       <div 
         className={cn(
-          "absolute rounded-full shadow-lg z-10 overflow-hidden",
+          "absolute rounded-full shadow-lg z-10 overflow-hidden flex-shrink-0",
+          "w-6 h-6 sm:w-7 sm:h-7",
           getVerificationPositionClasses(position)
         )}
         style={{ 
           backgroundColor: getVerificationColor(color),
-          width: '24px',
-          height: '24px',
         }}
       >
         <img 
@@ -58,12 +57,12 @@ const VerificationBadge = memo(function VerificationBadgeComponent({
   return (
     <div 
       className={cn(
-        "absolute rounded-full p-1 shadow-lg z-10",
+        "absolute rounded-full p-1 sm:p-1.5 shadow-lg z-10 flex-shrink-0",
         getVerificationPositionClasses(position)
       )}
       style={{ backgroundColor: getVerificationColor(color) }}
     >
-      <IconComponent className="h-4 w-4 text-white" fill="currentColor" />
+      <IconComponent className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" fill="currentColor" />
     </div>
   );
 });
