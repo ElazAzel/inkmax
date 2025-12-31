@@ -375,17 +375,33 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
             {t('blocks.booking.notifications', 'Уведомления в Telegram')}
           </h4>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>{t('blocks.booking.dailyReminder', 'Утреннее напоминание')}</Label>
-              <p className="text-xs text-muted-foreground">
-                {t('blocks.booking.dailyReminderDesc', 'В 8:50 получите список записей на сегодня')}
-              </p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>{t('blocks.booking.dailyReminder', 'Утреннее напоминание')}</Label>
+                <p className="text-xs text-muted-foreground">
+                  {t('blocks.booking.dailyReminderDesc', 'Получите список записей на сегодня')}
+                </p>
+              </div>
+              <Switch
+                checked={block.dailyReminderEnabled || false}
+                onCheckedChange={v => handleChange({ dailyReminderEnabled: v })}
+              />
             </div>
-            <Switch
-              checked={block.dailyReminderEnabled || false}
-              onCheckedChange={v => handleChange({ dailyReminderEnabled: v })}
-            />
+
+            {block.dailyReminderEnabled && (
+              <div className="flex items-center gap-2 ml-0">
+                <Label className="text-sm text-muted-foreground whitespace-nowrap">
+                  {t('blocks.booking.reminderTime', 'Время напоминания')}:
+                </Label>
+                <Input
+                  type="time"
+                  value={block.dailyReminderTime || '08:50'}
+                  onChange={e => handleChange({ dailyReminderTime: e.target.value })}
+                  className="w-28"
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between">
