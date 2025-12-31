@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout' | 'booking';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'search' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout' | 'booking' | 'community';
 
 // Editor mode is now always 'grid'
 export type EditorMode = 'grid';
@@ -66,6 +66,9 @@ export interface ProfileBlock {
   avatarSize?: 'small' | 'medium' | 'large' | 'xlarge';
   avatarPosition?: 'left' | 'center' | 'right';
   shadowStyle?: 'none' | 'soft' | 'medium' | 'strong' | 'glow';
+  // Proof of Human - video/audio intro
+  introVideo?: string; // URL to short intro video
+  introAudio?: string; // URL to voice message
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -407,7 +410,15 @@ export interface CountdownBlock {
   blockStyle?: BlockStyle;
 }
 
-// Pricing Block
+// Service types for structured data (GEO-ready)
+export type ServiceType = 
+  | 'haircut' | 'consultation' | 'training' | 'manicure' 
+  | 'lesson' | 'massage' | 'photo' | 'repair' 
+  | 'cleaning' | 'delivery' | 'coaching' | 'therapy'
+  | 'beauty' | 'medical' | 'legal' | 'financial'
+  | 'other';
+
+// Pricing Block with structured service data
 export interface PricingItem {
   id: string;
   name: string | MultilingualString;
@@ -416,6 +427,13 @@ export interface PricingItem {
   currency?: Currency;
   period?: string | MultilingualString; // e.g., "per hour", "per session"
   featured?: boolean;
+  // Structured service data for GEO
+  serviceType?: ServiceType;
+  duration?: number; // duration in minutes
+  priceType?: 'fixed' | 'range' | 'from';
+  priceMax?: number; // for range pricing
+  isBookable?: boolean; // can be booked via Booking block
+  availableDays?: ('weekdays' | 'weekends' | 'everyday' | 'by_appointment')[];
 }
 
 export interface PricingBlock {
@@ -424,6 +442,20 @@ export interface PricingBlock {
   title?: string | MultilingualString;
   items: PricingItem[];
   currency?: Currency;
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
+// Community Block - for private Telegram channels/groups
+export interface CommunityBlock {
+  id: string;
+  type: 'community';
+  title?: string | MultilingualString;
+  description?: string | MultilingualString;
+  telegramLink: string;
+  icon?: 'users' | 'crown' | 'star' | 'heart' | 'zap' | 'lock';
+  memberCount?: string; // e.g., "500+ участников"
+  style?: 'default' | 'premium' | 'exclusive';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }
@@ -492,7 +524,7 @@ interface BlockGridProps {
   createdAt?: string;
 }
 
-export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock | BookingBlock) & BlockGridProps;
+export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | SearchBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock | BookingBlock | CommunityBlock) & BlockGridProps;
 
 // Page background configuration
 export interface PageBackground {
