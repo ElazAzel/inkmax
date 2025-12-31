@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
-import { Clock, Plus, Trash2, CalendarDays, Wallet } from 'lucide-react';
+import { Clock, Plus, Trash2, CalendarDays, Wallet, Bell, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BlockEditorWrapper } from './BlockEditorWrapper';
 import type { BookingBlock } from '@/types/page';
@@ -364,6 +364,45 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
               </div>
             </>
           )}
+        </div>
+
+        <Separator />
+
+        {/* Telegram Notifications */}
+        <div className="space-y-4">
+          <h4 className="font-medium flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            {t('blocks.booking.notifications', 'Уведомления в Telegram')}
+          </h4>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>{t('blocks.booking.dailyReminder', 'Утреннее напоминание')}</Label>
+              <p className="text-xs text-muted-foreground">
+                {t('blocks.booking.dailyReminderDesc', 'В 8:50 получите список записей на сегодня')}
+              </p>
+            </div>
+            <Switch
+              checked={block.dailyReminderEnabled || false}
+              onCheckedChange={v => handleChange({ dailyReminderEnabled: v })}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label className="flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                {t('blocks.booking.weeklyMotivation', 'Мотивация на неделю')}
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                {t('blocks.booking.weeklyMotivationDesc', 'Понедельник в 9:00 — персональное вдохновение')}
+              </p>
+            </div>
+            <Switch
+              checked={block.weeklyMotivationEnabled || false}
+              onCheckedChange={v => handleChange({ weeklyMotivationEnabled: v })}
+            />
+          </div>
         </div>
       </div>
     </BlockEditorWrapper>
