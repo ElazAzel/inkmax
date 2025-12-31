@@ -466,7 +466,8 @@ export interface BookingBlock {
   prepaymentAmount?: number;
   prepaymentCurrency?: Currency;
   // Telegram notification settings
-  dailyReminderEnabled?: boolean; // Send daily reminder at 8:50 about today's bookings
+  dailyReminderEnabled?: boolean; // Send daily reminder about today's bookings
+  dailyReminderTime?: string; // Time for daily reminder in HH:MM format (default: 08:50)
   weeklyMotivationEnabled?: boolean; // Send weekly motivation on Mondays at 9:00
   isPremium: true;
   schedule?: BlockSchedule;

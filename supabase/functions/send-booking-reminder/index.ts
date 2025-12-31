@@ -27,11 +27,18 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
-    // Get today's date in YYYY-MM-DD format
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
+    // Get current time in Kazakhstan timezone (UTC+5)
+    const now = new Date();
+    const kazakhstanOffset = 5 * 60; // UTC+5 in minutes
+    const localTime = new Date(now.getTime() + (kazakhstanOffset + now.getTimezoneOffset()) * 60000);
+    const currentHour = localTime.getHours();
+    const currentMinute = localTime.getMinutes();
+    const currentTimeStr = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
     
-    console.log(`Checking bookings for date: ${todayStr}`);
+    // Get today's date in YYYY-MM-DD format
+    const todayStr = localTime.toISOString().split('T')[0];
+    
+    console.log(`Checking reminders at ${currentTimeStr} for date: ${todayStr}`);
 
     // Get all bookings for today with their owners
     const { data: bookings, error: bookingsError } = await supabase
@@ -65,12 +72,59 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Found ${bookings.length} bookings for today`);
 
-    // Group bookings by owner
+    // Get unique page IDs
+    const pageIds = [...new Set(bookings.map(b => b.page_id))];
+    
+    // Get booking blocks to check reminder settings
+    const { data: blocks, error: blocksError } = await supabase
+      .from("blocks")
+      .select("id, content, page_id")
+      .in("page_id", pageIds)
+      .eq("type", "booking");
+
+    if (blocksError) {
+      console.error("Error fetching blocks:", blocksError);
+    }
+
+    // Create a map of page_id to block settings
+    const blockSettingsByPage = new Map<string, { enabled: boolean; time: string }>();
+    if (blocks) {
+      for (const block of blocks) {
+        const content = block.content as Record<string, unknown>;
+        if (content?.dailyReminderEnabled === true) {
+          const reminderTime = (content?.dailyReminderTime as string) || '08:50';
+          blockSettingsByPage.set(block.page_id, { enabled: true, time: reminderTime });
+        }
+      }
+    }
+
+    // Group bookings by owner, filtering by matching reminder time
     const bookingsByOwner = new Map<string, typeof bookings>();
     for (const booking of bookings) {
+      const settings = blockSettingsByPage.get(booking.page_id);
+      if (!settings?.enabled) continue;
+      
+      // Check if current time matches the configured reminder time (within 10 min window)
+      const [reminderHour, reminderMinute] = settings.time.split(':').map(Number);
+      const reminderTotalMinutes = reminderHour * 60 + reminderMinute;
+      const currentTotalMinutes = currentHour * 60 + currentMinute;
+      
+      // Match if within 10-minute window (cron runs every 10 minutes)
+      if (Math.abs(currentTotalMinutes - reminderTotalMinutes) > 5) {
+        continue;
+      }
+      
       const ownerBookings = bookingsByOwner.get(booking.owner_id) || [];
       ownerBookings.push(booking);
       bookingsByOwner.set(booking.owner_id, ownerBookings);
+    }
+
+    if (bookingsByOwner.size === 0) {
+      console.log("No bookings matching reminder time at", currentTimeStr);
+      return new Response(
+        JSON.stringify({ success: true, message: "No matching reminder times", sent: 0 }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     // Get owner profiles with Telegram settings
@@ -85,29 +139,6 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to fetch owner profiles");
     }
 
-    // Get blocks to check if daily reminder is enabled
-    const blockIds = [...new Set(bookings.map(b => b.block_id))];
-    const pageIds = [...new Set(bookings.map(b => b.page_id))];
-    
-    const { data: blocks, error: blocksError } = await supabase
-      .from("blocks")
-      .select("id, content, page_id")
-      .in("page_id", pageIds)
-      .eq("type", "booking");
-
-    if (blocksError) {
-      console.error("Error fetching blocks:", blocksError);
-    }
-
-    // Create a map of block settings
-    const blockSettings = new Map<string, boolean>();
-    if (blocks) {
-      for (const block of blocks) {
-        const content = block.content as Record<string, unknown>;
-        blockSettings.set(block.id, content?.dailyReminderEnabled === true);
-      }
-    }
-
     let sentCount = 0;
 
     for (const owner of owners || []) {
@@ -117,20 +148,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       const ownerBookings = bookingsByOwner.get(owner.id) || [];
-      
-      // Filter bookings where dailyReminderEnabled is true for the block
-      const enabledBookings = ownerBookings.filter(b => {
-        // Find block for this booking
-        const block = blocks?.find(bl => bl.page_id === b.page_id);
-        if (!block) return false;
-        const content = block.content as Record<string, unknown>;
-        return content?.dailyReminderEnabled === true;
-      });
-
-      if (enabledBookings.length === 0) {
-        console.log(`Skipping owner ${owner.id}: No bookings with reminder enabled`);
-        continue;
-      }
+      if (ownerBookings.length === 0) continue;
 
       // Format the message based on language
       const lang = owner.telegram_language || 'ru';
@@ -141,14 +159,14 @@ const handler = async (req: Request): Promise<Response> => {
       const bookingsWord = isRu ? 'записей' : 'appointments';
       
       // Sort bookings by time
-      enabledBookings.sort((a, b) => a.slot_time.localeCompare(b.slot_time));
+      ownerBookings.sort((a, b) => a.slot_time.localeCompare(b.slot_time));
       
       let message = `☀️ *${greeting}${owner.display_name ? `, ${owner.display_name}` : ''}!*\n\n`;
       message += `📋 *${todaySchedule}:*\n`;
-      message += `_${enabledBookings.length} ${bookingsWord}_\n\n`;
+      message += `_${ownerBookings.length} ${bookingsWord}_\n\n`;
       
-      for (let i = 0; i < enabledBookings.length; i++) {
-        const booking = enabledBookings[i];
+      for (let i = 0; i < ownerBookings.length; i++) {
+        const booking = ownerBookings[i];
         const timeStr = booking.slot_time.substring(0, 5);
         const endTimeStr = booking.slot_end_time ? ` - ${booking.slot_end_time.substring(0, 5)}` : '';
         
@@ -181,7 +199,7 @@ const handler = async (req: Request): Promise<Response> => {
           const errorData = await telegramResponse.text();
           console.error(`Telegram API error for owner ${owner.id}:`, errorData);
         } else {
-          console.log(`Reminder sent to owner ${owner.id}`);
+          console.log(`Reminder sent to owner ${owner.id} at ${currentTimeStr}`);
           sentCount++;
         }
       } catch (telegramError) {
@@ -189,10 +207,10 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    console.log(`Daily reminder completed. Sent ${sentCount} notifications.`);
+    console.log(`Daily reminder completed at ${currentTimeStr}. Sent ${sentCount} notifications.`);
 
     return new Response(
-      JSON.stringify({ success: true, sent: sentCount }),
+      JSON.stringify({ success: true, sent: sentCount, time: currentTimeStr }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
