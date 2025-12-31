@@ -465,6 +465,9 @@ export interface BookingBlock {
   prepaymentPhone?: string; // WhatsApp phone for payment
   prepaymentAmount?: number;
   prepaymentCurrency?: Currency;
+  // Telegram notification settings
+  dailyReminderEnabled?: boolean; // Send daily reminder at 8:50 about today's bookings
+  weeklyMotivationEnabled?: boolean; // Send weekly motivation on Mondays at 9:00
   isPremium: true;
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
