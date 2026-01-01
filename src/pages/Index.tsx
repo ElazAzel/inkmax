@@ -894,6 +894,20 @@ export default function Index() {
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                <span 
+                  onClick={() => navigate('/alternatives')} 
+                  className="hover:text-foreground transition-colors cursor-pointer"
+                >
+                  {t('landing.footer.alternatives', 'Сравнение')}
+                </span>
+                <span>•</span>
+                <span 
+                  onClick={() => navigate('/pricing')} 
+                  className="hover:text-foreground transition-colors cursor-pointer"
+                >
+                  {t('pricing.title', 'Тарифы')}
+                </span>
+                <span>•</span>
                 <TermsLink className="hover:text-foreground transition-colors cursor-pointer">
                   {t('legal.termsOfService')}
                 </TermsLink>
