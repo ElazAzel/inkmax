@@ -222,6 +222,50 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
             <p className="text-muted-foreground max-w-md whitespace-pre-line">{parseRichText(bio)}</p>
           )}
         </div>
+
+        {/* Proof of Human - Video/Audio Greeting */}
+        {(block.introVideo || block.introAudio) && (
+          <div className="w-full max-w-md mx-auto space-y-3 mt-4">
+            {block.introVideo && (
+              <div className="relative rounded-xl overflow-hidden bg-muted/50 border border-border/50">
+                <video 
+                  src={block.introVideo}
+                  controls
+                  playsInline
+                  className="w-full max-h-48 object-cover"
+                  preload="metadata"
+                >
+                  Your browser does not support video.
+                </video>
+                <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium flex items-center gap-1">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  Video Greeting
+                </div>
+              </div>
+            )}
+            
+            {block.introAudio && !block.introVideo && (
+              <div className="relative rounded-xl overflow-hidden bg-muted/50 border border-border/50 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="w-3 h-3 bg-primary rounded-full animate-pulse" />
+                  </div>
+                  <audio 
+                    src={block.introAudio}
+                    controls
+                    className="flex-1 h-10"
+                    preload="metadata"
+                  >
+                    Your browser does not support audio.
+                  </audio>
+                </div>
+                <div className="mt-2 text-xs text-muted-foreground text-center">
+                  🎙️ Voice Greeting
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <style>{FRAME_CSS}</style>
