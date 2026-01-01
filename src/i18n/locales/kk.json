@@ -1341,5 +1341,37 @@
       "completeSuccess": "Брондау аяқталды деп белгіленді",
       "noBookingsExport": "Экспорттайтын брондаулар жоқ"
     }
+  },
+  "booking": {
+    "title": "Жазылу",
+    "workingHours": "Қабылдау",
+    "step1": "Күнді таңдаңыз",
+    "step2": "Уақыт",
+    "today": "Бүгін",
+    "tomorrow": "Ертең",
+    "free": "бос",
+    "taken": "бос емес",
+    "loadingSlots": "Кесте жүктелуде...",
+    "noSlotsTitle": "Бос слоттар жоқ",
+    "noSlotsHint": "Басқа күнді таңдап көріңіз",
+    "availableSlots": "Бос уақыт",
+    "noSlots": "Бұл күнге бос слоттар жоқ",
+    "available": "Бос",
+    "booked": "Бос емес",
+    "occupied": "бос емес",
+    "selectedTime": "Таңдалды",
+    "continue": "Жалғастыру",
+    "confirmBooking": "Жазылуды рәсімдеу",
+    "name": "Сіздің атыңыз",
+    "namePlaceholder": "Атыңызды енгізіңіз",
+    "phone": "Телефон",
+    "email": "Email",
+    "notes": "Түсініктеме",
+    "notesPlaceholder": "Қосымша ақпарат...",
+    "confirm": "Жазылу",
+    "confirmAndPay": "Жазылу және төлеу",
+    "prepaymentNote": "Жазылғаннан кейін сіз WhatsApp-қа төлем үшін бағытталасыз",
+    "success": "Сіз сәтті жазылдыңыз!",
+    "error": "Жазылу қатесі. Қайталап көріңіз."
   }
 }

@@ -1345,5 +1345,37 @@
       "completeSuccess": "Booking marked as completed",
       "noBookingsExport": "No bookings to export"
     }
+  },
+  "booking": {
+    "title": "Book Appointment",
+    "workingHours": "Hours",
+    "step1": "Select date",
+    "step2": "Time",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "free": "available",
+    "taken": "taken",
+    "loadingSlots": "Loading schedule...",
+    "noSlotsTitle": "No available slots",
+    "noSlotsHint": "Try selecting another date",
+    "availableSlots": "Available times",
+    "noSlots": "No slots available for this date",
+    "available": "Available",
+    "booked": "Booked",
+    "occupied": "booked",
+    "selectedTime": "Selected",
+    "continue": "Continue",
+    "confirmBooking": "Complete booking",
+    "name": "Your name",
+    "namePlaceholder": "Enter your name",
+    "phone": "Phone",
+    "email": "Email",
+    "notes": "Notes",
+    "notesPlaceholder": "Additional information...",
+    "confirm": "Book",
+    "confirmAndPay": "Book & Pay",
+    "prepaymentNote": "After booking you will be redirected to WhatsApp for payment",
+    "success": "Successfully booked!",
+    "error": "Booking failed. Please try again."
   }
 }

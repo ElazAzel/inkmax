@@ -1370,5 +1370,37 @@
       "completeSuccess": "Бронирование завершено",
       "noBookingsExport": "Нет бронирований для экспорта"
     }
+  },
+  "booking": {
+    "title": "Записаться",
+    "workingHours": "Приём",
+    "step1": "Выберите дату",
+    "step2": "Время",
+    "today": "Сегодня",
+    "tomorrow": "Завтра",
+    "free": "свободно",
+    "taken": "занято",
+    "loadingSlots": "Загружаем расписание...",
+    "noSlotsTitle": "Нет доступных слотов",
+    "noSlotsHint": "Попробуйте выбрать другую дату",
+    "availableSlots": "Доступное время",
+    "noSlots": "Нет доступных слотов на эту дату",
+    "available": "Свободно",
+    "booked": "Занято",
+    "occupied": "занято",
+    "selectedTime": "Выбрано",
+    "continue": "Далее",
+    "confirmBooking": "Оформление записи",
+    "name": "Ваше имя",
+    "namePlaceholder": "Введите имя",
+    "phone": "Телефон",
+    "email": "Email",
+    "notes": "Комментарий",
+    "notesPlaceholder": "Дополнительная информация...",
+    "confirm": "Записаться",
+    "confirmAndPay": "Записаться и оплатить",
+    "prepaymentNote": "После записи вы будете перенаправлены в WhatsApp для оплаты",
+    "success": "Вы успешно записались!",
+    "error": "Ошибка при записи. Попробуйте снова."
   }
 }
