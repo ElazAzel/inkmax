@@ -52,13 +52,13 @@ const ALL_BLOCKS: BlockConfig[] = [
   // Social
   { type: 'socials', label: 'Соцсети', Icon: () => <span className="text-lg">@</span>, color: 'bg-pink-500', tier: 'free' },
   { type: 'messenger', label: 'Мессенджеры', Icon: MessageCircle, color: 'bg-green-500', tier: 'free' },
-  { type: 'shoutout', label: 'Упоминание', Icon: Megaphone, color: 'bg-orange-500', tier: 'pro' },
+  { type: 'shoutout', label: 'Упоминание', Icon: Megaphone, color: 'bg-orange-500', tier: 'free' },
   
   // Business
   { type: 'product', label: 'Товар', Icon: ShoppingBag, color: 'bg-amber-500', tier: 'pro' },
   { type: 'catalog', label: 'Каталог', Icon: ListOrdered, color: 'bg-teal-500', tier: 'pro' },
   { type: 'pricing', label: 'Цены', Icon: DollarSign, color: 'bg-lime-500', tier: 'pro' },
-  { type: 'download', label: 'Файл', Icon: File, color: 'bg-indigo-500', tier: 'business' },
+  { type: 'download', label: 'Файл', Icon: File, color: 'bg-indigo-500', tier: 'free' },
   
   // Forms
   { type: 'form', label: 'Форма', Icon: FormInput, color: 'bg-purple-500', tier: 'business' },
@@ -68,7 +68,7 @@ const ALL_BLOCKS: BlockConfig[] = [
   // Interactive
   { type: 'testimonial', label: 'Отзывы', Icon: Star, color: 'bg-yellow-500', tier: 'pro' },
   { type: 'scratch', label: 'Скретч', Icon: Gift, color: 'bg-red-400', tier: 'pro' },
-  { type: 'faq', label: 'FAQ', Icon: HelpCircle, color: 'bg-blue-400', tier: 'pro' },
+  { type: 'faq', label: 'FAQ', Icon: HelpCircle, color: 'bg-blue-400', tier: 'free' },
   { type: 'countdown', label: 'Таймер', Icon: Clock, color: 'bg-orange-400', tier: 'business' },
   
   // Other
