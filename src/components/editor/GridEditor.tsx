@@ -1,6 +1,6 @@
 import { memo, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Edit2, Trash2, GripVertical } from 'lucide-react';
+import { Edit2, Trash2, GripVertical, ChevronUp, ChevronDown } from 'lucide-react';
 import {
   DndContext,
   DragOverlay,
@@ -62,6 +62,10 @@ interface SortableGridBlockItemProps {
   isFullWidth: boolean;
   onEdit: (block: Block) => void;
   onDelete: (id: string) => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
   isPremium?: boolean;
   premiumTier?: PremiumTier;
   isDragging?: boolean;
@@ -72,6 +76,10 @@ function SortableGridBlockItem({
   isFullWidth,
   onEdit,
   onDelete,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp = true,
+  canMoveDown = true,
   isPremium,
   premiumTier,
 }: SortableGridBlockItemProps) {
@@ -99,14 +107,45 @@ function SortableGridBlockItem({
         isDragging && 'opacity-50 ring-2 ring-primary z-50'
       )}
     >
-      {/* Drag handle - visible on hover, top-left */}
-      <div
-        {...attributes}
-        {...listeners}
-        className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity z-20 cursor-grab active:cursor-grabbing"
-      >
-        <div className="bg-background/95 rounded-lg p-1.5 shadow-sm border">
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
+      {/* Left controls: Drag handle + arrows */}
+      <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex flex-col gap-1">
+        {/* Drag handle */}
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing"
+        >
+          <div className="bg-background/95 rounded-lg p-1.5 shadow-sm border">
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
+        
+        {/* Move arrows */}
+        <div className="flex flex-col gap-0.5">
+          <Button
+            size="sm"
+            variant="secondary"
+            className="h-7 w-7 p-0 rounded-lg shadow-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveUp?.();
+            }}
+            disabled={!canMoveUp}
+          >
+            <ChevronUp className="h-4 w-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="h-7 w-7 p-0 rounded-lg shadow-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveDown?.();
+            }}
+            disabled={!canMoveDown}
+          >
+            <ChevronDown className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -320,6 +359,22 @@ export const GridEditor = memo(function GridEditor({
     onInsertBlock(blockType, position);
   }, [onInsertBlock, contentBlocks.length]);
 
+  // Handle arrow move - moves block up or down in the list
+  const handleMoveBlock = useCallback((blockId: string, direction: 'up' | 'down') => {
+    const currentIndex = contentBlocks.findIndex(b => b.id === blockId);
+    if (currentIndex === -1) return;
+    
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (newIndex < 0 || newIndex >= contentBlocks.length) return;
+    
+    const reorderedContent = arrayMove(contentBlocks, currentIndex, newIndex);
+    const newBlocks = profileBlock 
+      ? [profileBlock, ...reorderedContent]
+      : reorderedContent;
+    
+    onReorderBlocks?.(newBlocks);
+  }, [contentBlocks, profileBlock, onReorderBlocks]);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 pb-32 md:pb-24">
       {/* Profile block */}
@@ -349,17 +404,24 @@ export const GridEditor = memo(function GridEditor({
                 key={rowIndex}
                 className="grid grid-cols-2 gap-4"
               >
-                {row.blocks.map((block) => (
-                  <SortableGridBlockItem
-                    key={block.id}
-                    block={block}
-                    isFullWidth={isFullWidthBlock(block.blockSize)}
-                    onEdit={onEditBlock}
-                    onDelete={onDeleteBlock}
-                    isPremium={isPremium}
-                    premiumTier={premiumTier}
-                  />
-                ))}
+                {row.blocks.map((block) => {
+                  const blockIndex = contentBlocks.findIndex(b => b.id === block.id);
+                  return (
+                    <SortableGridBlockItem
+                      key={block.id}
+                      block={block}
+                      isFullWidth={isFullWidthBlock(block.blockSize)}
+                      onEdit={onEditBlock}
+                      onDelete={onDeleteBlock}
+                      onMoveUp={() => handleMoveBlock(block.id, 'up')}
+                      onMoveDown={() => handleMoveBlock(block.id, 'down')}
+                      canMoveUp={blockIndex > 0}
+                      canMoveDown={blockIndex < contentBlocks.length - 1}
+                      isPremium={isPremium}
+                      premiumTier={premiumTier}
+                    />
+                  );
+                })}
                 
                 {/* Show add button in empty slot */}
                 {row.hasEmptySlot && (
