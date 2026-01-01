@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users, UserPlus, Package, Save, Zap } from 'lucide-react';
+import { Crown, Grid3X3, MessageCircle, Sparkles, X, Bell, Send, Tag, Image, ExternalLink, Check, Loader2, Users, UserPlus, Package, Save, Zap, Bot } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { ProfileBlock, GridConfig, EditorMode, Block, PageBackground } from '@/types/page';
 import { GalleryToggle } from '@/components/gallery/GalleryToggle';
@@ -20,6 +20,7 @@ import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { CollaborationPanel } from '@/components/collaboration/CollaborationPanel';
 import { PageBackgroundSettings } from '@/components/editor/PageBackgroundSettings';
+import { AutomationsPanel } from '@/components/crm/AutomationsPanel';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -535,6 +536,12 @@ export function SettingsSidebar({
             )}
           </div>
         </Card>
+
+        {/* CRM Automations */}
+        {userId && (
+          <AutomationsPanel userId={userId} isPremium={isPremium} />
+        )}
+
         <Card className="p-4 bg-card/60 backdrop-blur-xl border-border/30">
           <div className="flex items-center gap-2 mb-3">
             <div className="p-1.5 rounded-lg bg-blue-500/10">

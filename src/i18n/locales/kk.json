@@ -636,7 +636,15 @@
     "newsletter": "Тарату",
     "testimonial": "Пікір",
     "scratch": "Скретч-карта",
-    "search": "Іздеу"
+    "search": "Іздеу",
+    "pricing": "Баға тізімі",
+    "booking": "Брондау",
+    "community": "Қоғамдастық",
+    "faq": "Жиі қойылатын сұрақтар",
+    "countdown": "Кері санақ",
+    "catalog": "Каталог",
+    "shoutout": "Шаут-аут",
+    "beforeAfter": "Бұрын/Кейін"
   },
   "blockEditor": {
     "profile": "Профильді өңдеу",
@@ -660,6 +668,13 @@
     "avatar": "Аватарды өңдеу",
     "separator": "Бөлгішті өңдеу",
     "catalog": "Каталогты өңдеу",
+    "pricing": "Баға тізімін өңдеу",
+    "booking": "Брондауды өңдеу",
+    "community": "Қоғамдастықты өңдеу",
+    "faq": "FAQ өңдеу",
+    "countdown": "Кері санақты өңдеу",
+    "shoutout": "Шаут-аутты өңдеу",
+    "beforeAfter": "Бұрын/Кейінді өңдеу",
     "description": "Барлық блок параметрлерін баптаңыз. Өзгерістер автоматты түрде сақталады.",
     "notAvailable": "Бұл блок түрі үшін редактор қолжетімді емес."
   },
@@ -805,6 +820,74 @@
       "message": "Хабарлама",
       "meeting": "Кездесу"
     }
+  },
+  "automations": {
+    "title": "Ақылды автоматизациялар",
+    "subtitle": "Telegram арқылы авто-еске салулар",
+    "premiumRequired": "Ақылды автоматизацияларды пайдалану үшін Pro-ға көшіңіз",
+    "unlockPremium": "Pro-да қолжетімді",
+    "saved": "Автоматизация сақталды",
+    "saveError": "Автоматизацияны сақтау сәтсіз",
+    "followUp": {
+      "title": "Follow-up еске салу",
+      "description": "Лид белсенді болмаса еске салу жіберу"
+    },
+    "timeClarification": {
+      "title": "Уақытты нақтылау",
+      "description": "Уақыт слотын таңдауды сұрау"
+    },
+    "reviewRequest": {
+      "title": "Пікір сұрау",
+      "description": "Аяқтағаннан кейін пікір сұрау"
+    },
+    "triggerAfter": "Кейін іске қосу",
+    "hours": "сағат",
+    "messageTemplate": "Хабарлама үлгісі",
+    "variables": "Дербестендіру үшін {lead_name}, {owner_name} қолданыңыз",
+    "saveSettings": "Баптауларды сақтау",
+    "telegramNote": "Еске салулар Telegram-ға жіберіледі"
+  },
+  "community": {
+    "title": "Қоғамдастық",
+    "channelLink": "Арна/топ сілтемесі",
+    "channelLinkPlaceholder": "https://t.me/...",
+    "description": "Сипаттама",
+    "descriptionPlaceholder": "Ішінде не бар, мүшелер не алады",
+    "memberCount": "Мүшелер саны",
+    "memberCountPlaceholder": "мыс. 1500+",
+    "buttonText": "Батырма мәтіні",
+    "buttonTextPlaceholder": "мыс. Қосылу",
+    "isPrivate": "Жеке арна/топ",
+    "join": "Қосылу",
+    "members": "мүше"
+  },
+  "proofOfHuman": {
+    "title": "Адам растауы",
+    "description": "Сенімді арттыру үшін бейне немесе аудио сәлемдеме қосыңыз",
+    "introVideo": "Бейне сәлемдеме",
+    "introVideoHint": "Қысқа бейне сәлемдеме (30 сек-ке дейін)",
+    "introAudio": "Дауыстық хабарлама",
+    "introAudioHint": "Егер бейне жоқ болса, аудио сәлемдеме"
+  },
+  "pricingServices": {
+    "serviceType": "Қызмет түрі",
+    "serviceTypePlaceholder": "мыс. Шаш қию, Консультация...",
+    "duration": "Ұзақтығы (минут)",
+    "durationPlaceholder": "мыс. 60",
+    "priceType": "Баға түрі",
+    "priceTypeFixed": "Бекітілген",
+    "priceTypeRange": "Диапазон",
+    "priceTypeFrom": "Бастап",
+    "priceMax": "Максималды баға",
+    "isBookable": "Брондауға болады",
+    "availableDays": "Қолжетімді күндер",
+    "monday": "Дс",
+    "tuesday": "Сс",
+    "wednesday": "Ср",
+    "thursday": "Бс",
+    "friday": "Жм",
+    "saturday": "Сн",
+    "sunday": "Жс"
   },
   "analytics": {
     "title": "Аналитика",
