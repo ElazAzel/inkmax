@@ -37,6 +37,7 @@ import {
 import { CollaborationPanel } from '@/components/collaboration/CollaborationPanel';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
+import { AutomationsPanel } from '@/components/crm/AutomationsPanel';
 import { FriendsPanel } from '@/components/friends/FriendsPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
@@ -580,6 +581,11 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
               
               {/* Referral Program */}
               <ReferralPanel userId={userId} />
+              
+              {/* CRM Automations - Premium only */}
+              {isPremium && userId && (
+                <AutomationsPanel userId={userId} isPremium={isPremium} />
+              )}
               
               {/* Sign Out */}
               <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
