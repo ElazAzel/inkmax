@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage - Main landing page with all features -->
+  <url>
+    <loc>https://lnkmx.my/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/"/>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://lnkmx.my/screenshot-desktop.png</image:loc>
+      <image:caption>LinkMAX - AI-Powered Link-in-Bio Platform Dashboard</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Pricing page -->
+  <url>
+    <loc>https://lnkmx.my/pricing</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Gallery - Community pages showcase -->
+  <url>
+    <loc>https://lnkmx.my/gallery</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Auth page -->
+  <url>
+    <loc>https://lnkmx.my/auth</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Install PWA page -->
+  <url>
+    <loc>https://lnkmx.my/install</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>
