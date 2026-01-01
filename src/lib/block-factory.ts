@@ -344,6 +344,19 @@ export function createBlock(type: string): Block {
         isPremium: true,
       };
     
+    case 'community':
+      return {
+        ...baseProps,
+        id: `community-${timestamp}`,
+        type: 'community',
+        title: 'Мой закрытый чат',
+        description: 'Присоединяйся к моему сообществу',
+        telegramLink: '',
+        memberCount: '',
+        icon: 'users',
+        style: 'default',
+      };
+    
     default:
       throw new Error(`Unknown block type: ${type}`);
   }
