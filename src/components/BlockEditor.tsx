@@ -50,6 +50,7 @@ const CountdownBlockEditor = lazy(() => import('./block-editors/CountdownBlockEd
 const PricingBlockEditor = lazy(() => import('./block-editors/PricingBlockEditor').then(m => ({ default: m.PricingBlockEditor })));
 const ShoutoutBlockEditor = lazy(() => import('./block-editors/ShoutoutBlockEditor').then(m => ({ default: m.ShoutoutBlockEditor })));
 const BookingBlockEditor = lazy(() => import('./block-editors/BookingBlockEditor').then(m => ({ default: m.BookingBlockEditor })));
+const CommunityBlockEditor = lazy(() => import('./block-editors/CommunityBlockEditor').then(m => ({ default: m.CommunityBlockEditor })));
 
 interface BlockEditorProps {
   block: Block | null;
@@ -279,6 +280,13 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <Suspense fallback={<EditorFallback />}>
             <BookingBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'community':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <CommunityBlockEditor {...commonProps} />
           </Suspense>
         );
       

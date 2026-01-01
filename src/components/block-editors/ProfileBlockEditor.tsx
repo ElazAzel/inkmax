@@ -364,6 +364,40 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
           </div>
         )}
       </div>
+
+      {/* Proof of Human Section */}
+      <div className="space-y-3 border-t pt-4">
+        <div className="flex items-center justify-between">
+          <Label className="font-medium">{t('fields.proofOfHuman', 'Proof of Human')}</Label>
+          <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-green-500 text-green-600">
+            {t('fields.boostTrust', '📈 +Trust')}
+          </Badge>
+        </div>
+        
+        <p className="text-xs text-muted-foreground">
+          {t('fields.proofOfHumanDescription', 'Add a short video or voice greeting to show visitors you\'re a real person and boost conversions')}
+        </p>
+
+        <MediaUpload
+          label={t('fields.introVideo', 'Video Greeting (max 30s)')}
+          value={formData.introVideo || ''}
+          onChange={(introVideo) => onChange({ ...formData, introVideo })}
+          accept="video/mp4,video/webm,video/quicktime"
+        />
+
+        <MediaUpload
+          label={t('fields.introAudio', 'Voice Greeting')}
+          value={formData.introAudio || ''}
+          onChange={(introAudio) => onChange({ ...formData, introAudio })}
+          accept="audio/mpeg,audio/wav,audio/ogg,audio/m4a"
+        />
+
+        {(formData.introVideo || formData.introAudio) && (
+          <p className="text-xs text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg">
+            ✓ {t('fields.proofOfHumanActive', 'Your profile now shows a verified human badge with media')}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

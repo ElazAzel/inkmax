@@ -55,6 +55,7 @@ const CountdownBlock = lazy(() => import('./blocks/CountdownBlock').then(m => ({
 const PricingBlock = lazy(() => import('./blocks/PricingBlock').then(m => ({ default: m.PricingBlock })));
 const ShoutoutBlock = lazy(() => import('./blocks/ShoutoutBlock').then(m => ({ default: m.ShoutoutBlock })));
 const BookingBlock = lazy(() => import('./blocks/BookingBlock').then(m => ({ default: m.BookingBlock })));
+const CommunityBlock = lazy(() => import('./blocks/CommunityBlock').then(m => ({ default: m.CommunityBlock })));
 
 interface BlockRendererProps {
   block: Block;
@@ -331,6 +332,14 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
               pageOwnerId={pageOwnerId}
               pageId={pageId}
             />
+          </Suspense>
+        </TrackableWrapper>
+      );
+    case 'community':
+      return (
+        <TrackableWrapper trackClicks>
+          <Suspense fallback={<BlockSkeleton />}>
+            <CommunityBlock block={block as any} />
           </Suspense>
         </TrackableWrapper>
       );
