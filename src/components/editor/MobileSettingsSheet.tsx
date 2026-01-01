@@ -33,11 +33,13 @@ import {
   Loader2,
   Users,
   UserPlus,
+  BarChart3,
 } from 'lucide-react';
 import { CollaborationPanel } from '@/components/collaboration/CollaborationPanel';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { ReferralPanel } from '@/components/referral/ReferralPanel';
 import { AutomationsPanel } from '@/components/crm/AutomationsPanel';
+import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { FriendsPanel } from '@/components/friends/FriendsPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
@@ -139,6 +141,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   const [localTelegramChatId, setLocalTelegramChatId] = useState(telegramChatId || '');
   const [telegramValidating, setTelegramValidating] = useState(false);
   const [telegramValidated, setTelegramValidated] = useState(false);
+  const [leadsPanelOpen, setLeadsPanelOpen] = useState(false);
 
   // Sync local state with prop changes
   useEffect(() => {
@@ -181,9 +184,10 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[90vh] p-0 rounded-t-[2.5rem] bg-card/90 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl">
-        <SheetHeader className="p-6 pb-4 border-b border-border/20 sticky top-0 bg-card/80 backdrop-blur-xl z-10">
+    <>
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <SheetContent side="bottom" className="h-[90vh] p-0 rounded-t-[2.5rem] bg-card/90 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl">
+          <SheetHeader className="p-6 pb-4 border-b border-border/20 sticky top-0 bg-card/80 backdrop-blur-xl z-10">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-xl font-black">Settings</SheetTitle>
             <Button variant="ghost" size="lg" onClick={() => onOpenChange(false)} className="rounded-2xl hover:bg-card/60 h-12 w-12">
@@ -491,6 +495,30 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                 </Card>
               )}
               
+              {/* CRM - Premium only */}
+              {isPremium && (
+                <Card className="p-5 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-transparent backdrop-blur-xl border border-emerald-500/20 rounded-2xl shadow-glass">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-500/20 flex items-center justify-center">
+                      <BarChart3 className="h-6 w-6 text-emerald-500" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{t('crm.title', 'CRM')}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t('crm.description', 'Manage your leads and analytics')}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                    onClick={() => setLeadsPanelOpen(true)}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    {t('crm.openPanel', 'Open CRM')}
+                  </Button>
+                </Card>
+              )}
+              
               {/* Notifications */}
               <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
@@ -603,5 +631,9 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
         </div>
       </SheetContent>
     </Sheet>
+    
+    {/* CRM Leads Panel */}
+    <LeadsPanel open={leadsPanelOpen} onOpenChange={setLeadsPanelOpen} />
+  </>
   );
 });
