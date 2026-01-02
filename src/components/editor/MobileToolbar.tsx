@@ -12,6 +12,7 @@ import {
   Globe,
   MoreHorizontal,
   X,
+  Store,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,6 +35,7 @@ interface MobileToolbarProps {
   onOpenSettings: () => void;
   onOpenAIBuilder: () => void;
   onOpenTemplates: () => void;
+  onOpenMarketplace: () => void;
   onOpenAchievements: () => void;
   onOpenCRM: () => void;
   achievementCount: number;
@@ -48,6 +50,7 @@ export const MobileToolbar = memo(function MobileToolbar({
   onOpenSettings,
   onOpenAIBuilder,
   onOpenTemplates,
+  onOpenMarketplace,
   onOpenAchievements,
   onOpenCRM,
   achievementCount,
@@ -91,6 +94,16 @@ export const MobileToolbar = memo(function MobileToolbar({
   ];
 
   const moreActions = [
+    {
+      icon: Store,
+      label: t('mobileToolbar.marketplace', 'Маркетплейс'),
+      description: t('mobileToolbar.marketplaceDesc', 'Шаблоны от сообщества'),
+      onClick: () => {
+        setMoreOpen(false);
+        onOpenMarketplace();
+      },
+      highlight: true,
+    },
     {
       icon: Wand2,
       label: t('mobileToolbar.aiBuilder', 'AI Конструктор'),
@@ -179,7 +192,12 @@ export const MobileToolbar = memo(function MobileToolbar({
               <button
                 key={action.label}
                 onClick={action.onClick}
-                className="w-full flex items-center gap-5 p-5 rounded-3xl bg-card/50 backdrop-blur-xl border border-border/20 hover:bg-card/70 hover:border-border/40 transition-all duration-300 active:scale-[0.98] shadow-glass"
+                className={cn(
+                  "w-full flex items-center gap-5 p-5 rounded-3xl backdrop-blur-xl border transition-all duration-300 active:scale-[0.98] shadow-glass",
+                  action.highlight 
+                    ? "bg-primary/10 border-primary/30 hover:bg-primary/20 hover:border-primary/50" 
+                    : "bg-card/50 border-border/20 hover:bg-card/70 hover:border-border/40"
+                )}
               >
                 <div className="h-14 w-14 rounded-2xl bg-primary/10 backdrop-blur-xl border border-primary/20 flex items-center justify-center shadow-glass">
                   <action.icon className="h-7 w-7 text-primary" />
