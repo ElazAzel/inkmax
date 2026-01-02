@@ -10,7 +10,8 @@
     "andThe": "және"
   },
   "common": {
-    "close": "Жабу"
+    "close": "Жабу",
+    "language": "Тіл"
   },
   "settings": {
     "niche": "Санат",
@@ -27,7 +28,36 @@
     "telegramConnected": "Telegram қосылды! Хабарламаларыңызды тексеріңіз.",
     "telegramError": "Telegram қосу сәтсіз аяқталды",
     "telegramInvalidId": "Қате Chat ID. @userinfobot ботына /start жібергеніңізге көз жеткізіңіз",
-    "telegramCantSend": "Хабарлама жіберу мүмкін емес. Алдымен ботты іске қосыңыз"
+    "telegramCantSend": "Хабарлама жіберу мүмкін емес. Алдымен ботты іске қосыңыз",
+    "pageAndAccount": "Бет және аккаунт баптаулары",
+    "yourLink": "Сіздің сілтеме",
+    "username": "Пайдаланушы аты",
+    "gridSettings": "Тор баптаулары",
+    "desktopColumns": "ПК бағандары",
+    "mobileColumns": "Мобильді бағандар",
+    "columns": "бағандар",
+    "column": "баған",
+    "profileInfo": "Профиль ақпараты",
+    "name": "Аты",
+    "bio": "Сипаттама",
+    "chatbotContext": "AI чатбот контексті",
+    "chatbotPlaceholder": "AI чатботқа жасырын контекст қосыңыз (бағалар, қызметтер, қолжетімділік...)",
+    "chatbotHelp": "AI-ға келушілер сұрақтарына дәл жауап беруге көмектеседі",
+    "aiTools": "AI құралдары",
+    "seoGenerator": "SEO генераторы",
+    "friends": "Достар",
+    "friendsDesc": "Достар қосып, бонустар алыңыз",
+    "openFriendsPanel": "Достар панелін ашу",
+    "premiumActive": "Премиум белсенді",
+    "freePlan": "Тегін жоспар",
+    "upgradeToUnlock": "Барлық мүмкіндіктерді ашу үшін жаңартыңыз",
+    "crmLeads": "CRM және лидтер",
+    "crmDesc": "Лидтер мен өтініштерді басқарыңыз",
+    "openCRM": "CRM ашу",
+    "referralProgram": "Реферал бағдарламасы",
+    "emailNotifications": "Email хабарламалары",
+    "telegramNotifications": "Telegram хабарламалары",
+    "signOut": "Шығу"
   },
   "common": {
     "save": "Сақтау"
