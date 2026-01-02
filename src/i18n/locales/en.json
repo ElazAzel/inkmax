@@ -728,13 +728,7 @@
       },
       "demo": {
         "title": "Try It Now",
-        "desc": "Interactive demo right on the site — no registration needed"
-      }
-    },
-    "howItWorks": {
-      "step4": {
-        "title": "Share your link",
-        "desc": "In bio, socials, everywhere"
+        "desc": "Interactive demo right on the site - no registration needed"
       }
     }
   },
