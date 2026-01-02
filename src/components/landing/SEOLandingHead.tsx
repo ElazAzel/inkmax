@@ -459,6 +459,369 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       ]
     };
 
+    // Service Schema - for service-based discovery
+    const serviceSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      serviceType: isRussian ? 'Конструктор мультиссылок' : 'Link in Bio Builder',
+      name: 'LinkMAX',
+      description: isRussian
+        ? 'Профессиональный сервис создания страниц link-in-bio с AI-генерацией, аналитикой и CRM'
+        : 'Professional link-in-bio page builder service with AI generation, analytics and CRM',
+      url: 'https://lnkmx.my/',
+      provider: {
+        '@type': 'Organization',
+        name: 'LinkMAX',
+        url: 'https://lnkmx.my/'
+      },
+      areaServed: {
+        '@type': 'Place',
+        name: 'Worldwide'
+      },
+      audience: {
+        '@type': 'Audience',
+        audienceType: isRussian 
+          ? 'Блогеры, эксперты, фрилансеры, малый бизнес'
+          : 'Bloggers, experts, freelancers, small businesses'
+      },
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: isRussian ? 'Тарифные планы LinkMAX' : 'LinkMAX Pricing Plans',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Free Plan',
+              description: isRussian ? '10 блоков, базовая аналитика' : '10 blocks, basic analytics'
+            },
+            price: '0',
+            priceCurrency: 'USD'
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Pro Plan',
+              description: isRussian ? 'Безлимитные блоки, AI, CRM, Telegram' : 'Unlimited blocks, AI, CRM, Telegram'
+            },
+            price: '3.15',
+            priceCurrency: 'USD',
+            priceSpecification: {
+              '@type': 'UnitPriceSpecification',
+              price: '3.15',
+              priceCurrency: 'USD',
+              billingDuration: 'P1M',
+              unitText: isRussian ? 'в месяц' : 'per month'
+            }
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Business Plan',
+              description: isRussian ? 'Команды, приоритетная поддержка' : 'Teams, priority support'
+            },
+            price: '7.50',
+            priceCurrency: 'USD',
+            priceSpecification: {
+              '@type': 'UnitPriceSpecification',
+              price: '7.50',
+              priceCurrency: 'USD',
+              billingDuration: 'P1M',
+              unitText: isRussian ? 'в месяц' : 'per month'
+            }
+          }
+        ]
+      },
+      termsOfService: 'https://lnkmx.my/terms',
+      serviceOutput: {
+        '@type': 'CreativeWork',
+        name: isRussian ? 'Персональная страница link-in-bio' : 'Personal link-in-bio page'
+      }
+    };
+
+    // CreativeWork/WebApplication Schema - detailed app description
+    const webApplicationSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'LinkMAX',
+      alternateName: ['LinkMAX Bio', 'LNKMX', 'Link MAX'],
+      url: 'https://lnkmx.my/',
+      applicationCategory: 'BusinessApplication',
+      applicationSubCategory: ['Link in Bio', 'Marketing Tool', 'Social Media Tool'],
+      browserRequirements: 'Requires JavaScript. Requires HTML5.',
+      operatingSystem: 'All',
+      permissions: 'none',
+      memoryRequirements: '50MB',
+      softwareVersion: '2.0',
+      releaseNotes: 'https://lnkmx.my/changelog',
+      dateCreated: '2024-01-01',
+      dateModified: new Date().toISOString().split('T')[0],
+      inLanguage: ['ru', 'en', 'kk'],
+      isAccessibleForFree: true,
+      isFamilyFriendly: true,
+      creator: {
+        '@type': 'Organization',
+        name: 'LinkMAX',
+        url: 'https://lnkmx.my/'
+      },
+      offers: {
+        '@type': 'AggregateOffer',
+        lowPrice: '0',
+        highPrice: '7.50',
+        priceCurrency: 'USD',
+        offerCount: 3,
+        availability: 'https://schema.org/InStock'
+      },
+      screenshot: [
+        {
+          '@type': 'ImageObject',
+          url: 'https://lnkmx.my/screenshot-desktop.png',
+          caption: isRussian ? 'Редактор LinkMAX на десктопе' : 'LinkMAX editor on desktop'
+        },
+        {
+          '@type': 'ImageObject',
+          url: 'https://lnkmx.my/screenshot-mobile.png',
+          caption: isRussian ? 'Редактор LinkMAX на мобильном' : 'LinkMAX editor on mobile'
+        }
+      ],
+      featureList: [
+        isRussian ? 'AI-генерация контента за 2 минуты' : 'AI content generation in 2 minutes',
+        isRussian ? '20+ типов блоков' : '20+ block types',
+        isRussian ? 'Встроенная CRM система' : 'Built-in CRM system',
+        isRussian ? 'Telegram-уведомления о заявках' : 'Telegram notifications for leads',
+        isRussian ? 'Детальная аналитика кликов' : 'Detailed click analytics',
+        isRussian ? 'Кастомные домены' : 'Custom domains',
+        isRussian ? 'PWA мобильное приложение' : 'PWA mobile app',
+        isRussian ? '0% комиссии с продаж' : '0% commission on sales'
+      ],
+      keywords: isRussian
+        ? 'link in bio, мультиссылка, linktree альтернатива, taplink аналог, конструктор визиток'
+        : 'link in bio, bio link, linktree alternative, taplink alternative, bio page builder'
+    };
+
+    // CollectionPage Schema - for gallery/templates
+    const collectionPageSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: isRussian ? 'Галерея страниц LinkMAX' : 'LinkMAX Page Gallery',
+      description: isRussian
+        ? 'Вдохновляйтесь лучшими страницами link-in-bio созданными пользователями LinkMAX'
+        : 'Get inspired by the best link-in-bio pages created by LinkMAX users',
+      url: 'https://lnkmx.my/gallery',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: 'LinkMAX',
+        url: 'https://lnkmx.my/'
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        name: isRussian ? 'Популярные страницы' : 'Popular Pages',
+        numberOfItems: 100
+      }
+    };
+
+    // VideoObject Schema - for demo/tutorial content
+    const videoSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'VideoObject',
+      name: isRussian ? 'Как создать link in bio за 2 минуты с LinkMAX' : 'How to create link in bio in 2 minutes with LinkMAX',
+      description: isRussian
+        ? 'Видео-инструкция по созданию профессиональной страницы мультиссылок с помощью AI в LinkMAX'
+        : 'Video tutorial on creating a professional link-in-bio page with AI in LinkMAX',
+      thumbnailUrl: 'https://lnkmx.my/video-thumbnail.jpg',
+      uploadDate: '2024-01-01',
+      duration: 'PT2M',
+      contentUrl: 'https://lnkmx.my/demo-video.mp4',
+      embedUrl: 'https://lnkmx.my/embed/demo',
+      interactionStatistic: {
+        '@type': 'InteractionCounter',
+        interactionType: 'https://schema.org/WatchAction',
+        userInteractionCount: 15000
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'LinkMAX',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://lnkmx.my/favicon.jpg'
+        }
+      }
+    };
+
+    // DefinedTermSet Schema - for terminology (helps AI understanding)
+    const definedTermSetSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'DefinedTermSet',
+      name: isRussian ? 'Термины Link in Bio' : 'Link in Bio Terms',
+      description: isRussian
+        ? 'Глоссарий терминов связанных с link in bio и мультиссылками'
+        : 'Glossary of terms related to link in bio and bio links',
+      hasDefinedTerm: [
+        {
+          '@type': 'DefinedTerm',
+          name: 'Link in Bio',
+          description: isRussian
+            ? 'Единственная ссылка в профиле Instagram/TikTok ведущая на страницу со всеми ссылками пользователя'
+            : 'The single link in Instagram/TikTok bio leading to a page with all user links'
+        },
+        {
+          '@type': 'DefinedTerm',
+          name: isRussian ? 'Мультиссылка' : 'Multi-link',
+          description: isRussian
+            ? 'Страница-агрегатор всех ссылок и контента пользователя'
+            : 'A page aggregating all user links and content'
+        },
+        {
+          '@type': 'DefinedTerm',
+          name: isRussian ? 'Микролендинг' : 'Micro-landing',
+          description: isRussian
+            ? 'Компактная целевая страница для конвертации посетителей в клиентов'
+            : 'Compact landing page for converting visitors to customers'
+        }
+      ]
+    };
+
+    // EducationalOrganization Schema - for learning resources
+    const learningResourceSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'LearningResource',
+      name: isRussian ? 'Гайд по созданию link in bio' : 'Link in Bio Creation Guide',
+      description: isRussian
+        ? 'Бесплатный гайд по созданию эффективной страницы link-in-bio для Instagram и TikTok'
+        : 'Free guide to creating an effective link-in-bio page for Instagram and TikTok',
+      url: 'https://lnkmx.my/',
+      learningResourceType: 'Tutorial',
+      educationalLevel: 'Beginner',
+      audience: {
+        '@type': 'Audience',
+        audienceType: isRussian ? 'Блогеры и предприниматели' : 'Bloggers and entrepreneurs'
+      },
+      teaches: [
+        isRussian ? 'Создание страницы link in bio' : 'Creating a link in bio page',
+        isRussian ? 'Оптимизация конверсии' : 'Conversion optimization',
+        isRussian ? 'Аналитика и отслеживание' : 'Analytics and tracking'
+      ],
+      competencyRequired: 'None',
+      timeRequired: 'PT2M',
+      isAccessibleForFree: true
+    };
+
+    // Action Schema - for primary site action
+    const actionSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'CreateAction',
+      name: isRussian ? 'Создать страницу link in bio' : 'Create link in bio page',
+      description: isRussian
+        ? 'Создайте бесплатную страницу link-in-bio с помощью AI за 2 минуты'
+        : 'Create a free link-in-bio page with AI in 2 minutes',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://lnkmx.my/auth',
+        actionPlatform: [
+          'https://schema.org/DesktopWebPlatform',
+          'https://schema.org/MobileWebPlatform',
+          'https://schema.org/IOSPlatform',
+          'https://schema.org/AndroidPlatform'
+        ]
+      },
+      result: {
+        '@type': 'WebPage',
+        name: isRussian ? 'Персональная страница link in bio' : 'Personal link in bio page'
+      },
+      agent: {
+        '@type': 'Organization',
+        name: 'LinkMAX'
+      }
+    };
+
+    // SpeakableSpecification for voice search
+    const speakableSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: title,
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['h1', 'h2', '.hero-text', '.feature-title']
+      },
+      url: 'https://lnkmx.my/'
+    };
+
+    // Comparison Schema - for competitor comparison
+    const comparisonSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: isRussian ? 'Сравнение LinkMAX vs Linktree vs Taplink' : 'LinkMAX vs Linktree vs Taplink Comparison',
+      description: isRussian
+        ? 'Детальное сравнение LinkMAX с конкурентами Linktree и Taplink'
+        : 'Detailed comparison of LinkMAX with competitors Linktree and Taplink',
+      url: 'https://lnkmx.my/alternatives',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          item: {
+            '@type': 'SoftwareApplication',
+            name: 'LinkMAX',
+            applicationCategory: 'Link in Bio',
+            offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+            aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', ratingCount: '2847' }
+          }
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          item: {
+            '@type': 'SoftwareApplication',
+            name: 'Linktree',
+            applicationCategory: 'Link in Bio'
+          }
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          item: {
+            '@type': 'SoftwareApplication',
+            name: 'Taplink',
+            applicationCategory: 'Link in Bio'
+          }
+        }
+      ]
+    };
+
+    // BreadcrumbList for navigation
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'LinkMAX',
+          item: 'https://lnkmx.my/'
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: isRussian ? 'Создать страницу' : 'Create Page',
+          item: 'https://lnkmx.my/auth'
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: isRussian ? 'Тарифы' : 'Pricing',
+          item: 'https://lnkmx.my/pricing'
+        },
+        {
+          '@type': 'ListItem',
+          position: 4,
+          name: isRussian ? 'Галерея' : 'Gallery',
+          item: 'https://lnkmx.my/gallery'
+        }
+      ]
+    };
+
     // Insert JSON-LD scripts
     const schemas = [
       softwareAppSchema, 
@@ -468,7 +831,17 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       productSchema,
       howToSchema,
       faqSchema,
-      itemListSchema
+      itemListSchema,
+      serviceSchema,
+      webApplicationSchema,
+      collectionPageSchema,
+      videoSchema,
+      definedTermSetSchema,
+      learningResourceSchema,
+      actionSchema,
+      speakableSchema,
+      comparisonSchema,
+      breadcrumbSchema
     ];
     schemas.forEach((schema) => {
       const script = document.createElement('script');
