@@ -81,15 +81,19 @@ Deno.serve(async (req) => {
         if (pageError) throw pageError
 
         // Create blocks
-        const blocksToInsert = demoPage.blocks.map((block: Record<string, unknown>, position: number) => ({
-          page_id: pageData.id,
-          type: block.type as string,
-          position,
-          title: (block.content as Record<string, unknown>)?.title?.ru || (block.content as Record<string, unknown>)?.name?.ru || null,
-          content: block.content,
-          style: (block.style as Record<string, unknown>) || {},
-          is_premium: true
-        }))
+        const blocksToInsert = demoPage.blocks.map((block: Record<string, unknown>, position: number) => {
+          const content = block.content as Record<string, Record<string, string> | undefined> | undefined
+          const title = content?.title?.ru || content?.name?.ru || null
+          return {
+            page_id: pageData.id,
+            type: block.type as string,
+            position,
+            title,
+            content: block.content,
+            style: (block.style as Record<string, unknown>) || {},
+            is_premium: true
+          }
+        })
 
         await supabaseAdmin.from('blocks').insert(blocksToInsert)
 
