@@ -115,14 +115,18 @@
     },
     "hero": {
       "badge": "AI-powered link-in-bio",
-      "title": "A page that",
-      "titleHighlight": "sells for you",
-      "description": "Create a professional page in 2 minutes with AI. All links, services, and contacts — in one place.",
+      "title": "AI page in 2 minutes,",
+      "titleHighlight": "that collects leads",
+      "description": "For beauty masters, experts and small businesses. AI designer + AI copywriter + Mini-CRM + Telegram notifications about new clients.",
       "usernamePlaceholder": "yourname",
       "free": "Free",
       "noCode": "No code",
       "aiHelps": "AI helps",
       "create": "Create",
+      "benefit1": "AI creates everything",
+      "benefit2": "Mini-CRM inside",
+      "benefit3": "Telegram notifications",
+      "viewExamples": "View example pages",
       "badges": {
         "aiReady": "AI Ready",
         "autoGenerate": "Auto-generate",
@@ -305,19 +309,106 @@
       "title": "Create your page right now"
     },
     "howItWorks": {
+      "badge": "2 minutes to results",
       "title": "How It Works",
       "subtitle": "3 steps to a ready page",
+      "cta": "Try for free",
       "step1": {
         "title": "Choose your niche",
-        "desc": "Select profession — AI understands what you need"
+        "description": "Tell us who you are - beauty master, expert or business. AI will understand what you need."
       },
       "step2": {
         "title": "AI creates the page",
-        "desc": "Ready design, copy, and blocks in 30 seconds"
+        "description": "In 30 seconds AI generates design, texts, structure and all blocks. You just need to check."
       },
       "step3": {
-        "title": "Publish & Share",
-        "desc": "Get your unique link and share everywhere"
+        "title": "Get leads",
+        "description": "Clients fill out the form → lead in Mini-CRM → Telegram notification. No lead will be lost."
+      }
+    },
+    "targetAudience": {
+      "title": "Who is LinkMAX for",
+      "subtitle": "Specific results for your niche",
+      "cta": "Create page for my niche",
+      "beauty": {
+        "title": "Beauty masters",
+        "subtitle": "Nails, brows, lashes, hair",
+        "result1": "All services and prices in one link",
+        "result2": "Clients book through the form",
+        "result3": "Telegram notification about booking"
+      },
+      "expert": {
+        "title": "Experts and coaches",
+        "subtitle": "Psychologists, tutors, consultants",
+        "result1": "Portfolio and reviews beautifully presented",
+        "result2": "Leads automatically in Mini-CRM",
+        "result3": "Client statuses: new → in progress → done"
+      },
+      "business": {
+        "title": "Small business",
+        "subtitle": "Barbers, photographers, cafes",
+        "result1": "Product and service catalog",
+        "result2": "Analytics: where clients come from",
+        "result3": "Lead management without Excel"
+      }
+    },
+    "premiumValue": {
+      "badge": "Premium - more money",
+      "title": "Why pay for Premium",
+      "subtitle": "Not visual decorations, but tools for earning",
+      "cta": "Try Premium",
+      "price": "From $3.15/month with annual billing",
+      "bonusTitle": "Plus nice bonuses:",
+      "crm": {
+        "title": "Mini-CRM",
+        "description": "All form submissions automatically go to CRM. Statuses: new → in progress → done. No more Excel."
+      },
+      "telegram": {
+        "title": "Telegram notifications",
+        "description": "Instant message in Telegram when a client leaves a request. Never miss a lead."
+      },
+      "ai": {
+        "title": "Unlimited AI",
+        "description": "Generate texts, headlines, product descriptions - without limits. AI copywriter works for you."
+      },
+      "analytics": {
+        "title": "Extended analytics",
+        "description": "Which links get clicked more, where clients come from, when activity is higher."
+      },
+      "bonus": {
+        "themes": "Premium themes and animations",
+        "noWatermark": "No watermark",
+        "scheduler": "Block scheduler",
+        "video": "Video and media blocks"
+      }
+    },
+    "simplePricing": {
+      "badge": "Simple pricing",
+      "title": "Free or Premium",
+      "free": {
+        "title": "Free",
+        "subtitle": "Forever, no hidden fees",
+        "cta": "Start free",
+        "f1": "Basic blocks (links, text, photos)",
+        "f2": "AI generation (3 times per day)",
+        "f3": "Basic statistics",
+        "f4": "Page QR code",
+        "f5": "Mini-CRM and leads",
+        "f6": "Telegram notifications",
+        "f7": "Unlimited AI"
+      },
+      "premium": {
+        "badge": "Recommended",
+        "title": "Premium",
+        "subtitle": "Everything for business growth",
+        "cta": "Get Premium",
+        "f1": "All blocks without limits",
+        "f2": "Mini-CRM - all leads in one place",
+        "f3": "Telegram notifications about leads",
+        "f4": "Unlimited AI copywriter",
+        "f5": "Extended click analytics",
+        "f6": "Premium themes and animations",
+        "f7": "No watermark"
       }
     },
     "cta": {
