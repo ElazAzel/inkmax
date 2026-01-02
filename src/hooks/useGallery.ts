@@ -11,7 +11,6 @@ import {
   type GalleryPage 
 } from '@/services/gallery';
 import type { Niche } from '@/lib/niches';
-import { DEMO_PAGES, isDemoPage } from '@/lib/demo-pages';
 
 export function useGallery() {
   const { t } = useTranslation();
@@ -28,22 +27,8 @@ export function useGallery() {
         getNicheCounts(),
       ]);
       
-      // Add demo pages filtered by niche
-      const filteredDemoPages = selectedNiche 
-        ? DEMO_PAGES.filter(p => p.niche === selectedNiche)
-        : DEMO_PAGES;
-      
-      // Combine real pages with demo pages (demo pages first for visibility)
-      const allPages = [...filteredDemoPages, ...pagesData];
-      
-      // Update niche counts to include demo pages
-      const updatedCounts = { ...countsData };
-      DEMO_PAGES.forEach(demo => {
-        updatedCounts[demo.niche] = (updatedCounts[demo.niche] || 0) + 1;
-      });
-      
-      setPages(allPages);
-      setNicheCounts(updatedCounts);
+      setPages(pagesData);
+      setNicheCounts(countsData);
     } catch (error) {
       console.error('Failed to fetch gallery:', error);
     } finally {
@@ -56,15 +41,6 @@ export function useGallery() {
   }, [fetchPages]);
 
   const likePage = useCallback(async (pageId: string) => {
-    // Demo pages: just update local state
-    if (isDemoPage(pageId)) {
-      setPages(prev => 
-        prev.map(p => 
-          p.id === pageId ? { ...p, gallery_likes: p.gallery_likes + 1 } : p
-        )
-      );
-      return;
-    }
     try {
       await likeGalleryPage(pageId);
       setPages(prev => 
