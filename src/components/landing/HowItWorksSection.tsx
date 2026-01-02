@@ -22,22 +22,22 @@ export function HowItWorksSection({ isVisible, sectionRef }: HowItWorksSectionPr
     {
       icon: Target,
       number: '01',
-      title: t('landing.howItWorks.step1.title', 'Выберите нишу'),
-      description: t('landing.howItWorks.step1.description', 'Укажите, кто вы - бьюти-мастер, эксперт или бизнес. AI поймёт, что вам нужно.'),
+      titleKey: 'landing.howItWorks.step1.title',
+      descriptionKey: 'landing.howItWorks.step1.description',
       color: 'from-pink-500 to-rose-500',
     },
     {
       icon: Wand2,
       number: '02',
-      title: t('landing.howItWorks.step2.title', 'AI создаёт страницу'),
-      description: t('landing.howItWorks.step2.description', 'За 30 секунд AI генерирует дизайн, тексты, структуру и все блоки. Вам остаётся только проверить.'),
+      titleKey: 'landing.howItWorks.step2.title',
+      descriptionKey: 'landing.howItWorks.step2.description',
       color: 'from-violet-500 to-purple-600',
     },
     {
       icon: Bell,
       number: '03',
-      title: t('landing.howItWorks.step3.title', 'Получайте заявки'),
-      description: t('landing.howItWorks.step3.description', 'Клиенты заполняют форму → заявка в Mini-CRM → уведомление в Telegram. Ни один лид не потеряется.'),
+      titleKey: 'landing.howItWorks.step3.title',
+      descriptionKey: 'landing.howItWorks.step3.description',
       color: 'from-blue-500 to-cyan-500',
     },
   ];
@@ -84,9 +84,9 @@ export function HowItWorksSection({ isVisible, sectionRef }: HowItWorksSectionPr
                   <div className={`absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${step.color} blur-xl opacity-30 -z-10`} />
                 </div>
 
-                <h3 className="text-lg sm:text-xl font-bold mb-3">{step.title}</h3>
+                <h3 className="text-lg sm:text-xl font-bold mb-3">{t(step.titleKey)}</h3>
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  {step.description}
+                  {t(step.descriptionKey)}
                 </p>
               </div>
             ))}
