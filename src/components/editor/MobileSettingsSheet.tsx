@@ -199,23 +199,23 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
         
         <div className="overflow-y-auto h-full pb-28">
           <Tabs defaultValue="link" className="w-full">
-            <TabsList className="w-full sticky top-0 bg-card/80 backdrop-blur-xl z-10 h-16 rounded-none border-b border-border/20 p-2 gap-1">
-              <TabsTrigger value="link" className="flex-1 gap-1.5 rounded-2xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-3 h-12">
+            <TabsList className="w-full sticky top-0 bg-card/80 backdrop-blur-xl z-10 h-14 rounded-none border-b border-border/20 px-3 justify-between">
+              <TabsTrigger value="link" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl h-10 w-10 p-0 flex items-center justify-center">
                 <Link2 className="h-5 w-5" />
               </TabsTrigger>
-              <TabsTrigger value="profile" className="flex-1 gap-1.5 rounded-2xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-3 h-12">
+              <TabsTrigger value="profile" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl h-10 w-10 p-0 flex items-center justify-center">
                 <User className="h-5 w-5" />
               </TabsTrigger>
-              <TabsTrigger value="chatbot" className="flex-1 gap-1.5 rounded-2xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-3 h-12">
+              <TabsTrigger value="chatbot" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl h-10 w-10 p-0 flex items-center justify-center">
                 <MessageCircle className="h-5 w-5" />
               </TabsTrigger>
-              <TabsTrigger value="collabs" className="flex-1 gap-1.5 rounded-2xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-3 h-12">
+              <TabsTrigger value="collabs" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl h-10 w-10 p-0 flex items-center justify-center">
                 <Users className="h-5 w-5" />
               </TabsTrigger>
-              <TabsTrigger value="friends" className="flex-1 gap-1.5 rounded-2xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-3 h-12">
+              <TabsTrigger value="friends" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl h-10 w-10 p-0 flex items-center justify-center">
                 <UserPlus className="h-5 w-5" />
               </TabsTrigger>
-              <TabsTrigger value="premium" className="flex-1 gap-1.5 rounded-2xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl px-3 h-12">
+              <TabsTrigger value="premium" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:backdrop-blur-xl h-10 w-10 p-0 flex items-center justify-center">
                 <Crown className="h-5 w-5" />
               </TabsTrigger>
             </TabsList>
