@@ -27,7 +27,9 @@ Deno.serve(async (req) => {
       const password = `Account@123${accountNum}`
 
       try {
-        // Create user via Admin API
+        let userId: string
+
+        // Try to create user via Admin API
         const { data: userData, error: createError } = await supabaseAdmin.auth.admin.createUser({
           email,
           password,
@@ -39,17 +41,35 @@ Deno.serve(async (req) => {
         })
 
         if (createError) {
-          // User might already exist
+          // User already exists - get their ID
           if (createError.message.includes('already been registered')) {
-            results.push({ email, status: 'already_exists' })
-            continue
+            const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers()
+            const existingUser = existingUsers?.users?.find(u => u.email === email)
+            if (!existingUser) {
+              results.push({ email, status: 'error', error: 'User exists but cannot find ID' })
+              continue
+            }
+            userId = existingUser.id
+            
+            // Delete existing page and blocks for this user
+            const { data: existingPage } = await supabaseAdmin
+              .from('pages')
+              .select('id')
+              .eq('user_id', userId)
+              .single()
+            
+            if (existingPage) {
+              await supabaseAdmin.from('blocks').delete().eq('page_id', existingPage.id)
+              await supabaseAdmin.from('pages').delete().eq('id', existingPage.id)
+            }
+          } else {
+            throw createError
           }
-          throw createError
+        } else {
+          userId = userData.user.id
         }
 
-        const userId = userData.user.id
-
-        // Create user profile
+        // Upsert user profile
         await supabaseAdmin.from('user_profiles').upsert({
           id: userId,
           username: demoPage.slug,
@@ -97,7 +117,7 @@ Deno.serve(async (req) => {
 
         await supabaseAdmin.from('blocks').insert(blocksToInsert)
 
-        results.push({ email, status: 'created' })
+        results.push({ email, status: createError ? 'updated' : 'created' })
       } catch (error) {
         const errMsg = error instanceof Error ? error.message : 'Unknown error'
         results.push({ email, status: 'error', error: errMsg })
