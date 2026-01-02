@@ -284,20 +284,20 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <ShoppingCart className="h-5 w-5" />
+      <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[90vh] p-0 overflow-hidden">
+        <DialogHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-xl">
+            <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
             {t('templates.marketplace', 'Маркетплейс шаблонов')}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             {t('templates.marketplaceDesc', 'Шаблоны от сообщества — готовые к использованию')}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4 px-3 sm:px-6">
           {/* Search and Filters */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {/* Main search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -305,16 +305,16 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                 placeholder={t('templates.search', 'Поиск шаблонов...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
+                className="pl-9 h-9 sm:h-10 text-sm"
               />
             </div>
             
             {/* Filters row */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {/* Category filter */}
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-[160px]">
-                  <Filter className="h-4 w-4 mr-2" />
+                <SelectTrigger className="w-[130px] sm:w-[160px] h-9 sm:h-10 text-xs sm:text-sm">
+                  <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   <SelectValue placeholder={t('templates.category', 'Категория')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -330,13 +330,13 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
               </Select>
               
               {/* Author search */}
-              <div className="relative flex-1 min-w-[180px]">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <div className="relative flex-1 min-w-[140px] sm:min-w-[180px]">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t('templates.searchAuthor', 'Поиск по автору...')}
+                  placeholder={t('templates.searchAuthor', 'По автору...')}
                   value={authorQuery}
                   onChange={(e) => setAuthorQuery(e.target.value)}
-                  className="pl-9"
+                  className="pl-8 sm:pl-9 h-9 sm:h-10 text-xs sm:text-sm"
                 />
               </div>
               
@@ -346,37 +346,42 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                   variant="ghost" 
                   size="sm" 
                   onClick={clearFilters}
-                  className="h-10"
+                  className="h-9 sm:h-10 px-2 sm:px-3 text-xs sm:text-sm"
                 >
-                  <X className="h-4 w-4 mr-1" />
-                  {t('templates.clearFilters', 'Сбросить')}
+                  <X className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1" />
+                  <span className="hidden sm:inline">{t('templates.clearFilters', 'Сбросить')}</span>
+                  <span className="sm:hidden">×</span>
                 </Button>
               )}
             </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="popular" className="text-xs sm:text-sm">
-                <TrendingUp className="h-3 w-3 mr-1" />
-                {t('templates.popular', 'Популярные')}
+            <TabsList className="grid w-full grid-cols-4 h-8 sm:h-10">
+              <TabsTrigger value="popular" className="text-[10px] sm:text-sm px-1 sm:px-3">
+                <TrendingUp className="h-3 w-3 mr-0.5 sm:mr-1" />
+                <span className="hidden xs:inline">{t('templates.popular', 'Популярные')}</span>
+                <span className="xs:hidden">🔥</span>
               </TabsTrigger>
-              <TabsTrigger value="new" className="text-xs sm:text-sm">
-                <Clock className="h-3 w-3 mr-1" />
-                {t('templates.new', 'Новые')}
+              <TabsTrigger value="new" className="text-[10px] sm:text-sm px-1 sm:px-3">
+                <Clock className="h-3 w-3 mr-0.5 sm:mr-1" />
+                <span className="hidden xs:inline">{t('templates.new', 'Новые')}</span>
+                <span className="xs:hidden">🆕</span>
               </TabsTrigger>
-              <TabsTrigger value="free" className="text-xs sm:text-sm">
-                <Star className="h-3 w-3 mr-1" />
-                {t('templates.free', 'Бесплатные')}
+              <TabsTrigger value="free" className="text-[10px] sm:text-sm px-1 sm:px-3">
+                <Star className="h-3 w-3 mr-0.5 sm:mr-1" />
+                <span className="hidden xs:inline">{t('templates.free', 'Бесплатные')}</span>
+                <span className="xs:hidden">✨</span>
               </TabsTrigger>
-              <TabsTrigger value="premium" className="text-xs sm:text-sm">
-                <ShoppingCart className="h-3 w-3 mr-1" />
-                {t('templates.premium', 'Платные')}
+              <TabsTrigger value="premium" className="text-[10px] sm:text-sm px-1 sm:px-3">
+                <ShoppingCart className="h-3 w-3 mr-0.5 sm:mr-1" />
+                <span className="hidden xs:inline">{t('templates.premium', 'Платные')}</span>
+                <span className="xs:hidden">💎</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
 
-          <ScrollArea className="h-[50vh]">
+          <ScrollArea className="h-[45vh] sm:h-[50vh]">
             {loading ? (
               <div className="flex items-center justify-center h-40">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -397,7 +402,7 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 p-1">
                 {filteredTemplates.map((template) => (
                   <Card
                     key={template.id}
@@ -413,64 +418,65 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="text-6xl opacity-30">📄</div>
+                        <div className="text-4xl sm:text-6xl opacity-30">📄</div>
                       )}
                       
                       {template.is_for_sale && (
-                        <Badge className="absolute top-2 right-2 bg-gradient-to-r from-amber-500 to-orange-500">
+                        <Badge className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] sm:text-xs px-1 sm:px-2">
                           {formatPrice(template.price, template.currency)}
                         </Badge>
                       )}
                       
                       {purchasedTemplates.includes(template.id) && (
-                        <Badge className="absolute top-2 left-2 bg-green-500">
-                          {t('templates.owned', 'Куплено')}
+                        <Badge className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-green-500 text-[9px] sm:text-xs px-1 sm:px-2">
+                          ✓
                         </Badge>
                       )}
 
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Button variant="secondary" size="sm">
-                          <Eye className="h-4 w-4 mr-1" />
-                          {t('templates.preview', 'Предпросмотр')}
+                        <Button variant="secondary" size="sm" className="text-xs sm:text-sm">
+                          <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                          <span className="hidden sm:inline">{t('templates.preview', 'Предпросмотр')}</span>
+                          <span className="sm:hidden">👁</span>
                         </Button>
                       </div>
                     </div>
 
-                    <div className="p-3">
-                      <h4 className="font-semibold text-sm truncate">{template.name}</h4>
-                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1 min-h-[2.5em]">
+                    <div className="p-2 sm:p-3">
+                      <h4 className="font-semibold text-[11px] sm:text-sm truncate">{template.name}</h4>
+                      <p className="text-[9px] sm:text-xs text-muted-foreground line-clamp-2 mt-0.5 sm:mt-1 min-h-[2em] sm:min-h-[2.5em]">
                         {template.description || t('templates.noDescription', 'Без описания')}
                       </p>
                       
-                      {/* Author info */}
-                      <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                        <Avatar className="h-4 w-4">
+                      {/* Author info - hidden on very small screens */}
+                      <div className="hidden xs:flex items-center gap-2 mt-1.5 sm:mt-2 text-[9px] sm:text-xs text-muted-foreground">
+                        <Avatar className="h-3 w-3 sm:h-4 sm:w-4">
                           <AvatarImage src={template.author?.avatar_url || undefined} />
-                          <AvatarFallback className="text-[8px]">
+                          <AvatarFallback className="text-[6px] sm:text-[8px]">
                             {getAuthorDisplayName(template.author).charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <span className="truncate">{getAuthorDisplayName(template.author)}</span>
                       </div>
                       
-                      <div className="flex items-center justify-between mt-3">
-                        <Badge variant="secondary" className="text-xs">
+                      <div className="flex items-center justify-between mt-1.5 sm:mt-3">
+                        <Badge variant="secondary" className="text-[8px] sm:text-xs px-1 sm:px-2">
                           {template.category}
                         </Badge>
                         
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2 sm:gap-3 text-[9px] sm:text-xs text-muted-foreground">
                           <button 
-                            className="flex items-center gap-1 hover:text-red-500 transition-colors"
+                            className="flex items-center gap-0.5 sm:gap-1 hover:text-red-500 transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleLike(template.id);
                             }}
                           >
-                            <Heart className="h-3 w-3" />
+                            <Heart className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                             {template.likes_count}
                           </button>
-                          <span className="flex items-center gap-1">
-                            <Download className="h-3 w-3" />
+                          <span className="flex items-center gap-0.5 sm:gap-1">
+                            <Download className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                             {template.downloads_count}
                           </span>
                         </div>
@@ -483,8 +489,8 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
           </ScrollArea>
         </div>
 
-        <div className="flex justify-end pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex justify-end p-3 sm:p-4 border-t">
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto text-sm">
             {t('common.close', 'Закрыть')}
           </Button>
         </div>
