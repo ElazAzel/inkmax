@@ -42,7 +42,7 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         label={t('fields.name', 'Name')}
         value={migrateToMultilingual(formData.name)}
         onChange={(value) => onChange({ ...formData, name: value })}
-        placeholder="Your Name"
+        placeholder={t('placeholders.yourName', 'Your Name')}
       />
       
       <MultilingualInput
@@ -50,7 +50,7 @@ function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
         value={migrateToMultilingual(formData.bio)}
         onChange={(value) => onChange({ ...formData, bio: value })}
         type="textarea"
-        placeholder="Tell people about yourself..."
+        placeholder={t('placeholders.tellAboutYourself', 'Tell people about yourself...')}
         enableRichText={true}
       />
       
