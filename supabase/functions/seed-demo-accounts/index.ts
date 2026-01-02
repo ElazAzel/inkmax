@@ -171,6 +171,18 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Parse request body for batch processing params
+    let startFrom = 0
+    let limit = 5 // Process 5 accounts at a time to avoid timeout
+    
+    try {
+      const body = await req.json()
+      if (body.start_from !== undefined) startFrom = parseInt(body.start_from)
+      if (body.limit !== undefined) limit = parseInt(body.limit)
+    } catch {
+      // No body or invalid JSON, use defaults
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -183,8 +195,11 @@ Deno.serve(async (req) => {
     }
 
     const results: { email: string; status: string; error?: string }[] = []
+    const endIndex = Math.min(startFrom + limit, DEMO_ACCOUNTS.length)
+    
+    console.log(`Processing accounts ${startFrom + 1} to ${endIndex} of ${DEMO_ACCOUNTS.length}`)
 
-    for (let i = 0; i < DEMO_ACCOUNTS.length; i++) {
+    for (let i = startFrom; i < endIndex; i++) {
       const account = DEMO_ACCOUNTS[i]
       const accountNum = i + 1
       const email = `demoaccount${accountNum}@gmail.com`
@@ -330,7 +345,17 @@ Deno.serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ success: true, results }), {
+    const nextBatch = endIndex < DEMO_ACCOUNTS.length 
+      ? { start_from: endIndex, limit } 
+      : null
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      processed: results.length,
+      total: DEMO_ACCOUNTS.length,
+      next_batch: nextBatch,
+      results 
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   } catch (error) {
