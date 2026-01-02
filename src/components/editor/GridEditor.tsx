@@ -1,6 +1,6 @@
 import { memo, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Edit2, Trash2, GripVertical, ChevronUp, ChevronDown } from 'lucide-react';
+import { Edit2, Trash2, GripVertical, ChevronUp, ChevronDown, Plus } from 'lucide-react';
 import {
   DndContext,
   DragOverlay,
@@ -231,6 +231,55 @@ function AddBlockSlot({
   );
 }
 
+// Inline add button between rows - opens sheet on click
+function InlineAddButton({
+  onInsert,
+  isPremium,
+  currentTier,
+  blockCount,
+  position,
+}: {
+  onInsert: (blockType: string, position: number) => void;
+  isPremium: boolean;
+  currentTier?: FreeTier;
+  blockCount: number;
+  position: number;
+}) {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  
+  return (
+    <div className="relative flex items-center justify-center py-2 group/insert">
+      {/* Line with plus button */}
+      <div className="absolute inset-x-0 flex items-center px-4">
+        <div className="flex-1 border-t border-dashed border-transparent group-hover/insert:border-border/40 transition-colors" />
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-7 w-7 p-0 rounded-full border-dashed opacity-0 group-hover/insert:opacity-100 transition-all hover:scale-110 hover:border-primary hover:bg-primary/10"
+          onClick={() => setIsSheetOpen(true)}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+        <div className="flex-1 border-t border-dashed border-transparent group-hover/insert:border-border/40 transition-colors" />
+      </div>
+      
+      {/* Sheet for block selection */}
+      <BlockInsertButton
+        onInsert={(type) => {
+          onInsert(type, position);
+          setIsSheetOpen(false);
+        }}
+        isPremium={isPremium}
+        currentTier={currentTier}
+        currentBlockCount={blockCount}
+        isOpen={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+        hideTrigger
+      />
+    </div>
+  );
+}
+
 // Organize blocks into rows based on their size
 interface BlockRow {
   blocks: Block[];
@@ -398,45 +447,62 @@ export const GridEditor = memo(function GridEditor({
           items={contentBlocks.map(b => b.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="space-y-4">
-            {rows.map((row, rowIndex) => (
-              <div
-                key={rowIndex}
-                className="grid grid-cols-2 gap-4"
-              >
-                {row.blocks.map((block) => {
-                  const blockIndex = contentBlocks.findIndex(b => b.id === block.id);
-                  return (
-                    <SortableGridBlockItem
-                      key={block.id}
-                      block={block}
-                      isFullWidth={isFullWidthBlock(block.blockSize)}
-                      onEdit={onEditBlock}
-                      onDelete={onDeleteBlock}
-                      onMoveUp={() => handleMoveBlock(block.id, 'up')}
-                      onMoveDown={() => handleMoveBlock(block.id, 'down')}
-                      canMoveUp={blockIndex > 0}
-                      canMoveDown={blockIndex < contentBlocks.length - 1}
-                      isPremium={isPremium}
-                      premiumTier={premiumTier}
-                    />
-                  );
-                })}
-                
-                {/* Show add button in empty slot */}
-                {row.hasEmptySlot && (
-                  <AddBlockSlot
-                    onInsert={(type) => handleInsertBlock(type, rowIndex)}
+          <div className="space-y-1">
+            {rows.map((row, rowIndex) => {
+              // Calculate the position for inserting after this row
+              const lastBlockInRow = row.blocks[row.blocks.length - 1];
+              const insertPosition = lastBlockInRow 
+                ? contentBlocks.findIndex(b => b.id === lastBlockInRow.id) + 1
+                : 0;
+              
+              return (
+                <div key={rowIndex}>
+                  {/* Row with blocks */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {row.blocks.map((block) => {
+                      const blockIndex = contentBlocks.findIndex(b => b.id === block.id);
+                      return (
+                        <SortableGridBlockItem
+                          key={block.id}
+                          block={block}
+                          isFullWidth={isFullWidthBlock(block.blockSize)}
+                          onEdit={onEditBlock}
+                          onDelete={onDeleteBlock}
+                          onMoveUp={() => handleMoveBlock(block.id, 'up')}
+                          onMoveDown={() => handleMoveBlock(block.id, 'down')}
+                          canMoveUp={blockIndex > 0}
+                          canMoveDown={blockIndex < contentBlocks.length - 1}
+                          isPremium={isPremium}
+                          premiumTier={premiumTier}
+                        />
+                      );
+                    })}
+                    
+                    {/* Show add button in empty slot */}
+                    {row.hasEmptySlot && (
+                      <AddBlockSlot
+                        onInsert={(type) => handleInsertBlock(type, insertPosition - 1)}
+                        isPremium={isPremium}
+                        currentTier={currentTier}
+                        blockCount={blocks.length}
+                      />
+                    )}
+                  </div>
+                  
+                  {/* Plus button between rows */}
+                  <InlineAddButton
+                    onInsert={(type, pos) => handleInsertBlock(type, pos)}
                     isPremium={isPremium}
                     currentTier={currentTier}
                     blockCount={blocks.length}
+                    position={insertPosition}
                   />
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
 
-            {/* Add row for new blocks */}
-            {rows.length === 0 || !rows[rows.length - 1]?.hasEmptySlot ? (
+            {/* Bottom add button if there are blocks but no inline add after last row */}
+            {rows.length === 0 && (
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 border-2 border-dashed border-border rounded-2xl flex items-center justify-center bg-muted/20 hover:bg-muted/40 transition-colors py-8">
                   <BlockInsertButton
@@ -447,7 +513,7 @@ export const GridEditor = memo(function GridEditor({
                   />
                 </div>
               </div>
-            ) : null}
+            )}
           </div>
         </SortableContext>
 

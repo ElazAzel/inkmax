@@ -23,6 +23,11 @@ interface BlockInsertButtonProps {
   currentBlockCount?: number;
   className?: string;
   currentTier?: FreeTier;
+  /** Control sheet externally (for inline mode) */
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Hide FAB button (for inline mode) */
+  hideTrigger?: boolean;
 }
 
 type BlockTier = 'free' | 'pro' | 'business';
@@ -86,13 +91,20 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   isPremium = false,
   currentBlockCount = 0,
   className,
-  currentTier = 'free'
+  currentTier = 'free',
+  isOpen: externalIsOpen,
+  onOpenChange,
+  hideTrigger = false
 }: BlockInsertButtonProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Support both controlled and uncontrolled modes
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const setIsOpen = onOpenChange || setInternalIsOpen;
 
   const isAtBlockLimit = !isPremium && currentBlockCount >= FREE_LIMITS.maxBlocks;
   const remainingBlocks = isPremium ? Infinity : FREE_LIMITS.maxBlocks - currentBlockCount;
@@ -138,21 +150,23 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   // Mobile & Desktop - Clean full-screen sheet like competitors
   return (
     <div className={cn("flex items-center justify-center", className)}>
-      {/* FAB Button */}
-      <Button
-        variant="default"
-        size="lg"
-        onClick={() => setIsOpen(true)}
-        className={cn(
-          "shadow-lg transition-all active:scale-95",
-          isMobile 
-            ? "h-16 w-16 rounded-full" 
-            : "h-12 w-12 rounded-2xl"
-        )}
-        data-onboarding="add-block"
-      >
-        <Plus className={isMobile ? "h-8 w-8" : "h-6 w-6"} />
-      </Button>
+      {/* FAB Button - hidden when using external control */}
+      {!hideTrigger && (
+        <Button
+          variant="default"
+          size="lg"
+          onClick={() => setIsOpen(true)}
+          className={cn(
+            "shadow-lg transition-all active:scale-95",
+            isMobile 
+              ? "h-16 w-16 rounded-full" 
+              : "h-12 w-12 rounded-2xl"
+          )}
+          data-onboarding="add-block"
+        >
+          <Plus className={isMobile ? "h-8 w-8" : "h-6 w-6"} />
+        </Button>
+      )}
 
       {/* Clean Sheet with Grid */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
