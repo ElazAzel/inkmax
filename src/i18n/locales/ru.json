@@ -10,7 +10,8 @@
     "andThe": "и"
   },
   "common": {
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "language": "Язык"
   },
   "settings": {
     "niche": "Категория",
@@ -27,7 +28,37 @@
     "telegramConnected": "Telegram подключен! Проверьте сообщения.",
     "telegramError": "Не удалось подключить Telegram",
     "telegramInvalidId": "Неверный Chat ID. Убедитесь, что отправили /start боту @userinfobot",
-    "telegramCantSend": "Не удается отправить сообщение. Сначала запустите бота"
+    "telegramCantSend": "Не удается отправить сообщение. Сначала запустите бота",
+    "pageAndAccount": "Настройки страницы и аккаунта",
+    "yourLink": "Ваша ссылка",
+    "username": "Имя пользователя",
+    "gridSettings": "Настройки сетки",
+    "desktopColumns": "Колонки на ПК",
+    "mobileColumns": "Колонки на мобильном",
+    "columns": "колонки",
+    "column": "колонка",
+    "profileInfo": "Информация профиля",
+    "name": "Имя",
+    "bio": "Описание",
+    "chatbotContext": "Контекст AI чатбота",
+    "chatbotPlaceholder": "Добавьте скрытый контекст для AI чатбота (цены, услуги, доступность...)",
+    "chatbotHelp": "Помогает AI точно отвечать на вопросы посетителей",
+    "aiTools": "AI инструменты",
+    "seoGenerator": "SEO генератор",
+    "friends": "Друзья",
+    "friendsDesc": "Добавляйте друзей и получайте бонусы",
+    "openFriendsPanel": "Открыть панель друзей",
+    "premiumActive": "Премиум активен",
+    "freePlan": "Бесплатный план",
+    "upgradeToUnlock": "Обновитесь для доступа ко всем функциям",
+    "crmLeads": "CRM и лиды",
+    "crmDesc": "Управляйте лидами и заявками",
+    "openCRM": "Открыть CRM",
+    "referralProgram": "Реферальная программа",
+    "notifications": "Уведомления",
+    "emailNotifications": "Email уведомления",
+    "telegramNotifications": "Telegram уведомления",
+    "signOut": "Выйти"
   },
   "common": {
     "save": "Сохранить"

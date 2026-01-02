@@ -10,7 +10,8 @@
     "andThe": "and"
   },
   "common": {
-    "close": "Close"
+    "close": "Close",
+    "language": "Language"
   },
   "settings": {
     "niche": "Category",
@@ -27,7 +28,36 @@
     "telegramConnected": "Telegram connected! Check your messages.",
     "telegramError": "Failed to connect Telegram",
     "telegramInvalidId": "Invalid Chat ID. Make sure you sent /start to @userinfobot",
-    "telegramCantSend": "Cannot send messages. Start the bot first"
+    "telegramCantSend": "Cannot send messages. Start the bot first",
+    "pageAndAccount": "Page and account settings",
+    "yourLink": "Your Link",
+    "username": "Username",
+    "gridSettings": "Grid Settings",
+    "desktopColumns": "Desktop Columns",
+    "mobileColumns": "Mobile Columns",
+    "columns": "columns",
+    "column": "column",
+    "profileInfo": "Profile Info",
+    "name": "Name",
+    "bio": "Bio",
+    "chatbotContext": "AI Chatbot Context",
+    "chatbotPlaceholder": "Add hidden context for the AI chatbot (pricing, services, availability...)",
+    "chatbotHelp": "This helps the AI answer visitor questions accurately",
+    "aiTools": "AI Tools",
+    "seoGenerator": "SEO Generator",
+    "friends": "Friends",
+    "friendsDesc": "Add friends and get bonuses",
+    "openFriendsPanel": "Open friends panel",
+    "premiumActive": "Premium Active",
+    "freePlan": "Free Plan",
+    "upgradeToUnlock": "Upgrade to unlock all features",
+    "crmLeads": "CRM & Leads",
+    "crmDesc": "Manage leads and requests",
+    "openCRM": "Open CRM",
+    "referralProgram": "Referral Program",
+    "emailNotifications": "Email Notifications",
+    "telegramNotifications": "Telegram Notifications",
+    "signOut": "Sign Out"
   },
   "common": {
     "save": "Save"

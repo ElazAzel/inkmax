@@ -176,7 +176,7 @@ export const MobileToolbar = memo(function MobileToolbar({
 
       {/* More Sheet - BOLD Design */}
       <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
-        <SheetContent side="bottom" className="z-[100] h-auto max-h-[75vh] rounded-t-[2.5rem] p-0 bg-card backdrop-blur-2xl border-t border-border/30 shadow-glass-xl">
+        <SheetContent side="bottom" className="z-[100] h-auto max-h-[85vh] rounded-t-[2.5rem] p-0 bg-card backdrop-blur-2xl border-t border-border/30 shadow-glass-xl [&>button]:hidden">
           <SheetHeader className="p-6 pb-4 border-b border-border/20">
             <div className="flex items-center justify-between">
               <SheetTitle className="text-xl font-black">{t('mobileToolbar.moreOptions', 'Дополнительно')}</SheetTitle>
