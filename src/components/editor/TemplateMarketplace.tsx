@@ -32,7 +32,8 @@ import {
   Eye,
   User,
   Filter,
-  X
+  X,
+  Layers
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,6 +41,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import type { Block } from '@/types/page';
 import { createBlock as createBaseBlock } from '@/lib/block-factory';
+import { TemplatePreviewCard } from '@/components/templates/TemplatePreviewCard';
 
 interface Author {
   username: string | null;
@@ -409,8 +411,8 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                     className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
                     onClick={() => handleApply(template)}
                   >
-                    {/* Preview */}
-                    <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center relative overflow-hidden">
+                    {/* Preview - Use TemplatePreviewCard or fallback to image */}
+                    <div className="aspect-[4/5] relative overflow-hidden">
                       {template.preview_url ? (
                         <img 
                           src={template.preview_url} 
@@ -418,27 +420,56 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="text-4xl sm:text-6xl opacity-30">📄</div>
+                        <TemplatePreviewCard 
+                          blocks={template.blocks}
+                          className="w-full h-full"
+                          showBlockCount
+                        />
                       )}
                       
+                      {/* Price badge */}
                       {template.is_for_sale && (
-                        <Badge className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] sm:text-xs px-1 sm:px-2">
+                        <Badge className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] sm:text-xs px-1.5 sm:px-2 shadow-lg">
                           {formatPrice(template.price, template.currency)}
                         </Badge>
                       )}
                       
+                      {/* Block count badge for templates with preview images */}
+                      {template.preview_url && Array.isArray(template.blocks) && (
+                        <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2">
+                          <Badge variant="secondary" className="text-[8px] sm:text-[10px] px-1 sm:px-1.5 bg-background/80 backdrop-blur-sm">
+                            <Layers className="h-2 w-2 sm:h-2.5 sm:w-2.5 mr-0.5" />
+                            {(template.blocks as any[]).length}
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      {/* Purchased badge */}
                       {purchasedTemplates.includes(template.id) && (
                         <Badge className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-green-500 text-[9px] sm:text-xs px-1 sm:px-2">
                           ✓
                         </Badge>
                       )}
 
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Button variant="secondary" size="sm" className="text-xs sm:text-sm">
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                        <Button variant="secondary" size="sm" className="text-xs sm:text-sm w-full max-w-[120px]">
                           <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          <span className="hidden sm:inline">{t('templates.preview', 'Предпросмотр')}</span>
+                          <span className="hidden sm:inline">{t('templates.apply', 'Применить')}</span>
                           <span className="sm:hidden">👁</span>
                         </Button>
+                        
+                        {/* Quick stats on hover */}
+                        <div className="flex items-center gap-2 text-white/80 text-[10px] sm:text-xs">
+                          <span className="flex items-center gap-0.5">
+                            <Heart className="h-2.5 w-2.5" />
+                            {template.likes_count}
+                          </span>
+                          <span className="flex items-center gap-0.5">
+                            <Download className="h-2.5 w-2.5" />
+                            {template.downloads_count}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
