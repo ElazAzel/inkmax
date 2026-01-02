@@ -402,11 +402,16 @@ export const GridEditor = memo(function GridEditor({
     }
   }, [contentBlocks, profileBlock, onReorderBlocks]);
 
-  // Handle adding block
-  const handleInsertBlock = useCallback((blockType: string, afterIndex?: number) => {
-    const position = afterIndex !== undefined ? afterIndex + 1 : contentBlocks.length;
+  // Handle adding block at specific position
+  const handleInsertBlock = useCallback((blockType: string, insertPosition?: number) => {
+    // insertPosition is already the correct position to insert at
+    // Profile block is always at position 0, so content blocks start at position 1
+    const profileOffset = profileBlock ? 1 : 0;
+    const position = insertPosition !== undefined 
+      ? insertPosition + profileOffset 
+      : contentBlocks.length + profileOffset;
     onInsertBlock(blockType, position);
-  }, [onInsertBlock, contentBlocks.length]);
+  }, [onInsertBlock, contentBlocks.length, profileBlock]);
 
   // Handle arrow move - moves block up or down in the list
   const handleMoveBlock = useCallback((blockId: string, direction: 'up' | 'down') => {
