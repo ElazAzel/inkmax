@@ -62,29 +62,31 @@ export function HowItWorksSection({ isVisible, sectionRef }: HowItWorksSectionPr
 
         {/* Steps */}
         <div className="relative">
-          {/* Connection line */}
-          <div className="hidden md:block absolute top-24 left-[16.66%] right-[16.66%] h-0.5 bg-gradient-to-r from-pink-500/30 via-violet-500/30 to-blue-500/30" />
+          {/* Connection line with gradient */}
+          <div className="hidden md:block absolute top-24 left-[16.66%] right-[16.66%] h-0.5 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-pink-500/40 via-violet-500/40 to-blue-500/40 animate-pulse" />
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-8">
             {steps.map((step, index) => (
               <div 
                 key={index}
-                className={`relative text-center opacity-0 ${isVisible ? 'animate-slide-in-up' : ''}`}
+                className={`group relative text-center opacity-0 ${isVisible ? 'animate-slide-in-up' : ''}`}
                 style={{ animationDelay: `${200 + index * 150}ms` }}
               >
                 {/* Icon with number */}
                 <div className="relative inline-block mb-6">
-                  <div className={`h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-xl mx-auto relative z-10`}>
-                    <step.icon className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+                  <div className={`h-18 w-18 sm:h-22 sm:w-22 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-xl mx-auto relative z-10 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-400`}>
+                    <step.icon className="h-9 w-9 sm:h-11 sm:w-11 text-white" />
                   </div>
-                  <div className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-card border-2 border-border flex items-center justify-center text-xs font-bold z-20">
+                  <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-card border-2 border-border flex items-center justify-center text-sm font-bold z-20 shadow-lg group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300">
                     {step.number}
                   </div>
                   {/* Glow effect */}
-                  <div className={`absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${step.color} blur-xl opacity-30 -z-10`} />
+                  <div className={`absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${step.color} blur-2xl opacity-20 group-hover:opacity-40 transition-opacity -z-10`} />
                 </div>
 
-                <h3 className="text-lg sm:text-xl font-bold mb-3">{t(step.titleKey)}</h3>
+                <h3 className="text-lg sm:text-xl font-bold mb-3 group-hover:text-primary transition-colors">{t(step.titleKey)}</h3>
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
                   {t(step.descriptionKey)}
                 </p>
@@ -95,14 +97,16 @@ export function HowItWorksSection({ isVisible, sectionRef }: HowItWorksSectionPr
 
         {/* CTA */}
         <div 
-          className={`text-center mt-12 sm:mt-16 opacity-0 ${isVisible ? 'animate-fade-in-up' : ''}`}
+          className={`text-center mt-14 sm:mt-20 opacity-0 ${isVisible ? 'animate-fade-in-up' : ''}`}
           style={{ animationDelay: '700ms' }}
         >
           <Button 
             onClick={() => navigate('/auth')}
-            size="lg"
-            className="rounded-xl sm:rounded-2xl px-6 sm:px-8 py-5 sm:py-6 font-bold shadow-lg shadow-primary/30"
+            variant="premium"
+            size="xl"
+            className="rounded-2xl font-bold"
           >
+            <Sparkles className="mr-2 h-5 w-5" />
             {t('landing.howItWorks.cta', 'Попробовать бесплатно')}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>

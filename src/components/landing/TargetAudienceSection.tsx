@@ -80,30 +80,36 @@ export function TargetAudienceSection({ isVisible, sectionRef }: TargetAudienceS
           {audiences.map((audience, index) => (
             <div 
               key={index}
-              className={`group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-card/60 backdrop-blur-xl border border-border/40 hover:border-primary/40 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-1 opacity-0 ${isVisible ? 'animate-slide-in-up' : ''}`}
+              className={`group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-card/60 backdrop-blur-xl border border-border/40 hover:border-primary/40 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-2 cursor-default opacity-0 ${isVisible ? 'animate-slide-in-up' : ''}`}
               style={{ animationDelay: `${200 + index * 100}ms` }}
             >
+              {/* Hover glow effect */}
+              <div className={`absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${audience.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`} />
+              
               {/* Header */}
-              <div className="flex items-start gap-4 mb-5">
-                <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${audience.color} flex items-center justify-center shadow-lg flex-shrink-0`}>
+              <div className="flex items-start gap-4 mb-5 relative">
+                <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${audience.color} flex items-center justify-center shadow-lg flex-shrink-0 group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
                   <audience.icon className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold">{audience.title}</h3>
+                  <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{audience.title}</h3>
                   <p className="text-sm text-muted-foreground">{audience.subtitle}</p>
                 </div>
               </div>
 
               {/* Results */}
-              <div className="space-y-3">
+              <div className="space-y-3 relative">
                 {audience.results.map((result, resultIndex) => (
-                  <div key={resultIndex} className="flex items-start gap-3">
-                    <div className={`h-5 w-5 rounded-full ${audience.bgColor} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                      {resultIndex === 0 && <BarChart3 className="h-3 w-3 text-foreground/70" />}
-                      {resultIndex === 1 && <MessageSquare className="h-3 w-3 text-foreground/70" />}
-                      {resultIndex === 2 && <Bell className="h-3 w-3 text-foreground/70" />}
+                  <div 
+                    key={resultIndex} 
+                    className="flex items-start gap-3 group/item"
+                  >
+                    <div className={`h-6 w-6 rounded-lg ${audience.bgColor} flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform`}>
+                      {resultIndex === 0 && <BarChart3 className="h-3.5 w-3.5 text-foreground/70" />}
+                      {resultIndex === 1 && <MessageSquare className="h-3.5 w-3.5 text-foreground/70" />}
+                      {resultIndex === 2 && <Bell className="h-3.5 w-3.5 text-foreground/70" />}
                     </div>
-                    <span className="text-sm text-foreground/80">{result}</span>
+                    <span className="text-sm text-foreground/80 leading-relaxed">{result}</span>
                   </div>
                 ))}
               </div>
@@ -118,8 +124,9 @@ export function TargetAudienceSection({ isVisible, sectionRef }: TargetAudienceS
         >
           <Button 
             onClick={() => navigate('/auth')}
-            size="lg"
-            className="rounded-xl sm:rounded-2xl px-6 sm:px-8 py-5 sm:py-6 font-bold shadow-lg shadow-primary/30"
+            variant="premium"
+            size="xl"
+            className="rounded-2xl font-bold"
           >
             {t('landing.targetAudience.cta', 'Создать страницу для моей ниши')}
             <ArrowRight className="ml-2 h-5 w-5" />
