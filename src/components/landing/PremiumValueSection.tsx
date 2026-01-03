@@ -86,15 +86,18 @@ export function PremiumValueSection({ isVisible, sectionRef }: PremiumValueSecti
           {coreFeatures.map((feature, index) => (
             <div 
               key={index}
-              className={`group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-card/60 backdrop-blur-xl border border-border/40 hover:border-primary/40 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-1 opacity-0 ${isVisible ? 'animate-slide-in-up' : ''}`}
+              className={`group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-card/60 backdrop-blur-xl border border-border/40 hover:border-primary/40 transition-all duration-500 hover:shadow-glass-xl hover:-translate-y-2 cursor-default overflow-hidden opacity-0 ${isVisible ? 'animate-slide-in-up' : ''}`}
               style={{ animationDelay: `${300 + index * 100}ms` }}
             >
-              <div className="flex items-start gap-4">
-                <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
+              {/* Background glow on hover */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+              
+              <div className="flex items-start gap-4 relative">
+                <div className={`h-14 w-14 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-xl flex-shrink-0 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-400`}>
+                  <feature.icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2">{feature.title}</h3>
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
                   <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
               </div>
@@ -113,9 +116,12 @@ export function PremiumValueSection({ isVisible, sectionRef }: PremiumValueSecti
           </div>
           <div className="flex flex-wrap gap-3">
             {bonusFeatures.map((feature, index) => (
-              <div key={index} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50">
-                <Check className="h-3.5 w-3.5 text-primary" />
-                <span className="text-sm">{feature}</span>
+              <div 
+                key={index} 
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 hover:bg-muted/80 hover:scale-105 transition-all duration-300 cursor-default"
+              >
+                <Check className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">{feature}</span>
               </div>
             ))}
           </div>
@@ -123,18 +129,19 @@ export function PremiumValueSection({ isVisible, sectionRef }: PremiumValueSecti
 
         {/* CTA */}
         <div 
-          className={`text-center mt-10 sm:mt-14 space-y-4 opacity-0 ${isVisible ? 'animate-fade-in-up' : ''}`}
+          className={`text-center mt-12 sm:mt-16 space-y-4 opacity-0 ${isVisible ? 'animate-fade-in-up' : ''}`}
           style={{ animationDelay: '800ms' }}
         >
           <Button 
             onClick={openPremiumPurchase}
-            size="lg"
-            className="rounded-xl sm:rounded-2xl px-6 sm:px-8 py-5 sm:py-6 font-bold shadow-lg shadow-primary/30"
+            variant="premium"
+            size="xl"
+            className="rounded-2xl font-bold"
           >
             <Crown className="mr-2 h-5 w-5" />
             {t('landing.premiumValue.cta', 'Попробовать Premium')}
           </Button>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground font-medium">
             {t('landing.premiumValue.price', 'От $3.15/месяц при оплате за год')}
           </p>
         </div>
