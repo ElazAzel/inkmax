@@ -20,10 +20,11 @@ export function SimplePricingSection({ isVisible, sectionRef }: SimplePricingSec
   const { t } = useTranslation();
   const [billingPeriod, setBillingPeriod] = useState<'3' | '6' | '12'>('12');
 
+  // New pricing: $8.5/mo at 3 months, 20% off at 6 months, 40% off at 12 months
   const pricingPlans = {
-    '3': { monthly: 6.25, total: 18.75 },
-    '6': { monthly: 4.40, total: 26.40 },
-    '12': { monthly: 3.15, total: 37.80 },
+    '3': { monthly: 8.50, total: 25.50 },
+    '6': { monthly: 6.80, total: 40.80 },
+    '12': { monthly: 5.10, total: 61.20 },
   };
 
   const freeFeatures = [
@@ -82,7 +83,12 @@ export function SimplePricingSection({ isVisible, sectionRef }: SimplePricingSec
                   {t(`landing.pricing.months${period}`, `${period} мес`)}
                   {period === '12' && (
                     <span className="absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold">
-                      -50%
+                      -40%
+                    </span>
+                  )}
+                  {period === '6' && (
+                    <span className="absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full bg-blue-500 text-white text-[10px] font-bold">
+                      -20%
                     </span>
                   )}
                 </button>

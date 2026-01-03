@@ -72,11 +72,11 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
   const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
   const bio = getTranslatedString(block.bio, i18n.language as SupportedLanguage);
   
-  // Business tier always gets verification badge
-  const isBusinessTier = ownerTier === 'business';
+  // Pro tier users can get verification badge (previously business-only)
+  const isProTier = ownerTier === 'pro';
   
-  // Determine if verified badge should show (manual or auto-premium or business tier)
-  const showVerified = block.verified || (block.autoVerifyPremium && isOwnerPremium) || isBusinessTier;
+  // Determine if verified badge should show (manual or auto-premium or pro tier)
+  const showVerified = block.verified || (block.autoVerifyPremium && isOwnerPremium) || isProTier;
   
   const initials = name
     .split(' ')
@@ -198,12 +198,12 @@ export const ProfileBlock = memo(function ProfileBlockComponent({ block, isPrevi
             </div>
           )}
           
-          {/* Verification badge on frame - Business gets gold, others use settings */}
+          {/* Verification badge on frame - Pro users get gold badge option */}
           {showVerified && (
             <VerificationBadge 
-              iconType={isBusinessTier ? 'badge-check' : block.verifiedIcon}
-              customIcon={isBusinessTier ? undefined : block.verifiedCustomIcon}
-              color={isBusinessTier ? 'gold' : block.verifiedColor}
+              iconType={isProTier ? 'badge-check' : block.verifiedIcon}
+              customIcon={isProTier ? undefined : block.verifiedCustomIcon}
+              color={isProTier ? 'gold' : block.verifiedColor}
               position={block.verifiedPosition || 'top-right'}
             />
           )}

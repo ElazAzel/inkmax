@@ -27,6 +27,7 @@ export default function Pricing() {
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>(12);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
+  // New pricing: $8.5/mo at 3 months, 20% off at 6 months, 40% off at 12 months
   const pricingPlans = {
     basic: {
       name: 'BASIC',
@@ -43,7 +44,7 @@ export default function Pricing() {
         t('pricing.features.maps', 'Карты (адрес + карта)'),
         t('pricing.features.basicStats', 'Базовая статистика просмотров'),
         t('pricing.features.qrCode', 'QR-код страницы'),
-        t('pricing.features.aiRequestsWeek', '3 AI-запроса в неделю'),
+        t('pricing.features.aiMonthly', '1 AI-генерация в месяц'),
       ],
       limitations: [
         t('pricing.limitations.watermark', 'Водяной знак LinkMAX'),
@@ -55,8 +56,9 @@ export default function Pricing() {
       icon: Crown,
       color: 'from-violet-500 to-purple-600',
       popular: true,
-      prices: { 3: 6.25, 6: 4.40, 12: 3.15 },
-      totalPrices: { 3: 18.75, 6: 26.40, 12: 37.80 },
+      // $8.5/mo at 3mo, $6.80/mo at 6mo (20% off), $5.10/mo at 12mo (40% off)
+      prices: { 3: 8.50, 6: 6.80, 12: 5.10 },
+      totalPrices: { 3: 25.50, 6: 40.80, 12: 61.20 },
       features: [
         t('pricing.features.allBasic', 'Всё из BASIC'),
         t('pricing.features.proThemes', 'Профессиональные темы и анимации'),
@@ -67,37 +69,25 @@ export default function Pricing() {
         t('pricing.features.scheduler', 'Планировщик блоков'),
         t('pricing.features.advancedAnalytics', 'Расширенная аналитика кликов'),
         t('pricing.features.noWatermark', 'Без водяного знака'),
-        t('pricing.features.miniCRM', 'Mini-CRM до 100 лидов/мес'),
+        t('pricing.features.fullCRM', 'Полноценная CRM (без лимита лидов)'),
         t('pricing.features.telegramNotifications', 'Telegram-уведомления о лидах'),
-        t('pricing.features.unlimitedAI', 'Безлимитный AI'),
-      ],
-    },
-    business: {
-      name: 'BUSINESS',
-      icon: Sparkles,
-      color: 'from-amber-500 to-orange-600',
-      prices: { 3: 14.25, 6: 10.50, 12: 7.50 },
-      totalPrices: { 3: 42.75, 6: 63, 12: 90 },
-      features: [
-        t('pricing.features.allPro', 'Всё из PRO'),
+        t('pricing.features.autoNotifications', 'Автоматические email/Telegram-уведомления'),
         t('pricing.features.multiPage', 'Внутренние страницы (мульти-страничный сайт)'),
         t('pricing.features.digitalProducts', 'Цифровые продукты (лендинги под курсы)'),
         t('pricing.features.applicationForms', 'Заявки через расширенные формы'),
         t('pricing.features.payments', 'Приём оплат (Stripe/Kaspi)'),
-        t('pricing.features.whiteLabel', 'Полное удаление брендинга (white-label)'),
-        t('pricing.features.fullCRM', 'Полноценная CRM (без лимита лидов)'),
-        t('pricing.features.autoNotifications', 'Автоматические email/Telegram-уведомления'),
         t('pricing.features.timers', 'Таймеры (запуски, акции)'),
         t('pricing.features.customDomain', 'Подключение кастомного домена'),
         t('pricing.features.sslCertificate', 'SSL-сертификат'),
         t('pricing.features.marketing', 'Маркетинговые аддоны (рефералы, промокоды)'),
+        t('pricing.features.aiMonthlyPro', '5 AI-генераций в месяц'),
       ],
     },
   };
 
   const getSavingsPercent = (period: BillingPeriod): number => {
-    if (period === 12) return 50;
-    if (period === 6) return 30;
+    if (period === 12) return 40;
+    if (period === 6) return 20;
     return 0;
   };
 
@@ -184,12 +174,12 @@ export default function Pricing() {
                 {period} {t('pricing.months', 'мес')}
                 {period === 12 && (
                   <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                    -50%
+                    -40%
                   </span>
                 )}
                 {period === 6 && (
                   <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                    -30%
+                    -20%
                   </span>
                 )}
               </button>
@@ -208,7 +198,7 @@ export default function Pricing() {
         )}
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12">
           {Object.entries(pricingPlans).map(([key, plan]) => {
             const Icon = plan.icon;
             const isCurrentPlan = tier === key || (tier === 'free' && key === 'basic');
@@ -242,8 +232,7 @@ export default function Pricing() {
                       </CardTitle>
                       <CardDescription>
                         {key === 'basic' && t('pricing.basicDesc', 'Начните бесплатно')}
-                        {key === 'pro' && t('pricing.proDesc', 'Для профессионалов')}
-                        {key === 'business' && t('pricing.businessDesc', 'Для бизнеса')}
+                        {key === 'pro' && t('pricing.proDesc', 'Всё для профессионалов и бизнеса')}
                       </CardDescription>
                     </div>
                   </div>
