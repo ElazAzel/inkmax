@@ -152,9 +152,10 @@ export function HeroSection({ isVisible, sectionRef }: HeroSectionProps) {
               <Button 
                 onClick={handleCreatePage}
                 size="lg"
-                className="rounded-xl font-bold shadow-lg shadow-primary/30 hover:shadow-xl px-5 sm:px-7"
+                className="rounded-xl font-bold px-5 sm:px-7 bg-gradient-to-r from-primary to-violet-600 hover:from-primary/90 hover:to-violet-600/90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
                 aria-label={t('landing.hero.createPage', 'Create page')}
               >
+                <span className="hidden sm:inline mr-2">{t('landing.hero.createPage', 'Создать')}</span>
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </div>
@@ -188,11 +189,11 @@ export function HeroSection({ isVisible, sectionRef }: HeroSectionProps) {
             <Button 
               variant="ghost" 
               onClick={() => navigate('/gallery')}
-              className="text-muted-foreground hover:text-foreground group"
+              className="text-muted-foreground hover:text-foreground hover:bg-foreground/5 group px-6 py-2"
             >
               <Users className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-              {t('landing.hero.viewExamples', 'Посмотреть примеры страниц')}
-              <ArrowRight className="h-4 w-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+              {t('landing.hero.viewExamples', 'Посмотреть примеры')}
+              <ArrowRight className="h-4 w-4 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
             </Button>
           </div>
         </div>
