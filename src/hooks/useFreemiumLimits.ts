@@ -14,7 +14,7 @@ export const BUSINESS_BLOCKS = [
   'download', 'form', 'countdown', 'booking'
 ] as const;
 
-export type FreeTier = 'free' | 'pro' | 'business';
+export type FreeTier = 'free' | 'pro';
 
 // Feature flags for each tier
 export interface TierFeatures {
@@ -111,26 +111,26 @@ export const BUSINESS_LIMITS: TierFeatures = {
   canUseCustomPageBackground: true,
 };
 
-// Helper to get block tier
+// Helper to get block tier (business merged into pro)
 export function getBlockTier(blockType: string): FreeTier {
   if ((FREE_BLOCKS as readonly string[]).includes(blockType)) return 'free';
+  // Both pro and business blocks now require 'pro' tier
   if ((PRO_BLOCKS as readonly string[]).includes(blockType)) return 'pro';
-  if ((BUSINESS_BLOCKS as readonly string[]).includes(blockType)) return 'business';
+  if ((BUSINESS_BLOCKS as readonly string[]).includes(blockType)) return 'pro';
   return 'free'; // Default to free for unknown blocks
 }
 
 export function useFreemiumLimits() {
   const { isPremium, isLoading, tier = 'free' } = usePremiumStatus();
   
-  // Determine current tier limits
+  // Determine current tier limits (business is now pro)
   const getCurrentLimits = () => {
-    if (tier === 'business') return BUSINESS_LIMITS;
     if (tier === 'pro' || isPremium) return PRO_LIMITS;
     return FREE_LIMITS;
   };
   
   const limits = getCurrentLimits();
-  const currentTier: FreeTier = tier === 'business' ? 'business' : (tier === 'pro' || isPremium) ? 'pro' : 'free';
+  const currentTier: FreeTier = (tier === 'pro' || isPremium) ? 'pro' : 'free';
   
   const canAddBlock = (currentBlockCount: number) => {
     return currentBlockCount < limits.maxBlocks;

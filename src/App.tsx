@@ -23,6 +23,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const TeamPage = lazy(() => import("./pages/TeamPage"));
 const CollabPage = lazy(() => import("./pages/CollabPage"));
 const JoinTeam = lazy(() => import("./pages/JoinTeam"));
+const IndexBento = lazy(() => import("./pages/IndexBento"));
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="/team/:slug" element={<TeamPage />} />
               <Route path="/join/:inviteCode" element={<JoinTeam />} />
+              <Route path="/bento" element={<IndexBento />} />
               <Route path="/collab/:collabSlug" element={<CollabPage />} />
               <Route path="/p/:compressed" element={<PublicPage />} />
               <Route path="/:slug" element={<PublicPage />} />
