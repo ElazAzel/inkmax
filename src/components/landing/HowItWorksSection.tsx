@@ -103,12 +103,12 @@ export function HowItWorksSection({ isVisible, sectionRef }: HowItWorksSectionPr
           <Button 
             onClick={() => navigate('/auth')}
             variant="premium"
-            size="xl"
-            className="rounded-2xl font-bold"
+            size="lg"
+            className="rounded-2xl font-bold px-6 sm:px-8"
           >
-            <Sparkles className="mr-2 h-5 w-5" />
-            {t('landing.howItWorks.cta', 'Попробовать бесплатно')}
-            <ArrowRight className="ml-2 h-5 w-5" />
+            <Sparkles className="mr-2 h-5 w-5 flex-shrink-0" />
+            <span className="truncate">{t('landing.howItWorks.cta', 'Попробовать бесплатно')}</span>
+            <ArrowRight className="ml-2 h-5 w-5 flex-shrink-0" />
           </Button>
         </div>
       </div>

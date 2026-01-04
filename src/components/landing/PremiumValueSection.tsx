@@ -135,11 +135,11 @@ export function PremiumValueSection({ isVisible, sectionRef }: PremiumValueSecti
           <Button 
             onClick={openPremiumPurchase}
             variant="premium"
-            size="xl"
-            className="rounded-2xl font-bold"
+            size="lg"
+            className="rounded-2xl font-bold px-6 sm:px-8"
           >
-            <Crown className="mr-2 h-5 w-5" />
-            {t('landing.premiumValue.cta', 'Попробовать Premium')}
+            <Crown className="mr-2 h-5 w-5 flex-shrink-0" />
+            <span className="truncate">{t('landing.premiumValue.cta', 'Попробовать Premium')}</span>
           </Button>
           <p className="text-sm text-muted-foreground font-medium">
             {t('landing.premiumValue.price', 'От $3.15/месяц при оплате за год')}

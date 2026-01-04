@@ -209,8 +209,8 @@ export default function Index() {
               onClick={() => navigate('/auth')}
               className="w-full rounded-2xl py-6 font-bold text-base shadow-2xl shadow-primary/40 bg-gradient-to-r from-primary via-blue-500 to-violet-600 hover:shadow-primary/50 active:scale-[0.98] transition-all"
             >
-              <Sparkles className="h-5 w-5 mr-2" />
-              {t('landing.floatingCta', 'Создать страницу бесплатно')}
+              <Sparkles className="h-5 w-5 mr-2 flex-shrink-0" />
+              <span className="truncate">{t('landing.floatingCta', 'Создать бесплатно')}</span>
             </Button>
           </div>
         )}
