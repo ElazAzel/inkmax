@@ -192,8 +192,14 @@ export default function Index() {
                 </div>
               </div>
               
+              {/* Company Details for RoboKassa compliance */}
+              <div className="text-center text-xs text-muted-foreground pt-4 border-t border-border/30">
+                <p className="mb-1">ИП BEEGIN • БИН: 971207300019</p>
+                <p className="mb-2">г. Алматы, ул. Шолохова, д. 20/7, офис 11</p>
+              </div>
+              
               {/* Contact Info */}
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-border/30">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-3 border-t border-border/30">
                 <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-muted-foreground">
                   <a 
                     href="mailto:admin@lnkmx.my" 

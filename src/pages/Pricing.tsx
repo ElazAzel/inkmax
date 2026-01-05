@@ -80,7 +80,7 @@ export default function Pricing() {
         t('pricing.features.multiPage', 'Внутренние страницы (мульти-страничный сайт)'),
         t('pricing.features.digitalProducts', 'Цифровые продукты (лендинги под курсы)'),
         t('pricing.features.applicationForms', 'Заявки через расширенные формы'),
-        t('pricing.features.payments', 'Приём оплат (Stripe/Kaspi)'),
+        t('pricing.features.payments', 'Приём оплат (RoboKassa)'),
         t('pricing.features.timers', 'Таймеры (запуски, акции)'),
         t('pricing.features.customDomain', 'Подключение кастомного домена'),
         t('pricing.features.sslCertificate', 'SSL-сертификат'),
@@ -324,7 +324,7 @@ export default function Pricing() {
 
         {/* Trust Section */}
         <div className="text-center py-8 border-t border-border/50">
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground mb-6">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
               <span>{t('pricing.securePayments', 'Безопасные платежи')}</span>
@@ -335,8 +335,26 @@ export default function Pricing() {
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4" />
-              <span>{t('pricing.moneyBack', 'Гарантия возврата 7 дней')}</span>
+              <span>{t('pricing.moneyBack', 'Гарантия возврата 14 дней')}</span>
             </div>
+          </div>
+          
+          {/* Company Details for RoboKassa compliance */}
+          <div className="text-xs text-muted-foreground pt-4 border-t border-border/30">
+            <p className="mb-1">ИП BEEGIN • БИН: 971207300019</p>
+            <p className="mb-2">г. Алматы, ул. Шолохова, д. 20/7, офис 11</p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <a href="mailto:admin@lnkmx.my" className="hover:text-foreground transition-colors">
+                admin@lnkmx.my
+              </a>
+              <span>•</span>
+              <a href="tel:+77051097664" className="hover:text-foreground transition-colors">
+                +7 705 109 7664
+              </a>
+            </div>
+            <p className="mt-3 text-muted-foreground/70">
+              {t('pricing.paymentNote', 'Оплата через RoboKassa')}
+            </p>
           </div>
         </div>
       </main>
