@@ -328,27 +328,46 @@ export default function IndexBento() {
         {/* Footer */}
         <footer className="border-t border-border/40 py-8 px-4">
           <div className="container mx-auto max-w-6xl">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <span className="text-lg font-bold">
-                  Link<span className="text-gradient">MAX</span>
-                </span>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                  <span className="text-lg font-bold">
+                    Link<span className="text-gradient">MAX</span>
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-muted-foreground">
+                  <span onClick={() => navigate('/pricing')} className="hover:text-foreground transition-colors cursor-pointer">
+                    {t('pricing.title', 'Тарифы')}
+                  </span>
+                  <span>•</span>
+                  <TermsLink className="hover:text-foreground transition-colors cursor-pointer">
+                    {t('legal.termsOfService', 'Условия')}
+                  </TermsLink>
+                  <span>•</span>
+                  <PrivacyLink className="hover:text-foreground transition-colors cursor-pointer">
+                    {t('legal.privacyPolicy', 'Конфиденциальность')}
+                  </PrivacyLink>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-muted-foreground">
-                <span onClick={() => navigate('/pricing')} className="hover:text-foreground transition-colors cursor-pointer">
-                  {t('pricing.title', 'Тарифы')}
-                </span>
-                <span>•</span>
-                <TermsLink className="hover:text-foreground transition-colors cursor-pointer">
-                  {t('legal.termsOfService', 'Условия')}
-                </TermsLink>
-                <span>•</span>
-                <PrivacyLink className="hover:text-foreground transition-colors cursor-pointer">
-                  {t('legal.privacyPolicy', 'Конфиденциальность')}
-                </PrivacyLink>
-                <span>•</span>
-                <span>{t('landing.footer.copyright', '© 2025 LinkMAX')}</span>
+              
+              {/* Company Details for RoboKassa compliance */}
+              <div className="text-center text-xs text-muted-foreground pt-4 border-t border-border/30">
+                <p className="mb-1">ИП BEEGIN • БИН: 971207300019</p>
+                <p className="mb-2">г. Алматы, ул. Шолохова, д. 20/7, офис 11</p>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <a href="mailto:admin@lnkmx.my" className="hover:text-foreground transition-colors">
+                    admin@lnkmx.my
+                  </a>
+                  <span>•</span>
+                  <a href="tel:+77051097664" className="hover:text-foreground transition-colors">
+                    +7 705 109 7664
+                  </a>
+                </div>
               </div>
+              
+              <p className="text-xs text-muted-foreground text-center">
+                {t('landing.footer.copyright', '© 2025 LinkMAX')}
+              </p>
             </div>
           </div>
         </footer>
