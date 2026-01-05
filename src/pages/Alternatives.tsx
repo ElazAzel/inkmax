@@ -140,110 +140,75 @@ export default function Alternatives() {
   const comparisonData = [
     {
       feature: isRussian ? 'Бесплатный тариф' : 'Free Plan',
-      linkmax: { value: true, note: isRussian ? 'Навсегда, 10 блоков' : 'Forever, 10 blocks' },
-      linktree: { value: true, note: isRussian ? 'Ограниченный' : 'Limited' },
-      taplink: { value: true, note: isRussian ? 'Очень ограниченный' : 'Very limited' },
+      linkmax: { free: true, premium: true, freeNote: isRussian ? '10 блоков' : '10 blocks', premiumNote: isRussian ? 'Безлимит' : 'Unlimited' },
     },
     {
       feature: isRussian ? 'AI-генерация страницы' : 'AI Page Generation',
-      linkmax: { value: true, note: isRussian ? 'За 2 минуты' : 'In 2 minutes' },
-      linktree: { value: false },
-      taplink: { value: false },
+      linkmax: { free: true, premium: true, freeNote: isRussian ? '1 раз/мес' : '1/month', premiumNote: isRussian ? '5 раз/мес' : '5/month' },
     },
     {
-      feature: isRussian ? 'Количество блоков' : 'Number of Block Types',
-      linkmax: { value: '20+', highlight: true },
-      linktree: { value: '12' },
-      taplink: { value: '15' },
+      feature: isRussian ? 'Количество типов блоков' : 'Number of Block Types',
+      linkmax: { free: '10+', premium: '25+' },
     },
     {
       feature: isRussian ? 'CRM система' : 'CRM System',
-      linkmax: { value: true, note: isRussian ? 'Встроенная' : 'Built-in' },
-      linktree: { value: false },
-      taplink: { value: true, note: isRussian ? 'Только платно' : 'Paid only' },
+      linkmax: { free: false, premium: true },
     },
     {
       feature: isRussian ? 'Аналитика кликов' : 'Click Analytics',
-      linkmax: { value: true, note: isRussian ? 'Бесплатно' : 'Free' },
-      linktree: { value: true, note: isRussian ? 'Базовая бесплатно' : 'Basic free' },
-      taplink: { value: true, note: isRussian ? 'Только платно' : 'Paid only' },
+      linkmax: { free: isRussian ? 'Базовая' : 'Basic', premium: isRussian ? 'Расширенная' : 'Advanced' },
     },
     {
       feature: isRussian ? 'Telegram-уведомления' : 'Telegram Notifications',
-      linkmax: { value: true },
-      linktree: { value: false },
-      taplink: { value: false },
+      linkmax: { free: false, premium: true },
     },
     {
       feature: isRussian ? 'Формы и заявки' : 'Lead Forms',
-      linkmax: { value: true },
-      linktree: { value: true, note: isRussian ? 'Платно' : 'Paid' },
-      taplink: { value: true },
-    },
-    {
-      feature: isRussian ? 'Комиссия с продаж' : 'Sales Commission',
-      linkmax: { value: '0%', highlight: true },
-      linktree: { value: '0%' },
-      taplink: { value: '0%' },
-    },
-    {
-      feature: isRussian ? 'Кастомный домен' : 'Custom Domain',
-      linkmax: { value: true, note: 'Business' },
-      linktree: { value: true, note: isRussian ? 'Платно' : 'Paid' },
-      taplink: { value: true, note: isRussian ? 'Платно' : 'Paid' },
-    },
-    {
-      feature: isRussian ? 'Без водяного знака' : 'No Watermark',
-      linkmax: { value: true, note: 'Pro' },
-      linktree: { value: true, note: isRussian ? 'Платно' : 'Paid' },
-      taplink: { value: true, note: isRussian ? 'Платно' : 'Paid' },
+      linkmax: { free: true, premium: true },
     },
     {
       feature: isRussian ? 'Приём оплат' : 'Payment Processing',
-      linkmax: { value: true, note: 'Stripe, Kaspi' },
-      linktree: { value: true, note: 'Stripe, PayPal' },
-      taplink: { value: true, note: isRussian ? 'Разные' : 'Various' },
+      linkmax: { free: false, premium: true, premiumNote: 'RoboKassa' },
+    },
+    {
+      feature: isRussian ? 'Кастомный домен' : 'Custom Domain',
+      linkmax: { free: false, premium: true },
+    },
+    {
+      feature: isRussian ? 'Планировщик блоков' : 'Block Scheduler',
+      linkmax: { free: false, premium: true },
     },
     {
       feature: isRussian ? 'Мобильное приложение' : 'Mobile App',
-      linkmax: { value: true, note: 'PWA' },
-      linktree: { value: true },
-      taplink: { value: true },
+      linkmax: { free: true, premium: true, freeNote: 'PWA', premiumNote: 'PWA' },
     },
     {
-      feature: isRussian ? 'Поддержка русского' : 'Russian Language',
-      linkmax: { value: true },
-      linktree: { value: false },
-      taplink: { value: true },
+      feature: isRussian ? 'Премиум-темы' : 'Premium Themes',
+      linkmax: { free: false, premium: true },
     },
     {
-      feature: isRussian ? 'Поддержка казахского' : 'Kazakh Language',
-      linkmax: { value: true },
-      linktree: { value: false },
-      taplink: { value: false },
+      feature: isRussian ? 'Поддержка RU/KZ' : 'RU/KZ Support',
+      linkmax: { free: true, premium: true },
     },
   ];
 
   const pricingComparison = [
     {
-      tier: isRussian ? 'Бесплатно' : 'Free',
-      linkmax: '$0',
-      linktree: '$0',
-      taplink: '$0',
+      period: isRussian ? '3 месяца' : '3 months',
+      priceKZT: '4 350 ₸',
+      priceUSD: '~$8.50',
     },
     {
-      tier: 'Pro',
-      linkmax: '$3.15/мес',
-      linktree: '$5/мес',
-      taplink: '$6/мес',
-      linkmaxHighlight: true,
+      period: isRussian ? '6 месяцев' : '6 months',
+      priceKZT: '3 500 ₸',
+      priceUSD: '~$6.80',
+      popular: true,
     },
     {
-      tier: 'Business',
-      linkmax: '$7.50/мес',
-      linktree: '$9/мес',
-      taplink: '$12/мес',
-      linkmaxHighlight: true,
+      period: isRussian ? '12 месяцев' : '12 months',
+      priceKZT: '2 610 ₸',
+      priceUSD: '~$5.10',
+      best: true,
     },
   ];
 
@@ -271,10 +236,10 @@ export default function Alternatives() {
     },
     {
       icon: CreditCard,
-      title: isRussian ? 'Дешевле на 40-50%' : '40-50% Cheaper',
+      title: isRussian ? 'Оплата через RoboKassa' : 'RoboKassa Payments',
       description: isRussian 
-        ? 'Pro тариф всего $3.15/мес против $5-6 у конкурентов. При большем функционале!'
-        : 'Pro plan is just $3.15/month vs $5-6 at competitors. With more features!',
+        ? 'Приём оплат через RoboKassa — удобно для пользователей из СНГ. От 2 610 ₸/мес при годовой подписке.'
+        : 'Accept payments via RoboKassa — convenient for CIS users. From $5.10/month with annual subscription.',
     },
     {
       icon: Globe,
@@ -292,26 +257,26 @@ export default function Alternatives() {
     },
   ];
 
-  const renderValue = (data: { value: boolean | string; note?: string; highlight?: boolean }) => {
-    if (typeof data.value === 'boolean') {
+  const renderCellValue = (value: boolean | string, note?: string) => {
+    if (typeof value === 'boolean') {
       return (
         <div className="flex items-center justify-center gap-1">
-          {data.value ? (
+          {value ? (
             <Check className="h-5 w-5 text-green-500" />
           ) : (
             <X className="h-5 w-5 text-red-400" />
           )}
-          {data.note && (
-            <span className="text-xs text-muted-foreground">{data.note}</span>
+          {note && (
+            <span className="text-xs text-muted-foreground">{note}</span>
           )}
         </div>
       );
     }
     return (
-      <div className={`text-center ${data.highlight ? 'font-bold text-primary' : ''}`}>
-        {data.value}
-        {data.note && (
-          <span className="block text-xs text-muted-foreground">{data.note}</span>
+      <div className="text-center">
+        {value}
+        {note && (
+          <span className="block text-xs text-muted-foreground">{note}</span>
         )}
       </div>
     );
@@ -440,33 +405,28 @@ export default function Alternatives() {
             </div>
           </section>
 
-          {/* Feature Comparison Table */}
+          {/* Feature Comparison Table - Free vs Premium */}
           <section className="mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
-              {isRussian ? 'Сравнение функций' : 'Feature Comparison'}
+              {isRussian ? 'Free vs Premium' : 'Free vs Premium'}
             </h2>
             
             <Card>
               <CardContent className="p-0 overflow-x-auto">
-                <table className="w-full min-w-[600px]">
+                <table className="w-full min-w-[400px]">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left p-4 font-semibold">
                         {isRussian ? 'Функция' : 'Feature'}
                       </th>
                       <th className="text-center p-4">
-                        <div className="flex flex-col items-center gap-1">
-                          <Badge className="bg-primary/20 text-primary border-0">
-                            <Sparkles className="h-3 w-3 mr-1" />
-                            LinkMAX
-                          </Badge>
-                        </div>
+                        <span className="text-muted-foreground">Free</span>
                       </th>
                       <th className="text-center p-4">
-                        <span className="text-muted-foreground">Linktree</span>
-                      </th>
-                      <th className="text-center p-4">
-                        <span className="text-muted-foreground">Taplink</span>
+                        <Badge className="bg-primary/20 text-primary border-0">
+                          <Crown className="h-3 w-3 mr-1" />
+                          Premium
+                        </Badge>
                       </th>
                     </tr>
                   </thead>
@@ -474,9 +434,8 @@ export default function Alternatives() {
                     {comparisonData.map((row, index) => (
                       <tr key={index} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                         <td className="p-4 font-medium">{row.feature}</td>
-                        <td className="p-4 bg-primary/5">{renderValue(row.linkmax)}</td>
-                        <td className="p-4">{renderValue(row.linktree)}</td>
-                        <td className="p-4">{renderValue(row.taplink)}</td>
+                        <td className="p-4">{renderCellValue(row.linkmax.free, row.linkmax.freeNote)}</td>
+                        <td className="p-4 bg-primary/5">{renderCellValue(row.linkmax.premium, row.linkmax.premiumNote)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -485,33 +444,32 @@ export default function Alternatives() {
             </Card>
           </section>
 
-          {/* Pricing Comparison */}
+          {/* Premium Pricing */}
           <section className="mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
-              {isRussian ? 'Сравнение цен' : 'Pricing Comparison'}
+              {isRussian ? 'Цены на Premium' : 'Premium Pricing'}
             </h2>
             
             <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
-              {pricingComparison.map((tier, index) => (
-                <Card key={index} className={tier.linkmaxHighlight ? 'border-primary/50' : ''}>
+              {pricingComparison.map((plan, index) => (
+                <Card key={index} className={plan.best ? 'border-primary/50 ring-2 ring-primary/20' : plan.popular ? 'border-green-500/50' : ''}>
                   <CardHeader className="text-center pb-2">
-                    <CardTitle>{tier.tier}</CardTitle>
+                    <div className="flex items-center justify-center gap-2">
+                      <CardTitle>{plan.period}</CardTitle>
+                      {plan.best && <Badge className="bg-primary/20 text-primary border-0">{isRussian ? 'Лучшее' : 'Best'}</Badge>}
+                      {plan.popular && <Badge className="bg-green-500/20 text-green-600 border-0">{isRussian ? 'Популярный' : 'Popular'}</Badge>}
+                    </div>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className={`text-center p-3 rounded-xl ${tier.linkmaxHighlight ? 'bg-primary/10' : 'bg-muted/50'}`}>
-                      <p className="text-xs text-muted-foreground mb-1">LinkMAX</p>
-                      <p className={`text-xl font-bold ${tier.linkmaxHighlight ? 'text-primary' : ''}`}>
-                        {tier.linkmax}
-                      </p>
-                    </div>
-                    <div className="text-center p-3 rounded-xl bg-muted/30">
-                      <p className="text-xs text-muted-foreground mb-1">Linktree</p>
-                      <p className="text-lg">{tier.linktree}</p>
-                    </div>
-                    <div className="text-center p-3 rounded-xl bg-muted/30">
-                      <p className="text-xs text-muted-foreground mb-1">Taplink</p>
-                      <p className="text-lg">{tier.taplink}</p>
-                    </div>
+                  <CardContent className="text-center">
+                    <p className={`text-3xl font-bold ${plan.best ? 'text-primary' : ''}`}>
+                      {isRussian ? plan.priceKZT : plan.priceUSD}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {isRussian ? `${plan.priceUSD} USD` : `${plan.priceKZT} KZT`}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {isRussian ? '/месяц' : '/month'}
+                    </p>
                   </CardContent>
                 </Card>
               ))}
@@ -519,8 +477,8 @@ export default function Alternatives() {
             
             <p className="text-center text-sm text-muted-foreground mt-4">
               {isRussian 
-                ? '* Цены указаны при оплате за год. LinkMAX на 40-50% дешевле!'
-                : '* Prices shown for annual billing. LinkMAX is 40-50% cheaper!'}
+                ? '* Оплата через RoboKassa. Цена за месяц при оплате за указанный период.'
+                : '* Payment via RoboKassa. Monthly price when paying for the specified period.'}
             </p>
           </section>
 
