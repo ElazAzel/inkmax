@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Users } from 'lucide-react';
+import { Sparkles, Users, Mail, Phone } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -158,35 +158,57 @@ export default function Index() {
         {/* Footer */}
         <footer className="border-t border-border/40 py-8 sm:py-12 px-4">
           <div className="container mx-auto max-w-6xl">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
-              <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <span className="text-lg sm:text-xl font-bold">
-                  Link<span className="text-gradient">MAX</span>
-                </span>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
+                <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                  <span className="text-lg sm:text-xl font-bold">
+                    Link<span className="text-gradient">MAX</span>
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                    <span 
+                      onClick={() => navigate('/alternatives')} 
+                      className="hover:text-foreground transition-colors cursor-pointer"
+                    >
+                      {t('landing.footer.alternatives', 'Сравнение')}
+                    </span>
+                    <span>•</span>
+                    <span 
+                      onClick={() => navigate('/pricing')} 
+                      className="hover:text-foreground transition-colors cursor-pointer"
+                    >
+                      {t('pricing.title', 'Тарифы')}
+                    </span>
+                    <span>•</span>
+                    <TermsLink className="hover:text-foreground transition-colors cursor-pointer">
+                      {t('legal.termsOfService')}
+                    </TermsLink>
+                    <span>•</span>
+                    <PrivacyLink className="hover:text-foreground transition-colors cursor-pointer">
+                      {t('legal.privacyPolicy')}
+                    </PrivacyLink>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                  <span 
-                    onClick={() => navigate('/alternatives')} 
-                    className="hover:text-foreground transition-colors cursor-pointer"
+              
+              {/* Contact Info */}
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-border/30">
+                <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-muted-foreground">
+                  <a 
+                    href="mailto:admin@lnkmx.my" 
+                    className="flex items-center gap-1.5 hover:text-foreground transition-colors"
                   >
-                    {t('landing.footer.alternatives', 'Сравнение')}
-                  </span>
-                  <span>•</span>
-                  <span 
-                    onClick={() => navigate('/pricing')} 
-                    className="hover:text-foreground transition-colors cursor-pointer"
+                    <Mail className="h-3.5 w-3.5" />
+                    admin@lnkmx.my
+                  </a>
+                  <a 
+                    href="tel:+77051097664" 
+                    className="flex items-center gap-1.5 hover:text-foreground transition-colors"
                   >
-                    {t('pricing.title', 'Тарифы')}
-                  </span>
-                  <span>•</span>
-                  <TermsLink className="hover:text-foreground transition-colors cursor-pointer">
-                    {t('legal.termsOfService')}
-                  </TermsLink>
-                  <span>•</span>
-                  <PrivacyLink className="hover:text-foreground transition-colors cursor-pointer">
-                    {t('legal.privacyPolicy')}
-                  </PrivacyLink>
+                    <Phone className="h-3.5 w-3.5" />
+                    +7 705 109 7664
+                  </a>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   {t('landing.footer.copyright')}
