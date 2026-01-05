@@ -57,9 +57,10 @@ export function TermsOfServiceModal({ open, onOpenChange }: TermsOfServiceModalP
           <p className="text-sm text-muted-foreground mb-2">4.3. Prohibited content includes: extremist, terrorist, or pornographic materials; propaganda of violence, racial, national, or religious hatred; violation of copyright; false advertising and any form of fraud; personal data of third parties without their consent.</p>
           
           <h3 className="font-semibold mt-6 mb-2">5. Paid Services, Tariffs, and Payments</h3>
-          <p className="text-sm text-muted-foreground mb-2">5.1. Access to additional Platform features (PRO and BUSINESS tariffs) is provided on a prepaid subscription basis with a minimum term of 3 months.</p>
-          <p className="text-sm text-muted-foreground mb-2">5.2. Current prices, tariff plans, and payment terms are published on the tariffs page at https://lnkmx.my/pricing.</p>
-          <p className="text-sm text-muted-foreground mb-2">5.3. Payment is made through external payment systems (e.g., Stripe, Kaspi, and other local providers).</p>
+          <p className="text-sm text-muted-foreground mb-2">5.1. Access to additional Platform features (PRO tariff) is provided on a prepaid subscription basis with a minimum term of 3 months.</p>
+          <p className="text-sm text-muted-foreground mb-2">5.2. Current pricing in Kazakhstani tenge (KZT): 3 months - 4,350₸/month (total 13,050₸); 6 months - 3,500₸/month (total 21,000₸); 12 months - 2,610₸/month (total 31,320₸). Approximate USD equivalent: $8.50, $6.80, $5.10 per month respectively.</p>
+          <p className="text-sm text-muted-foreground mb-2">5.3. Prices, tariff composition and payment terms are published on the tariffs page at https://lnkmx.my/pricing and may be changed by the Administration unilaterally for new periods.</p>
+          <p className="text-sm text-muted-foreground mb-2">5.4. Payment is made through external payment systems (e.g., Stripe, Kaspi, and other local providers).</p>
           
           <h3 className="font-semibold mt-6 mb-2">6. Content Rights and Intellectual Property</h3>
           <p className="text-sm text-muted-foreground mb-2">6.1. All exclusive rights to the Platform, its software code, design, corporate style, logos, and technical documentation belong to the Administration.</p>
@@ -116,8 +117,9 @@ export function TermsOfServiceModal({ open, onOpenChange }: TermsOfServiceModalP
           <p className="text-sm text-muted-foreground mb-2">4.2. Пайдаланушы міндеттенеді: Платформаны тек заңды мақсаттарда пайдалануға; үшінші тараптардың құқықтарын, заңдарды немесе жалпы қабылданған этиканы бұзатын мазмұнды жарияламауға.</p>
           
           <h3 className="font-semibold mt-6 mb-2">5. Ақылы қызметтер, тарифтер және төлемдер</h3>
-          <p className="text-sm text-muted-foreground mb-2">5.1. Платформаның қосымша мүмкіндіктеріне қол жеткізу (PRO және BUSINESS тарифтері) кемінде 3 айлық мерзімге алдын ала төлемді жазылым негізінде ұсынылады.</p>
-          <p className="text-sm text-muted-foreground mb-2">5.2. Ағымдағы бағалар, тарифтік жоспарлар мен төлем шарттары https://lnkmx.my/pricing тарифтер бетінде жарияланған.</p>
+          <p className="text-sm text-muted-foreground mb-2">5.1. Платформаның қосымша мүмкіндіктеріне қол жеткізу (PRO тарифі) кемінде 3 айлық мерзімге алдын ала төлемді жазылым негізінде ұсынылады.</p>
+          <p className="text-sm text-muted-foreground mb-2">5.2. Қазақстан теңгесіндегі (KZT) ағымдағы бағалар: 3 ай - 4 350₸/ай (барлығы 13 050₸); 6 ай - 3 500₸/ай (барлығы 21 000₸); 12 ай - 2 610₸/ай (барлығы 31 320₸). АҚШ долларындағы болжамды баламасы: тиісінше $8.50, $6.80, $5.10/ай.</p>
+          <p className="text-sm text-muted-foreground mb-2">5.3. Ағымдағы бағалар, тарифтік жоспарлар мен төлем шарттары https://lnkmx.my/pricing тарифтер бетінде жарияланған.</p>
           
           <h3 className="font-semibold mt-6 mb-2">6. Мазмұн құқықтары және зияткерлік меншік</h3>
           <p className="text-sm text-muted-foreground mb-2">6.1. Платформаға, оның бағдарламалық кодына, дизайнына, корпоративтік стиліне, логотиптері мен техникалық құжаттамасына барлық ерекше құқықтар Әкімшілікке тиесілі.</p>
@@ -180,10 +182,11 @@ export function TermsOfServiceModal({ open, onOpenChange }: TermsOfServiceModalP
         <p className="text-sm text-muted-foreground mb-2">4.3. Запрещённый контент включает, но не ограничивается: материалы экстремистского, террористического, порнографического характера; пропаганду насилия, расовой, национальной, религиозной ненависти; нарушение авторских, смежных и иных прав; недостоверную рекламу и любые формы мошенничества; персональные данные третьих лиц без их согласия.</p>
         
         <h3 className="font-semibold mt-6 mb-2">5. Платные сервисы, тарифы и платежи</h3>
-        <p className="text-sm text-muted-foreground mb-2">5.1. Доступ к дополнительным возможностям Платформы (тарифы PRO и BUSINESS) предоставляется на условиях предоплатной подписки с минимальным периодом 3 месяца.</p>
-        <p className="text-sm text-muted-foreground mb-2">5.2. Актуальные цены, состав тарифов и условия оплаты публикуются на странице тарифов https://lnkmx.my/pricing и могут изменяться Администрацией в одностороннем порядке для новых периодов.</p>
-        <p className="text-sm text-muted-foreground mb-2">5.3. Оплата производится через внешние платёжные системы (например, Stripe, Kaspi, другие локальные провайдеры).</p>
-        <p className="text-sm text-muted-foreground mb-2">5.4. Факт успешной оплаты подтверждается электронной квитанцией/уведомлением. С этого момента услуги считаются оказанными в объёме, соответствующем выбранному тарифу и периоду.</p>
+        <p className="text-sm text-muted-foreground mb-2">5.1. Доступ к дополнительным возможностям Платформы (тариф PRO) предоставляется на условиях предоплатной подписки с минимальным периодом 3 месяца.</p>
+        <p className="text-sm text-muted-foreground mb-2">5.2. Актуальные цены в казахстанских тенге (KZT): 3 месяца - 4 350₸/мес (итого 13 050₸); 6 месяцев - 3 500₸/мес (итого 21 000₸); 12 месяцев - 2 610₸/мес (итого 31 320₸). Эквивалент в долларах США: $8.50, $6.80, $5.10/мес соответственно.</p>
+        <p className="text-sm text-muted-foreground mb-2">5.3. Цены, состав тарифов и условия оплаты публикуются на странице тарифов https://lnkmx.my/pricing и могут изменяться Администрацией в одностороннем порядке для новых периодов.</p>
+        <p className="text-sm text-muted-foreground mb-2">5.4. Оплата производится через внешние платёжные системы (например, Stripe, Kaspi, другие локальные провайдеры).</p>
+        <p className="text-sm text-muted-foreground mb-2">5.5. Факт успешной оплаты подтверждается электронной квитанцией/уведомлением. С этого момента услуги считаются оказанными в объёме, соответствующем выбранному тарифу и периоду.</p>
         
         <h3 className="font-semibold mt-6 mb-2">6. Права на контент и интеллектуальная собственность</h3>
         <p className="text-sm text-muted-foreground mb-2">6.1. Все исключительные права на Платформу, её программный код, дизайн, фирменный стиль, логотипы и техническую документацию принадлежат Администрации.</p>

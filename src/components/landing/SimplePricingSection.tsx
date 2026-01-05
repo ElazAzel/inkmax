@@ -17,14 +17,17 @@ interface SimplePricingSectionProps {
 
 export function SimplePricingSection({ isVisible, sectionRef }: SimplePricingSectionProps) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [billingPeriod, setBillingPeriod] = useState<'3' | '6' | '12'>('12');
+  
+  const isKztPrimary = i18n.language === 'ru' || i18n.language === 'kk';
 
-  // New pricing: $8.5/mo at 3 months, 20% off at 6 months, 40% off at 12 months
+  // Pricing in KZT: 3mo = 4350₸/mo, 6mo = 3500₸/mo, 12mo = 2610₸/mo
+  // USD equivalent (approximate): 3mo = $8.50, 6mo = $6.80, 12mo = $5.10
   const pricingPlans = {
-    '3': { monthly: 8.50, total: 25.50 },
-    '6': { monthly: 6.80, total: 40.80 },
-    '12': { monthly: 5.10, total: 61.20 },
+    '3': { monthlyKzt: 4350, totalKzt: 13050, monthlyUsd: 8.50, totalUsd: 25.50 },
+    '6': { monthlyKzt: 3500, totalKzt: 21000, monthlyUsd: 6.80, totalUsd: 40.80 },
+    '12': { monthlyKzt: 2610, totalKzt: 31320, monthlyUsd: 5.10, totalUsd: 61.20 },
   };
 
   const freeFeatures = [
@@ -160,15 +163,37 @@ export function SimplePricingSection({ isVisible, sectionRef }: SimplePricingSec
               </div>
               
               <div className="space-y-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">
-                    ${pricingPlans[billingPeriod].monthly.toFixed(2)}
-                  </span>
-                  <span className="text-muted-foreground text-sm">/{t('landing.pricing.month', 'мес')}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {t('landing.pricing.total', 'Итого')}: ${pricingPlans[billingPeriod].total} {t('landing.pricing.billedOnce', 'единоразово')}
-                </p>
+                {isKztPrimary ? (
+                  <>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-bold">
+                        {pricingPlans[billingPeriod].monthlyKzt.toLocaleString()}₸
+                      </span>
+                      <span className="text-muted-foreground text-sm">/{t('landing.pricing.month', 'мес')}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t('landing.pricing.total', 'Итого')}: {pricingPlans[billingPeriod].totalKzt.toLocaleString()}₸ {t('landing.pricing.billedOnce', 'единоразово')}
+                    </p>
+                    <p className="text-xs text-muted-foreground/70">
+                      ≈ ${pricingPlans[billingPeriod].monthlyUsd.toFixed(2)}/{t('landing.pricing.month', 'мес')}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-bold">
+                        ${pricingPlans[billingPeriod].monthlyUsd.toFixed(2)}
+                      </span>
+                      <span className="text-muted-foreground text-sm">/{t('landing.pricing.month', 'мес')}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t('landing.pricing.total', 'Итого')}: ${pricingPlans[billingPeriod].totalUsd} {t('landing.pricing.billedOnce', 'единоразово')}
+                    </p>
+                    <p className="text-xs text-muted-foreground/70">
+                      ≈ {pricingPlans[billingPeriod].monthlyKzt.toLocaleString()}₸/{t('landing.pricing.month', 'мес')}
+                    </p>
+                  </>
+                )}
               </div>
 
               <Button 
