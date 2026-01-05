@@ -26,14 +26,19 @@ export default function Pricing() {
   const { isPremium, tier, isLoading } = usePremiumStatus();
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>(12);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  
+  const isKztPrimary = i18n.language === 'ru' || i18n.language === 'kk';
 
-  // New pricing: $8.5/mo at 3 months, 20% off at 6 months, 40% off at 12 months
+  // Pricing in KZT: 3mo = 4350₸/mo, 6mo = 3500₸/mo, 12mo = 2610₸/mo
   const pricingPlans = {
     basic: {
       name: 'BASIC',
       icon: Zap,
       color: 'from-slate-500 to-slate-600',
-      prices: { 3: 0, 6: 0, 12: 0 },
+      pricesKzt: { 3: 0, 6: 0, 12: 0 },
+      pricesUsd: { 3: 0, 6: 0, 12: 0 },
+      totalKzt: { 3: 0, 6: 0, 12: 0 },
+      totalUsd: { 3: 0, 6: 0, 12: 0 },
       features: [
         t('pricing.features.basicThemes', 'Базовые темы оформления'),
         t('pricing.features.basicCustomization', 'Базовая настройка (цвета, шрифты)'),
@@ -56,9 +61,10 @@ export default function Pricing() {
       icon: Crown,
       color: 'from-violet-500 to-purple-600',
       popular: true,
-      // $8.5/mo at 3mo, $6.80/mo at 6mo (20% off), $5.10/mo at 12mo (40% off)
-      prices: { 3: 8.50, 6: 6.80, 12: 5.10 },
-      totalPrices: { 3: 25.50, 6: 40.80, 12: 61.20 },
+      pricesKzt: { 3: 4350, 6: 3500, 12: 2610 },
+      pricesUsd: { 3: 8.50, 6: 6.80, 12: 5.10 },
+      totalKzt: { 3: 13050, 6: 21000, 12: 31320 },
+      totalUsd: { 3: 25.50, 6: 40.80, 12: 61.20 },
       features: [
         t('pricing.features.allBasic', 'Всё из BASIC'),
         t('pricing.features.proThemes', 'Профессиональные темы и анимации'),
@@ -202,8 +208,10 @@ export default function Pricing() {
           {Object.entries(pricingPlans).map(([key, plan]) => {
             const Icon = plan.icon;
             const isCurrentPlan = tier === key || (tier === 'free' && key === 'basic');
-            const monthlyPrice = plan.prices[billingPeriod];
-            const totalPrice = 'totalPrices' in plan ? plan.totalPrices[billingPeriod] : 0;
+            const monthlyKzt = plan.pricesKzt[billingPeriod];
+            const monthlyUsd = plan.pricesUsd[billingPeriod];
+            const totalKzt = plan.totalKzt[billingPeriod];
+            const totalUsd = plan.totalUsd[billingPeriod];
 
             return (
               <Card
@@ -243,14 +251,30 @@ export default function Pricing() {
                       <div className="text-3xl font-bold">
                         {t('pricing.free', 'Бесплатно')}
                       </div>
-                    ) : (
+                    ) : isKztPrimary ? (
                       <>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-3xl font-bold">${monthlyPrice.toFixed(2)}</span>
+                          <span className="text-3xl font-bold">{monthlyKzt.toLocaleString()}₸</span>
                           <span className="text-muted-foreground">/{t('pricing.month', 'мес')}</span>
                         </div>
                         <div className="text-sm text-muted-foreground mt-1">
-                          ${totalPrice} {t('pricing.totalFor', 'за')} {billingPeriod} {t('pricing.months', 'мес')}
+                          {totalKzt.toLocaleString()}₸ {t('pricing.totalFor', 'за')} {billingPeriod} {t('pricing.months', 'мес')}
+                        </div>
+                        <div className="text-xs text-muted-foreground/70 mt-0.5">
+                          ≈ ${monthlyUsd.toFixed(2)}/{t('pricing.month', 'мес')}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-3xl font-bold">${monthlyUsd.toFixed(2)}</span>
+                          <span className="text-muted-foreground">/{t('pricing.month', 'мес')}</span>
+                        </div>
+                        <div className="text-sm text-muted-foreground mt-1">
+                          ${totalUsd} {t('pricing.totalFor', 'за')} {billingPeriod} {t('pricing.months', 'мес')}
+                        </div>
+                        <div className="text-xs text-muted-foreground/70 mt-0.5">
+                          ≈ {monthlyKzt.toLocaleString()}₸/{t('pricing.month', 'мес')}
                         </div>
                       </>
                     )}
