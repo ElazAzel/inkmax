@@ -195,7 +195,7 @@ export default function Index() {
               {/* Company Details for RoboKassa compliance */}
               <div className="text-center text-xs text-muted-foreground pt-4 border-t border-border/30">
                 <p className="mb-1">ИП BEEGIN • БИН: 971207300019</p>
-                <p className="mb-2">г. Алматы, ул. Шолохова, д. 20/7, офис 11</p>
+                <p className="mb-2">г. Алматы, ул. Шолохова, д. 20/7</p>
               </div>
               
               {/* Contact Info */}

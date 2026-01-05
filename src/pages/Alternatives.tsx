@@ -552,7 +552,7 @@ export default function Alternatives() {
               {/* Company Details for RoboKassa compliance */}
               <div className="text-center text-xs text-muted-foreground pt-4 border-t border-border/30">
                 <p className="mb-1">ИП BEEGIN • БИН: 971207300019</p>
-                <p className="mb-2">{isRussian ? 'г. Алматы, ул. Шолохова, д. 20/7, офис 11' : 'Almaty, Sholokhov St., 20/7, office 11'}</p>
+                <p className="mb-2">{isRussian ? 'г. Алматы, ул. Шолохова, д. 20/7' : 'Almaty, Sholokhov St., 20/7'}</p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <a href="mailto:admin@lnkmx.my" className="hover:text-foreground transition-colors">
                     admin@lnkmx.my
