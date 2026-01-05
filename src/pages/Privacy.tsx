@@ -1,13 +1,18 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { SEOHead } from '@/components/SEOHead';
 import { COMPANY_DETAILS } from '@/components/legal/TermsOfServiceModal';
 
 const Privacy = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+
+  useEffect(() => {
+    const title = lang === 'ru' ? 'Политика конфиденциальности - LinkMAX' : lang === 'kk' ? 'Құпиялылық саясаты - LinkMAX' : 'Privacy Policy - LinkMAX';
+    document.title = title;
+  }, [lang]);
 
   const getPrivacyContent = () => {
     if (lang === 'en') {
@@ -159,26 +164,20 @@ const Privacy = () => {
   };
 
   return (
-    <>
-      <SEOHead
-        title={lang === 'ru' ? 'Политика конфиденциальности - LinkMAX' : lang === 'kk' ? 'Құпиялылық саясаты - LinkMAX' : 'Privacy Policy - LinkMAX'}
-        description={lang === 'ru' ? 'Политика конфиденциальности платформы LinkMAX' : lang === 'kk' ? 'LinkMAX платформасының құпиялылық саясаты' : 'LinkMAX Platform Privacy Policy'}
-      />
-      <div className="min-h-screen bg-background">
-        <div className="container max-w-4xl mx-auto px-4 py-8">
-          <Link to="/">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {t('common.back')}
-            </Button>
-          </Link>
-          
-          <article className="prose prose-slate dark:prose-invert max-w-none">
-            {getPrivacyContent()}
-          </article>
-        </div>
+    <div className="min-h-screen bg-background">
+      <div className="container max-w-4xl mx-auto px-4 py-8">
+        <Link to="/">
+          <Button variant="ghost" className="mb-6">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {t('common.back')}
+          </Button>
+        </Link>
+        
+        <article className="prose prose-slate dark:prose-invert max-w-none">
+          {getPrivacyContent()}
+        </article>
       </div>
-    </>
+    </div>
   );
 };
 
