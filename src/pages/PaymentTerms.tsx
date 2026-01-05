@@ -1,12 +1,17 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { SEOHead } from '@/components/SEOHead';
 
 const PaymentTerms = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+
+  useEffect(() => {
+    const title = lang === 'ru' ? 'Условия оплаты - LinkMAX' : lang === 'kk' ? 'Төлем шарттары - LinkMAX' : 'Payment Terms - LinkMAX';
+    document.title = title;
+  }, [lang]);
 
   const getPaymentTermsContent = () => {
     if (lang === 'en') {
@@ -166,26 +171,20 @@ const PaymentTerms = () => {
   };
 
   return (
-    <>
-      <SEOHead
-        title={lang === 'ru' ? 'Условия оплаты - LinkMAX' : lang === 'kk' ? 'Төлем шарттары - LinkMAX' : 'Payment Terms - LinkMAX'}
-        description={lang === 'ru' ? 'Условия оплаты для пользователей LinkMAX' : lang === 'kk' ? 'LinkMAX пайдаланушылары үшін төлем шарттары' : 'Payment Terms for LinkMAX Users'}
-      />
-      <div className="min-h-screen bg-background">
-        <div className="container max-w-4xl mx-auto px-4 py-8">
-          <Link to="/">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {t('common.back')}
-            </Button>
-          </Link>
-          
-          <article className="prose prose-slate dark:prose-invert max-w-none">
-            {getPaymentTermsContent()}
-          </article>
-        </div>
+    <div className="min-h-screen bg-background">
+      <div className="container max-w-4xl mx-auto px-4 py-8">
+        <Link to="/">
+          <Button variant="ghost" className="mb-6">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {t('common.back')}
+          </Button>
+        </Link>
+        
+        <article className="prose prose-slate dark:prose-invert max-w-none">
+          {getPaymentTermsContent()}
+        </article>
       </div>
-    </>
+    </div>
   );
 };
 

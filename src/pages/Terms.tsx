@@ -1,14 +1,19 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SEOHead } from '@/components/SEOHead';
 import { COMPANY_DETAILS } from '@/components/legal/TermsOfServiceModal';
 
 const Terms = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+
+  useEffect(() => {
+    const title = lang === 'ru' ? 'Пользовательское соглашение - LinkMAX' : lang === 'kk' ? 'Пайдаланушы келісімі - LinkMAX' : 'Terms of Service - LinkMAX';
+    document.title = title;
+  }, [lang]);
 
   const getTermsContent = () => {
     if (lang === 'en') {
@@ -192,26 +197,20 @@ const Terms = () => {
   };
 
   return (
-    <>
-      <SEOHead
-        title={lang === 'ru' ? 'Пользовательское соглашение - LinkMAX' : lang === 'kk' ? 'Пайдаланушы келісімі - LinkMAX' : 'Terms of Service - LinkMAX'}
-        description={lang === 'ru' ? 'Пользовательское соглашение платформы LinkMAX' : lang === 'kk' ? 'LinkMAX платформасының пайдаланушы келісімі' : 'LinkMAX Platform User Agreement'}
-      />
-      <div className="min-h-screen bg-background">
-        <div className="container max-w-4xl mx-auto px-4 py-8">
-          <Link to="/">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {t('common.back')}
-            </Button>
-          </Link>
-          
-          <article className="prose prose-slate dark:prose-invert max-w-none">
-            {getTermsContent()}
-          </article>
-        </div>
+    <div className="min-h-screen bg-background">
+      <div className="container max-w-4xl mx-auto px-4 py-8">
+        <Link to="/">
+          <Button variant="ghost" className="mb-6">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {t('common.back')}
+          </Button>
+        </Link>
+        
+        <article className="prose prose-slate dark:prose-invert max-w-none">
+          {getTermsContent()}
+        </article>
       </div>
-    </>
+    </div>
   );
 };
 
