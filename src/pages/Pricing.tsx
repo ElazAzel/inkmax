@@ -74,7 +74,6 @@ export default function Pricing() {
         t('pricing.features.socialPixel', 'Social Media pixel (Meta, TikTok, Google)'),
         t('pricing.features.scheduler', 'Планировщик блоков'),
         t('pricing.features.advancedAnalytics', 'Расширенная аналитика кликов'),
-        t('pricing.features.noWatermark', 'Без водяного знака'),
         t('pricing.features.fullCRM', 'Полноценная CRM (без лимита лидов)'),
         t('pricing.features.telegramNotifications', 'Telegram-уведомления о лидах'),
         t('pricing.features.autoNotifications', 'Автоматические email/Telegram-уведомления'),

@@ -52,7 +52,6 @@ export function PremiumValueSection({ isVisible, sectionRef }: PremiumValueSecti
 
   const bonusFeatures = [
     t('landing.premiumValue.bonus.themes', 'Премиум-темы и анимации'),
-    t('landing.premiumValue.bonus.noWatermark', 'Без водяного знака'),
     t('landing.premiumValue.bonus.scheduler', 'Планировщик блоков'),
     t('landing.premiumValue.bonus.video', 'Видео и медиа-блоки'),
   ];
