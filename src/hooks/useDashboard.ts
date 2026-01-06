@@ -91,7 +91,7 @@ export function useDashboard() {
     };
 
     achievements.checkAchievements(stats);
-  }, [pageData?.blocks, userProfile.profile?.friends_count, achievements.loading]);
+  }, [pageData?.blocks, userProfile.profile?.friends_count, achievements]);
 
   // Username management
   const usernameState = useDashboardUsername({

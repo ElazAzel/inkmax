@@ -32,12 +32,12 @@ export function SimplePricingSection({ isVisible, sectionRef }: SimplePricingSec
 
   const freeFeatures = [
     { text: t('landing.simplePricing.free.f1', 'Базовые блоки (ссылки, текст, фото)'), included: true },
-    { text: t('landing.simplePricing.free.f2', 'AI-генерация (3 раза в день)'), included: true },
+    { text: t('landing.simplePricing.free.f2', 'AI-генерация (1 раз в месяц)'), included: true },
     { text: t('landing.simplePricing.free.f3', 'Базовая статистика'), included: true },
     { text: t('landing.simplePricing.free.f4', 'QR-код страницы'), included: true },
     { text: t('landing.simplePricing.free.f5', 'Mini-CRM и лиды'), included: false },
     { text: t('landing.simplePricing.free.f6', 'Telegram-уведомления'), included: false },
-    { text: t('landing.simplePricing.free.f7', 'Безлимитный AI'), included: false },
+    { text: t('landing.simplePricing.free.f7', 'Расширенный AI (5 раз/мес)'), included: false },
   ];
 
   const premiumFeatures = [
