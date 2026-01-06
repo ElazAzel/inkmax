@@ -144,7 +144,7 @@ export default function Alternatives() {
     },
     {
       feature: isRussian ? 'AI-генерация страницы' : 'AI Page Generation',
-      linkmax: { free: true, premium: true, freeNote: isRussian ? '1 раз/мес' : '1/month', premiumNote: isRussian ? '5 раз/мес' : '5/month' },
+      linkmax: { free: true, premium: true, freeNote: isRussian ? '1/мес' : '1/month', premiumNote: isRussian ? '5/мес' : '5/month' },
     },
     {
       feature: isRussian ? 'Количество типов блоков' : 'Number of Block Types',
