@@ -26,14 +26,6 @@ export function FAQSection() {
       answer: t('landing.faq.q3.answer', 'При регистрации вы выбираете свою нишу (барбер, фотограф, тренер и т.д.), и AI автоматически создаёт готовую страницу с профилем, нужными блоками и текстами, адаптированными под вашу профессию.')
     },
     {
-      question: t('landing.faq.q4.question', 'Можно ли использовать свой домен?'),
-      answer: t('landing.faq.q4.answer', 'Да, в Premium тарифе вы можете подключить собственный домен с SSL-сертификатом. В бесплатном тарифе ваша страница будет доступна по адресу lnkmx.my/ваше-имя.')
-    },
-    {
-      question: t('landing.faq.q5.question', 'Как принимать оплату через страницу?'),
-      answer: t('landing.faq.q5.answer', 'В Premium тарифе доступна интеграция с RoboKassa. Вы можете продавать товары, услуги и цифровые продукты прямо со своей страницы.')
-    },
-    {
       question: t('landing.faq.q6.question', 'Поддерживается ли мобильный редактор?'),
       answer: t('landing.faq.q6.answer', 'Да! LinkMAX создан с упором на мобильные устройства. Вы можете полноценно редактировать страницу прямо со смартфона.')
     },
@@ -51,7 +43,7 @@ export function FAQSection() {
     },
     {
       question: t('landing.faq.q10.question', 'Какие интеграции поддерживает LinkMAX?'),
-      answer: t('landing.faq.q10.answer', 'LinkMAX интегрируется с Telegram для уведомлений, RoboKassa для платежей. Также поддерживаются все социальные сети и мессенджеры.')
+      answer: t('landing.faq.q10.answer_updated', 'LinkMAX интегрируется с Telegram для уведомлений и Google Календарём для управления записями.')
     },
     {
       question: t('landing.faq.q11.question', 'Берёт ли LinkMAX комиссию с продаж?'),
@@ -66,7 +58,7 @@ export function FAQSection() {
       answer: t('landing.faq.q13.answer', 'Да! В нашей галерее представлены реальные страницы пользователей из разных ниш: барберы, фотографы, тренеры, психологи, магазины и другие.')
     },
     {
-      question: t('landing.faq.q14.question', 'Чем LinkMAX лучше Linktree и Taplink?'),
+      question: t('landing.faq.q14.question_updated', 'Отличия LinkMAX от Linktree и Taplink?'),
       answer: t('landing.faq.q14.answer', 'LinkMAX предлагает AI-генерацию контента, 0% комиссии с продаж, встроенную CRM, современный дизайн и поддержку русского/казахского языков. Цены от 2 610₸/мес.')
     }
   ];
