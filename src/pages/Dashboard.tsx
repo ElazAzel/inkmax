@@ -57,8 +57,16 @@ export default function Dashboard() {
   // Listen for openFriends event from MobileSettingsSheet
   useEffect(() => {
     const handleOpenFriends = () => setShowFriends(true);
+    const handleOpenVerification = () => {
+      // Scroll to verification section or open modal
+      setShowSettings(true);
+    };
     window.addEventListener('openFriends', handleOpenFriends);
-    return () => window.removeEventListener('openFriends', handleOpenFriends);
+    window.addEventListener('openVerification', handleOpenVerification);
+    return () => {
+      window.removeEventListener('openFriends', handleOpenFriends);
+      window.removeEventListener('openVerification', handleOpenVerification);
+    };
   }, []);
 
   // Loading/Error states
@@ -236,6 +244,7 @@ export default function Dashboard() {
         profileBlock={dashboard.profileBlock}
         onUpdateProfile={dashboard.handleUpdateProfile}
         isPremium={dashboard.isPremium}
+        premiumTier={dashboard.premiumTier}
         premiumLoading={dashboard.premiumLoading}
         chatbotContext={dashboard.chatbotContext}
         onChatbotContextChange={dashboard.setChatbotContext}
@@ -261,6 +270,8 @@ export default function Dashboard() {
         onPreviewUrlChange={(url) => {
           dashboard.updatePageDataPartial({ previewUrl: url || undefined });
         }}
+        onOpenSaveTemplate={() => setShowSaveTemplate(true)}
+        onOpenMyTemplates={() => setShowMyTemplates(true)}
         onSignOut={dashboard.handleSignOut}
       />
 

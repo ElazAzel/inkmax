@@ -170,7 +170,7 @@ export interface ButtonBlock {
 export interface SocialsBlock {
   id: string;
   type: 'socials';
-  title?: string;
+  title?: string | MultilingualString;
   platforms: Array<{
     name: string;
     url: string;
@@ -185,8 +185,8 @@ export interface ImageBlock {
   id: string;
   type: 'image';
   url: string;
-  alt: string;
-  caption?: string;
+  alt: string | MultilingualString;
+  caption?: string | MultilingualString;
   link?: string;
   style?: 'polaroid' | 'vignette' | 'circle' | 'default' | 'banner';
   alignment?: 'left' | 'center' | 'right';
