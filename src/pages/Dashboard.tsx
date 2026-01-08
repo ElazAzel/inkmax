@@ -348,6 +348,7 @@ export default function Dashboard() {
         open={showMyTemplates}
         onOpenChange={setShowMyTemplates}
         onApplyTemplate={dashboard.handleApplyTemplate}
+        currentBlocks={dashboard.pageData.blocks}
       />
 
       {/* Tokens Panel */}
