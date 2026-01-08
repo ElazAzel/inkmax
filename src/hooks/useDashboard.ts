@@ -202,6 +202,7 @@ export function useDashboard() {
     isMobile,
     isPremium,
     currentTier,
+    premiumTier: currentTier,
     premiumLoading,
 
     // Page operations
