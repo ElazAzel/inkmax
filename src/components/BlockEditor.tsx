@@ -299,52 +299,59 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
     }
   };
 
-  // Mobile: Clean full-screen Drawer like competitors
+  // Mobile: Clean full-screen Drawer with improved UX
   if (isMobile) {
     return (
       <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DrawerContent className="h-[95vh] max-h-[95vh] bg-background border-t rounded-t-3xl">
+        <DrawerContent className="h-[95vh] max-h-[95vh] bg-background border-t rounded-t-[28px]">
           <div className="flex flex-col h-full">
+            {/* Handle bar for drag */}
+            <div className="flex justify-center pt-2 pb-1">
+              <div className="w-12 h-1.5 rounded-full bg-muted-foreground/30" />
+            </div>
+            
             {/* Clean Header with back button */}
-            <DrawerHeader className="flex-shrink-0 border-b px-5 py-4">
-              <div className="flex items-center gap-4">
+            <DrawerHeader className="flex-shrink-0 border-b px-4 py-3">
+              <div className="flex items-center gap-3">
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={onClose} 
-                  className="h-10 w-10 rounded-full"
+                  className="h-11 w-11 rounded-xl hover:bg-muted/50 active:scale-95 transition-all"
                 >
                   <X className="h-5 w-5" />
                 </Button>
-                <DrawerTitle className="text-xl font-bold flex-1">
-                  {t(`blockEditor.${block.type}`)}
-                </DrawerTitle>
+                <div className="flex-1">
+                  <DrawerTitle className="text-lg font-bold">
+                    {t(`blockEditor.${block.type}`)}
+                  </DrawerTitle>
+                  <DrawerDescription className="text-xs text-muted-foreground mt-0.5">
+                    {t('blockEditor.mobileHint', 'Отредактируйте содержимое блока')}
+                  </DrawerDescription>
+                </div>
               </div>
-              <DrawerDescription className="sr-only">
-                {t('blockEditor.description')}
-              </DrawerDescription>
             </DrawerHeader>
             
-            {/* Scrollable Content with more padding */}
-            <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5">
+            {/* Scrollable Content with better spacing */}
+            <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 overscroll-contain">
               {renderEditor()}
             </div>
             
-            {/* Fixed Footer with clear buttons like competitors */}
-            <DrawerFooter className="flex-shrink-0 border-t px-5 py-5 pb-safe bg-background">
-              <div className="flex gap-4">
+            {/* Fixed Footer with swipe hint and buttons */}
+            <DrawerFooter className="flex-shrink-0 border-t px-4 py-4 pb-safe bg-background/95 backdrop-blur-xl">
+              <div className="flex gap-3">
                 <Button 
                   variant="outline" 
                   onClick={onClose} 
-                  className="flex-1 h-14 rounded-xl text-base font-medium"
+                  className="flex-1 h-13 rounded-xl text-base font-semibold active:scale-[0.98] transition-all"
                 >
-                  Отмена
+                  {t('editor.cancel', 'Отмена')}
                 </Button>
                 <Button 
                   onClick={handleSave} 
-                  className="flex-1 h-14 rounded-xl text-base font-medium"
+                  className="flex-1 h-13 rounded-xl text-base font-semibold shadow-lg shadow-primary/25 active:scale-[0.98] transition-all"
                 >
-                  Сохранить
+                  {t('editor.save', 'Сохранить')}
                 </Button>
               </div>
             </DrawerFooter>

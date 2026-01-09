@@ -1,0 +1,243 @@
+import { memo, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { 
+  Pencil, 
+  Trash2, 
+  Copy, 
+  ChevronUp, 
+  ChevronDown,
+  ArrowUpToLine,
+  ArrowDownToLine,
+  X,
+  EyeOff,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useHapticFeedback } from '@/hooks/useHapticFeedback';
+import type { Block } from '@/types/page';
+
+interface MobileBlockActionsProps {
+  block: Block | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onEdit: (block: Block) => void;
+  onDelete: (id: string) => void;
+  onMoveUp?: (id: string) => void;
+  onMoveDown?: (id: string) => void;
+  onMoveToTop?: (id: string) => void;
+  onMoveToBottom?: (id: string) => void;
+  onDuplicate?: (block: Block) => void;
+  onToggleVisibility?: (id: string) => void;
+  isFirst?: boolean;
+  isLast?: boolean;
+}
+
+export const MobileBlockActions = memo(function MobileBlockActions({
+  block,
+  open,
+  onOpenChange,
+  onEdit,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+  onMoveToTop,
+  onMoveToBottom,
+  onDuplicate,
+  onToggleVisibility,
+  isFirst = false,
+  isLast = false,
+}: MobileBlockActionsProps) {
+  const { t } = useTranslation();
+  const haptic = useHapticFeedback();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleAction = useCallback((action: () => void, hapticType: 'light' | 'medium' | 'warning' = 'light') => {
+    if (hapticType === 'warning') {
+      haptic.warning();
+    } else if (hapticType === 'medium') {
+      haptic.mediumTap();
+    } else {
+      haptic.lightTap();
+    }
+    action();
+    if (hapticType !== 'warning') {
+      onOpenChange(false);
+    }
+  }, [haptic, onOpenChange]);
+
+  const handleDelete = useCallback(() => {
+    if (!block) return;
+    if (confirmDelete) {
+      haptic.error();
+      onDelete(block.id);
+      onOpenChange(false);
+      setConfirmDelete(false);
+    } else {
+      haptic.warning();
+      setConfirmDelete(true);
+    }
+  }, [block, confirmDelete, haptic, onDelete, onOpenChange]);
+
+  if (!block) return null;
+
+  const isProfileBlock = block.type === 'profile';
+
+  const primaryActions = [
+    {
+      icon: Pencil,
+      label: t('blockActions.edit', 'Редактировать'),
+      onClick: () => handleAction(() => onEdit(block), 'medium'),
+      variant: 'default' as const,
+    },
+  ];
+
+  const moveActions = [
+    {
+      icon: ArrowUpToLine,
+      label: t('blockActions.moveToTop', 'В начало'),
+      onClick: () => handleAction(() => onMoveToTop?.(block.id)),
+      disabled: isFirst,
+    },
+    {
+      icon: ChevronUp,
+      label: t('blockActions.moveUp', 'Вверх'),
+      onClick: () => handleAction(() => onMoveUp?.(block.id)),
+      disabled: isFirst,
+    },
+    {
+      icon: ChevronDown,
+      label: t('blockActions.moveDown', 'Вниз'),
+      onClick: () => handleAction(() => onMoveDown?.(block.id)),
+      disabled: isLast,
+    },
+    {
+      icon: ArrowDownToLine,
+      label: t('blockActions.moveToBottom', 'В конец'),
+      onClick: () => handleAction(() => onMoveToBottom?.(block.id)),
+      disabled: isLast,
+    },
+  ];
+
+  const otherActions = [
+    ...(onDuplicate ? [{
+      icon: Copy,
+      label: t('blockActions.duplicate', 'Дублировать'),
+      onClick: () => handleAction(() => onDuplicate(block)),
+    }] : []),
+    ...(onToggleVisibility ? [{
+      icon: EyeOff,
+      label: t('blockActions.hide', 'Скрыть'),
+      onClick: () => handleAction(() => onToggleVisibility(block.id)),
+    }] : []),
+  ];
+
+  return (
+    <Sheet open={open} onOpenChange={(isOpen) => {
+      if (!isOpen) setConfirmDelete(false);
+      onOpenChange(isOpen);
+    }}>
+      <SheetContent 
+        side="bottom" 
+        className="h-auto max-h-[70vh] rounded-t-[28px] p-0 bg-card/95 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl [&>button]:hidden"
+      >
+        {/* Handle bar */}
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
+        </div>
+        
+        <SheetHeader className="px-5 pb-3 border-b border-border/20">
+          <div className="flex items-center justify-between">
+            <SheetTitle className="text-lg font-bold">
+              {t(`blockEditor.${block.type}`, block.type)}
+            </SheetTitle>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => onOpenChange(false)} 
+              className="rounded-full h-9 w-9 hover:bg-muted/50"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <SheetDescription className="sr-only">
+            {t('blockActions.description', 'Действия с блоком')}
+          </SheetDescription>
+        </SheetHeader>
+        
+        <div className="p-4 space-y-4 pb-safe">
+          {/* Primary action */}
+          <Button 
+            onClick={primaryActions[0].onClick}
+            className="w-full h-14 rounded-2xl text-base font-semibold gap-3 shadow-lg shadow-primary/20"
+          >
+            <Pencil className="h-5 w-5" />
+            {primaryActions[0].label}
+          </Button>
+
+          {/* Move actions grid */}
+          {!isProfileBlock && (onMoveUp || onMoveDown) && (
+            <div className="grid grid-cols-4 gap-2">
+              {moveActions.map((action) => (
+                <Button
+                  key={action.label}
+                  variant="outline"
+                  className={cn(
+                    "h-14 flex-col gap-1 rounded-xl bg-muted/30 border-border/50",
+                    action.disabled && "opacity-40"
+                  )}
+                  onClick={action.onClick}
+                  disabled={action.disabled}
+                >
+                  <action.icon className="h-4 w-4" />
+                  <span className="text-[10px] font-medium">{action.label}</span>
+                </Button>
+              ))}
+            </div>
+          )}
+
+          {/* Other actions */}
+          {otherActions.length > 0 && (
+            <div className="grid grid-cols-2 gap-2">
+              {otherActions.map((action) => (
+                <Button
+                  key={action.label}
+                  variant="outline"
+                  className="h-12 rounded-xl bg-muted/30 border-border/50 gap-2"
+                  onClick={action.onClick}
+                >
+                  <action.icon className="h-4 w-4" />
+                  {action.label}
+                </Button>
+              ))}
+            </div>
+          )}
+
+          {/* Delete action */}
+          {!isProfileBlock && (
+            <Button 
+              variant={confirmDelete ? "destructive" : "outline"}
+              className={cn(
+                "w-full h-12 rounded-xl gap-2 transition-all",
+                !confirmDelete && "text-destructive border-destructive/30 hover:bg-destructive/10"
+              )}
+              onClick={handleDelete}
+            >
+              <Trash2 className="h-4 w-4" />
+              {confirmDelete 
+                ? t('blockActions.confirmDelete', 'Подтвердить удаление') 
+                : t('blockActions.delete', 'Удалить блок')
+              }
+            </Button>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+});
