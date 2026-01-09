@@ -110,7 +110,12 @@ export default function Dashboard() {
       />
 
       {/* Mobile Header */}
-      <MobileHeader onSignOut={dashboard.handleSignOut} onOpenGallery={handleOpenGallery} />
+      <MobileHeader 
+        onSignOut={dashboard.handleSignOut} 
+        onOpenGallery={handleOpenGallery}
+        onOpenTokens={() => setShowTokens(true)}
+        userId={dashboard.user?.id}
+      />
 
       {/* Main Content */}
       <div className="relative">
@@ -229,7 +234,10 @@ export default function Dashboard() {
           onOpenMarketplace={() => setShowMarketplace(true)}
           onOpenAchievements={() => setShowAchievements(true)}
           onOpenCRM={() => setShowLeads(true)}
+          onOpenTokens={() => setShowTokens(true)}
+          onOpenGallery={handleOpenGallery}
           achievementCount={dashboard.achievements.getProgress().unlocked}
+          userId={dashboard.user?.id}
         />
       )}
 
@@ -272,6 +280,16 @@ export default function Dashboard() {
         }}
         onOpenSaveTemplate={() => setShowSaveTemplate(true)}
         onOpenMyTemplates={() => setShowMyTemplates(true)}
+        pageBackground={dashboard.pageData?.theme?.customBackground}
+        onPageBackgroundChange={(background) => {
+          dashboard.updatePageDataPartial({ 
+            theme: { 
+              ...dashboard.pageData.theme, 
+              customBackground: background 
+            } 
+          });
+        }}
+        canUseCustomPageBackground={canUseCustomPageBackground()}
         onSignOut={dashboard.handleSignOut}
       />
 
