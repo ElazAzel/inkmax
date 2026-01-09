@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Save,
   Eye,
@@ -13,6 +14,10 @@ import {
   MoreHorizontal,
   X,
   Store,
+  Coins,
+  ImageIcon,
+  Crown,
+  Flame,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,6 +29,8 @@ import {
 } from '@/components/ui/sheet';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { AutoSaveIndicator, type SaveStatus } from './AutoSaveIndicator';
+import { StreakDisplay } from '@/components/streak/StreakDisplay';
+import { TokenBalanceDisplay } from '@/components/tokens/TokenBalanceDisplay';
 import { cn } from '@/lib/utils';
 
 interface MobileToolbarProps {
@@ -38,7 +45,10 @@ interface MobileToolbarProps {
   onOpenMarketplace: () => void;
   onOpenAchievements: () => void;
   onOpenCRM: () => void;
+  onOpenTokens: () => void;
+  onOpenGallery: () => void;
   achievementCount: number;
+  userId?: string;
 }
 
 export const MobileToolbar = memo(function MobileToolbar({
@@ -53,9 +63,13 @@ export const MobileToolbar = memo(function MobileToolbar({
   onOpenMarketplace,
   onOpenAchievements,
   onOpenCRM,
+  onOpenTokens,
+  onOpenGallery,
   achievementCount,
+  userId,
 }: MobileToolbarProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [moreOpen, setMoreOpen] = useState(false);
 
   const mainActions = [
@@ -133,12 +147,39 @@ export const MobileToolbar = memo(function MobileToolbar({
       badge: achievementCount > 0 ? achievementCount : undefined,
     },
     {
+      icon: Coins,
+      label: t('tokens.title', 'Токены'),
+      description: t('mobileToolbar.tokensDesc', 'Ваш баланс и транзакции'),
+      onClick: () => {
+        setMoreOpen(false);
+        onOpenTokens();
+      },
+    },
+    {
       icon: Users,
       label: t('mobileToolbar.crm', 'CRM'),
       description: t('mobileToolbar.crmDesc', 'Управление лидами'),
       onClick: () => {
         setMoreOpen(false);
         onOpenCRM();
+      },
+    },
+    {
+      icon: ImageIcon,
+      label: t('gallery.title', 'Галерея'),
+      description: t('mobileToolbar.galleryDesc', 'Работы сообщества'),
+      onClick: () => {
+        setMoreOpen(false);
+        onOpenGallery();
+      },
+    },
+    {
+      icon: Crown,
+      label: t('pricing.title', 'Тарифы'),
+      description: t('mobileToolbar.pricingDesc', 'Премиум возможности'),
+      onClick: () => {
+        setMoreOpen(false);
+        navigate('/pricing');
       },
     },
   ];
@@ -236,8 +277,29 @@ export const MobileToolbar = memo(function MobileToolbar({
               </button>
             ))}
             
-            {/* Language Switcher */}
-            <div className="pt-4 border-t border-border/20 mt-4">
+            {/* Streak & Tokens Display */}
+            <div className="pt-4 border-t border-border/20 mt-4 space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                    <Flame className="h-5 w-5 text-orange-500" />
+                  </div>
+                  <span className="text-base font-bold">{t('streak.title', 'Streak')}</span>
+                </div>
+                <StreakDisplay userId={userId} compact />
+              </div>
+              
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-primary/10 to-violet-500/10 border border-primary/20">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                    <Coins className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="text-base font-bold">{t('tokens.title', 'Токены')}</span>
+                </div>
+                <TokenBalanceDisplay onClick={() => { setMoreOpen(false); onOpenTokens(); }} compact />
+              </div>
+              
+              {/* Language Switcher */}
               <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/30">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl bg-background/80 flex items-center justify-center">

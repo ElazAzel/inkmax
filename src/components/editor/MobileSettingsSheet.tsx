@@ -37,6 +37,7 @@ import {
   Package,
   Save,
   Shield,
+  Palette,
 } from 'lucide-react';
 import { CollaborationPanel } from '@/components/collaboration/CollaborationPanel';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
@@ -48,7 +49,8 @@ import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import type { ProfileBlock, EditorMode, GridConfig } from '@/types/page';
+import { PageBackgroundSettings } from './PageBackgroundSettings';
+import type { ProfileBlock, EditorMode, GridConfig, PageBackground } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 
 interface MobileSettingsSheetProps {
@@ -110,6 +112,11 @@ interface MobileSettingsSheetProps {
   onOpenSaveTemplate?: () => void;
   onOpenMyTemplates?: () => void;
   
+  // Page Background
+  pageBackground?: PageBackground;
+  onPageBackgroundChange?: (background: PageBackground | undefined) => void;
+  canUseCustomPageBackground?: boolean;
+  
   // Sign out
   onSignOut: () => void;
 }
@@ -146,6 +153,9 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
   onPreviewUrlChange,
   onOpenSaveTemplate,
   onOpenMyTemplates,
+  pageBackground,
+  onPageBackgroundChange,
+  canUseCustomPageBackground,
   onSignOut,
 }: MobileSettingsSheetProps) {
   const { t } = useTranslation();
@@ -390,6 +400,23 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                       </Button>
                     )}
                   </div>
+                </Card>
+              )}
+
+              {/* Page Background Settings */}
+              {onPageBackgroundChange && (
+                <Card className="p-5 bg-card/40 backdrop-blur-xl border border-border/20 rounded-2xl shadow-glass">
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+                      <Palette className="h-4 w-4 text-indigo-500" />
+                    </div>
+                    {t('settings.pageBackground', 'Фон страницы')}
+                  </h3>
+                  <PageBackgroundSettings
+                    background={pageBackground}
+                    onChange={onPageBackgroundChange}
+                    canUseFeature={canUseCustomPageBackground ?? false}
+                  />
                 </Card>
               )}
             </TabsContent>
