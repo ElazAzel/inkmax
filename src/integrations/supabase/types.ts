@@ -463,6 +463,33 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_token_limits: {
+        Row: {
+          action_date: string
+          action_type: string
+          claimed: boolean
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action_date?: string
+          action_type: string
+          claimed?: boolean
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action_date?: string
+          action_type?: string
+          claimed?: boolean
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       friend_activities: {
         Row: {
           activity_type: string
@@ -1109,29 +1136,92 @@ export type Database = {
       token_transactions: {
         Row: {
           amount: number
+          buyer_id: string | null
           created_at: string
           description: string | null
           id: string
+          item_id: string | null
+          item_type: string | null
+          net_amount: number | null
+          original_price: number | null
+          platform_fee: number | null
+          seller_id: string | null
           source: string
           type: string
           user_id: string
         }
         Insert: {
           amount: number
+          buyer_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          item_id?: string | null
+          item_type?: string | null
+          net_amount?: number | null
+          original_price?: number | null
+          platform_fee?: number | null
+          seller_id?: string | null
           source: string
           type: string
           user_id: string
         }
         Update: {
           amount?: number
+          buyer_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          item_id?: string | null
+          item_type?: string | null
+          net_amount?: number | null
+          original_price?: number | null
+          platform_fee?: number | null
+          seller_id?: string | null
           source?: string
           type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      token_withdrawals: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          id: string
+          payment_details: Json | null
+          payment_method: string | null
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -1540,6 +1630,10 @@ export type Database = {
         Args: { p_code: string; p_referred_user_id: string }
         Returns: Json
       }
+      claim_daily_token_reward: {
+        Args: { p_action_type: string; p_amount: number; p_user_id: string }
+        Returns: Json
+      }
       claim_premium_gift: { Args: { p_gift_id: string }; Returns: Json }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       complete_daily_quest: {
@@ -1553,6 +1647,10 @@ export type Database = {
       convert_tokens_to_premium: { Args: { p_user_id: string }; Returns: Json }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
+      get_token_analytics: {
+        Args: { p_end_date?: string; p_start_date?: string }
+        Returns: Json
+      }
       get_top_referrers: {
         Args: { p_limit?: number }
         Returns: {
@@ -1581,6 +1679,17 @@ export type Database = {
       increment_view_count: { Args: { page_slug: string }; Returns: undefined }
       like_gallery_page: { Args: { p_page_id: string }; Returns: undefined }
       like_template: { Args: { p_template_id: string }; Returns: undefined }
+      process_marketplace_purchase: {
+        Args: {
+          p_buyer_id: string
+          p_description?: string
+          p_item_id: string
+          p_item_type: string
+          p_price: number
+          p_seller_id: string
+        }
+        Returns: Json
+      }
       purchase_template: { Args: { p_template_id: string }; Returns: Json }
       save_page_blocks: {
         Args: { p_blocks: Json; p_is_premium?: boolean; p_page_id: string }
