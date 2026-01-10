@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Shield, LogOut, BarChart3, Users, FileText, Activity, 
-  PieChart, TrendingUp, Crown, ShieldCheck, Loader2
+  PieChart, TrendingUp, Crown, ShieldCheck, Loader2, Coins
 } from 'lucide-react';
 
 // Lazy load heavy tab components
@@ -19,6 +19,7 @@ const AdminCharts = lazy(() => import('@/components/admin/AdminCharts').then(m =
 const AdminAnalyticsDashboard = lazy(() => import('@/components/admin/AdminAnalyticsDashboard').then(m => ({ default: m.AdminAnalyticsDashboard })));
 const UserTierManager = lazy(() => import('@/components/admin/UserTierManager').then(m => ({ default: m.UserTierManager })));
 const AdminVerificationPanel = lazy(() => import('@/components/admin/AdminVerificationPanel').then(m => ({ default: m.AdminVerificationPanel })));
+const AdminTokensTab = lazy(() => import('@/components/admin/AdminTokensTab').then(m => ({ default: m.AdminTokensTab })));
 
 function TabLoader() {
   return (
@@ -67,6 +68,7 @@ export default function Admin() {
     { value: 'overview', label: t('admin.overview'), icon: BarChart3 },
     { value: 'users', label: t('admin.users'), icon: Users },
     { value: 'pages', label: t('admin.pages'), icon: FileText },
+    { value: 'tokens', label: 'Токены', icon: Coins },
     { value: 'analytics', label: t('admin.analytics'), icon: Activity },
     { value: 'charts', label: t('admin.charts'), icon: PieChart },
     { value: 'detailed', label: t('admin.detailed'), icon: TrendingUp },
@@ -125,6 +127,10 @@ export default function Admin() {
 
             <TabsContent value="pages">
               <AdminPagesTab />
+            </TabsContent>
+
+            <TabsContent value="tokens">
+              <AdminTokensTab />
             </TabsContent>
 
             <TabsContent value="analytics">

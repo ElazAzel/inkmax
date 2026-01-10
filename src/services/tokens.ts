@@ -257,12 +257,12 @@ export async function requestWithdrawal(
   // Create withdrawal request
   const { error } = await supabase
     .from('token_withdrawals')
-    .insert({
+    .insert([{
       user_id: userId,
       amount,
       payment_method: paymentMethod,
-      payment_details: paymentDetails,
-    });
+      payment_details: JSON.parse(JSON.stringify(paymentDetails)),
+    }]);
 
   if (error) {
     console.error('Error creating withdrawal request:', error);
