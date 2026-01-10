@@ -235,7 +235,7 @@ export function AdminTokensTab() {
         />
         <StatCard
           title="Активных пользователей"
-          value={analytics?.active_token_users || 0}
+          value={Number(analytics?.active_token_users || 0)}
           icon={Users}
         />
       </div>
