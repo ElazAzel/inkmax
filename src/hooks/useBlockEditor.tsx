@@ -21,6 +21,7 @@ interface UseBlockEditorOptions {
   hapticSuccess?: () => void;
   onBlockHint?: (blockType: string, blockId: string) => void;
   onQuestComplete?: (questKey: string) => void;
+  onClaimBlockToken?: () => Promise<boolean>;
 }
 
 /**
@@ -44,6 +45,7 @@ export function useBlockEditor({
   hapticSuccess,
   onBlockHint,
   onQuestComplete,
+  onClaimBlockToken,
 }: UseBlockEditorOptions) {
   const [editingBlock, setEditingBlock] = useState<Block | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -80,6 +82,8 @@ export function useBlockEditor({
         
         // Trigger add_block quest
         onQuestComplete?.('add_block');
+        // Claim token reward for adding block (once per day)
+        onClaimBlockToken?.();
         // Track challenge progress
         incrementChallengeProgress('add_blocks');
         recordActivity('new_block', { block_type: blockType });
@@ -91,7 +95,7 @@ export function useBlockEditor({
         return { success: false, error: 'Block creation failed' };
       }
     },
-    [isPremiumBlock, addBlock, playAdd, playError, onBlockHint, onQuestComplete]
+    [isPremiumBlock, addBlock, playAdd, playError, onBlockHint, onQuestComplete, onClaimBlockToken]
   );
 
   /**

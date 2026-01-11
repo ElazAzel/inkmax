@@ -16,6 +16,7 @@ import { useDashboardUsername } from '@/hooks/useDashboardUsername';
 import { useDashboardAI } from '@/hooks/useDashboardAI';
 import { useBlockEditor } from '@/hooks/useBlockEditor';
 import { useDailyQuests } from '@/hooks/useDailyQuests';
+import { useTokens } from '@/hooks/useTokens';
 import type { Block, ProfileBlock } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
 
@@ -44,8 +45,20 @@ export function useDashboard() {
   // Daily quests
   const dailyQuests = useDailyQuests(user?.id);
 
+  // Token economy
+  const tokens = useTokens();
+  const dailyVisitClaimedRef = useRef(false);
+
   // User profile
   const userProfile = useUserProfile(user?.id);
+
+  // Claim daily visit tokens on first load
+  useEffect(() => {
+    if (user?.id && !dailyVisitClaimedRef.current && !tokens.loading) {
+      dailyVisitClaimedRef.current = true;
+      tokens.claimDailyTokens('daily_visit');
+    }
+  }, [user?.id, tokens.loading, tokens.claimDailyTokens]);
 
   // Check achievements when page data or profile changes
   const lastCheckedRef = useRef<string>('');
@@ -118,6 +131,7 @@ export function useDashboard() {
     onAddBlock: addBlock,
     onReplaceBlocks: pageState.replaceBlocks,
     onQuestComplete: dailyQuests.markQuestComplete,
+    onClaimAIToken: () => tokens.claimDailyTokens('use_ai'),
   });
 
   // Block editing with undo
@@ -133,6 +147,7 @@ export function useDashboard() {
     hapticSuccess: haptic.success,
     onBlockHint: blockHints.showHint,
     onQuestComplete: dailyQuests.markQuestComplete,
+    onClaimBlockToken: () => tokens.claimDailyTokens('add_block'),
   });
 
   // Onboarding
@@ -238,6 +253,9 @@ export function useDashboard() {
 
     // Daily quests
     dailyQuests,
+
+    // Tokens
+    tokens,
 
     // Actions
     handleSignOut,

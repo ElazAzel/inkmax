@@ -35,6 +35,7 @@ interface UseDashboardAIOptions {
   onAddBlock: (block: Block) => void;
   onReplaceBlocks?: (blocks: Block[]) => void;
   onQuestComplete?: (questKey: string) => void;
+  onClaimAIToken?: () => Promise<boolean>;
 }
 
 /**
@@ -111,7 +112,7 @@ function createBlockFromAI(blockData: AIBlockData, index: number): Block | null 
 /**
  * Hook to manage AI generator state and handlers
  */
-export function useDashboardAI({ onUpdateProfile, onAddBlock, onReplaceBlocks, onQuestComplete }: UseDashboardAIOptions) {
+export function useDashboardAI({ onUpdateProfile, onAddBlock, onReplaceBlocks, onQuestComplete, onClaimAIToken }: UseDashboardAIOptions) {
   const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
   const [aiGeneratorType, setAiGeneratorType] = useState<AIGeneratorType>('ai-builder');
 
@@ -147,6 +148,9 @@ export function useDashboardAI({ onUpdateProfile, onAddBlock, onReplaceBlocks, o
       // Trigger use_ai quest on any AI result
       onQuestComplete?.('use_ai');
       
+      // Claim token reward for using AI
+      onClaimAIToken?.();
+      
       if (aiGeneratorType === 'ai-builder') {
         const { profile, blocks } = result;
 
@@ -179,7 +183,7 @@ export function useDashboardAI({ onUpdateProfile, onAddBlock, onReplaceBlocks, o
         }
       }
     },
-    [aiGeneratorType, onUpdateProfile, onAddBlock, onReplaceBlocks, onQuestComplete]
+    [aiGeneratorType, onUpdateProfile, onAddBlock, onReplaceBlocks, onQuestComplete, onClaimAIToken]
   );
 
   return {
