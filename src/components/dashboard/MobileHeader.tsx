@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { TokenBalanceDisplay } from '@/components/tokens/TokenBalanceDisplay';
+import logoIcon from '@/assets/logo-icon.png';
 
 interface MobileHeaderProps {
   onSignOut: () => void;
@@ -21,12 +22,12 @@ export function MobileHeader({ onSignOut, onOpenGallery, onOpenTokens, userId }:
             <div className="relative group">
               <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:bg-primary/30 transition-colors" />
               <img
-                src="/favicon.jpg"
-                alt="LinkMAX"
+                src={logoIcon}
+                alt="Lnkmx"
                 className="relative h-8 w-8 rounded-xl shadow-sm object-contain group-hover:scale-105 transition-transform"
               />
             </div>
-            <h1 className="text-lg font-black text-primary tracking-tight">LinkMAX</h1>
+            <h1 className="text-lg font-black text-primary tracking-tight">lnkmx</h1>
           </div>
           
           {/* Actions */}

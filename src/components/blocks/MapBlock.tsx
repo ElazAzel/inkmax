@@ -25,10 +25,10 @@ export function MapBlock({ block }: MapBlockProps) {
 
   if (!address) {
     return (
-      <div className="w-full h-48 flex items-center justify-center bg-muted rounded-lg">
+      <div className="w-full h-40 sm:h-48 flex items-center justify-center bg-muted rounded-xl">
         <div className="text-center text-muted-foreground">
-          <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">Укажите адрес</p>
+          <MapPin className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
+          <p className="text-xs sm:text-sm">Укажите адрес</p>
         </div>
       </div>
     );
@@ -44,7 +44,7 @@ export function MapBlock({ block }: MapBlockProps) {
       )}
       style={getAnimationStyle(block.blockStyle)}
     >
-      <div className="w-full h-64 rounded-lg overflow-hidden border border-border">
+      <div className="w-full h-48 sm:h-64 rounded-xl overflow-hidden border border-border">
         <iframe
           src={embedUrl}
           width="100%"
