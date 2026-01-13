@@ -136,8 +136,8 @@ export default function Pricing() {
                 </Button>
                 <div className="flex items-center gap-2">
                   <img
-                    src="/logo.png"
-                    alt="LinkMAX"
+                    src="/favicon.png"
+                    alt="lnkmx"
                     className="h-8 w-8 rounded-xl object-contain"
                   />
                   <h1 className="text-xl font-bold text-primary">

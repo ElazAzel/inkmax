@@ -355,7 +355,7 @@ export default function Auth() {
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-3 animate-fade-in">
             <div className="h-16 w-16 rounded-2xl bg-card/60 backdrop-blur-2xl border border-border/30 shadow-glass-lg flex items-center justify-center animate-scale-in">
-              <img src="/logo.png" alt="LinkMAX" className="h-10 w-10 object-contain" />
+              <img src="/favicon.png" alt="lnkmx" className="h-10 w-10 object-contain" />
             </div>
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-primary to-violet-500 bg-clip-text text-transparent animate-fade-in" style={{ animationDelay: '0.1s' }}>
