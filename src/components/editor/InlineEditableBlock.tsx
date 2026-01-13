@@ -349,19 +349,32 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
             </div>
           )}
 
-          {/* Mobile: Quick action button */}
+          {/* Mobile: Quick action button - LARGER and more visible */}
           {isMobile && showControls && !isDragging && !isProfileBlock && (
-            <div className="absolute -top-2 right-2 z-20">
+            <div className="absolute -top-3 right-2 z-20 flex gap-1.5">
+              {/* Quick Edit Button */}
+              <Button
+                variant="default"
+                size="sm"
+                className="h-11 w-11 p-0 rounded-xl shadow-lg shadow-primary/30"
+                onClick={() => {
+                  haptic.mediumTap();
+                  onEdit(block);
+                }}
+              >
+                <Pencil className="h-5 w-5" />
+              </Button>
+              {/* More Actions Button */}
               <Button
                 variant="glass"
                 size="sm"
-                className="h-8 w-8 p-0 shadow-glass-lg"
+                className="h-11 w-11 p-0 rounded-xl shadow-glass-lg"
                 onClick={() => {
                   haptic.mediumTap();
                   setShowActionsSheet(true);
                 }}
               >
-                <MoreVertical className="h-4 w-4" />
+                <MoreVertical className="h-5 w-5" />
               </Button>
             </div>
           )}

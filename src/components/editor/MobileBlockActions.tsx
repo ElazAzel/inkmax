@@ -172,16 +172,18 @@ export const MobileBlockActions = memo(function MobileBlockActions({
         </SheetHeader>
         
         <div className="p-4 space-y-4 pb-safe">
-          {/* Primary action */}
+          {/* Primary action - LARGER for mobile */}
           <Button 
             onClick={primaryActions[0].onClick}
-            className="w-full h-14 rounded-2xl text-base font-semibold gap-3 shadow-lg shadow-primary/20"
+            className="w-full h-16 rounded-2xl text-lg font-bold gap-3 shadow-lg shadow-primary/20"
           >
-            <Pencil className="h-5 w-5" />
+            <div className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center">
+              <Pencil className="h-5 w-5" />
+            </div>
             {primaryActions[0].label}
           </Button>
 
-          {/* Move actions grid */}
+          {/* Move actions grid - LARGER buttons */}
           {!isProfileBlock && (onMoveUp || onMoveDown) && (
             <div className="grid grid-cols-4 gap-2">
               {moveActions.map((action) => (
@@ -189,47 +191,52 @@ export const MobileBlockActions = memo(function MobileBlockActions({
                   key={action.label}
                   variant="outline"
                   className={cn(
-                    "h-14 flex-col gap-1 rounded-xl bg-muted/30 border-border/50",
+                    "h-16 flex-col gap-1.5 rounded-xl bg-muted/30 border-border/50 active:scale-95 transition-transform",
                     action.disabled && "opacity-40"
                   )}
                   onClick={action.onClick}
                   disabled={action.disabled}
                 >
-                  <action.icon className="h-4 w-4" />
-                  <span className="text-[10px] font-medium">{action.label}</span>
+                  <action.icon className="h-5 w-5" />
+                  <span className="text-[11px] font-semibold">{action.label}</span>
                 </Button>
               ))}
             </div>
           )}
 
-          {/* Other actions */}
+          {/* Other actions - LARGER */}
           {otherActions.length > 0 && (
             <div className="grid grid-cols-2 gap-2">
               {otherActions.map((action) => (
                 <Button
                   key={action.label}
                   variant="outline"
-                  className="h-12 rounded-xl bg-muted/30 border-border/50 gap-2"
+                  className="h-14 rounded-xl bg-muted/30 border-border/50 gap-2 text-base active:scale-95 transition-transform"
                   onClick={action.onClick}
                 >
-                  <action.icon className="h-4 w-4" />
+                  <action.icon className="h-5 w-5" />
                   {action.label}
                 </Button>
               ))}
             </div>
           )}
 
-          {/* Delete action */}
+          {/* Delete action - LARGER with clear visual */}
           {!isProfileBlock && (
             <Button 
               variant={confirmDelete ? "destructive" : "outline"}
               className={cn(
-                "w-full h-12 rounded-xl gap-2 transition-all",
+                "w-full h-14 rounded-xl gap-3 transition-all text-base font-semibold active:scale-95",
                 !confirmDelete && "text-destructive border-destructive/30 hover:bg-destructive/10"
               )}
               onClick={handleDelete}
             >
-              <Trash2 className="h-4 w-4" />
+              <div className={cn(
+                "h-9 w-9 rounded-lg flex items-center justify-center",
+                confirmDelete ? "bg-white/20" : "bg-destructive/10"
+              )}>
+                <Trash2 className="h-5 w-5" />
+              </div>
               {confirmDelete 
                 ? t('blockActions.confirmDelete', 'Подтвердить удаление') 
                 : t('blockActions.delete', 'Удалить блок')
