@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, X, ExternalLink } from 'lucide-react';
+import { ShoppingCart, X, ExternalLink, Coins, MessageCircle } from 'lucide-react';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { ProductBlock as ProductBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
@@ -18,21 +18,61 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/hooks/useAuth';
+import { useTokens } from '@/hooks/useTokens';
+import { redirectToTokenPurchase } from '@/lib/token-purchase-helper';
+import { toast } from 'sonner';
 
 interface ProductBlockProps {
   block: ProductBlockType;
 }
 
+// WhatsApp number for purchases (will be replaced with RoboKassa later)
+const WHATSAPP_PURCHASE_NUMBER = '77001234567';
+
 export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
   const { t, i18n } = useTranslation();
   const isMobile = useIsMobile();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isPurchasing, setIsPurchasing] = useState(false);
+  const { user } = useAuth();
+  const tokens = useTokens();
+  
   const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
   const description = getTranslatedString(block.description, i18n.language as SupportedLanguage);
   
-  const handleBuy = () => {
+  // Check if this product uses token payment (price in KZT = tokens)
+  const tokenPrice = block.currency === 'KZT' ? block.price : null;
+  const hasEnoughTokens = tokenPrice ? (tokens.balance?.balance || 0) >= tokenPrice : true;
+  
+  const handleBuy = async () => {
+    // If product has a direct buy link, use it
     if (block.buyLink) {
       window.open(block.buyLink, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    
+    // Token-based purchase (KZT = Linkkon tokens)
+    if (tokenPrice) {
+      if (!user) {
+        toast.error('Необходима авторизация для покупки');
+        return;
+      }
+      
+      if (!hasEnoughTokens) {
+        // Redirect to WhatsApp for token purchase
+        const deficit = tokenPrice - (tokens.balance?.balance || 0);
+        toast.info(`Недостаточно токенов. Нужно еще ${deficit.toFixed(0)} Linkkon.`);
+        redirectToTokenPurchase(deficit, name);
+        return;
+      }
+      
+      // TODO: Process token purchase when RoboKassa is integrated
+      // For now, redirect to WhatsApp
+      const message = encodeURIComponent(
+        `Здравствуйте! Хочу купить "${name}" за ${tokenPrice} Linkkon. Мой ID: ${user.id}`
+      );
+      window.open(`https://wa.me/${WHATSAPP_PURCHASE_NUMBER}?text=${message}`, '_blank');
     }
   };
 
@@ -93,14 +133,32 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
       </div>
       
       {/* Buy Button */}
-      {block.buyLink && (
+      {(block.buyLink || tokenPrice) && (
         <Button 
           onClick={handleBuy}
-          className="w-full h-14 rounded-2xl text-base font-bold gap-2 shadow-lg shadow-primary/20"
+          disabled={isPurchasing}
+          className={cn(
+            "w-full h-14 rounded-2xl text-base font-bold gap-2 shadow-lg",
+            !hasEnoughTokens && tokenPrice && "bg-gradient-to-r from-green-500 to-emerald-600 shadow-green-500/20"
+          )}
         >
-          <ShoppingCart className="h-5 w-5" />
-          {t('actions.buy', 'Купить')}
-          <ExternalLink className="h-4 w-4 ml-auto opacity-60" />
+          {!hasEnoughTokens && tokenPrice ? (
+            <>
+              <MessageCircle className="h-5 w-5" />
+              {t('actions.buyTokens', 'Купить токены')}
+            </>
+          ) : tokenPrice ? (
+            <>
+              <Coins className="h-5 w-5" />
+              {t('actions.buyForTokens', 'Купить за')} {tokenPrice} Linkkon
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-5 w-5" />
+              {t('actions.buy', 'Купить')}
+              <ExternalLink className="h-4 w-4 ml-auto opacity-60" />
+            </>
+          )}
         </Button>
       )}
     </div>
