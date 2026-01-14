@@ -39,6 +39,8 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useTokens } from '@/hooks/useTokens';
+import { redirectToTokenPurchase } from '@/lib/token-purchase-helper';
 import type { Block } from '@/types/page';
 import { createBlock as createBaseBlock } from '@/lib/block-factory';
 import { TemplatePreviewCard } from '@/components/templates/TemplatePreviewCard';
@@ -93,8 +95,10 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
 }: TemplateMarketplaceProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { balance, purchaseMarketplaceItem, refresh: refreshBalance } = useTokens();
   const [templates, setTemplates] = useState<UserTemplate[]>([]);
   const [loading, setLoading] = useState(true);
+  const [purchasing, setPurchasing] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [authorQuery, setAuthorQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -194,28 +198,34 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
       return;
     }
 
+    const price = template.price || 0;
+    const currentBalance = balance?.balance || 0;
+
+    // Check if user has enough tokens
+    if (currentBalance < price) {
+      const deficit = price - currentBalance;
+      toast.info(`Недостаточно токенов. Нужно еще ${deficit.toFixed(0)} Linkkon.`);
+      redirectToTokenPurchase(deficit, template.name);
+      return;
+    }
+
+    setPurchasing(template.id);
     try {
-      const { data, error } = await supabase.rpc('purchase_template', { 
-        p_template_id: template.id 
-      });
+      const success = await purchaseMarketplaceItem(
+        template.user_id,
+        'template',
+        template.id,
+        price,
+        `Покупка шаблона: ${template.name}`
+      );
 
-      if (error) throw error;
-
-      const result = data as { success?: boolean; already_purchased?: boolean; error?: string } | null;
-      if (result?.success) {
-        if (result.already_purchased) {
-          toast.info(t('templates.alreadyPurchased', 'Вы уже приобрели этот шаблон'));
-        } else {
-          toast.success(t('templates.purchased', 'Шаблон приобретён!'));
-          setPurchasedTemplates(prev => [...prev, template.id]);
-        }
+      if (success) {
+        setPurchasedTemplates(prev => [...prev, template.id]);
+        refreshBalance();
         applyTemplate(template);
-      } else {
-        toast.error(result?.error || t('templates.purchaseError', 'Ошибка покупки'));
       }
-    } catch (error) {
-      console.error('Purchase error:', error);
-      toast.error(t('templates.purchaseError', 'Ошибка покупки'));
+    } finally {
+      setPurchasing(null);
     }
   };
 
@@ -288,10 +298,17 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[90vh] p-0 overflow-hidden">
         <DialogHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
-          <DialogTitle className="flex items-center gap-2 text-base sm:text-xl">
-            <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
-            {t('templates.marketplace', 'Маркетплейс шаблонов')}
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-xl">
+              <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+              {t('templates.marketplace', 'Маркетплейс шаблонов')}
+            </DialogTitle>
+            {balance && (
+              <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 text-xs sm:text-sm">
+                {balance.balance.toFixed(0)} Linkkon
+              </Badge>
+            )}
+          </div>
           <DialogDescription className="text-xs sm:text-sm">
             {t('templates.marketplaceDesc', 'Шаблоны от сообщества — готовые к использованию')}
           </DialogDescription>
@@ -453,10 +470,21 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
 
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
-                        <Button variant="secondary" size="sm" className="text-xs sm:text-sm w-full max-w-[120px]">
-                          <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          <span className="hidden sm:inline">{t('templates.apply', 'Применить')}</span>
-                          <span className="sm:hidden">👁</span>
+                        <Button 
+                          variant="secondary" 
+                          size="sm" 
+                          className="text-xs sm:text-sm w-full max-w-[120px]"
+                          disabled={purchasing === template.id}
+                        >
+                          {purchasing === template.id ? (
+                            <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                          ) : (
+                            <>
+                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                              <span className="hidden sm:inline">{t('templates.apply', 'Применить')}</span>
+                              <span className="sm:hidden">👁</span>
+                            </>
+                          )}
                         </Button>
                         
                         {/* Quick stats on hover */}

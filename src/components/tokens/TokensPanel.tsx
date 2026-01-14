@@ -208,35 +208,40 @@ export function TokensPanel({ open, onOpenChange }: TokensPanelProps) {
             </div>
           </Card>
 
-          {/* What you can buy - Coming Soon */}
+          {/* What you can buy */}
           <Card className="p-4 bg-card/60 border-border/30">
             <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
               <ShoppingBag className="h-4 w-4 text-emerald-500" />
               На что потратить
-              <Badge variant="outline" className="text-xs ml-auto">
-                Скоро
-              </Badge>
             </h4>
-            <div className="space-y-2 text-sm opacity-70">
+            <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <Crown className="h-4 w-4 text-violet-500" />
                 <span className="text-muted-foreground">Premium подписка</span>
-                <CheckCircle2 className="h-3 w-3 text-green-500 ml-auto" />
+                <Badge variant="secondary" className="text-xs ml-auto bg-green-500/20 text-green-600">
+                  100 / день
+                </Badge>
               </div>
               <div className="flex items-center gap-2">
                 <LayoutTemplate className="h-4 w-4 text-blue-500" />
                 <span className="text-muted-foreground">Шаблоны страниц</span>
-                <Clock className="h-3 w-3 text-muted-foreground ml-auto" />
+                <Badge variant="secondary" className="text-xs ml-auto bg-green-500/20 text-green-600">
+                  Активно
+                </Badge>
               </div>
               <div className="flex items-center gap-2">
                 <ShoppingBag className="h-4 w-4 text-orange-500" />
                 <span className="text-muted-foreground">Товары пользователей</span>
-                <Clock className="h-3 w-3 text-muted-foreground ml-auto" />
+                <Badge variant="secondary" className="text-xs ml-auto bg-green-500/20 text-green-600">
+                  Активно
+                </Badge>
               </div>
               <div className="flex items-center gap-2">
                 <Lock className="h-4 w-4 text-pink-500" />
                 <span className="text-muted-foreground">Платные блоки</span>
-                <Clock className="h-3 w-3 text-muted-foreground ml-auto" />
+                <Badge variant="secondary" className="text-xs ml-auto bg-green-500/20 text-green-600">
+                  Активно
+                </Badge>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-3">
