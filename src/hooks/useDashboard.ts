@@ -47,18 +47,12 @@ export function useDashboard() {
 
   // Token economy
   const tokens = useTokens();
-  const dailyVisitClaimedRef = useRef(false);
 
   // User profile
   const userProfile = useUserProfile(user?.id);
 
-  // Claim daily visit tokens on first load
-  useEffect(() => {
-    if (user?.id && !dailyVisitClaimedRef.current && !tokens.loading) {
-      dailyVisitClaimedRef.current = true;
-      tokens.claimDailyTokens('daily_visit');
-    }
-  }, [user?.id, tokens.loading, tokens.claimDailyTokens]);
+  // NOTE: Daily visit tokens are claimed via useDailyQuests (daily_visit quest)
+  // Do NOT claim here to avoid double rewards
 
   // Check achievements when page data or profile changes
   const lastCheckedRef = useRef<string>('');

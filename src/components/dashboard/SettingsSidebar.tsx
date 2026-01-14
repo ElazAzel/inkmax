@@ -167,7 +167,7 @@ export function SettingsSidebar({
   };
 
   return (
-    <div className="fixed left-4 top-20 bottom-4 w-80 bg-card/50 backdrop-blur-2xl border border-border/30 rounded-2xl shadow-glass-lg z-40 overflow-y-auto hidden md:block">
+    <div className="fixed left-4 top-4 bottom-4 w-80 bg-card/50 backdrop-blur-2xl border border-border/30 rounded-2xl shadow-glass-lg z-40 overflow-y-auto hidden md:block mt-16">
       <div className="p-4 space-y-4">
         {/* Header with Close and Tabs */}
         <div className="flex items-center justify-between">
