@@ -12,10 +12,14 @@ import {
   Zap,
   Star,
   Clock,
-  Shield
+  Shield,
+  Coins,
+  MessageCircle
 } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
+import { useTokens } from '@/hooks/useTokens';
+import { redirectToTokenPurchase } from '@/lib/token-purchase-helper';
 import { toast } from 'sonner';
 
 type BillingPeriod = 3 | 6 | 12;
@@ -24,6 +28,7 @@ export default function Pricing() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { isPremium, tier, isLoading } = usePremiumStatus();
+  const { balance, canAffordPremium, premiumCost, buyPremiumDay, converting } = useTokens();
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>(12);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   
@@ -321,6 +326,36 @@ export default function Pricing() {
             );
           })}
         </div>
+
+        {/* Token Purchase Section */}
+        <Card className="max-w-lg mx-auto mb-12 p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/30">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2">
+              <Coins className="h-6 w-6 text-amber-500" />
+              <h3 className="text-xl font-bold">Или платите Linkkon токенами</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              100 Linkkon = 1 день Premium. Ваш баланс: <span className="font-bold text-amber-500">{balance?.balance?.toFixed(0) || 0}</span> токенов
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                onClick={buyPremiumDay}
+                disabled={!canAffordPremium || converting}
+                className="bg-gradient-to-r from-violet-500 to-purple-600"
+              >
+                <Crown className="h-4 w-4 mr-2" />
+                {converting ? 'Конвертация...' : `Купить 1 день за ${premiumCost} Linkkon`}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => redirectToTokenPurchase(100, 'Premium')}
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Купить токены
+              </Button>
+            </div>
+          </div>
+        </Card>
 
         {/* Trust Section */}
         <div className="text-center py-8 border-t border-border/50">

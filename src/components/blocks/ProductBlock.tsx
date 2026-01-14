@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, X, ExternalLink, Coins, MessageCircle } from 'lucide-react';
+import { ShoppingCart, ExternalLink, Coins, MessageCircle, Loader2 } from 'lucide-react';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { ProductBlock as ProductBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
@@ -27,8 +27,6 @@ interface ProductBlockProps {
   block: ProductBlockType;
 }
 
-// WhatsApp number for purchases (will be replaced with RoboKassa later)
-const WHATSAPP_PURCHASE_NUMBER = '77001234567';
 
 export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
   const { t, i18n } = useTranslation();
@@ -67,12 +65,25 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
         return;
       }
       
-      // TODO: Process token purchase when RoboKassa is integrated
-      // For now, redirect to WhatsApp
-      const message = encodeURIComponent(
-        `Здравствуйте! Хочу купить "${name}" за ${tokenPrice} Linkkon. Мой ID: ${user.id}`
-      );
-      window.open(`https://wa.me/${WHATSAPP_PURCHASE_NUMBER}?text=${message}`, '_blank');
+      // Process token purchase
+      setIsPurchasing(true);
+      try {
+        const success = await tokens.purchaseMarketplaceItem(
+          block.id ? block.id.split('-')[0] : null, // seller id from block owner
+          'product',
+          block.id || `product-${Date.now()}`,
+          tokenPrice,
+          `Покупка товара: ${name}`
+        );
+        
+        if (success) {
+          toast.success(`🎉 Вы успешно приобрели "${name}"!`);
+          tokens.refresh();
+          setIsDetailOpen(false);
+        }
+      } finally {
+        setIsPurchasing(false);
+      }
     }
   };
 
@@ -142,7 +153,12 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
             !hasEnoughTokens && tokenPrice && "bg-gradient-to-r from-green-500 to-emerald-600 shadow-green-500/20"
           )}
         >
-          {!hasEnoughTokens && tokenPrice ? (
+          {isPurchasing ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Покупка...
+            </>
+          ) : !hasEnoughTokens && tokenPrice ? (
             <>
               <MessageCircle className="h-5 w-5" />
               {t('actions.buyTokens', 'Купить токены')}

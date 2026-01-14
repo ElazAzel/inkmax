@@ -6,6 +6,7 @@ import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 import { useAnalytics } from '@/hooks/useAnalyticsTracking';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { useTranslation } from 'react-i18next';
+import { PaidBlockWrapper } from '@/components/blocks/PaidBlockWrapper';
 
 // Helper function to check if block should be visible based on schedule
 function isBlockVisible(block: Block): boolean {
@@ -105,9 +106,16 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
 
   // Wrapper component for all blocks - tracks clicks for interactive ones
   const TrackableWrapper = ({ children, trackClicks = false }: { children: React.ReactNode; trackClicks?: boolean }) => (
-    <div className={animationClass} style={animationStyle} onClick={trackClicks ? handleClick : undefined}>
-      {children}
-    </div>
+    <PaidBlockWrapper 
+      blockId={block.id} 
+      blockStyle={block.blockStyle} 
+      pageOwnerId={pageOwnerId}
+      isPreview={isPreview}
+    >
+      <div className={animationClass} style={animationStyle} onClick={trackClicks ? handleClick : undefined}>
+        {children}
+      </div>
+    </PaidBlockWrapper>
   );
 
   // For blocks that need click tracking passed as prop
