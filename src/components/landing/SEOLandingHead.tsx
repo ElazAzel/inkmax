@@ -11,10 +11,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
   useEffect(() => {
     const isRussian = currentLanguage === 'ru' || currentLanguage === 'kk';
     
-    // Optimized titles with primary keywords first
+    // Clear, product-focused title with primary benefit
     const title = isRussian
-      ? 'LinkMAX — Бесплатный конструктор мультиссылок | Linktree и Taplink альтернатива'
-      : 'LinkMAX — Free Link in Bio Tool | Best Linktree & Taplink Alternative 2026';
+      ? 'lnkmx - AI-страница за 2 минуты | Бесплатная альтернатива Taplink и Linktree'
+      : 'lnkmx - AI Bio Page in 2 Minutes | Free Linktree & Taplink Alternative';
     document.title = title;
 
     // Helper to update or create meta tag
@@ -44,16 +44,16 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       link.href = href;
     };
 
-    // Optimized meta description with competitor keywords and value propositions
+    // Clear meta description: what + for whom + result
     const description = isRussian
-      ? 'Бесплатный конструктор мультиссылок для Instagram, TikTok, Telegram. Лучшая альтернатива Linktree и Taplink без комиссий. AI-генерация страницы за 2 минуты. 20+ блоков: ссылки, товары, формы, аналитика, CRM. Создай link in bio бесплатно!'
-      : 'Free link in bio builder for Instagram, TikTok, Telegram. Best Linktree & Taplink alternative with 0% commission. AI generates your bio page in 2 minutes. 20+ blocks: links, products, forms, analytics, CRM. Create your bio link free!';
+      ? 'Создай сайт-визитку за 2 минуты с AI. Для экспертов, бьюти-мастеров и малого бизнеса. Заявки в Telegram, мини-CRM, аналитика. Бесплатная альтернатива Taplink и Linktree.'
+      : 'Create your bio page in 2 minutes with AI. For experts, freelancers and small business. Get leads to Telegram, mini-CRM, analytics. Free Linktree & Taplink alternative.';
     setMetaTag('description', description);
 
     // Extensive keywords targeting search queries and competitors
     const keywords = isRussian
-      ? 'link in bio, линк в био, мультиссылка, страница ссылок, linktree альтернатива, taplink аналог, taplink бесплатно, linktree бесплатно, конструктор визиток, мини лендинг, ссылка в профиле, лендинг для instagram, landing page instagram, био ссылка, multilink, визитка онлайн, landing page бесплатно, сайт визитка, микролендинг, страница instagram, ссылка в шапке профиля, hipolink аналог, beacons альтернатива, lnk.bio аналог, shorby альтернатива, контакто аналог'
-      : 'link in bio, bio link, linktree alternative, taplink alternative, free linktree, free taplink, bio page builder, multilink, instagram landing page, mini website, profile link, business card website, landing page free, bio link generator, link in bio tool, social media links, all in one link, one link for all, creator tools, influencer tools, beacons alternative, lnk.bio alternative, shorby alternative, campsite alternative, milkshake alternative, carrd alternative, stan store alternative';
+      ? 'link in bio, линк в био, мультиссылка, страница ссылок, linktree альтернатива, taplink аналог, taplink бесплатно, linktree бесплатно, конструктор визиток, мини лендинг, ссылка в профиле, лендинг для instagram, bio ссылка, multilink, визитка онлайн, сайт визитка, сайт за 2 минуты, AI страница'
+      : 'link in bio, bio link, linktree alternative, taplink alternative, free linktree, free taplink, bio page builder, multilink, instagram landing page, mini website, profile link, AI bio page, 2 minute website';
     setMetaTag('keywords', keywords);
 
     // Enhanced robots directives
@@ -61,10 +61,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     setMetaTag('googlebot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     setMetaTag('bingbot', 'index, follow');
 
-    // Author and publisher
-    setMetaTag('author', 'LinkMAX');
-    setMetaTag('publisher', 'LinkMAX');
-    setMetaTag('application-name', 'LinkMAX');
+    // Author and publisher - use lnkmx branding
+    setMetaTag('author', 'lnkmx');
+    setMetaTag('publisher', 'lnkmx');
+    setMetaTag('application-name', 'lnkmx');
     
     // Additional SEO meta tags
     setMetaTag('theme-color', '#0080ff');
@@ -72,7 +72,19 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     setMetaTag('mobile-web-app-capable', 'yes');
     setMetaTag('apple-mobile-web-app-capable', 'yes');
     setMetaTag('apple-mobile-web-app-status-bar-style', 'default');
-    setMetaTag('apple-mobile-web-app-title', 'LinkMAX');
+    setMetaTag('apple-mobile-web-app-title', 'lnkmx');
+
+    // Font preload for performance
+    const preloadFont = document.querySelector('link[rel="preload"][as="font"]');
+    if (!preloadFont) {
+      const fontLink = document.createElement('link');
+      fontLink.rel = 'preload';
+      fontLink.href = 'https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2';
+      fontLink.as = 'font';
+      fontLink.type = 'font/woff2';
+      fontLink.crossOrigin = 'anonymous';
+      document.head.appendChild(fontLink);
+    }
 
     // Canonical
     setLinkTag('canonical', 'https://lnkmx.my/');
@@ -91,7 +103,7 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     setMetaTag('og:url', 'https://lnkmx.my/', true);
     setMetaTag('og:title', title, true);
     setMetaTag('og:description', description, true);
-    setMetaTag('og:site_name', 'LinkMAX - Link in Bio Builder', true);
+    setMetaTag('og:site_name', 'lnkmx - AI Bio Page Builder', true);
     setMetaTag('og:locale', isRussian ? 'ru_RU' : 'en_US', true);
     setMetaTag('og:locale:alternate', isRussian ? 'en_US' : 'ru_RU', true);
 
@@ -99,8 +111,8 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     setMetaTag('twitter:card', 'summary_large_image');
     setMetaTag('twitter:title', title);
     setMetaTag('twitter:description', description);
-    setMetaTag('twitter:site', '@LinkMAX');
-    setMetaTag('twitter:creator', '@LinkMAX');
+    setMetaTag('twitter:site', '@lnkmx_app');
+    setMetaTag('twitter:creator', '@lnkmx_app');
 
     // JSON-LD Structured Data
     const existingJsonLd = document.querySelectorAll('script[type="application/ld+json"].seo-schema');
@@ -110,14 +122,14 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const softwareAppSchema = {
       '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
-      name: 'LinkMAX',
-      alternateName: ['LinkMAX Bio', 'LinkMAX Link in Bio', 'LNKMX'],
+      name: 'lnkmx',
+      alternateName: ['lnkmx.my', 'LNKMX'],
       applicationCategory: 'BusinessApplication',
       applicationSubCategory: 'Link in Bio Tool',
       operatingSystem: 'Web, iOS, Android',
       description: isRussian
-        ? 'Бесплатный AI-конструктор мультиссылок и страниц link-in-bio. Лучшая альтернатива Linktree и Taplink для экспертов, фрилансеров и бизнеса. Создайте профессиональную страницу ссылок за 2 минуты.'
-        : 'Free AI-powered link-in-bio page builder. Best Linktree and Taplink alternative for creators, freelancers, and businesses. Create a professional bio page in 2 minutes.',
+        ? 'Бесплатный AI-конструктор страниц link-in-bio. Лучшая альтернатива Linktree и Taplink для экспертов, фрилансеров и бизнеса. Создайте страницу за 2 минуты.'
+        : 'Free AI-powered link-in-bio page builder. Best Linktree and Taplink alternative for creators, freelancers, and businesses. Create a page in 2 minutes.',
       url: 'https://lnkmx.my/',
       downloadUrl: 'https://lnkmx.my/',
       screenshot: 'https://lnkmx.my/screenshot-desktop.png',
@@ -127,66 +139,37 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
           name: 'Free',
           price: '0',
           priceCurrency: 'USD',
-          description: isRussian ? 'Бесплатный тариф навсегда — 10 блоков, аналитика' : 'Free forever — 10 blocks, analytics',
+          description: isRussian ? 'Бесплатно навсегда - 6 блоков, аналитика' : 'Free forever - 6 blocks, analytics',
           availability: 'https://schema.org/InStock'
         },
         {
           '@type': 'Offer',
           name: 'Pro',
-          price: '3.15',
+          price: '2.61',
           priceCurrency: 'USD',
           billingIncrement: 'P1M',
-          description: isRussian ? 'Для профессионалов — безлимитные блоки, AI, CRM' : 'For professionals — unlimited blocks, AI, CRM',
-          availability: 'https://schema.org/InStock'
-        },
-        {
-          '@type': 'Offer',
-          name: 'Business',
-          price: '7.50',
-          priceCurrency: 'USD',
-          billingIncrement: 'P1M',
-          description: isRussian ? 'Для команд — командная работа, приоритетная поддержка' : 'For teams — team collaboration, priority support',
+          description: isRussian ? 'Для профессионалов - безлимит блоков, AI, CRM' : 'For professionals - unlimited blocks, AI, CRM',
           availability: 'https://schema.org/InStock'
         }
       ],
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: '4.9',
-        ratingCount: '2847',
+        ratingCount: '1200',
         bestRating: '5',
         worstRating: '1'
       },
-      review: [
-        {
-          '@type': 'Review',
-          reviewRating: {
-            '@type': 'Rating',
-            ratingValue: '5',
-            bestRating: '5'
-          },
-          author: {
-            '@type': 'Person',
-            name: isRussian ? 'Анна' : 'Anna'
-          },
-          reviewBody: isRussian 
-            ? 'Перешла с Taplink — здесь больше возможностей и дешевле!'
-            : 'Switched from Taplink — more features and cheaper!'
-        }
-      ],
       featureList: isRussian
-        ? ['AI-генерация контента', 'Аналитика кликов', 'CRM система', '20+ типов блоков', 'Кастомные домены', 'Формы и заявки', 'Интеграция с мессенджерами', '0% комиссии', 'Telegram уведомления']
-        : ['AI content generation', 'Click analytics', 'Built-in CRM', '20+ block types', 'Custom domains', 'Lead forms', 'Messenger integration', '0% commission', 'Telegram notifications'],
-      sameAs: [
-        'https://twitter.com/LinkMAX',
-        'https://t.me/linkmax'
-      ]
+        ? ['AI-генерация страницы', 'Аналитика кликов', 'CRM система', '20+ типов блоков', 'Формы и заявки', 'Telegram уведомления']
+        : ['AI page generation', 'Click analytics', 'Built-in CRM', '20+ block types', 'Lead forms', 'Telegram notifications'],
+      sameAs: ['https://t.me/lnkmx_app']
     };
 
     // Organization Schema
     const organizationSchema = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'LinkMAX',
+      name: 'lnkmx',
       alternateName: 'LNKMX',
       url: 'https://lnkmx.my/',
       logo: {
@@ -195,31 +178,27 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
         width: 512,
         height: 512
       },
-      sameAs: [
-        'https://twitter.com/LinkMAX',
-        'https://t.me/linkmax',
-        'https://instagram.com/linkmax.app'
-      ],
+      sameAs: ['https://t.me/lnkmx_app'],
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'customer support',
-        email: 'support@lnkmx.my',
+        email: 'admin@lnkmx.my',
         availableLanguage: ['Russian', 'English', 'Kazakh']
       },
       foundingDate: '2024',
-      slogan: isRussian ? 'Создай link in bio за 2 минуты с AI' : 'Create your link in bio in 2 minutes with AI'
+      slogan: isRussian ? 'AI-страница за 2 минуты' : 'AI bio page in 2 minutes'
     };
 
     // WebSite Schema with SearchAction
     const websiteSchema = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'LinkMAX',
-      alternateName: 'LinkMAX - Link in Bio Builder',
+      name: 'lnkmx',
+      alternateName: 'lnkmx - AI Bio Page Builder',
       url: 'https://lnkmx.my/',
       description: isRussian
-        ? 'Бесплатный конструктор мультиссылок и страниц link-in-bio'
-        : 'Free link in bio page builder',
+        ? 'Бесплатный AI-конструктор страниц link-in-bio'
+        : 'Free AI bio page builder',
       potentialAction: {
         '@type': 'SearchAction',
         target: {
@@ -240,19 +219,19 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       url: 'https://lnkmx.my/',
       isPartOf: {
         '@type': 'WebSite',
-        name: 'LinkMAX',
+        name: 'lnkmx',
         url: 'https://lnkmx.my/'
       },
       about: {
         '@type': 'Thing',
         name: 'Link in Bio Tools',
         description: isRussian
-          ? 'Инструменты для создания страниц мультиссылок'
+          ? 'Инструменты для создания страниц link-in-bio'
           : 'Tools for creating link in bio pages'
       },
       mainEntity: {
         '@type': 'SoftwareApplication',
-        name: 'LinkMAX'
+        name: 'lnkmx'
       },
       breadcrumb: {
         '@type': 'BreadcrumbList',
@@ -260,7 +239,7 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
           {
             '@type': 'ListItem',
             position: 1,
-            name: 'LinkMAX',
+            name: 'lnkmx',
             item: 'https://lnkmx.my/'
           }
         ]
@@ -271,30 +250,30 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const productSchema = {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      name: 'LinkMAX Pro',
+      name: 'lnkmx Pro',
       description: isRussian
-        ? 'Профессиональный план LinkMAX с AI-генерацией, CRM и безлимитными блоками'
-        : 'LinkMAX Pro plan with AI generation, CRM and unlimited blocks',
+        ? 'Профессиональный план lnkmx с AI-генерацией, CRM и безлимитными блоками'
+        : 'lnkmx Pro plan with AI generation, CRM and unlimited blocks',
       brand: {
         '@type': 'Brand',
-        name: 'LinkMAX'
+        name: 'lnkmx'
       },
       offers: {
         '@type': 'Offer',
         url: 'https://lnkmx.my/pricing',
-        price: '3.15',
+        price: '2.61',
         priceCurrency: 'USD',
         priceValidUntil: '2026-12-31',
         availability: 'https://schema.org/InStock',
         seller: {
           '@type': 'Organization',
-          name: 'LinkMAX'
+          name: 'lnkmx'
         }
       },
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: '4.9',
-        reviewCount: '2847'
+        reviewCount: '1200'
       }
     };
 
@@ -345,22 +324,22 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       mainEntity: [
         {
           '@type': 'Question',
-          name: isRussian ? 'Чем LinkMAX лучше Linktree?' : 'Why is LinkMAX better than Linktree?',
+          name: isRussian ? 'Чем lnkmx лучше Linktree?' : 'Why is lnkmx better than Linktree?',
           acceptedAnswer: { 
             '@type': 'Answer', 
             text: isRussian 
-              ? 'LinkMAX предлагает AI-генерацию контента, встроенную CRM, 20+ типов блоков и 0% комиссии — все это бесплатно. В Linktree эти функции доступны только на платных тарифах.'
-              : 'LinkMAX offers AI content generation, built-in CRM, 20+ block types and 0% commission — all for free. Linktree charges for these features on paid plans.'
+              ? 'lnkmx предлагает AI-генерацию страницы, встроенную CRM, 20+ типов блоков - все бесплатно. В Linktree эти функции только на платных тарифах.'
+              : 'lnkmx offers AI page generation, built-in CRM, 20+ block types - all for free. Linktree charges for these features on paid plans.'
           }
         },
         {
           '@type': 'Question',
-          name: isRussian ? 'Чем LinkMAX лучше Taplink?' : 'Why is LinkMAX better than Taplink?',
+          name: isRussian ? 'Чем lnkmx лучше Taplink?' : 'Why is lnkmx better than Taplink?',
           acceptedAnswer: { 
             '@type': 'Answer', 
             text: isRussian 
-              ? 'LinkMAX дешевле Taplink при большем функционале: AI-генерация страницы за 2 минуты, аналитика, CRM, Telegram-уведомления. Pro тариф всего $3.15/месяц против $5+ у Taplink.'
-              : 'LinkMAX is cheaper than Taplink with more features: AI page generation in 2 minutes, analytics, CRM, Telegram notifications. Pro plan is just $3.15/month vs $5+ for Taplink.'
+              ? 'lnkmx дешевле Taplink: AI-генерация страницы за 2 минуты, аналитика, CRM, Telegram-уведомления. Pro тариф всего 2610₸/месяц против 5000+₸ у Taplink.'
+              : 'lnkmx is cheaper than Taplink: AI page generation in 2 minutes, analytics, CRM, Telegram notifications. Pro plan is just $2.61/month vs $5+ for Taplink.'
           }
         },
         {
@@ -440,10 +419,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const itemListSchema = {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: isRussian ? 'Возможности LinkMAX' : 'LinkMAX Features',
+      name: isRussian ? 'Возможности lnkmx' : 'lnkmx Features',
       description: isRussian 
-        ? 'Полный список возможностей конструктора link in bio LinkMAX'
-        : 'Complete list of LinkMAX link in bio builder features',
+        ? 'Полный список возможностей конструктора link in bio lnkmx'
+        : 'Complete list of lnkmx link in bio builder features',
       numberOfItems: 10,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: isRussian ? 'AI-генерация страницы' : 'AI page generation' },
@@ -463,8 +442,8 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const serviceSchema = {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      serviceType: isRussian ? 'Конструктор мультиссылок' : 'Link in Bio Builder',
-      name: 'LinkMAX',
+      serviceType: isRussian ? 'Конструктор страниц link-in-bio' : 'Link in Bio Builder',
+      name: 'lnkmx',
       description: isRussian
         ? 'Профессиональный сервис создания страниц link-in-bio с AI-генерацией, аналитикой и CRM'
         : 'Professional link-in-bio page builder service with AI generation, analytics and CRM',

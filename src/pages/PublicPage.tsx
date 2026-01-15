@@ -80,7 +80,7 @@ export default function PublicPage() {
     
     if (navigator.share) {
       navigator.share({
-        title: pageData?.seo.title || 'Check out my LinkMAX',
+        title: pageData?.seo.title || pageData?.seo.description || 'Check out my page',
         url: currentUrl,
       }).catch(() => {
         navigator.clipboard.writeText(currentUrl);
@@ -185,7 +185,7 @@ export default function PublicPage() {
                 href="/"
                 className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
               >
-                Create your own LinkMAX
+                lnkmx.my
               </a>
             </div>
           )}
