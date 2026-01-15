@@ -49,12 +49,14 @@ export default function Dashboard() {
   const { canUseCustomPageBackground } = useFreemiumLimits();
   
   // Editor history for undo/redo
-  const editorHistory = useEditorHistory({
-    blocks: dashboard.pageData?.blocks || [],
-    onBlocksChange: (blocks) => {
-      dashboard.updatePageDataPartial({ blocks });
-    },
-  });
+  const editorHistory = useEditorHistory(
+    dashboard.pageData?.blocks || [],
+    {
+      onStateChange: (blocks) => {
+        dashboard.updatePageDataPartial({ blocks });
+      },
+    }
+  );
 
   // Current tab from URL params
   const currentTab = (searchParams.get('tab') as TabId) || 'editor';

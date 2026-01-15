@@ -26,10 +26,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import type { Block } from '@/types/page';
-
-interface EditorHistoryType {
-  pushAction: (action: any) => void;
-}
+import type { EditorHistoryType } from '@/hooks/useEditorHistory';
 
 interface AnalyticsTabProps {
   pageId: string;

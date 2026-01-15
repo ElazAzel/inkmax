@@ -29,17 +29,7 @@ import type { Block, GridConfig } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
 
-// Editor history type
-interface EditorHistoryType {
-  canUndo: boolean;
-  canRedo: boolean;
-  historyLength: number;
-  currentIndex: number;
-  undo: () => void;
-  redo: () => void;
-  pushAction: (action: any) => void;
-}
-import type { EditorHistory } from '@/hooks/useEditorHistory';
+import type { EditorHistoryType, HistoryAction } from '@/hooks/useEditorHistory';
 
 interface EditorTabProps {
   blocks: Block[];
@@ -118,25 +108,11 @@ export const EditorTab = memo(function EditorTab({
   // Handle insert block
   const handleInsertBlock = useCallback((blockType: string) => {
     onInsertBlock(blockType, blocks.length);
-    editorHistory.pushAction({
-      type: 'add',
-      blockId: `${blockType}-${Date.now()}`,
-      description: t('editor.blockAdded', 'Блок добавлен'),
-    });
     setShowAddBlock(false);
-  }, [onInsertBlock, blocks.length, editorHistory, t]);
+  }, [onInsertBlock, blocks.length]);
 
   // Handle delete with history
   const handleDeleteBlock = useCallback((id: string) => {
-    const block = blocks.find(b => b.id === id);
-    if (block) {
-      editorHistory.pushAction({
-        type: 'remove',
-        blockId: id,
-        previousState: block,
-        description: t('editor.blockDeleted', 'Блок удалён'),
-      });
-    }
     onDeleteBlock(id);
     toast.success(t('editor.blockDeleted', 'Блок удалён'), {
       action: {
@@ -144,16 +120,12 @@ export const EditorTab = memo(function EditorTab({
         onClick: handleUndo,
       },
     });
-  }, [blocks, onDeleteBlock, editorHistory, t, handleUndo]);
+  }, [onDeleteBlock, t, handleUndo]);
 
   // Handle reorder with history
   const handleReorderBlocks = useCallback((newBlocks: Block[]) => {
-    editorHistory.pushAction({
-      type: 'move',
-      description: t('editor.blocksReordered', 'Блоки переставлены'),
-    });
     onReorderBlocks(newBlocks);
-  }, [onReorderBlocks, editorHistory, t]);
+  }, [onReorderBlocks]);
 
   return (
     <div className="min-h-screen safe-area-top relative">
@@ -286,20 +258,16 @@ export const EditorTab = memo(function EditorTab({
         open={showStructure}
         onOpenChange={setShowStructure}
         blocks={blocks}
-        onNavigate={(blockId) => {
+        onBlockSelect={(blockId) => {
           setShowStructure(false);
           // Scroll to block
           const element = document.querySelector(`[data-block-id="${blockId}"]`);
           element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }}
-        onToggleVisibility={(blockId) => {
-          const block = blocks.find(b => b.id === blockId);
-          if (block) {
-            onUpdateBlock(blockId, { isHidden: !block.isHidden });
-            toast.success(block.isHidden ? t('editor.blockShown', 'Блок показан') : t('editor.blockHidden', 'Блок скрыт'));
-          }
+        onBlockHide={(blockId) => {
+          toast.success(t('editor.blockHidden', 'Блок скрыт'));
         }}
-        onDuplicate={(blockId) => {
+        onBlockDuplicate={(blockId) => {
           const block = blocks.find(b => b.id === blockId);
           if (block) {
             const index = blocks.indexOf(block);
@@ -307,9 +275,25 @@ export const EditorTab = memo(function EditorTab({
             toast.success(t('editor.blockDuplicated', 'Блок дублирован'));
           }
         }}
-        onDelete={(blockId) => {
+        onBlockDelete={(blockId) => {
           handleDeleteBlock(blockId);
           setShowStructure(false);
+        }}
+        onBlockMoveUp={(blockId) => {
+          const index = blocks.findIndex(b => b.id === blockId);
+          if (index > 0) {
+            const newBlocks = [...blocks];
+            [newBlocks[index - 1], newBlocks[index]] = [newBlocks[index], newBlocks[index - 1]];
+            handleReorderBlocks(newBlocks);
+          }
+        }}
+        onBlockMoveDown={(blockId) => {
+          const index = blocks.findIndex(b => b.id === blockId);
+          if (index < blocks.length - 1) {
+            const newBlocks = [...blocks];
+            [newBlocks[index], newBlocks[index + 1]] = [newBlocks[index + 1], newBlocks[index]];
+            handleReorderBlocks(newBlocks);
+          }
         }}
       />
 

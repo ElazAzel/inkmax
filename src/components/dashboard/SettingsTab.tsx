@@ -40,6 +40,8 @@ import { cn } from '@/lib/utils';
 import type { ProfileBlock } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
+import { getTranslatedString } from '@/lib/i18n-helpers';
+import { useTranslation as useI18nTranslation } from 'react-i18next';
 
 interface SettingsTabProps {
   usernameInput: string;
@@ -125,12 +127,17 @@ function SettingsItem({
 }
 
 export const SettingsTab = memo(function SettingsTab(props: SettingsTabProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [showVerification, setShowVerification] = useState(false);
+  const [showTelegramVerification, setShowTelegramVerification] = useState(false);
 
-  const avatarUrl = props.profileBlock?.avatarUrl;
-  const name = props.profileBlock?.name || t('settings.myPage', 'Моя страница');
+  const avatarUrl = props.profileBlock?.avatar;
+  const rawName = props.profileBlock?.name;
+  const name = rawName 
+    ? getTranslatedString(rawName, i18n.language as any) || t('settings.myPage', 'Моя страница')
+    : t('settings.myPage', 'Моя страница');
+  const displayName = typeof name === 'string' ? name : t('settings.myPage', 'Моя страница');
 
   return (
     <div className="min-h-screen safe-area-top pb-24">
@@ -144,14 +151,14 @@ export const SettingsTab = memo(function SettingsTab(props: SettingsTabProps) {
         <Card className="p-5">
           <div className="flex items-center gap-4 mb-5">
             <Avatar className="h-16 w-16 rounded-2xl border-2 border-border">
-              <AvatarImage src={avatarUrl} alt={name} />
+              <AvatarImage src={avatarUrl || ''} alt={displayName} />
               <AvatarFallback className="rounded-2xl text-xl font-bold bg-primary/10 text-primary">
-                {name.charAt(0)}
+                {displayName.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold truncate">{name}</h2>
+                <h2 className="text-lg font-bold truncate">{displayName}</h2>
                 {props.isPremium && (
                   <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30">
                     <Crown className="h-3 w-3 mr-1" />
@@ -293,8 +300,23 @@ export const SettingsTab = memo(function SettingsTab(props: SettingsTabProps) {
                   onCheckedChange={(checked) => props.onTelegramChange(checked)}
                 />
               </div>
-              {props.telegramEnabled && props.userId && (
-                <TelegramVerification userId={props.userId} />
+              {props.telegramEnabled && showTelegramVerification && (
+                <TelegramVerification 
+                  onVerified={(chatId) => {
+                    props.onTelegramChange(true, chatId);
+                    setShowTelegramVerification(false);
+                  }}
+                  onBack={() => setShowTelegramVerification(false)}
+                />
+              )}
+              {props.telegramEnabled && !showTelegramVerification && !props.telegramChatId && (
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2"
+                  onClick={() => setShowTelegramVerification(true)}
+                >
+                  {t('settings.connectTelegram', 'Подключить Telegram')}
+                </Button>
               )}
             </div>
           </Card>
@@ -360,11 +382,18 @@ export const SettingsTab = memo(function SettingsTab(props: SettingsTabProps) {
       </div>
 
       {/* Verification Panel */}
-      {showVerification && props.userId && (
-        <VerificationPanel
-          userId={props.userId}
-          onClose={() => setShowVerification(false)}
-        />
+      {showVerification && (
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm overflow-auto p-4">
+          <div className="max-w-lg mx-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">{t('settings.verification', 'Верификация')}</h2>
+              <Button variant="ghost" onClick={() => setShowVerification(false)}>
+                ✕
+              </Button>
+            </div>
+            <VerificationPanel />
+          </div>
+        </div>
       )}
     </div>
   );

@@ -53,11 +53,14 @@ export const ProjectsTab = memo(function ProjectsTab({
   const navigate = useNavigate();
 
   const profileBlock = pageData.blocks.find(b => b.type === 'profile');
-  const name = (profileBlock as any)?.name || 'Мой сайт';
-  const avatarUrl = (profileBlock as any)?.avatarUrl || pageData.avatarUrl;
+  const profileData = profileBlock as any;
+  const rawName = profileData?.name || 'Мой сайт';
+  const name = typeof rawName === 'object' ? (rawName.ru || rawName.en || 'Мой сайт') : rawName;
+  const avatarUrl = profileData?.avatar || '';
   const blockCount = pageData.blocks.length;
-  const viewCount = (pageData as any).viewCount || 0;
-  const isPublished = (pageData as any).isPublished;
+  const viewCount = 0; // Will be loaded from analytics
+  const isPublished = pageData.isPremium !== undefined;
+  const slug = pageData.id?.substring(0, 8) || 'mypage';
 
   return (
     <div className="min-h-screen safe-area-top">
@@ -103,7 +106,7 @@ export const ProjectsTab = memo(function ProjectsTab({
                 )}
               </div>
               <p className="text-sm text-muted-foreground">
-                linkmax.lovable.app/{pageData.slug}
+                linkmax.lovable.app/{slug}
               </p>
             </div>
           </div>
@@ -169,7 +172,7 @@ export const ProjectsTab = memo(function ProjectsTab({
             <Button
               variant="outline"
               className="h-12 w-12 rounded-xl p-0"
-              onClick={() => window.open(`/${pageData.slug}`, '_blank')}
+              onClick={() => window.open(`/${slug}`, '_blank')}
             >
               <ExternalLink className="h-4 w-4" />
             </Button>
