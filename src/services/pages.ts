@@ -271,10 +271,13 @@ export async function loadPageBySlug(slug: string): Promise<LoadPageResult> {
     const pageData: PageData = {
       id: page.id,
       userId: page.user_id,
+      slug: page.slug,
       blocks: convertDbBlocksToBlocks(blocks),
       theme: page.theme_settings as unknown as PageTheme,
       seo: page.seo_meta as unknown as PageData['seo'],
       isPremium: blocks.some((b) => b.is_premium),
+      isPublished: page.is_published || false,
+      viewCount: page.view_count || 0,
       editorMode: 'grid',
       gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
       niche: (page as unknown as { niche?: string }).niche || 'other',
@@ -320,10 +323,14 @@ export async function loadUserPage(userId: string): Promise<LoadUserPageResult> 
     const blocks = page.blocks as unknown as DbBlock[];
     const pageData: PageData = {
       id: page.id,
+      userId: page.user_id,
+      slug: page.slug,
       blocks: convertDbBlocksToBlocks(blocks),
       theme: page.theme_settings as unknown as PageTheme,
       seo: page.seo_meta as unknown as PageData['seo'],
       isPremium: blocks.some((b) => b.is_premium),
+      isPublished: page.is_published || false,
+      viewCount: page.view_count || 0,
       editorMode: 'grid',
       gridConfig: (page as unknown as { grid_config?: GridConfig }).grid_config || undefined,
       niche: (page as unknown as { niche?: string }).niche || 'other',

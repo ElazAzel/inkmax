@@ -575,6 +575,7 @@ export interface GridConfig {
 export interface PageData {
   id: string;
   userId?: string;
+  slug?: string;
   blocks: Block[];
   theme: PageTheme;
   seo: {
@@ -583,6 +584,8 @@ export interface PageData {
     keywords: string[];
   };
   isPremium?: boolean;
+  isPublished?: boolean;
+  viewCount?: number;
   metrics?: PageMetrics;
   editorMode?: EditorMode;
   gridConfig?: GridConfig;

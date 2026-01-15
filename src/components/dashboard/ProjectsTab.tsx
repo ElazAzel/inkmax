@@ -58,9 +58,9 @@ export const ProjectsTab = memo(function ProjectsTab({
   const name = typeof rawName === 'object' ? (rawName.ru || rawName.en || 'Мой сайт') : rawName;
   const avatarUrl = profileData?.avatar || '';
   const blockCount = pageData.blocks.length;
-  const viewCount = 0; // Will be loaded from analytics
-  const isPublished = pageData.isPremium !== undefined;
-  const slug = pageData.id?.substring(0, 8) || 'mypage';
+  const viewCount = pageData.viewCount || 0;
+  const isPublished = pageData.isPublished || false;
+  const slug = pageData.slug || 'mypage';
 
   return (
     <div className="min-h-screen safe-area-top">
@@ -106,7 +106,7 @@ export const ProjectsTab = memo(function ProjectsTab({
                 )}
               </div>
               <p className="text-sm text-muted-foreground">
-                linkmax.lovable.app/{slug}
+                lnkmx.my/{slug}
               </p>
             </div>
           </div>
