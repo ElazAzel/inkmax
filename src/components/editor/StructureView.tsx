@@ -4,6 +4,7 @@
  */
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import {
   Sheet,
   SheetContent,
@@ -94,12 +95,33 @@ export const StructureView = memo(function StructureView({
   onBlockMoveDown,
   hiddenBlockIds = new Set(),
 }: StructureViewProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language as SupportedLanguage;
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
 
   const getBlockTitle = (block: Block): string => {
     const content = block as any;
-    return content.title || content.name || content.text?.substring(0, 30) || t(`blocks.${block.type}`, block.type);
+    // Handle multilingual strings properly - check all possible title fields
+    const rawTitle = content.title || content.name || content.text || content.content;
+    
+    // If it's a multilingual object, extract the correct language string
+    if (rawTitle && typeof rawTitle === 'object') {
+      // Check if it's a multilingual object with language keys
+      if ('ru' in rawTitle || 'en' in rawTitle || 'kk' in rawTitle) {
+        const translated = getTranslatedString(rawTitle, currentLang);
+        return translated ? translated.substring(0, 30) : t(`blocks.${block.type}`, block.type);
+      }
+      // If it's some other object, don't render it
+      return t(`blocks.${block.type}`, block.type);
+    }
+    
+    // If it's a string, use it
+    if (typeof rawTitle === 'string' && rawTitle.trim()) {
+      return rawTitle.substring(0, 30);
+    }
+    
+    // Default fallback
+    return t(`blocks.${block.type}`, block.type);
   };
 
   const getBlockIcon = (type: string) => {
@@ -273,7 +295,7 @@ function BlockListItem({
         onClick={() => onSelect(block.id)}
         className="flex-1 text-left min-w-0"
       >
-        <div className="font-semibold truncate">{title}</div>
+        <div className="font-semibold truncate">{typeof title === 'string' ? title : String(title || '')}</div>
         <div className="text-xs text-muted-foreground">
           {t(`blocks.${block.type}`, block.type)}
         </div>
