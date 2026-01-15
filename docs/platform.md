@@ -1,8 +1,8 @@
-# LinkMAX Platform Documentation
+# lnkmx Platform Documentation
 
 ## Platform Overview
 
-LinkMAX is a SaaS platform for creating AI-powered personal mini-websites (link-in-bio pages). Target markets: CIS region (primary), global creator economy (secondary).
+lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in-bio pages). Target markets: CIS region (primary), global creator economy (secondary).
 
 **Website:** https://lnkmx.my  
 **Tech Stack:** React 18, TypeScript, Vite, Tailwind CSS, Supabase (Lovable Cloud)
@@ -22,7 +22,7 @@ LinkMAX is a SaaS platform for creating AI-powered personal mini-websites (link-
 - 5 blocks per page limit
 - 1 AI generation per month
 - Basic blocks only
-- LinkMAX watermark
+- lnkmx watermark
 - Community gallery access
 
 ### Pro Tier
@@ -32,7 +32,6 @@ LinkMAX is a SaaS platform for creating AI-powered personal mini-websites (link-
 - Mini-CRM with Telegram notifications
 - Advanced analytics
 - Custom themes & backgrounds
-- No watermark
 - Priority support
 
 ### Pro Pricing (KZT)
@@ -203,7 +202,7 @@ Governed by laws of Republic of Kazakhstan.
 
 ## Competitive Advantages
 
-- AI-first page generation (2-minute setup)
+- AI-first page generation (1-minute setup)
 - Mobile-primary workspace design
 - Integrated Mini-CRM with Telegram
 - Gamification and social features
