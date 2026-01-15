@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/drawer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { X } from 'lucide-react';
+import { X, Check, ChevronLeft } from 'lucide-react';
 import type { Block } from '@/types/page';
 
 // Lazy load all block editors for code splitting
@@ -84,12 +84,12 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
       onChange: setFormData,
     };
 
-    // Loading fallback for lazy-loaded editors
+    // Loading fallback for lazy-loaded editors - Mobile optimized
     const EditorFallback = () => (
-      <div className="space-y-4">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-24 w-full" />
+      <div className="space-y-5">
+        <Skeleton className="h-14 w-full rounded-2xl" />
+        <Skeleton className="h-14 w-full rounded-2xl" />
+        <Skeleton className="h-32 w-full rounded-2xl" />
       </div>
     );
 
@@ -292,65 +292,67 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
       
       default:
         return (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground p-4">
             {t('blockEditor.notAvailable')}
           </p>
         );
     }
   };
 
-  // Mobile: Clean full-screen Drawer with improved UX
+  // Mobile: Full-screen native app-like drawer
   if (isMobile) {
     return (
       <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DrawerContent className="h-[95vh] max-h-[95vh] bg-background border-t rounded-t-[28px]">
+        <DrawerContent className="h-[96vh] max-h-[96vh] bg-background border-t-0 rounded-t-[32px]">
           <div className="flex flex-col h-full">
             {/* Handle bar for drag */}
-            <div className="flex justify-center pt-2 pb-1">
-              <div className="w-12 h-1.5 rounded-full bg-muted-foreground/30" />
+            <div className="flex justify-center pt-3 pb-2">
+              <div className="w-14 h-1.5 rounded-full bg-muted-foreground/25" />
             </div>
             
-            {/* Clean Header with back button */}
-            <DrawerHeader className="flex-shrink-0 border-b px-4 py-3">
-              <div className="flex items-center gap-3">
+            {/* Header - App-like with back button */}
+            <DrawerHeader className="flex-shrink-0 border-b border-border/10 px-5 py-4">
+              <div className="flex items-center gap-4">
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={onClose} 
-                  className="h-11 w-11 rounded-xl hover:bg-muted/50 active:scale-95 transition-all"
+                  className="h-12 w-12 rounded-2xl hover:bg-muted/50 active:scale-95 transition-all"
                 >
-                  <X className="h-5 w-5" />
+                  <ChevronLeft className="h-6 w-6" />
                 </Button>
                 <div className="flex-1">
-                  <DrawerTitle className="text-lg font-bold">
+                  <DrawerTitle className="text-xl font-black">
                     {t(`blockEditor.${block.type}`)}
                   </DrawerTitle>
-                  <DrawerDescription className="text-xs text-muted-foreground mt-0.5">
-                    {t('blockEditor.mobileHint', 'Отредактируйте содержимое блока')}
+                  <DrawerDescription className="text-sm text-muted-foreground mt-1">
+                    {t('blockEditor.mobileHint', 'Отредактируйте содержимое')}
                   </DrawerDescription>
                 </div>
               </div>
             </DrawerHeader>
             
-            {/* Scrollable Content with better spacing */}
-            <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4 overscroll-contain">
+            {/* Scrollable Content with more padding */}
+            <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5 overscroll-contain">
               {renderEditor()}
             </div>
             
-            {/* Fixed Footer with swipe hint and buttons */}
-            <DrawerFooter className="flex-shrink-0 border-t px-4 py-4 pb-safe bg-background/95 backdrop-blur-xl">
-              <div className="flex gap-3">
+            {/* Fixed Footer - Large touch-friendly buttons */}
+            <DrawerFooter className="flex-shrink-0 border-t border-border/10 px-5 py-5 pb-safe bg-background/98 backdrop-blur-xl">
+              <div className="flex gap-4">
                 <Button 
                   variant="outline" 
                   onClick={onClose} 
-                  className="flex-1 h-13 rounded-xl text-base font-semibold active:scale-[0.98] transition-all"
+                  className="flex-1 h-16 rounded-2xl text-lg font-bold active:scale-[0.98] transition-all border-2"
                 >
+                  <X className="h-5 w-5 mr-2" />
                   {t('editor.cancel', 'Отмена')}
                 </Button>
                 <Button 
                   onClick={handleSave} 
-                  className="flex-1 h-13 rounded-xl text-base font-semibold shadow-lg shadow-primary/25 active:scale-[0.98] transition-all"
+                  className="flex-[2] h-16 rounded-2xl text-lg font-bold shadow-xl shadow-primary/25 active:scale-[0.98] transition-all"
                 >
+                  <Check className="h-5 w-5 mr-2" />
                   {t('editor.save', 'Сохранить')}
                 </Button>
               </div>
@@ -361,12 +363,12 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
     );
   }
 
-  // Desktop: Dialog
+  // Desktop: Dialog with improved styling
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-card/80 backdrop-blur-2xl border border-border/30 shadow-glass-xl rounded-3xl">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-card/95 backdrop-blur-2xl border border-border/20 shadow-2xl rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-2xl font-bold">
             {t(`blockEditor.${block.type}`)}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
@@ -374,15 +376,15 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
           </DialogDescription>
         </DialogHeader>
         
-        <div className="py-4">
+        <div className="py-6">
           {renderEditor()}
         </div>
 
-        <DialogFooter className="gap-3">
-          <Button variant="outline" onClick={onClose} className="rounded-xl backdrop-blur-xl">
+        <DialogFooter className="gap-4">
+          <Button variant="outline" onClick={onClose} className="rounded-2xl h-12 px-6">
             {t('editor.cancel')}
           </Button>
-          <Button onClick={handleSave} className="rounded-xl shadow-glass">
+          <Button onClick={handleSave} className="rounded-2xl h-12 px-8 shadow-lg">
             {t('editor.save')}
           </Button>
         </DialogFooter>
