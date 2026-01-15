@@ -30,7 +30,7 @@ import { Leaderboard } from '@/components/gallery/Leaderboard';
 import { TopReferrers } from '@/components/gallery/TopReferrers';
 import { NicheFilter } from '@/components/gallery/NicheFilter';
 import { useGallery } from '@/hooks/useGallery';
-import { NICHES } from '@/lib/niches';
+import { NICHES, NICHE_ICONS } from '@/lib/niches';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -177,19 +177,19 @@ export default function Gallery() {
               >
                 {t('gallery.allNiches', 'Все')}
               </button>
-              {Object.entries(NICHES).slice(0, 10).map(([nicheId, niche]) => (
+              {NICHES.slice(0, 10).map((niche) => (
                 <button
-                  key={nicheId}
-                  onClick={() => setSelectedNiche(nicheId)}
+                  key={niche}
+                  onClick={() => setSelectedNiche(niche)}
                   className={cn(
                     "h-9 px-4 rounded-full text-sm font-bold whitespace-nowrap transition-all flex items-center gap-1.5",
-                    selectedNiche === nicheId
+                    selectedNiche === niche
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted/60 text-muted-foreground"
                   )}
                 >
-                  <span>{niche.icon}</span>
-                  {niche.label}
+                  <span>{NICHE_ICONS[niche]}</span>
+                  {t(`niches.${niche}`, niche)}
                 </button>
               ))}
             </div>
@@ -221,7 +221,7 @@ export default function Gallery() {
           <div className="px-5">
             <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-3">
               {selectedNiche 
-                ? NICHES[selectedNiche as keyof typeof NICHES]?.label 
+                ? t(`niches.${selectedNiche}`, selectedNiche)
                 : t('gallery.allPages', 'Все страницы')}
               <span className="ml-2 text-xs font-normal">({filteredPages.length})</span>
             </h2>
