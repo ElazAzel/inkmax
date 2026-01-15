@@ -508,55 +508,49 @@
       },
       "q2": {
         "question": "How much does LinkMAX cost?",
-        "answer": "The Basic plan is free forever and includes unlimited links, basic blocks, and 3 AI requests per day. Premium plans start at $5.10/month with annual billing."
+        "answer": "Basic plan is free forever. Premium: 3mo - $8.50/mo, 6mo - $6.80/mo, 12mo - $5.10/mo. Payment via RoboKassa. 14-day refund policy.",
+        "answer_v2": "Basic plan is free forever. Premium: 3mo - $8.50/mo, 6mo - $6.80/mo, 12mo - $5.10/mo. Payment via RoboKassa. 14-day refund policy."
       },
       "q3": {
         "question": "How does AI page generation work?",
-        "answer": "During registration, you choose your niche (barber, photographer, trainer, etc.), and AI automatically creates a ready page with profile, needed blocks, and texts adapted to your profession."
+        "answer": "Choose your niche (barber, photographer, trainer), and AI creates a ready page with profile and blocks in 30 seconds. Free: 1/month, Premium: 5/month.",
+        "answer_v2": "Choose your niche (barber, photographer, trainer), and AI creates a ready page with profile and blocks in 30 seconds. Free: 1/month, Premium: 5/month."
       },
       "q4": {
-        "question": "Can I use my own domain?",
-        "answer": "Yes, the Business plan allows you to connect your own domain with an SSL certificate. On free and Pro plans, your page is available at lnkmx.my/your-name."
+        "question": "What blocks are available?",
+        "answer_v2": "20+ block types: profile, links, buttons, images, video, carousels, products, price lists, forms, maps, messengers, testimonials, FAQ, countdown timers, and more."
       },
       "q5": {
-        "question": "How do I accept payments through my page?",
-        "answer": "The Business plan includes Stripe and Kaspi Pay integration. You can sell products, services, and digital products directly from your page."
+        "question": "Is there CRM and analytics?",
+        "answer_v2": "Yes! Premium includes full CRM for lead management and Telegram notifications for new leads. Analytics shows clicks, traffic sources, and visitor behavior."
       },
       "q6": {
         "question": "Is there a mobile editor?",
         "answer": "Yes! LinkMAX is built mobile-first. You can fully edit your page from your smartphone."
       },
       "q7": {
-        "question": "What blocks are available?",
-        "answer": "20+ block types are available: profile, links, buttons, images, video, carousels, products, price lists, forms, maps, messengers, testimonials, timers, and more."
+        "question": "What integrations does LinkMAX support?",
+        "answer_v2": "Telegram for lead notifications and Google Calendar for booking management. All social networks and messengers are supported as blocks."
       },
       "q8": {
-        "question": "Is there analytics and CRM?",
-        "answer": "Yes, LinkMAX includes built-in view and click analytics. Pro plan offers mini-CRM for up to 100 leads/month, and Business has full CRM without limits."
+        "question": "Does LinkMAX take commission from sales?",
+        "answer_v2": "No! 0% commission on your transactions. You only pay for the subscription, all sales revenue stays with you."
       },
       "q9": {
-        "question": "Can I install Meta, TikTok, Google pixels?",
-        "answer": "Yes, Pro and Business plans allow you to add pixels for retargeting and conversion tracking: Meta Pixel, TikTok Pixel, Google Analytics and more."
+        "question": "How do I pay for Premium?",
+        "answer_v2": "Payment via RoboKassa: bank cards, e-wallets and other methods. You can also use Linkkon tokens (100 tokens = 1 day of Premium)."
       },
       "q10": {
-        "question": "What integrations does LinkMAX support?",
-        "answer": "LinkMAX integrates with Telegram for notifications, Stripe and Kaspi Pay for payments, Google Calendar for bookings. All social networks and messengers are supported."
+        "question": "What is the refund policy?",
+        "answer_v2": "Refunds available within 14 days of payment per RK legislation. See Terms of Service for details."
       },
       "q11": {
-        "question": "Does LinkMAX take commission from sales?",
-        "answer": "No! We don't take a percentage from your transactions — 0% commission. You only pay for the plan, all sales revenue stays with you."
+        "question": "Can I see example pages?",
+        "answer_v2": "Yes! The gallery features real pages from various niches: barbers, photographers, trainers, psychologists, shops and more."
       },
       "q12": {
-        "question": "How secure is data on LinkMAX?",
-        "answer": "We use SSL encryption, secure servers and comply with security standards. Your data and your customers' data is safe."
-      },
-      "q13": {
-        "question": "Can I see examples of pages?",
-        "answer": "Yes! Our gallery features real user pages from different niches: barbers, photographers, trainers, psychologists, shops and more."
-      },
-      "q14": {
         "question": "How is LinkMAX better than Linktree and Taplink?",
-        "answer": "LinkMAX offers AI content generation, 0% sales commission, built-in CRM, gamification (achievements, quests) and modern design. Plus Russian and Kazakh language support."
+        "answer_v2": "AI generation in 2 minutes, 0% commission, built-in CRM, Telegram notifications, modern design, RU/EN/KZ support. From $5.10/month."
       }
     },
     "toc": {
