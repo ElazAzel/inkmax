@@ -198,18 +198,18 @@ export default function Index() {
             <div className="space-y-4">
               <StepCard
                 number="1"
-                title={t('landing.howItWorks.step1', 'Выберите нишу')}
-                description={t('landing.howItWorks.step1Desc', 'Блогер, мастер, бизнес - мы подберём шаблон')}
+                title={t('landing.howItWorks.step1.title', 'Выберите нишу')}
+                description={t('landing.howItWorks.step1.description', 'Блогер, мастер, бизнес - мы подберём шаблон')}
               />
               <StepCard
                 number="2"
-                title={t('landing.howItWorks.step2', 'Опишите себя')}
-                description={t('landing.howItWorks.step2Desc', 'Пара предложений - и AI создаст страницу')}
+                title={t('landing.howItWorks.step2.title', 'Опишите себя')}
+                description={t('landing.howItWorks.step2.description', 'Пара предложений - и AI создаст страницу')}
               />
               <StepCard
                 number="3"
-                title={t('landing.howItWorks.step3', 'Публикуйте!')}
-                description={t('landing.howItWorks.step3Desc', 'Получите ссылку и делитесь везде')}
+                title={t('landing.howItWorks.step3.title', 'Публикуйте!')}
+                description={t('landing.howItWorks.step3.description', 'Получите ссылку и делитесь везде')}
               />
             </div>
 

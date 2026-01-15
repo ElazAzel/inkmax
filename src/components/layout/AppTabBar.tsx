@@ -99,8 +99,8 @@ export const AppTabBar = memo(function AppTabBar({
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom md:hidden">
       {/* Glass background */}
-      <div className="mx-3 mb-3 bg-card/85 backdrop-blur-2xl border border-border/20 rounded-[24px] shadow-2xl shadow-black/15 overflow-hidden">
-        <div className="grid grid-cols-6 h-[72px]">
+      <div className="mx-2 mb-2 bg-card/90 backdrop-blur-2xl border border-border/20 rounded-2xl shadow-2xl shadow-black/15 overflow-hidden">
+        <div className="grid grid-cols-6 h-16">
           {tabs.map((tab) => {
             const isActive = currentTab === tab.id;
             const Icon = tab.icon;
@@ -110,36 +110,35 @@ export const AppTabBar = memo(function AppTabBar({
                 key={tab.id}
                 onClick={() => handleTabClick(tab)}
                 className={cn(
-                  "relative flex flex-col items-center justify-center gap-0.5 transition-all duration-300 active:scale-90",
+                  "relative flex flex-col items-center justify-center gap-0.5 transition-all duration-200 active:scale-95 min-w-0",
                   isActive 
                     ? "text-primary" 
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground"
                 )}
               >
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute top-1 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-primary animate-scale-in" />
+                  <div className="absolute top-1 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary" />
                 )}
                 
                 {/* Icon with badge */}
                 <div className="relative">
                   <Icon className={cn(
-                    "transition-all duration-300",
-                    isActive ? "h-6 w-6" : "h-5 w-5"
+                    "h-5 w-5 shrink-0"
                   )} />
                   
                   {/* Badge */}
                   {tab.badge && tab.badge > 0 && (
-                    <span className="absolute -top-1 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold animate-scale-in">
+                    <span className="absolute -top-1 -right-1 min-w-4 h-4 px-0.5 flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold">
                       {tab.badge > 99 ? '99+' : tab.badge}
                     </span>
                   )}
                 </div>
                 
-                {/* Label */}
+                {/* Label - truncated */}
                 <span className={cn(
-                  "text-[10px] font-semibold leading-tight transition-all duration-300",
-                  isActive && "font-bold"
+                  "text-[9px] font-medium leading-none truncate max-w-full px-0.5",
+                  isActive && "font-semibold"
                 )}>
                   {tab.label}
                 </span>
