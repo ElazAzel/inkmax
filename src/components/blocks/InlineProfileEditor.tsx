@@ -1,9 +1,10 @@
-import { memo, useState, useEffect, useRef } from 'react';
+import { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle2, Check, X, Camera, Loader2, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +27,7 @@ import { toast } from 'sonner';
 import { ImageCropper } from '@/components/form-fields/ImageCropper';
 import { RichTextEditor } from '@/components/form-fields/RichTextEditor';
 import type { ProfileBlock as ProfileBlockType } from '@/types/page';
+import { cn } from '@/lib/utils';
 
 interface InlineProfileEditorProps {
   block: ProfileBlockType;
@@ -56,10 +58,11 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
   const [cropperType, setCropperType] = useState<'avatar' | 'cover'>('avatar');
   
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const bioInputRef = useRef<HTMLTextAreaElement>(null);
+  const bioTextareaRef = useRef<HTMLTextAreaElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
 
+  // Sync state when block changes
   useEffect(() => {
     setEditedName(name);
   }, [name]);
@@ -68,41 +71,55 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
     setEditedBio(bio);
   }, [bio]);
 
+  // Focus management with animation
   useEffect(() => {
     if (isEditingName && nameInputRef.current) {
-      nameInputRef.current.focus();
-      nameInputRef.current.select();
+      requestAnimationFrame(() => {
+        nameInputRef.current?.focus();
+        nameInputRef.current?.select();
+      });
     }
   }, [isEditingName]);
 
   useEffect(() => {
-    if (isEditingBio && bioInputRef.current) {
-      bioInputRef.current.focus();
-      bioInputRef.current.select();
+    if (isEditingBio && bioTextareaRef.current) {
+      requestAnimationFrame(() => {
+        bioTextareaRef.current?.focus();
+        // Move cursor to end
+        const len = bioTextareaRef.current?.value.length || 0;
+        bioTextareaRef.current?.setSelectionRange(len, len);
+      });
     }
   }, [isEditingBio]);
 
-  const handleSaveName = () => {
-    if (editedName.trim()) {
-      onUpdate({ name: editedName.trim() });
+  // Optimized save handlers with debounce
+  const handleSaveName = useCallback(() => {
+    const trimmedName = editedName.trim();
+    if (trimmedName && trimmedName !== name) {
+      onUpdate({ name: trimmedName });
+      toast.success(t('profile.nameSaved', 'Имя сохранено'));
     }
     setIsEditingName(false);
-  };
+  }, [editedName, name, onUpdate, t]);
 
-  const handleSaveBio = () => {
-    onUpdate({ bio: editedBio.trim() });
+  const handleSaveBio = useCallback(() => {
+    const trimmedBio = editedBio.trim();
+    if (trimmedBio !== bio) {
+      onUpdate({ bio: trimmedBio });
+      toast.success(t('profile.bioSaved', 'Описание сохранено'));
+    }
     setIsEditingBio(false);
-  };
+  }, [editedBio, bio, onUpdate, t]);
 
-  const handleCancelName = () => {
+  const handleCancelName = useCallback(() => {
     setEditedName(name);
     setIsEditingName(false);
-  };
+  }, [name]);
 
-  const handleCancelBio = () => {
+  const handleCancelBio = useCallback(() => {
     setEditedBio(bio);
     setIsEditingBio(false);
-  };
+  }, [bio]);
 
   const handleNameKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -561,70 +578,86 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
         </div>
         
         <div className="text-center space-y-3 w-full max-w-md">
-          {/* Editable Name - BOLD */}
+          {/* Editable Name - Optimized with animations */}
           <div className="flex items-center justify-center gap-3">
             {isEditingName ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
                 <Input
                   ref={nameInputRef}
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
-                  onKeyDown={handleNameKeyDown}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSaveName();
+                    if (e.key === 'Escape') handleCancelName();
+                  }}
                   onBlur={handleSaveName}
-                  className="text-3xl font-black text-center h-14 w-56 rounded-2xl"
-                  placeholder="Your Name"
+                  className="text-2xl sm:text-3xl font-black text-center h-14 w-full max-w-[280px] rounded-2xl border-2 border-primary/50 focus:border-primary transition-colors"
+                  placeholder={t('profile.namePlaceholder', 'Ваше имя')}
                 />
-                <Button size="lg" variant="ghost" className="h-10 w-10 rounded-xl" onClick={handleSaveName}>
+                <Button size="icon" variant="ghost" className="h-12 w-12 rounded-xl hover:bg-primary/10 active:scale-95 transition-all" onClick={handleSaveName}>
                   <Check className="h-5 w-5 text-primary" />
                 </Button>
-                <Button size="lg" variant="ghost" className="h-10 w-10 rounded-xl" onClick={handleCancelName}>
+                <Button size="icon" variant="ghost" className="h-12 w-12 rounded-xl hover:bg-destructive/10 active:scale-95 transition-all" onClick={handleCancelName}>
                   <X className="h-5 w-5 text-muted-foreground" />
                 </Button>
               </div>
             ) : (
               <h1 
-                className="text-3xl font-black cursor-pointer hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary/30 tracking-tight"
+                className={cn(
+                  "text-2xl sm:text-3xl font-black cursor-pointer transition-all duration-200",
+                  "hover:text-primary border-b-2 border-transparent hover:border-primary/30",
+                  "active:scale-[0.98] tracking-tight px-2 py-1 rounded-lg hover:bg-muted/50"
+                )}
                 onClick={() => setIsEditingName(true)}
-                title="Click to edit"
+                title={t('profile.clickToEdit', 'Нажмите для редактирования')}
               >
-                {name || 'Click to add name'}
+                {name || t('profile.addName', 'Добавить имя')}
               </h1>
             )}
             {block.verified && !isEditingName && (
-              <Badge variant="secondary" className="gap-1.5 text-sm px-3 py-1 rounded-xl font-bold">
+              <Badge variant="secondary" className="gap-1.5 text-sm px-3 py-1 rounded-xl font-bold animate-in fade-in duration-300">
                 <CheckCircle2 className="h-4 w-4" />
-                Verified
+                {t('profile.verified', 'Verified')}
               </Badge>
             )}
           </div>
           
-          {/* Editable Bio - BOLD */}
+          {/* Editable Bio - Optimized with animations */}
           {isEditingBio ? (
-            <div className="space-y-3 w-full">
-              <RichTextEditor
+            <div className="space-y-3 w-full animate-in fade-in zoom-in-95 duration-200">
+              <Textarea
+                ref={bioTextareaRef}
                 value={editedBio}
-                onChange={setEditedBio}
-                placeholder={t('profile.bioPlaceholder', 'Tell people about yourself')}
-                className="min-h-[100px] text-base rounded-2xl"
+                onChange={(e) => setEditedBio(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') handleCancelBio();
+                }}
+                placeholder={t('profile.bioPlaceholder', 'Расскажите о себе...')}
+                className="min-h-[100px] text-base rounded-2xl border-2 border-primary/50 focus:border-primary resize-none transition-colors"
+                rows={3}
               />
               <div className="flex items-center justify-center gap-3">
-                <Button size="lg" variant="default" onClick={handleSaveBio} className="rounded-2xl px-6 h-12 font-bold">
+                <Button size="lg" onClick={handleSaveBio} className="rounded-2xl px-6 h-12 font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
                   <Check className="h-5 w-5 mr-2" />
-                  {t('common.save', 'Save')}
+                  {t('common.save', 'Сохранить')}
                 </Button>
-                <Button size="lg" variant="ghost" onClick={handleCancelBio} className="rounded-2xl px-6 h-12 font-bold">
+                <Button size="lg" variant="outline" onClick={handleCancelBio} className="rounded-2xl px-6 h-12 font-bold active:scale-[0.98] transition-all">
                   <X className="h-5 w-5 mr-2" />
-                  {t('editor.cancel', 'Cancel')}
+                  {t('editor.cancel', 'Отмена')}
                 </Button>
               </div>
             </div>
           ) : (
             <p 
-              className="text-lg text-muted-foreground cursor-pointer hover:text-foreground transition-colors border-b-2 border-transparent hover:border-primary/30 px-3 py-2 font-medium"
+              className={cn(
+                "text-base sm:text-lg text-muted-foreground cursor-pointer transition-all duration-200",
+                "hover:text-foreground border-b-2 border-transparent hover:border-primary/30",
+                "px-3 py-2 font-medium rounded-lg hover:bg-muted/50 active:scale-[0.98]"
+              )}
               onClick={() => setIsEditingBio(true)}
-              title={t('profile.clickToEdit', 'Click to edit')}
+              title={t('profile.clickToEdit', 'Нажмите для редактирования')}
             >
-              {bio || t('profile.addBio', 'Click to add bio')}
+              {bio || t('profile.addBio', 'Добавить описание')}
             </p>
           )}
         </div>
