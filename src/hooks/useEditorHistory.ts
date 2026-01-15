@@ -25,6 +25,8 @@ interface UseEditorHistoryOptions {
 
 const MAX_HISTORY_SIZE = 7;
 
+export type EditorHistoryType = ReturnType<typeof useEditorHistory>;
+
 export function useEditorHistory(
   initialBlocks: Block[],
   options: UseEditorHistoryOptions = {}
