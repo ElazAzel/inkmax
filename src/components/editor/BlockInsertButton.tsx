@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search, Lock, Crown, Type, Video, Link2, File, Music, ListOrdered, Image, ShoppingBag, Code, MessageCircle, Calendar, Star, Gift, Compass, MapPin, Clock, DollarSign, Megaphone, FormInput, Mail, HelpCircle, Layers } from 'lucide-react';
+import { Plus, Search, Lock, Crown, Type, Video, Link2, File, ListOrdered, Image, ShoppingBag, Code, MessageCircle, Calendar, Star, Gift, Compass, MapPin, Clock, DollarSign, Megaphone, FormInput, Mail, HelpCircle, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -45,17 +45,17 @@ const ALL_BLOCKS: BlockConfig[] = [
   // Basic
   { type: 'text', label: 'Текст', Icon: Type, color: 'bg-slate-500', tier: 'free' },
   { type: 'link', label: 'Ссылка', Icon: Link2, color: 'bg-blue-500', tier: 'free' },
-  { type: 'button', label: 'Кнопка', Icon: () => <span className="text-lg font-bold">▶</span>, color: 'bg-red-500', tier: 'free' },
+  { type: 'button', label: 'Кнопка', Icon: () => <span className="text-xl font-black">▶</span>, color: 'bg-red-500', tier: 'free' },
   { type: 'image', label: 'Фото', Icon: Image, color: 'bg-emerald-500', tier: 'free' },
   
   // Media
   { type: 'video', label: 'Видео', Icon: Video, color: 'bg-rose-500', tier: 'pro' },
   { type: 'carousel', label: 'Галерея', Icon: Layers, color: 'bg-violet-500', tier: 'pro' },
-  { type: 'avatar', label: 'Аватар', Icon: () => <span className="text-lg">👤</span>, color: 'bg-cyan-500', tier: 'free' },
-  { type: 'separator', label: 'Разделитель', Icon: () => <span className="text-lg">—</span>, color: 'bg-gray-400', tier: 'free' },
+  { type: 'avatar', label: 'Аватар', Icon: () => <span className="text-xl">👤</span>, color: 'bg-cyan-500', tier: 'free' },
+  { type: 'separator', label: 'Разделитель', Icon: () => <span className="text-xl">—</span>, color: 'bg-gray-400', tier: 'free' },
   
   // Social
-  { type: 'socials', label: 'Соцсети', Icon: () => <span className="text-lg">@</span>, color: 'bg-pink-500', tier: 'free' },
+  { type: 'socials', label: 'Соцсети', Icon: () => <span className="text-xl">@</span>, color: 'bg-pink-500', tier: 'free' },
   { type: 'messenger', label: 'Мессенджеры', Icon: MessageCircle, color: 'bg-green-500', tier: 'free' },
   { type: 'shoutout', label: 'Упоминание', Icon: Megaphone, color: 'bg-orange-500', tier: 'pro' },
   
@@ -83,7 +83,7 @@ const ALL_BLOCKS: BlockConfig[] = [
   { type: 'custom_code', label: 'Код', Icon: Code, color: 'bg-slate-600', tier: 'pro' },
   
   // Social - Community
-  { type: 'community', label: 'Сообщество', Icon: () => <span className="text-lg">👥</span>, color: 'bg-indigo-400', tier: 'pro' },
+  { type: 'community', label: 'Сообщество', Icon: () => <span className="text-xl">👥</span>, color: 'bg-indigo-400', tier: 'pro' },
 ];
 
 export const BlockInsertButton = memo(function BlockInsertButton({ 
@@ -145,7 +145,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
     setSearchQuery('');
   };
 
-  // Mobile & Desktop - Clean full-screen sheet like competitors
+  // Mobile & Desktop - Premium app-like sheet
   return (
     <div className={cn("flex items-center justify-center", className)}>
       {/* FAB Button - hidden when using external control */}
@@ -155,31 +155,36 @@ export const BlockInsertButton = memo(function BlockInsertButton({
           size="lg"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "shadow-lg transition-all active:scale-95",
+            "shadow-xl shadow-primary/30 transition-all active:scale-95",
             isMobile 
-              ? "h-16 w-16 rounded-full" 
-              : "h-12 w-12 rounded-2xl"
+              ? "h-18 w-18 rounded-full" 
+              : "h-14 w-14 rounded-2xl"
           )}
           data-onboarding="add-block"
         >
-          <Plus className={isMobile ? "h-8 w-8" : "h-6 w-6"} />
+          <Plus className={isMobile ? "h-9 w-9" : "h-7 w-7"} strokeWidth={2.5} />
         </Button>
       )}
 
-      {/* Clean Sheet with Grid */}
+      {/* Premium App-Like Sheet */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent 
           side="bottom" 
-          className="h-[80vh] p-0 bg-background border-t rounded-t-3xl"
+          className="h-[85vh] p-0 bg-background border-t-0 rounded-t-[32px]"
         >
+          {/* Handle bar */}
+          <div className="flex justify-center pt-4 pb-2">
+            <div className="w-14 h-1.5 rounded-full bg-muted-foreground/25" />
+          </div>
+          
           {/* Header */}
-          <SheetHeader className="px-6 pt-6 pb-4 border-b">
+          <SheetHeader className="px-6 pt-2 pb-5 border-b border-border/10">
             <div className="flex items-center justify-between">
-              <SheetTitle className="text-xl font-bold">{t('editor.addBlock', 'Добавить элемент')}</SheetTitle>
+              <SheetTitle className="text-2xl font-black">{t('editor.addBlock', 'Добавить')}</SheetTitle>
               {!isPremium && (
                 <Badge 
                   variant={isAtBlockLimit ? 'destructive' : 'secondary'} 
-                  className="text-sm px-3 py-1"
+                  className="text-sm px-4 py-1.5 rounded-full font-bold"
                 >
                   {remainingBlocks > 0 ? `${remainingBlocks} ${t('freemium.left', 'осталось')}` : t('freemium.limit', 'Лимит')}
                 </Badge>
@@ -188,22 +193,22 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             <SheetDescription className="sr-only">{t('editor.selectBlock', 'Выберите блок для добавления')}</SheetDescription>
           </SheetHeader>
           
-          {/* Search */}
-          <div className="px-6 py-4 border-b bg-muted/30">
+          {/* Search - Larger for mobile */}
+          <div className="px-6 py-5 border-b border-border/10 bg-muted/20">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
               <Input
                 placeholder={t('editor.searchBlocks', 'Поиск блоков...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 text-base rounded-xl bg-background border-border"
+                className="pl-14 h-14 text-lg rounded-2xl bg-background border-border/30 font-medium"
               />
             </div>
           </div>
           
-          {/* Grid of blocks - 4 columns like competitor */}
-          <div className="overflow-y-auto p-6" style={{ height: 'calc(100% - 140px)' }}>
-            <div className="grid grid-cols-4 gap-4">
+          {/* Grid of blocks - 3 columns on mobile for bigger touch targets */}
+          <div className="overflow-y-auto px-5 py-5" style={{ height: 'calc(100% - 180px)' }}>
+            <div className="grid grid-cols-3 gap-4">
               {filteredBlocks.map((block) => {
                 const isLocked = !canUseBlock(block.tier);
                 const IconComponent = block.Icon;
@@ -214,34 +219,34 @@ export const BlockInsertButton = memo(function BlockInsertButton({
                     onClick={() => handleInsert(block.type, block.tier)}
                     disabled={isLocked}
                     className={cn(
-                      "relative flex flex-col items-center gap-2 p-3 rounded-2xl transition-all",
+                      "relative flex flex-col items-center gap-3 p-4 rounded-3xl transition-all",
                       isLocked
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-muted active:scale-95"
+                        ? "opacity-40 cursor-not-allowed"
+                        : "hover:bg-muted/50 active:scale-95"
                     )}
                   >
-                    {/* Colorful icon square */}
+                    {/* Colorful icon square - LARGER */}
                     <div className={cn(
-                      "w-14 h-14 rounded-2xl flex items-center justify-center text-white",
+                      "w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg",
                       block.color
                     )}>
-                      <IconComponent className="h-6 w-6" />
+                      <IconComponent className="h-7 w-7" />
                     </div>
                     
                     {/* Label */}
-                    <span className="text-xs font-medium text-center leading-tight">
+                    <span className="text-sm font-bold text-center leading-tight">
                       {block.label}
                     </span>
                     
                     {/* Lock/Crown badge */}
                     {isLocked && (
-                      <div className="absolute top-1 right-1">
-                        <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                      <div className="absolute top-2 right-2">
+                        <Lock className="h-4 w-4 text-muted-foreground" />
                       </div>
                     )}
                     {block.tier === 'pro' && !isLocked && (
-                      <div className="absolute top-1 right-1">
-                        <Crown className="h-3.5 w-3.5 text-amber-500" />
+                      <div className="absolute top-2 right-2">
+                        <Crown className="h-4 w-4 text-amber-500" />
                       </div>
                     )}
                   </button>
@@ -250,8 +255,8 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             </div>
             
             {filteredBlocks.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">{t('common.noResults', 'Ничего не найдено')}</p>
+              <div className="text-center py-16">
+                <p className="text-lg text-muted-foreground">{t('common.noResults', 'Ничего не найдено')}</p>
               </div>
             )}
           </div>

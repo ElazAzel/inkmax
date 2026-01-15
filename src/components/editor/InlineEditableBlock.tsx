@@ -53,9 +53,9 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   const isVerticalScrollRef = useRef(false);
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const threshold = 70;
-  const maxSwipe = 110;
-  const longPressDelay = 400;
+  const threshold = 80;
+  const maxSwipe = 120;
+  const longPressDelay = 350;
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (isProfileBlock) {
@@ -100,19 +100,17 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       }
       if (Math.abs(diffX) > 15) {
         isSwipingRef.current = true;
-        haptic.lightTap(); // Initial swipe feedback
+        haptic.lightTap();
       }
     }
     
     if (isVerticalScrollRef.current) return;
     
     if (isSwipingRef.current && isMobile) {
-      // Apply resistance at edges for natural feel
       const resistance = Math.abs(diffX) > threshold ? 0.5 : 1;
       const clampedDiff = Math.max(-maxSwipe, Math.min(maxSwipe, diffX * resistance));
       setOffsetX(clampedDiff);
       
-      // Haptic feedback when crossing threshold
       if (!hasTriggeredHaptic && Math.abs(clampedDiff) >= threshold) {
         haptic.mediumTap();
         setHasTriggeredHaptic(true);
@@ -123,7 +121,6 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
   }, [isProfileBlock, isMobile, hasTriggeredHaptic, haptic, threshold]);
 
   const handleTouchEnd = useCallback(() => {
-    // Clear long press timer
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
@@ -134,7 +131,6 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
       return;
     }
     
-    // Quick tap detection for showing controls
     const touchDuration = Date.now() - startTimeRef.current;
     if (!isSwipingRef.current && !isVerticalScrollRef.current && touchDuration < 200) {
       setIsTouched(true);
@@ -150,7 +146,6 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
     setIsTransitioning(true);
     
     if (offsetX < -threshold) {
-      // Swipe left - Delete action
       haptic.warning();
       setOffsetX(-maxSwipe - 20);
       setTimeout(() => {
@@ -159,7 +154,6 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         setIsTransitioning(false);
       }, 250);
     } else if (offsetX > threshold) {
-      // Swipe right - Edit action
       haptic.success();
       setOffsetX(maxSwipe + 20);
       setTimeout(() => {
@@ -168,7 +162,6 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         setIsTransitioning(false);
       }, 250);
     } else {
-      // Snap back with spring animation
       setOffsetX(0);
       setTimeout(() => setIsTransitioning(false), 300);
     }
@@ -178,44 +171,39 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
 
   const showControls = isHovered || isTouched;
   
-  // Calculate action visibility based on swipe direction
-  const showDeleteAction = offsetX < -25 && isMobile && !isProfileBlock;
-  const showEditAction = offsetX > 25 && isMobile && !isProfileBlock;
+  const showDeleteAction = offsetX < -30 && isMobile && !isProfileBlock;
+  const showEditAction = offsetX > 30 && isMobile && !isProfileBlock;
   const actionOpacity = Math.min(1, Math.abs(offsetX) / threshold);
   const isAtThreshold = Math.abs(offsetX) >= threshold;
-  
-  // Scale effect for actions
-  const actionScale = isAtThreshold ? 1.15 : 0.9 + (Math.abs(offsetX) / threshold) * 0.25;
+  const actionScale = isAtThreshold ? 1.2 : 0.85 + (Math.abs(offsetX) / threshold) * 0.35;
 
   return (
     <>
-      <div className="relative overflow-visible rounded-2xl">
+      <div className="relative overflow-visible rounded-3xl">
         {/* Delete action background (swipe left) */}
         {isMobile && !isProfileBlock && (
           <div 
             className={cn(
-              "absolute inset-y-0 right-0 flex items-center justify-end px-6 transition-all duration-200 rounded-2xl",
+              "absolute inset-y-0 right-0 flex items-center justify-end px-6 transition-all duration-200 rounded-3xl",
               showDeleteAction ? "opacity-100" : "opacity-0 pointer-events-none",
-              isAtThreshold && offsetX < 0 ? "bg-destructive" : "bg-destructive/70"
+              isAtThreshold && offsetX < 0 ? "bg-destructive" : "bg-destructive/75"
             )}
             style={{ 
               opacity: showDeleteAction ? actionOpacity : 0, 
-              width: maxSwipe + 30,
+              width: maxSwipe + 40,
             }}
           >
             <div 
-              className={cn(
-                "flex flex-col items-center gap-1.5 text-destructive-foreground transition-all duration-200"
-              )}
-              style={{ transform: `scale(${offsetX < 0 ? actionScale : 0.9})` }}
+              className="flex flex-col items-center gap-2 text-destructive-foreground transition-all duration-200"
+              style={{ transform: `scale(${offsetX < 0 ? actionScale : 0.85})` }}
             >
               <div className={cn(
-                "h-12 w-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm",
+                "h-14 w-14 rounded-2xl bg-white/25 flex items-center justify-center backdrop-blur-sm",
                 isAtThreshold && "animate-pulse"
               )}>
-                <Trash2 className="h-6 w-6" />
+                <Trash2 className="h-7 w-7" />
               </div>
-              <span className="text-xs font-semibold">Удалить</span>
+              <span className="text-sm font-bold">Удалить</span>
             </div>
           </div>
         )}
@@ -224,28 +212,26 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         {isMobile && !isProfileBlock && (
           <div 
             className={cn(
-              "absolute inset-y-0 left-0 flex items-center justify-start px-6 transition-all duration-200 rounded-2xl",
+              "absolute inset-y-0 left-0 flex items-center justify-start px-6 transition-all duration-200 rounded-3xl",
               showEditAction ? "opacity-100" : "opacity-0 pointer-events-none",
-              isAtThreshold && offsetX > 0 ? "bg-primary" : "bg-primary/70"
+              isAtThreshold && offsetX > 0 ? "bg-primary" : "bg-primary/75"
             )}
             style={{ 
               opacity: showEditAction ? actionOpacity : 0, 
-              width: maxSwipe + 30,
+              width: maxSwipe + 40,
             }}
           >
             <div 
-              className={cn(
-                "flex flex-col items-center gap-1.5 text-primary-foreground transition-all duration-200"
-              )}
-              style={{ transform: `scale(${offsetX > 0 ? actionScale : 0.9})` }}
+              className="flex flex-col items-center gap-2 text-primary-foreground transition-all duration-200"
+              style={{ transform: `scale(${offsetX > 0 ? actionScale : 0.85})` }}
             >
               <div className={cn(
-                "h-12 w-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm",
+                "h-14 w-14 rounded-2xl bg-white/25 flex items-center justify-center backdrop-blur-sm",
                 isAtThreshold && "animate-pulse"
               )}>
-                <Pencil className="h-6 w-6" />
+                <Pencil className="h-7 w-7" />
               </div>
-              <span className="text-xs font-semibold">Изменить</span>
+              <span className="text-sm font-bold">Изменить</span>
             </div>
           </div>
         )}
@@ -253,7 +239,7 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         {/* Main content wrapper */}
         <div
           className={cn(
-            "relative group bg-card/60 backdrop-blur-xl rounded-2xl border border-border/30 shadow-glass",
+            "relative group bg-card/70 backdrop-blur-xl rounded-3xl border border-border/20 shadow-glass",
             isDragging && "opacity-50 scale-95 shadow-glass-lg",
             isTransitioning && "transition-transform duration-300 ease-out"
           )}
@@ -269,112 +255,104 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
         >
           {/* Hover/Touch overlay with controls */}
           {showControls && !isDragging && (
-            <div className="absolute inset-0 bg-primary/10 border-2 border-primary/40 rounded-2xl pointer-events-none z-10 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-primary/10 border-2 border-primary/40 rounded-3xl pointer-events-none z-10 backdrop-blur-sm" />
           )}
 
           {/* Control buttons - Desktop */}
           {showControls && !isDragging && !isMobile && (
-            <div className="absolute -top-2 right-1 flex gap-1.5 z-20">
-              {/* Arrow controls for reordering - only for non-profile blocks */}
+            <div className="absolute -top-3 right-2 flex gap-2 z-20">
               {!isProfileBlock && onMoveUp && onMoveDown && (
-                <div className="flex gap-0.5 bg-card/80 backdrop-blur-xl rounded-xl shadow-glass border border-border/30 p-0.5">
+                <div className="flex gap-1 bg-card/90 backdrop-blur-xl rounded-2xl shadow-glass border border-border/20 p-1">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 p-0 hover:bg-primary/20"
+                    className="h-9 w-9 p-0 hover:bg-primary/20 rounded-xl"
                     onClick={() => {
                       haptic.lightTap();
                       onMoveUp(block.id);
                     }}
                     disabled={isFirst}
-                    title="Move up"
                   >
-                    <ChevronUp className="h-4 w-4" />
+                    <ChevronUp className="h-5 w-5" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 p-0 hover:bg-primary/20"
+                    className="h-9 w-9 p-0 hover:bg-primary/20 rounded-xl"
                     onClick={() => {
                       haptic.lightTap();
                       onMoveDown(block.id);
                     }}
                     disabled={isLast}
-                    title="Move down"
                   >
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-5 w-5" />
                   </Button>
                 </div>
               )}
               
-              {/* Drag handle - desktop only */}
               {!isProfileBlock && (
                 <Button
                   variant="glass"
                   size="sm"
-                  className="h-7 w-7 p-0 shadow-glass"
+                  className="h-9 w-9 p-0 shadow-glass rounded-xl"
                   {...dragHandleProps}
                 >
-                  <GripVertical className="h-4 w-4" />
+                  <GripVertical className="h-5 w-5" />
                 </Button>
               )}
               
-              {/* Edit button */}
               <Button
                 variant="glass"
                 size="sm"
-                className="h-7 w-7 p-0 shadow-glass hover:bg-primary/20"
+                className="h-9 w-9 p-0 shadow-glass hover:bg-primary/20 rounded-xl"
                 onClick={() => {
                   haptic.lightTap();
                   onEdit(block);
                 }}
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil className="h-4 w-4" />
               </Button>
               
-              {/* Delete button - only for non-profile blocks */}
               {!isProfileBlock && (
                 <Button
                   variant="destructive"
                   size="sm"
-                  className="h-7 w-7 p-0 shadow-glass backdrop-blur-xl"
+                  className="h-9 w-9 p-0 shadow-glass backdrop-blur-xl rounded-xl"
                   onClick={() => {
                     haptic.warning();
                     onDelete(block.id);
                   }}
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               )}
             </div>
           )}
 
-          {/* Mobile: Quick action button - LARGER and more visible */}
+          {/* Mobile: Quick action buttons - MUCH LARGER for easy tapping */}
           {isMobile && showControls && !isDragging && !isProfileBlock && (
-            <div className="absolute -top-3 right-2 z-20 flex gap-1.5">
-              {/* Quick Edit Button */}
+            <div className="absolute -top-4 right-3 z-20 flex gap-2">
               <Button
                 variant="default"
-                size="sm"
-                className="h-11 w-11 p-0 rounded-xl shadow-lg shadow-primary/30"
+                size="lg"
+                className="h-14 w-14 p-0 rounded-2xl shadow-xl shadow-primary/30"
                 onClick={() => {
                   haptic.mediumTap();
                   onEdit(block);
                 }}
               >
-                <Pencil className="h-5 w-5" />
+                <Pencil className="h-6 w-6" />
               </Button>
-              {/* More Actions Button */}
               <Button
                 variant="glass"
-                size="sm"
-                className="h-11 w-11 p-0 rounded-xl shadow-glass-lg"
+                size="lg"
+                className="h-14 w-14 p-0 rounded-2xl shadow-glass-lg"
                 onClick={() => {
                   haptic.mediumTap();
                   setShowActionsSheet(true);
                 }}
               >
-                <MoreVertical className="h-5 w-5" />
+                <MoreVertical className="h-6 w-6" />
               </Button>
             </div>
           )}
@@ -384,10 +362,10 @@ export const InlineEditableBlock = memo(function InlineEditableBlock({
           
           {/* Mobile swipe hint */}
           {isMobile && !isProfileBlock && isTouched && offsetX === 0 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 bg-card/90 backdrop-blur-xl rounded-full text-xs text-muted-foreground shadow-glass border border-border/40 flex items-center gap-2 animate-fade-in">
-              <span className="text-primary">←</span>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-card/95 backdrop-blur-xl rounded-full text-sm text-muted-foreground shadow-glass border border-border/30 flex items-center gap-3 animate-fade-in font-medium">
+              <span className="text-primary text-lg">←</span>
               <span>Свайп для действий</span>
-              <span className="text-primary">→</span>
+              <span className="text-primary text-lg">→</span>
             </div>
           )}
         </div>

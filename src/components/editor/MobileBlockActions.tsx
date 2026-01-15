@@ -89,15 +89,6 @@ export const MobileBlockActions = memo(function MobileBlockActions({
 
   const isProfileBlock = block.type === 'profile';
 
-  const primaryActions = [
-    {
-      icon: Pencil,
-      label: t('blockActions.edit', 'Редактировать'),
-      onClick: () => handleAction(() => onEdit(block), 'medium'),
-      variant: 'default' as const,
-    },
-  ];
-
   const moveActions = [
     {
       icon: ArrowUpToLine,
@@ -145,25 +136,25 @@ export const MobileBlockActions = memo(function MobileBlockActions({
     }}>
       <SheetContent 
         side="bottom" 
-        className="h-auto max-h-[70vh] rounded-t-[28px] p-0 bg-card/95 backdrop-blur-2xl border-t border-border/30 shadow-glass-xl [&>button]:hidden"
+        className="h-auto max-h-[75vh] rounded-t-[32px] p-0 bg-card/98 backdrop-blur-3xl border-t-0 shadow-2xl [&>button]:hidden"
       >
         {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-2">
-          <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
+        <div className="flex justify-center pt-4 pb-3">
+          <div className="w-14 h-1.5 rounded-full bg-muted-foreground/25" />
         </div>
         
-        <SheetHeader className="px-5 pb-3 border-b border-border/20">
+        <SheetHeader className="px-6 pb-4 border-b border-border/10">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg font-bold">
+            <SheetTitle className="text-xl font-black">
               {t(`blockEditor.${block.type}`, block.type)}
             </SheetTitle>
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={() => onOpenChange(false)} 
-              className="rounded-full h-9 w-9 hover:bg-muted/50"
+              className="rounded-2xl h-11 w-11 hover:bg-muted/50"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </Button>
           </div>
           <SheetDescription className="sr-only">
@@ -171,34 +162,34 @@ export const MobileBlockActions = memo(function MobileBlockActions({
           </SheetDescription>
         </SheetHeader>
         
-        <div className="p-4 space-y-4 pb-safe">
-          {/* Primary action - LARGER for mobile */}
+        <div className="p-5 space-y-5 pb-safe">
+          {/* Primary action - EXTRA LARGE for easy tapping */}
           <Button 
-            onClick={primaryActions[0].onClick}
-            className="w-full h-16 rounded-2xl text-lg font-bold gap-3 shadow-lg shadow-primary/20"
+            onClick={() => handleAction(() => onEdit(block), 'medium')}
+            className="w-full h-18 rounded-3xl text-xl font-black gap-4 shadow-xl shadow-primary/25"
           >
-            <div className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center">
-              <Pencil className="h-5 w-5" />
+            <div className="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center">
+              <Pencil className="h-6 w-6" />
             </div>
-            {primaryActions[0].label}
+            {t('blockActions.edit', 'Редактировать')}
           </Button>
 
-          {/* Move actions grid - LARGER buttons */}
+          {/* Move actions grid - LARGER buttons for easy tapping */}
           {!isProfileBlock && (onMoveUp || onMoveDown) && (
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3">
               {moveActions.map((action) => (
                 <Button
                   key={action.label}
                   variant="outline"
                   className={cn(
-                    "h-16 flex-col gap-1.5 rounded-xl bg-muted/30 border-border/50 active:scale-95 transition-transform",
-                    action.disabled && "opacity-40"
+                    "h-20 flex-col gap-2 rounded-2xl bg-muted/30 border-border/30 active:scale-95 transition-all",
+                    action.disabled && "opacity-35"
                   )}
                   onClick={action.onClick}
                   disabled={action.disabled}
                 >
-                  <action.icon className="h-5 w-5" />
-                  <span className="text-[11px] font-semibold">{action.label}</span>
+                  <action.icon className="h-6 w-6" />
+                  <span className="text-xs font-bold">{action.label}</span>
                 </Button>
               ))}
             </div>
@@ -206,12 +197,12 @@ export const MobileBlockActions = memo(function MobileBlockActions({
 
           {/* Other actions - LARGER */}
           {otherActions.length > 0 && (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {otherActions.map((action) => (
                 <Button
                   key={action.label}
                   variant="outline"
-                  className="h-14 rounded-xl bg-muted/30 border-border/50 gap-2 text-base active:scale-95 transition-transform"
+                  className="h-16 rounded-2xl bg-muted/30 border-border/30 gap-3 text-base font-bold active:scale-95 transition-all"
                   onClick={action.onClick}
                 >
                   <action.icon className="h-5 w-5" />
@@ -221,18 +212,18 @@ export const MobileBlockActions = memo(function MobileBlockActions({
             </div>
           )}
 
-          {/* Delete action - LARGER with clear visual */}
+          {/* Delete action - CLEAR and LARGE */}
           {!isProfileBlock && (
             <Button 
               variant={confirmDelete ? "destructive" : "outline"}
               className={cn(
-                "w-full h-14 rounded-xl gap-3 transition-all text-base font-semibold active:scale-95",
-                !confirmDelete && "text-destructive border-destructive/30 hover:bg-destructive/10"
+                "w-full h-16 rounded-2xl gap-4 transition-all text-lg font-bold active:scale-95",
+                !confirmDelete && "text-destructive border-destructive/30 border-2 hover:bg-destructive/10"
               )}
               onClick={handleDelete}
             >
               <div className={cn(
-                "h-9 w-9 rounded-lg flex items-center justify-center",
+                "h-10 w-10 rounded-xl flex items-center justify-center",
                 confirmDelete ? "bg-white/20" : "bg-destructive/10"
               )}>
                 <Trash2 className="h-5 w-5" />

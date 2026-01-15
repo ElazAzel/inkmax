@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { StreakDisplay } from '@/components/streak/StreakDisplay';
 import { TokenBalanceDisplay } from '@/components/tokens/TokenBalanceDisplay';
@@ -15,42 +15,42 @@ interface MobileHeaderProps {
 export function MobileHeader({ onSignOut, onOpenGallery, onOpenTokens, userId }: MobileHeaderProps) {
   return (
     <header className="sticky top-0 z-50 md:hidden">
-      <div className="mx-3 mt-3">
-        <div className="backdrop-blur-2xl bg-card/75 border border-border/30 rounded-[22px] shadow-glass-lg px-3 h-14 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
+      <div className="mx-4 mt-4">
+        <div className="backdrop-blur-2xl bg-card/80 border border-border/20 rounded-[24px] shadow-glass-xl px-4 h-16 flex items-center justify-between">
+          {/* Logo - Larger and bolder */}
+          <div className="flex items-center gap-3">
             <div className="relative group">
-              <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:bg-primary/30 transition-colors" />
+              <div className="absolute inset-0 bg-primary/25 rounded-2xl blur-xl group-hover:bg-primary/35 transition-all duration-300" />
               <img
                 src={logoIcon}
                 alt="Lnkmx"
-                className="relative h-8 w-8 rounded-xl shadow-sm object-contain group-hover:scale-105 transition-transform"
+                className="relative h-10 w-10 rounded-2xl shadow-lg object-contain group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <h1 className="text-lg font-black text-primary tracking-tight">lnkmx</h1>
+            <h1 className="text-xl font-black text-primary tracking-tight">lnkmx</h1>
           </div>
           
-          {/* Actions */}
-          <div className="flex items-center gap-1">
+          {/* Actions - Larger touch targets */}
+          <div className="flex items-center gap-2">
             {/* Streak Display - compact */}
             <StreakDisplay userId={userId} compact />
             
-            {/* Token Balance - compact */}
+            {/* Token Balance - compact with larger tap area */}
             <TokenBalanceDisplay onClick={onOpenTokens} compact />
             
-            {/* Sign Out */}
+            {/* Sign Out - Larger */}
             <Button
               variant="ghost"
               size="icon"
               onClick={onSignOut}
               className={cn(
-                "h-9 w-9 rounded-xl",
+                "h-11 w-11 rounded-2xl",
                 "hover:bg-destructive/10 hover:text-destructive",
                 "active:scale-95 transition-all duration-200"
               )}
               aria-label="Sign out"
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-5 w-5" />
             </Button>
           </div>
         </div>
