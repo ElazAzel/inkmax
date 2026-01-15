@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getLucideIcon } from '@/lib/icon-utils';
+import { getTranslatedString } from '@/lib/i18n-helpers';
 import type { Block } from '@/types/page';
 
 interface ReorderModeProps {
@@ -71,7 +72,7 @@ export const ReorderMode = memo(function ReorderMode({
   blocks,
   onReorder,
 }: ReorderModeProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   // Local state for reordering
   const [localBlocks, setLocalBlocks] = useState<Block[]>(blocks);
@@ -92,7 +93,14 @@ export const ReorderMode = memo(function ReorderMode({
 
   const getBlockTitle = (block: Block): string => {
     const content = block as any;
-    return content.title || content.name || content.text?.substring(0, 30) || t(`blocks.${block.type}`, block.type);
+    const lang = i18n.language as 'ru' | 'en' | 'kk';
+    
+    // Handle multilingual strings
+    const title = getTranslatedString(content.title, lang);
+    const name = getTranslatedString(content.name, lang);
+    const text = getTranslatedString(content.text, lang);
+    
+    return title || name || text?.substring(0, 30) || t(`blocks.${block.type}`, block.type);
   };
 
   const getBlockIcon = (type: string) => {
