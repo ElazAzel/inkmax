@@ -286,7 +286,7 @@ export default function Alternatives() {
     <>
       <AlternativesSEOHead currentLanguage={i18n.language} />
       
-      <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="min-h-screen bg-background relative overflow-x-hidden pb-safe">
         {/* Background Effects */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
           <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gradient-to-bl from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[150px] animate-morph" />
