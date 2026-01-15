@@ -140,7 +140,7 @@ export default function Alternatives() {
   const comparisonData = [
     {
       feature: isRussian ? 'Бесплатный тариф' : 'Free Plan',
-      linkmax: { free: true, premium: true, freeNote: isRussian ? '10 блоков' : '10 blocks', premiumNote: isRussian ? 'Безлимит' : 'Unlimited' },
+      linkmax: { free: true, premium: true, freeNote: isRussian ? '10 блоков' : '10 blocks', premiumNote: isRussian ? '25+ блоков' : '25+ blocks' },
     },
     {
       feature: isRussian ? 'AI-генерация страницы' : 'AI Page Generation',
@@ -151,7 +151,7 @@ export default function Alternatives() {
       linkmax: { free: '10+', premium: '25+' },
     },
     {
-      feature: isRussian ? 'CRM система' : 'CRM System',
+      feature: isRussian ? 'Mini-CRM система' : 'Mini-CRM System',
       linkmax: { free: false, premium: true },
     },
     {
@@ -163,31 +163,31 @@ export default function Alternatives() {
       linkmax: { free: false, premium: true },
     },
     {
-      feature: isRussian ? 'Формы и заявки' : 'Lead Forms',
+      feature: isRussian ? 'Формы сбора заявок' : 'Lead Capture Forms',
       linkmax: { free: true, premium: true },
-    },
-    {
-      feature: isRussian ? 'Приём оплат' : 'Payment Processing',
-      linkmax: { free: false, premium: true, premiumNote: 'RoboKassa' },
-    },
-    {
-      feature: isRussian ? 'Кастомный домен' : 'Custom Domain',
-      linkmax: { free: false, premium: true },
     },
     {
       feature: isRussian ? 'Планировщик блоков' : 'Block Scheduler',
       linkmax: { free: false, premium: true },
     },
     {
-      feature: isRussian ? 'Мобильное приложение' : 'Mobile App',
-      linkmax: { free: true, premium: true, freeNote: 'PWA', premiumNote: 'PWA' },
+      feature: isRussian ? 'Мобильный редактор (PWA)' : 'Mobile Editor (PWA)',
+      linkmax: { free: true, premium: true },
     },
     {
-      feature: isRussian ? 'Премиум-темы' : 'Premium Themes',
+      feature: isRussian ? 'Премиум-темы и анимации' : 'Premium Themes & Animations',
       linkmax: { free: false, premium: true },
     },
     {
-      feature: isRussian ? 'Поддержка RU/KZ' : 'RU/KZ Support',
+      feature: isRussian ? 'Прайс-листы и каталоги' : 'Price Lists & Catalogs',
+      linkmax: { free: false, premium: true },
+    },
+    {
+      feature: isRussian ? 'Поддержка RU/EN/KZ' : 'RU/EN/KZ Support',
+      linkmax: { free: true, premium: true },
+    },
+    {
+      feature: isRussian ? 'Токены и геймификация' : 'Tokens & Gamification',
       linkmax: { free: true, premium: true },
     },
   ];
@@ -217,43 +217,43 @@ export default function Alternatives() {
       icon: Bot,
       title: isRussian ? 'AI-генерация за 2 минуты' : 'AI Generation in 2 Minutes',
       description: isRussian 
-        ? 'Опишите свой бизнес — AI создаст профессиональную страницу автоматически. Linktree и Taplink не предлагают такой функции.'
-        : 'Describe your business — AI creates a professional page automatically. Linktree and Taplink don\'t offer this feature.',
+        ? 'Выберите нишу — AI создаст страницу с нужными блоками за 30 секунд. Free: 1/мес, Premium: 5/мес.'
+        : 'Choose your niche — AI creates a page with the right blocks in 30 seconds. Free: 1/mo, Premium: 5/mo.',
     },
     {
       icon: Users,
-      title: isRussian ? 'Встроенная CRM бесплатно' : 'Built-in CRM for Free',
+      title: isRussian ? 'Встроенная Mini-CRM' : 'Built-in Mini-CRM',
       description: isRussian 
-        ? 'Управляйте лидами и клиентами прямо в LinkMAX. В Taplink CRM только на платных тарифах, в Linktree её нет вообще.'
-        : 'Manage leads and clients right in LinkMAX. Taplink CRM is paid only, Linktree doesn\'t have it at all.',
+        ? 'Управляйте заявками прямо в LinkMAX. Статусы, история, Telegram-уведомления — всё в одном месте.'
+        : 'Manage leads right in LinkMAX. Statuses, history, Telegram notifications — all in one place.',
     },
     {
       icon: MessageSquare,
       title: isRussian ? 'Telegram-уведомления' : 'Telegram Notifications',
       description: isRussian 
-        ? 'Получайте уведомления о новых лидах в Telegram мгновенно. Уникальная функция LinkMAX.'
-        : 'Get notifications about new leads in Telegram instantly. Unique LinkMAX feature.',
+        ? 'Мгновенные уведомления о новых заявках в Telegram. Не пропустите ни одного клиента.'
+        : 'Instant notifications about new leads in Telegram. Never miss a client.',
     },
     {
       icon: CreditCard,
-      title: isRussian ? 'Оплата через RoboKassa' : 'RoboKassa Payments',
+      title: isRussian ? 'Доступные цены' : 'Affordable Pricing',
       description: isRussian 
-        ? 'Приём оплат через RoboKassa — удобно для пользователей из СНГ. От 2 610 ₸/мес при годовой подписке.'
-        : 'Accept payments via RoboKassa — convenient for CIS users. From $5.10/month with annual subscription.',
+        ? 'От 2 610₸/мес (~$5.10) при годовой подписке. Оплата через RoboKassa. 14 дней на возврат.'
+        : 'From $5.10/month with annual subscription. Payment via RoboKassa. 14-day refund policy.',
     },
     {
       icon: Globe,
-      title: isRussian ? 'Локализация RU/KZ' : 'RU/KZ Localization',
+      title: isRussian ? 'Локализация RU/EN/KZ' : 'RU/EN/KZ Localization',
       description: isRussian 
-        ? 'Полная поддержка русского и казахского языков. Linktree работает только на английском.'
-        : 'Full Russian and Kazakh language support. Linktree only works in English.',
+        ? 'Полная поддержка русского, английского и казахского языков.'
+        : 'Full Russian, English and Kazakh language support.',
     },
     {
       icon: BarChart3,
-      title: isRussian ? 'Расширенная аналитика' : 'Advanced Analytics',
+      title: isRussian ? 'Аналитика и геймификация' : 'Analytics & Gamification',
       description: isRussian 
-        ? 'Детальная статистика кликов, источников трафика и поведения пользователей.'
-        : 'Detailed click statistics, traffic sources and user behavior analytics.',
+        ? 'Статистика кликов, Linkkon токены, достижения, стрики. Развивайте страницу как игру.'
+        : 'Click stats, Linkkon tokens, achievements, streaks. Grow your page like a game.',
     },
   ];
 
