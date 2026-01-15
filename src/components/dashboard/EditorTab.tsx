@@ -1,6 +1,6 @@
 /**
  * EditorTab - Main editor view with block canvas
- * Features: undo/redo, structure view, reorder mode, floating toolbar
+ * Features: undo/redo, unified block manager, floating toolbar
  */
 import { memo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,26 +10,21 @@ import {
   Redo2,
   Plus,
   Layers,
-  ArrowUpDown,
   Eye,
   Upload,
   Wand2,
-  Save,
-  LayoutTemplate,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PreviewEditor } from '@/components/editor/PreviewEditor';
-import { StructureView } from '@/components/editor/StructureView';
-import { ReorderMode } from '@/components/editor/ReorderMode';
+import { BlockManager } from '@/components/editor/BlockManager';
 import { BlockInsertButton } from '@/components/editor/BlockInsertButton';
 import { AutoSaveIndicator, type SaveStatus } from '@/components/editor/AutoSaveIndicator';
 import { cn } from '@/lib/utils';
 import type { Block, GridConfig } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
-
-import type { EditorHistoryType, HistoryAction } from '@/hooks/useEditorHistory';
+import type { EditorHistoryType } from '@/hooks/useEditorHistory';
 
 interface EditorTabProps {
   blocks: Block[];
@@ -75,8 +70,7 @@ export const EditorTab = memo(function EditorTab({
   const { t } = useTranslation();
   
   // UI State
-  const [showStructure, setShowStructure] = useState(false);
-  const [showReorder, setShowReorder] = useState(false);
+  const [showBlockManager, setShowBlockManager] = useState(false);
   const [showAddBlock, setShowAddBlock] = useState(false);
 
   // Handle undo with toast
@@ -122,46 +116,67 @@ export const EditorTab = memo(function EditorTab({
     });
   }, [onDeleteBlock, t, handleUndo]);
 
-  // Handle reorder with history
+  // Handle reorder
   const handleReorderBlocks = useCallback((newBlocks: Block[]) => {
     onReorderBlocks(newBlocks);
   }, [onReorderBlocks]);
+
+  // Handle block select from manager
+  const handleBlockSelect = useCallback((blockId: string) => {
+    const element = document.querySelector(`[data-block-id="${blockId}"]`);
+    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    const block = blocks.find(b => b.id === blockId);
+    if (block) {
+      onEditBlock(block);
+    }
+  }, [blocks, onEditBlock]);
+
+  // Handle duplicate
+  const handleDuplicate = useCallback((blockId: string) => {
+    const block = blocks.find(b => b.id === blockId);
+    if (block) {
+      const index = blocks.indexOf(block);
+      onInsertBlock(block.type, index + 1);
+      toast.success(t('editor.blockDuplicated', 'Блок дублирован'));
+    }
+  }, [blocks, onInsertBlock, t]);
 
   return (
     <div className="min-h-screen safe-area-top relative">
       {/* Top Toolbar - Fixed */}
       <header className="sticky top-0 z-40 glass-nav">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-3 py-2">
           {/* Left: Undo/Redo */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "h-11 w-11 rounded-2xl transition-all",
+                "h-10 w-10 rounded-xl transition-all",
                 editorHistory.canUndo && "bg-muted/50"
               )}
               onClick={handleUndo}
               disabled={!editorHistory.canUndo}
             >
-              <Undo2 className="h-5 w-5" />
+              <Undo2 className="h-4.5 w-4.5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "h-11 w-11 rounded-2xl transition-all",
+                "h-10 w-10 rounded-xl transition-all",
                 editorHistory.canRedo && "bg-muted/50"
               )}
               onClick={handleRedo}
               disabled={!editorHistory.canRedo}
             >
-              <Redo2 className="h-5 w-5" />
+              <Redo2 className="h-4.5 w-4.5" />
             </Button>
             
             {/* History indicator */}
             {editorHistory.historyLength > 0 && (
-              <Badge variant="secondary" className="ml-1 h-6 px-2 text-xs">
+              <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">
                 {editorHistory.currentIndex + 1}/{editorHistory.historyLength}
               </Badge>
             )}
@@ -170,25 +185,15 @@ export const EditorTab = memo(function EditorTab({
           {/* Center: Save status */}
           <AutoSaveIndicator status={saveStatus} />
 
-          {/* Right: Quick actions */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-11 w-11 rounded-2xl"
-              onClick={() => setShowStructure(true)}
-            >
-              <Layers className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-11 w-11 rounded-2xl"
-              onClick={() => setShowReorder(true)}
-            >
-              <ArrowUpDown className="h-5 w-5" />
-            </Button>
-          </div>
+          {/* Right: Block Manager */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 rounded-xl"
+            onClick={() => setShowBlockManager(true)}
+          >
+            <Layers className="h-4.5 w-4.5" />
+          </Button>
         </div>
       </header>
 
@@ -209,16 +214,16 @@ export const EditorTab = memo(function EditorTab({
       </div>
 
       {/* Floating Bottom Toolbar */}
-      <div className="fixed bottom-20 left-0 right-0 z-40 px-4">
-        <div className="max-w-lg mx-auto">
-          <div className="flex items-center justify-between gap-2 p-2 rounded-[24px] bg-card/90 backdrop-blur-2xl border border-border/20 shadow-2xl">
+      <div className="fixed bottom-20 left-0 right-0 z-40 px-3">
+        <div className="max-w-md mx-auto">
+          <div className="flex items-center justify-between gap-1.5 p-1.5 rounded-[20px] bg-card/92 backdrop-blur-2xl border border-border/15 shadow-2xl">
             {/* Add Block - Primary */}
             <Button
               size="lg"
-              className="flex-1 h-14 rounded-2xl text-base font-bold shadow-lg shadow-primary/25"
+              className="flex-1 h-12 rounded-2xl text-sm font-bold shadow-md shadow-primary/20"
               onClick={() => setShowAddBlock(true)}
             >
-              <Plus className="h-5 w-5 mr-2" />
+              <Plus className="h-4.5 w-4.5 mr-1.5" />
               {t('editor.addBlock', 'Добавить')}
             </Button>
             
@@ -227,81 +232,43 @@ export const EditorTab = memo(function EditorTab({
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-14 w-14 rounded-2xl"
+                className="h-12 w-12 rounded-2xl"
                 onClick={onOpenAI}
               >
-                <Wand2 className="h-5 w-5 text-violet-500" />
+                <Wand2 className="h-4.5 w-4.5 text-violet-500" />
               </Button>
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-14 w-14 rounded-2xl"
+                className="h-12 w-12 rounded-2xl"
                 onClick={onPreview}
               >
-                <Eye className="h-5 w-5 text-blue-500" />
+                <Eye className="h-4.5 w-4.5 text-blue-500" />
               </Button>
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-14 w-14 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25"
+                className="h-12 w-12 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25"
                 onClick={onShare}
               >
-                <Upload className="h-5 w-5 text-emerald-500" />
+                <Upload className="h-4.5 w-4.5 text-emerald-500" />
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Structure View Sheet */}
-      <StructureView
-        open={showStructure}
-        onOpenChange={setShowStructure}
+      {/* Unified Block Manager */}
+      <BlockManager
+        open={showBlockManager}
+        onOpenChange={setShowBlockManager}
         blocks={blocks}
-        onBlockSelect={(blockId) => {
-          setShowStructure(false);
-          // Scroll to block
-          const element = document.querySelector(`[data-block-id="${blockId}"]`);
-          element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }}
+        onBlockSelect={handleBlockSelect}
         onBlockHide={(blockId) => {
           toast.success(t('editor.blockHidden', 'Блок скрыт'));
         }}
-        onBlockDuplicate={(blockId) => {
-          const block = blocks.find(b => b.id === blockId);
-          if (block) {
-            const index = blocks.indexOf(block);
-            onInsertBlock(block.type, index + 1);
-            toast.success(t('editor.blockDuplicated', 'Блок дублирован'));
-          }
-        }}
-        onBlockDelete={(blockId) => {
-          handleDeleteBlock(blockId);
-          setShowStructure(false);
-        }}
-        onBlockMoveUp={(blockId) => {
-          const index = blocks.findIndex(b => b.id === blockId);
-          if (index > 0) {
-            const newBlocks = [...blocks];
-            [newBlocks[index - 1], newBlocks[index]] = [newBlocks[index], newBlocks[index - 1]];
-            handleReorderBlocks(newBlocks);
-          }
-        }}
-        onBlockMoveDown={(blockId) => {
-          const index = blocks.findIndex(b => b.id === blockId);
-          if (index < blocks.length - 1) {
-            const newBlocks = [...blocks];
-            [newBlocks[index], newBlocks[index + 1]] = [newBlocks[index + 1], newBlocks[index]];
-            handleReorderBlocks(newBlocks);
-          }
-        }}
-      />
-
-      {/* Reorder Mode Sheet */}
-      <ReorderMode
-        open={showReorder}
-        onOpenChange={setShowReorder}
-        blocks={blocks}
+        onBlockDuplicate={handleDuplicate}
+        onBlockDelete={handleDeleteBlock}
         onReorder={handleReorderBlocks}
       />
 
