@@ -1,7 +1,7 @@
-# LinkMAX Features
+# lnkmx Features
 
 ## Overview
-LinkMAX is an AI-powered link-in-bio platform for creators, freelancers, and small businesses. Create personalized mini-websites in 2 minutes with AI-generated content.
+lnkmx is an AI-powered link-in-bio platform for creators, freelancers, and small businesses. Create personalized mini-websites in 1 minute with AI-generated content.
 
 ## Block Types
 
@@ -43,7 +43,7 @@ LinkMAX is an AI-powered link-in-bio platform for creators, freelancers, and sma
 
 ### Social Blocks
 - **Shoutout** - Feature other creators
-- **Community** - Community links
+- **Community** - Community links (Business tier)
 
 ## AI Features
 

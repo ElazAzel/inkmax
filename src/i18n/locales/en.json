@@ -77,7 +77,7 @@
   },
   "onboarding": {
     "nicheTitle": "Choose Your Niche",
-    "nicheDescription": "AI will create your personal page in 2 minutes",
+    "nicheDescription": "AI will create your personal page in 1 minute",
     "detailsTitle": "Tell Us About Yourself",
     "detailsDescription": "This information helps AI create the perfect page",
     "yourName": "Your Name or Brand",
@@ -115,7 +115,7 @@
     },
     "hero": {
       "badge": "AI-powered link-in-bio",
-      "title": "AI page in 2 minutes,",
+      "title": "AI page in 1 minute,",
       "titleHighlight": "that collects leads",
       "description": "For beauty masters, experts and small businesses. AI designer + AI copywriter + Mini-CRM + Telegram notifications about new clients.",
       "usernamePlaceholder": "yourname",
@@ -176,8 +176,8 @@
         "description": "Headlines, product descriptions, SEO — all generated automatically"
       },
       "speed": {
-        "title": "2 minutes to publish",
-        "description": "Choose your niche — AI creates a ready page with content"
+        "title": "1 minute to publish",
+        "description": "Choose your niche - AI creates a ready page with content"
       },
       "design": {
         "title": "Premium design",
@@ -262,7 +262,7 @@
       "subtitle": "Not just a builder — a smart assistant for your business",
       "ai": {
         "title": "AI does everything for you",
-        "desc": "Describe your business — get a ready page in 2 minutes. No manual construction."
+        "desc": "Describe your business - get a ready page in 1 minute. No manual construction."
       },
       "price": {
         "title": "0% commission",
@@ -309,7 +309,7 @@
       "title": "Create your page right now"
     },
     "howItWorks": {
-      "badge": "2 minutes to results",
+      "badge": "1 minute to results",
       "title": "How It Works",
       "subtitle": "3 steps to a ready page",
       "cta": "Try for free",

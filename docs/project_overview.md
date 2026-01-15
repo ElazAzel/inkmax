@@ -1,8 +1,8 @@
-# LinkMAX Project Overview
+# lnkmx Project Overview
 
 ## Vision
 
-LinkMAX is an AI-powered link-in-bio platform that automatically generates personalized mini-websites for creators, experts, and small businesses in 2 minutes. We're replacing time-consuming manual page creation with intelligent, AI-driven design and content generation.
+lnkmx is an AI-powered link-in-bio platform that automatically generates personalized mini-websites for creators, experts, and small businesses in 1 minute. We're replacing time-consuming manual page creation with intelligent, AI-driven design and content generation.
 
 ## Mission
 
@@ -12,7 +12,7 @@ Democratize professional web presence for creators and small businesses in the C
 
 **Primary Market:** CIS region (replacing outdated Taplink, Hipolink)  
 **Secondary Market:** Global creator economy  
-**Competitive Edge:** AI-first approach + premium design + 2-minute setup
+**Competitive Edge:** AI-first approach + premium design + 1-minute setup
 
 ## Business Model
 
@@ -101,7 +101,7 @@ Multi-currency (KZT, RUB, USD, EUR)
 
 ## Feature Roadmap Status
 
-### ✅ Shipped
+### Shipped
 - Drag-and-drop block editor
 - 20+ block types
 - AI page generation
@@ -117,12 +117,12 @@ Multi-currency (KZT, RUB, USD, EUR)
 - Multi-language (RU/EN/KK)
 - PWA support
 
-### 🚧 In Progress
+### In Progress
 - RoboKassa payment integration
 - Advanced analytics (funnels, heatmaps)
 - Template selling marketplace
 
-### 📋 Planned
+### Planned
 - White-label solution
 - API access for developers
 - Additional payment gateways
@@ -181,7 +181,7 @@ Multi-currency (KZT, RUB, USD, EUR)
 
 ### Business Metrics
 - MRR (Monthly Recurring Revenue)
-- Conversion rate (free → pro)
+- Conversion rate (free - pro)
 - Churn rate
 - LTV (Lifetime Value)
 
