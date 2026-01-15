@@ -281,10 +281,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const howToSchema = {
       '@context': 'https://schema.org',
       '@type': 'HowTo',
-      name: isRussian ? 'Как создать link in bio бесплатно' : 'How to create a link in bio for free',
+      name: isRussian ? 'Как создать link in bio бесплатно с lnkmx' : 'How to create a link in bio for free with lnkmx',
       description: isRussian
-        ? 'Пошаговая инструкция создания страницы мультиссылок в LinkMAX'
-        : 'Step-by-step guide to creating a link in bio page with LinkMAX',
+        ? 'Пошаговая инструкция создания страницы мультиссылок в lnkmx (LinkMAX) - лучшая альтернатива Taplink и Linktree'
+        : 'Step-by-step guide to creating a link in bio page with lnkmx (LinkMAX) - best Taplink and Linktree alternative',
       totalTime: 'PT2M',
       estimatedCost: {
         '@type': 'MonetaryAmount',
@@ -293,26 +293,26 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       },
       tool: {
         '@type': 'HowToTool',
-        name: 'LinkMAX'
+        name: 'lnkmx'
       },
       step: [
         {
           '@type': 'HowToStep',
           position: 1,
           name: isRussian ? 'Регистрация' : 'Sign up',
-          text: isRussian ? 'Создайте бесплатный аккаунт на lnkmx.my' : 'Create a free account at lnkmx.my'
+          text: isRussian ? 'Создайте бесплатный аккаунт на lnkmx.my - альтернатива Taplink' : 'Create a free account at lnkmx.my - Taplink alternative'
         },
         {
           '@type': 'HowToStep',
           position: 2,
           name: isRussian ? 'AI-генерация' : 'AI generation',
-          text: isRussian ? 'Опишите свой бизнес и AI создаст страницу автоматически' : 'Describe your business and AI will create your page automatically'
+          text: isRussian ? 'Опишите свой бизнес и AI создаст страницу автоматически за 2 минуты' : 'Describe your business and AI will create your page automatically in 2 minutes'
         },
         {
           '@type': 'HowToStep',
           position: 3,
           name: isRussian ? 'Публикация' : 'Publish',
-          text: isRussian ? 'Опубликуйте страницу и добавьте ссылку в профиль' : 'Publish your page and add the link to your bio'
+          text: isRussian ? 'Опубликуйте страницу и добавьте ссылку в профиль Instagram или TikTok' : 'Publish your page and add the link to your Instagram or TikTok bio'
         }
       ]
     };
@@ -444,13 +444,15 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       '@type': 'Service',
       serviceType: isRussian ? 'Конструктор страниц link-in-bio' : 'Link in Bio Builder',
       name: 'lnkmx',
+      alternateName: ['LinkMAX', 'lnkmx.my', 'LNKMX'],
       description: isRussian
-        ? 'Профессиональный сервис создания страниц link-in-bio с AI-генерацией, аналитикой и CRM'
-        : 'Professional link-in-bio page builder service with AI generation, analytics and CRM',
+        ? 'lnkmx (LinkMAX) - профессиональный сервис создания страниц link-in-bio с AI-генерацией, аналитикой и CRM. Лучшая альтернатива Taplink и Linktree.'
+        : 'lnkmx (LinkMAX) - professional link-in-bio page builder service with AI generation, analytics and CRM. Best Taplink and Linktree alternative.',
       url: 'https://lnkmx.my/',
       provider: {
         '@type': 'Organization',
-        name: 'LinkMAX',
+        name: 'lnkmx',
+        alternateName: 'LinkMAX',
         url: 'https://lnkmx.my/'
       },
       areaServed: {
@@ -460,19 +462,19 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       audience: {
         '@type': 'Audience',
         audienceType: isRussian 
-          ? 'Блогеры, эксперты, фрилансеры, малый бизнес'
-          : 'Bloggers, experts, freelancers, small businesses'
+          ? 'Блогеры, эксперты, фрилансеры, малый бизнес, бьюти-мастера'
+          : 'Bloggers, experts, freelancers, small businesses, beauty masters'
       },
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
-        name: isRussian ? 'Тарифные планы LinkMAX' : 'LinkMAX Pricing Plans',
+        name: isRussian ? 'Тарифные планы lnkmx' : 'lnkmx Pricing Plans',
         itemListElement: [
           {
             '@type': 'Offer',
             itemOffered: {
               '@type': 'Service',
               name: 'Free Plan',
-              description: isRussian ? '10 блоков, базовая аналитика' : '10 blocks, basic analytics'
+              description: isRussian ? '6 блоков, базовая аналитика' : '6 blocks, basic analytics'
             },
             price: '0',
             priceCurrency: 'USD'
@@ -484,28 +486,11 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
               name: 'Pro Plan',
               description: isRussian ? 'Безлимитные блоки, AI, CRM, Telegram' : 'Unlimited blocks, AI, CRM, Telegram'
             },
-            price: '3.15',
+            price: '2.61',
             priceCurrency: 'USD',
             priceSpecification: {
               '@type': 'UnitPriceSpecification',
-              price: '3.15',
-              priceCurrency: 'USD',
-              billingDuration: 'P1M',
-              unitText: isRussian ? 'в месяц' : 'per month'
-            }
-          },
-          {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Business Plan',
-              description: isRussian ? 'Команды, приоритетная поддержка' : 'Teams, priority support'
-            },
-            price: '7.50',
-            priceCurrency: 'USD',
-            priceSpecification: {
-              '@type': 'UnitPriceSpecification',
-              price: '7.50',
+              price: '2.61',
               priceCurrency: 'USD',
               billingDuration: 'P1M',
               unitText: isRussian ? 'в месяц' : 'per month'
@@ -524,11 +509,11 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const webApplicationSchema = {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      name: 'LinkMAX',
-      alternateName: ['LinkMAX Bio', 'LNKMX', 'Link MAX'],
+      name: 'lnkmx',
+      alternateName: ['LinkMAX', 'lnkmx.my', 'LNKMX', 'Link MAX', 'linkmax'],
       url: 'https://lnkmx.my/',
       applicationCategory: 'BusinessApplication',
-      applicationSubCategory: ['Link in Bio', 'Marketing Tool', 'Social Media Tool'],
+      applicationSubCategory: ['Link in Bio', 'Marketing Tool', 'Social Media Tool', 'Taplink Alternative', 'Linktree Alternative'],
       browserRequirements: 'Requires JavaScript. Requires HTML5.',
       operatingSystem: 'All',
       permissions: 'none',
@@ -542,7 +527,8 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       isFamilyFriendly: true,
       creator: {
         '@type': 'Organization',
-        name: 'LinkMAX',
+        name: 'lnkmx',
+        alternateName: 'LinkMAX',
         url: 'https://lnkmx.my/'
       },
       offers: {
@@ -557,12 +543,12 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
         {
           '@type': 'ImageObject',
           url: 'https://lnkmx.my/screenshot-desktop.png',
-          caption: isRussian ? 'Редактор LinkMAX на десктопе' : 'LinkMAX editor on desktop'
+          caption: isRussian ? 'Редактор lnkmx на десктопе' : 'lnkmx editor on desktop'
         },
         {
           '@type': 'ImageObject',
           url: 'https://lnkmx.my/screenshot-mobile.png',
-          caption: isRussian ? 'Редактор LinkMAX на мобильном' : 'LinkMAX editor on mobile'
+          caption: isRussian ? 'Редактор lnkmx на мобильном' : 'lnkmx editor on mobile'
         }
       ],
       featureList: [
@@ -576,22 +562,23 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
         isRussian ? '0% комиссии с продаж' : '0% commission on sales'
       ],
       keywords: isRussian
-        ? 'link in bio, мультиссылка, linktree альтернатива, taplink аналог, конструктор визиток'
-        : 'link in bio, bio link, linktree alternative, taplink alternative, bio page builder'
+        ? 'lnkmx, linkmax, link in bio, мультиссылка, linktree альтернатива, taplink аналог, taplink альтернатива, конструктор визиток'
+        : 'lnkmx, linkmax, link in bio, bio link, linktree alternative, taplink alternative, bio page builder, free taplink'
     };
 
     // CollectionPage Schema - for gallery/templates
     const collectionPageSchema = {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      name: isRussian ? 'Галерея страниц LinkMAX' : 'LinkMAX Page Gallery',
+      name: isRussian ? 'Галерея страниц lnkmx' : 'lnkmx Page Gallery',
       description: isRussian
-        ? 'Вдохновляйтесь лучшими страницами link-in-bio созданными пользователями LinkMAX'
-        : 'Get inspired by the best link-in-bio pages created by LinkMAX users',
+        ? 'Вдохновляйтесь лучшими страницами link-in-bio созданными пользователями lnkmx (LinkMAX) - альтернатива Taplink галерея'
+        : 'Get inspired by the best link-in-bio pages created by lnkmx (LinkMAX) users - Taplink alternative gallery',
       url: 'https://lnkmx.my/gallery',
       isPartOf: {
         '@type': 'WebSite',
-        name: 'LinkMAX',
+        name: 'lnkmx',
+        alternateName: 'LinkMAX',
         url: 'https://lnkmx.my/'
       },
       mainEntity: {
@@ -605,10 +592,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const videoSchema = {
       '@context': 'https://schema.org',
       '@type': 'VideoObject',
-      name: isRussian ? 'Как создать link in bio за 2 минуты с LinkMAX' : 'How to create link in bio in 2 minutes with LinkMAX',
+      name: isRussian ? 'Как создать link in bio за 2 минуты с lnkmx - альтернатива Taplink' : 'How to create link in bio in 2 minutes with lnkmx - Taplink alternative',
       description: isRussian
-        ? 'Видео-инструкция по созданию профессиональной страницы мультиссылок с помощью AI в LinkMAX'
-        : 'Video tutorial on creating a professional link-in-bio page with AI in LinkMAX',
+        ? 'Видео-инструкция по созданию профессиональной страницы мультиссылок с помощью AI в lnkmx (LinkMAX) - лучшая альтернатива Taplink и Linktree'
+        : 'Video tutorial on creating a professional link-in-bio page with AI in lnkmx (LinkMAX) - best Taplink and Linktree alternative',
       thumbnailUrl: 'https://lnkmx.my/video-thumbnail.jpg',
       uploadDate: '2024-01-01',
       duration: 'PT2M',
@@ -621,7 +608,8 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
       },
       publisher: {
         '@type': 'Organization',
-        name: 'LinkMAX',
+        name: 'lnkmx',
+        alternateName: 'LinkMAX',
         logo: {
           '@type': 'ImageObject',
           url: 'https://lnkmx.my/favicon.jpg'
@@ -731,10 +719,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const comparisonSchema = {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: isRussian ? 'Сравнение LinkMAX vs Linktree vs Taplink' : 'LinkMAX vs Linktree vs Taplink Comparison',
+      name: isRussian ? 'Сравнение lnkmx (LinkMAX) vs Linktree vs Taplink' : 'lnkmx (LinkMAX) vs Linktree vs Taplink Comparison',
       description: isRussian
-        ? 'Детальное сравнение LinkMAX с конкурентами Linktree и Taplink'
-        : 'Detailed comparison of LinkMAX with competitors Linktree and Taplink',
+        ? 'Детальное сравнение lnkmx (LinkMAX) с конкурентами Linktree и Taplink - бесплатная альтернатива'
+        : 'Detailed comparison of lnkmx (LinkMAX) with competitors Linktree and Taplink - free alternative',
       url: 'https://lnkmx.my/alternatives',
       itemListElement: [
         {
@@ -742,7 +730,8 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
           position: 1,
           item: {
             '@type': 'SoftwareApplication',
-            name: 'LinkMAX',
+            name: 'lnkmx',
+            alternateName: 'LinkMAX',
             applicationCategory: 'Link in Bio',
             offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
             aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', ratingCount: '2847' }
@@ -777,7 +766,7 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
         {
           '@type': 'ListItem',
           position: 1,
-          name: 'LinkMAX',
+          name: 'lnkmx',
           item: 'https://lnkmx.my/'
         },
         {
@@ -797,6 +786,12 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
           position: 4,
           name: isRussian ? 'Галерея' : 'Gallery',
           item: 'https://lnkmx.my/gallery'
+        },
+        {
+          '@type': 'ListItem',
+          position: 5,
+          name: isRussian ? 'Альтернативы Taplink и Linktree' : 'Taplink and Linktree Alternatives',
+          item: 'https://lnkmx.my/alternatives'
         }
       ]
     };
