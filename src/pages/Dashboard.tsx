@@ -25,7 +25,7 @@ import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { TemplateMarketplace } from '@/components/editor/TemplateMarketplace';
 import { SaveTemplateDialog } from '@/components/editor/SaveTemplateDialog';
 import { AIGenerator } from '@/components/AIGenerator';
-import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
+// OnboardingWizard removed per v1.2
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
 import { InstallPromptDialog } from '@/components/InstallPromptDialog';
 import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublishDialog';
@@ -63,7 +63,6 @@ export default function Dashboard() {
   
   // UI State
   const [migrationKey, setMigrationKey] = useState(0);
-  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
   const [templateGalleryOpen, setTemplateGalleryOpen] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showFriends, setShowFriends] = useState(false);
@@ -72,15 +71,8 @@ export default function Dashboard() {
   const [showTokens, setShowTokens] = useState(false);
   const [showMarketplace, setShowMarketplace] = useState(false);
 
-  // Check if new user needs onboarding
-  useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('linkmax_onboarding_completed');
-    const isNewUser = dashboard.pageData?.blocks?.length === 1; // Only profile block
-    
-    if (!hasCompletedOnboarding && isNewUser && dashboard.user) {
-      setShowOnboardingWizard(true);
-    }
-  }, [dashboard.pageData?.blocks?.length, dashboard.user]);
+  // Onboarding disabled per v1.2 spec
+  // Users go directly to editor without wizard
 
   // Handle tab change
   const handleTabChange = useCallback((tabId: string) => {
@@ -90,41 +82,6 @@ export default function Dashboard() {
       setSearchParams({ tab: tabId });
     }
   }, [navigate, setSearchParams]);
-
-  // Handle onboarding complete
-  const handleOnboardingComplete = useCallback((data: {
-    profile: { name: string; bio: string };
-    blocks: Block[];
-    niche: string;
-  }) => {
-    // Update profile
-    if (dashboard.profileBlock) {
-      dashboard.updateBlock(dashboard.profileBlock.id, {
-        name: data.profile.name,
-        bio: data.profile.bio,
-      });
-    }
-    
-    // Add generated blocks
-    data.blocks.forEach((block, index) => {
-      dashboard.blockEditor.handleInsertBlock(block.type, index + 1);
-      // Update block content after creation
-      setTimeout(() => {
-        const blocks = dashboard.pageData?.blocks || [];
-        const newBlock = blocks[index + 1];
-        if (newBlock) {
-          dashboard.updateBlock(newBlock.id, block);
-        }
-      }, 100);
-    });
-    
-    // Update niche
-    dashboard.updateNiche(data.niche as any);
-    
-    // Save
-    dashboard.save();
-    setShowOnboardingWizard(false);
-  }, [dashboard]);
 
   // Listen for global events
   useEffect(() => {
@@ -289,12 +246,7 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Onboarding Wizard */}
-      <OnboardingWizard
-        open={showOnboardingWizard}
-        onClose={() => setShowOnboardingWizard(false)}
-        onComplete={handleOnboardingComplete}
-      />
+      {/* Onboarding Wizard - Disabled per v1.2 */}
 
       {/* Template Gallery */}
       <TemplateGallery
