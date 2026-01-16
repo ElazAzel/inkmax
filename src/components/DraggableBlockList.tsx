@@ -89,8 +89,6 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
         return `Видео: ${block.title ? getTranslatedString(block.title, currentLang) : 'Без названия'}`;
       case 'carousel':
         return `Галерея: ${block.title ? getTranslatedString(block.title, currentLang) : `${block.images?.length || 0} фото`}`;
-      case 'search':
-        return `Поиск: ${block.title ? getTranslatedString(block.title, currentLang) : 'Поиск'}`;
       case 'custom_code':
         return `HTML код: ${block.title ? getTranslatedString(block.title, currentLang) : 'Без названия'}`;
       case 'messenger':

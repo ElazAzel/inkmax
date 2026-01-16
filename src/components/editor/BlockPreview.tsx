@@ -131,13 +131,6 @@ const PREVIEW_BLOCKS: Record<string, Block> = {
     revealText: 'Скидка 20%!',
     isPremium: true,
   },
-  search: {
-    id: 'preview-search',
-    type: 'search',
-    title: 'AI Поиск',
-    placeholder: 'Задайте вопрос...',
-    isPremium: true,
-  },
 };
 
 export const BlockPreview = memo(function BlockPreview({ blockType }: BlockPreviewProps) {

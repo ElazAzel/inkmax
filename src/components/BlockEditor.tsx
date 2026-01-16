@@ -39,7 +39,6 @@ const DownloadBlockEditor = lazy(() => import('./block-editors/DownloadBlockEdit
 const NewsletterBlockEditor = lazy(() => import('./block-editors/NewsletterBlockEditor').then(m => ({ default: m.NewsletterBlockEditor })));
 const TestimonialBlockEditor = lazy(() => import('./block-editors/TestimonialBlockEditor').then(m => ({ default: m.TestimonialBlockEditor })));
 const ScratchBlockEditor = lazy(() => import('./block-editors/ScratchBlockEditor').then(m => ({ default: m.ScratchBlockEditor })));
-const SearchBlockEditor = lazy(() => import('./block-editors/SearchBlockEditor').then(m => ({ default: m.SearchBlockEditor })));
 const MapBlockEditor = lazy(() => import('./block-editors/MapBlockEditor').then(m => ({ default: m.MapBlockEditor })));
 const AvatarBlockEditor = lazy(() => import('./block-editors/AvatarBlockEditor').then(m => ({ default: m.AvatarBlockEditor })));
 const SeparatorBlockEditor = lazy(() => import('./block-editors/SeparatorBlockEditor').then(m => ({ default: m.SeparatorBlockEditor })));
@@ -203,13 +202,6 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <Suspense fallback={<EditorFallback />}>
             <ScratchBlockEditor {...commonProps} />
-          </Suspense>
-        );
-      
-      case 'search':
-        return (
-          <Suspense fallback={<EditorFallback />}>
-            <SearchBlockEditor {...commonProps} />
           </Suspense>
         );
       

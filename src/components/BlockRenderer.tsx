@@ -38,7 +38,6 @@ const ImageBlock = lazy(() => import('./blocks/ImageBlock').then(m => ({ default
 const ProductBlock = lazy(() => import('./blocks/ProductBlock').then(m => ({ default: m.ProductBlock })));
 const VideoBlock = lazy(() => import('./blocks/VideoBlock').then(m => ({ default: m.VideoBlock })));
 const CarouselBlock = lazy(() => import('./blocks/CarouselBlock').then(m => ({ default: m.CarouselBlock })));
-const SearchBlock = lazy(() => import('./blocks/SearchBlock').then(m => ({ default: m.SearchBlock })));
 const CustomCodeBlock = lazy(() => import('./blocks/CustomCodeBlock').then(m => ({ default: m.CustomCodeBlock })));
 const MessengerBlock = lazy(() => import('./blocks/MessengerBlock').then(m => ({ default: m.MessengerBlock })));
 const FormBlock = lazy(() => import('./blocks/FormBlock').then(m => ({ default: m.FormBlock })));
@@ -191,14 +190,6 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
             <CarouselBlock block={block} />
           </Suspense>
         </TrackableWrapper>
-      );
-    case 'search':
-      return (
-        <div className={animationClass} style={animationStyle}>
-          <Suspense fallback={<BlockSkeleton />}>
-            <SearchBlock block={block} />
-          </Suspense>
-        </div>
       );
     case 'custom_code':
       return (

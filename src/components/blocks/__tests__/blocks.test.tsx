@@ -9,7 +9,6 @@ import { ImageBlock } from '../ImageBlock';
 import { ProductBlock } from '../ProductBlock';
 import { VideoBlock } from '../VideoBlock';
 import { CarouselBlock } from '../CarouselBlock';
-import { SearchBlock } from '../SearchBlock';
 import { CustomCodeBlock } from '../CustomCodeBlock';
 import { MessengerBlock } from '../MessengerBlock';
 import { FormBlock } from '../FormBlock';
@@ -161,19 +160,6 @@ describe('Block Components', () => {
       const emptyBlock = { ...fixtures.mockCarouselBlock, images: [] };
       render(<CarouselBlock block={emptyBlock} />);
       expect(screen.getByText('No images added to carousel')).toBeInTheDocument();
-    });
-  });
-
-  describe('SearchBlock', () => {
-    it('renders search input and button', () => {
-      render(<SearchBlock block={fixtures.mockSearchBlock} />);
-      expect(screen.getByPlaceholderText('Ask a question...')).toBeInTheDocument();
-      expect(screen.getByRole('button')).toBeInTheDocument();
-    });
-
-    it('renders title when provided', () => {
-      render(<SearchBlock block={fixtures.mockSearchBlock} />);
-      expect(screen.getByText('Search')).toBeInTheDocument();
     });
   });
 

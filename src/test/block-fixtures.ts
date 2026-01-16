@@ -8,7 +8,6 @@ import type {
   ProductBlock,
   VideoBlock,
   CarouselBlock,
-  SearchBlock,
   CustomCodeBlock,
   MessengerBlock,
   FormBlock,
@@ -110,14 +109,6 @@ export const mockCarouselBlock: CarouselBlock = {
     { url: 'https://example.com/image2.jpg', alt: 'Image 2' },
   ],
   autoPlay: false,
-};
-
-export const mockSearchBlock: SearchBlock = {
-  id: 'search-1',
-  type: 'search',
-  title: 'Search',
-  placeholder: 'Ask a question...',
-  isPremium: true,
 };
 
 export const mockCustomCodeBlock: CustomCodeBlock = {
