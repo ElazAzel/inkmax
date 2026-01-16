@@ -25,7 +25,6 @@ export { PricingBlockEditor } from './PricingBlockEditor';
 export { ProductBlockEditor } from './ProductBlockEditor';
 export { ProfileBlockEditor } from './ProfileBlockEditor';
 export { ScratchBlockEditor } from './ScratchBlockEditor';
-export { SearchBlockEditor } from './SearchBlockEditor';
 export { SeparatorBlockEditor } from './SeparatorBlockEditor';
 export { SocialsBlockEditor } from './SocialsBlockEditor';
 export { TestimonialBlockEditor } from './TestimonialBlockEditor';

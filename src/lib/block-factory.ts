@@ -210,16 +210,6 @@ export function createBlock(type: string): Block {
         isPremium: true,
       };
     
-    case 'search':
-      return {
-        ...baseProps,
-        id: `search-${timestamp}`,
-        type: 'search',
-        title: 'Search',
-        placeholder: 'Search...',
-        isPremium: true,
-      };
-    
     case 'map':
       return {
         ...baseProps,

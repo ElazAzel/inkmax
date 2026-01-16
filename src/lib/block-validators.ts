@@ -185,11 +185,6 @@ export function validateScratchBlock(formData: any): string | null {
   return validateRequired(formData.revealText, 'Reveal text');
 }
 
-export function validateSearchBlock(formData: any): string | null {
-  // Search block has no required fields, placeholder is optional
-  return null;
-}
-
 export function validateMapBlock(formData: any): string | null {
   return validateRequired(formData.embedUrl, 'Embed URL');
 }

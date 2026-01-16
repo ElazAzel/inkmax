@@ -79,7 +79,6 @@ const ALL_BLOCKS: BlockConfig[] = [
   // Other
   { type: 'map', label: 'Карта', Icon: MapPin, color: 'bg-green-600', tier: 'free' },
   { type: 'before_after', label: 'До/После', Icon: Compass, color: 'bg-cyan-600', tier: 'pro' },
-  { type: 'search', label: 'AI Поиск', Icon: Search, color: 'bg-violet-600', tier: 'pro' },
   { type: 'custom_code', label: 'Код', Icon: Code, color: 'bg-slate-600', tier: 'pro' },
   
   // Social - Community
