@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { BadgeCheck, Shield } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface VerifiedBadgeProps {
   type?: 'platform' | 'premium';
@@ -20,6 +21,8 @@ export const VerifiedBadge = memo(function VerifiedBadge({
   className,
   showTooltip = true,
 }: VerifiedBadgeProps) {
+  const { t } = useTranslation();
+
   const sizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-5 w-5',
@@ -53,16 +56,16 @@ export const VerifiedBadge = memo(function VerifiedBadge({
 
   if (!showTooltip) return badge;
 
+  const tooltipText = type === 'platform' 
+    ? t('verification.platformBadge', 'Личность подтверждена платформой')
+    : t('verification.premiumBadge', 'Premium аккаунт');
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{badge}</TooltipTrigger>
         <TooltipContent>
-          <p className="text-sm font-medium">
-            {type === 'platform' 
-              ? 'Личность подтверждена платформой' 
-              : 'Premium аккаунт'}
-          </p>
+          <p className="text-sm font-medium">{tooltipText}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
