@@ -47,6 +47,7 @@ export function useBlockEditor({
   onQuestComplete,
   onClaimBlockToken,
 }: UseBlockEditorOptions) {
+  const { t } = useTranslation();
   const [editingBlock, setEditingBlock] = useState<Block | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [deletedBlocks, setDeletedBlocks] = useState<DeletedBlockInfo[]>([]);
@@ -69,7 +70,7 @@ export function useBlockEditor({
       try {
         // Check premium requirement
         if (isPremiumBlock(blockType)) {
-          toast.error('This block requires Premium');
+          toast.error(t('blocks.premiumRequired', 'This block requires Premium'));
           playError?.();
           return { success: false, error: 'Premium required' };
         }
@@ -77,7 +78,7 @@ export function useBlockEditor({
         const newBlock = createBlock(blockType);
         addBlock(newBlock, position);
         playAdd?.();
-        toast.success('Block added');
+        toast.success(t('blocks.added', 'Block added'));
         onBlockHint?.(blockType, newBlock.id);
         
         // Trigger add_block quest
@@ -90,7 +91,7 @@ export function useBlockEditor({
         
         return { success: true, blockId: newBlock.id };
       } catch (error) {
-        toast.error('Failed to add block');
+        toast.error(t('blocks.addFailed', 'Failed to add block'));
         playError?.();
         return { success: false, error: 'Block creation failed' };
       }
@@ -161,7 +162,7 @@ export function useBlockEditor({
       // Show toast with undo button
       toast(
         <div className="flex items-center gap-3">
-          <span>Block deleted</span>
+          <span>{t('blocks.deleted', 'Block deleted')}</span>
           <Button
             size="sm"
             variant="outline"
@@ -171,11 +172,11 @@ export function useBlockEditor({
               hapticSuccess?.();
               addBlock(block, blockIndex);
               setDeletedBlocks((prev) => prev.filter((d) => d.blockId !== block.id));
-              toast.success('Block restored');
+              toast.success(t('blocks.restored', 'Block restored'));
             }}
           >
             <Undo2 className="h-3.5 w-3.5" />
-            Undo
+            {t('editor.undo', 'Undo')}
           </Button>
         </div>,
         { duration: APP_CONFIG.undoTimeout }
@@ -194,7 +195,7 @@ export function useBlockEditor({
     hapticSuccess?.();
     addBlock(lastDeleted.block, lastDeleted.position);
     setDeletedBlocks((prev) => prev.slice(0, -1));
-    toast.success('Block restored');
+    toast.success(t('blocks.restored', 'Block restored'));
   }, [deletedBlocks, addBlock, hapticSuccess]);
 
   return {
