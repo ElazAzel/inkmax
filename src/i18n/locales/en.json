@@ -514,9 +514,23 @@
   "errors": {
     "general": "An error occurred",
     "notFound": "Page not found",
+    "pageNotFound": "Page not found",
+    "invalidLink": "Invalid or corrupted link",
     "unauthorized": "Authorization required",
     "forbidden": "Access denied",
     "networkError": "Network error"
+  },
+  "language": {
+    "autoTranslate": "Auto-translate",
+    "autoTranslated": "Content auto-translated",
+    "translating": "Translating...",
+    "translationError": "Translation error"
+  },
+  "share": {
+    "shareLink": "Share",
+    "qrCode": "QR Code",
+    "linkCopied": "Link copied",
+    "scanQR": "Scan to open the page"
   },
   "toasts": {
     "sharing": {

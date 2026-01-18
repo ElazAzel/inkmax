@@ -1,8 +1,8 @@
 /**
  * EditorTab - Main editor view with block canvas
- * Features: undo/redo, unified block manager, floating toolbar
+ * Features: undo/redo, unified block manager, floating toolbar, auto-translate
  */
-import { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
@@ -22,8 +22,10 @@ import { PreviewEditor } from '@/components/editor/PreviewEditor';
 import { BlockManager } from '@/components/editor/BlockManager';
 import { BlockInsertButton } from '@/components/editor/BlockInsertButton';
 import { AutoSaveIndicator, type SaveStatus } from '@/components/editor/AutoSaveIndicator';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { Block, GridConfig } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
@@ -72,11 +74,23 @@ export const EditorTab = memo(function EditorTab({
 }: EditorTabProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const { currentLanguage, isTranslating, translateBlocksToLanguage, autoTranslateEnabled } = useLanguage();
   
   // UI State
   const [showBlockManager, setShowBlockManager] = useState(false);
   const [showAddBlock, setShowAddBlock] = useState(false);
   const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('mobile');
+
+  // Auto-translate blocks when language changes
+  useEffect(() => {
+    if (!autoTranslateEnabled || blocks.length === 0) return;
+
+    translateBlocksToLanguage(blocks, currentLanguage).then((translatedBlocks) => {
+      if (translatedBlocks !== blocks) {
+        onReorderBlocks(translatedBlocks);
+      }
+    });
+  }, [currentLanguage]); // Only trigger on language change
 
   // Handle undo with toast
   const handleUndo = useCallback(() => {
@@ -214,8 +228,9 @@ export const EditorTab = memo(function EditorTab({
             )}
           </div>
 
-          {/* Right: Block Manager + Templates */}
+          {/* Right: Language Switcher + Block Manager + Templates */}
           <div className="flex items-center gap-1">
+            <LanguageSwitcher />
             <Button
               variant="ghost"
               size="icon"

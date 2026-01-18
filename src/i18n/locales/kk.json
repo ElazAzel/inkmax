@@ -514,9 +514,23 @@
   "errors": {
     "general": "Қате орын алды",
     "notFound": "Бет табылмады",
+    "pageNotFound": "Бет табылмады",
+    "invalidLink": "Жарамсыз немесе бүлінген сілтеме",
     "unauthorized": "Авторизация қажет",
     "forbidden": "Қол жетімділік жоқ",
     "networkError": "Желі қатесі"
+  },
+  "language": {
+    "autoTranslate": "Автоаударма",
+    "autoTranslated": "Мазмұн автоматты түрде аударылды",
+    "translating": "Аударуда...",
+    "translationError": "Аударма қатесі"
+  },
+  "share": {
+    "shareLink": "Бөлісу",
+    "qrCode": "QR-код",
+    "linkCopied": "Сілтеме көшірілді",
+    "scanQR": "Бетке өту үшін сканерлеңіз"
   },
   "toasts": {
     "sharing": {
