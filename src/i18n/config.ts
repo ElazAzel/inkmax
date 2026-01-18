@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import ru from './locales/ru.json';
 import en from './locales/en.json';
 import kk from './locales/kk.json';
+import { validateTranslations } from './validation';
 
 // Migrate 'kz' to 'kk' if stored in localStorage
 const migrateKzToKk = () => {
@@ -120,6 +121,9 @@ if (import.meta.env.DEV) {
   console.log('[i18n] Initialized with language:', i18n.language);
   console.log('[i18n] Supported languages:', ['ru', 'en', 'kk']);
   console.log('[i18n] Resources loaded:', Object.keys(i18n.options.resources || {}));
+  
+  // Validate all translations and show missing keys
+  validateTranslations();
 }
 
 // Listen for language changes
