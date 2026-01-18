@@ -47,32 +47,50 @@ export const AnalyticsTab = memo(function AnalyticsTab({
 }: AnalyticsTabProps) {
   const { t } = useTranslation();
   const [period, setPeriod] = useState<Period>('7d');
-  const { analytics, loading } = usePageAnalytics();
+  const { analytics, loading, setPeriod: setAnalyticsPeriod } = usePageAnalytics();
 
-  // Mock data for demonstration (replace with real data)
-  const mockStats = {
-    views: 1247,
-    viewsChange: 12.5,
-    clicks: 342,
-    clicksChange: -5.2,
-    uniqueVisitors: 892,
-    visitorsChange: 8.1,
-    topBlocks: [
-      { id: '1', type: 'link', title: 'Instagram', clicks: 156, percentage: 45 },
-      { id: '2', type: 'link', title: 'Telegram', clicks: 98, percentage: 29 },
-      { id: '3', type: 'button', title: 'Записаться', clicks: 88, percentage: 26 },
-    ],
-    devices: {
-      mobile: 78,
-      desktop: 18,
-      tablet: 4,
-    },
-    sources: [
-      { name: 'Instagram', percentage: 62 },
-      { name: 'Telegram', percentage: 24 },
-      { name: 'Direct', percentage: 14 },
-    ],
+  // Map UI period to analytics period
+  const handlePeriodChange = (p: Period) => {
+    setPeriod(p);
+    // Map to usePageAnalytics period type
+    if (p === '7d') setAnalyticsPeriod('week');
+    else if (p === '14d') setAnalyticsPeriod('week'); // Use week for 14d as closest match
+    else if (p === '30d') setAnalyticsPeriod('month');
   };
+
+  // Use real analytics data with fallbacks
+  const stats = {
+    views: analytics?.totalViews ?? 0,
+    viewsChange: analytics?.viewsChange ?? 0,
+    clicks: analytics?.totalClicks ?? 0,
+    clicksChange: analytics?.clicksChange ?? 0,
+    uniqueVisitors: analytics?.uniqueVisitors ?? 0,
+    visitorsChange: analytics?.viewsChange ?? 0, // Use views change as proxy
+    topBlocks: analytics?.topBlocks?.slice(0, 3).map((block, index) => ({
+      id: block.blockId,
+      type: block.blockType,
+      title: block.blockTitle || block.blockType,
+      clicks: block.clicks,
+      percentage: analytics.totalClicks > 0 ? Math.round((block.clicks / analytics.totalClicks) * 100) : 0,
+    })) ?? [],
+    devices: {
+      mobile: analytics?.deviceBreakdown?.mobile ?? 0,
+      desktop: analytics?.deviceBreakdown?.desktop ?? 0,
+      tablet: analytics?.deviceBreakdown?.tablet ?? 0,
+    },
+    sources: analytics?.trafficSources?.slice(0, 3).map(s => ({
+      name: s.source === 'direct' ? 'Direct' : s.source,
+      percentage: Math.round(s.percentage),
+    })) ?? [],
+  };
+
+  // Calculate device percentages
+  const totalDevices = stats.devices.mobile + stats.devices.desktop + stats.devices.tablet;
+  const devicePercentages = totalDevices > 0 ? {
+    mobile: Math.round((stats.devices.mobile / totalDevices) * 100),
+    desktop: Math.round((stats.devices.desktop / totalDevices) * 100),
+    tablet: Math.round((stats.devices.tablet / totalDevices) * 100),
+  } : { mobile: 0, desktop: 0, tablet: 0 };
 
   // AI Insights
   const insights = useMemo(() => {
@@ -86,8 +104,8 @@ export const AnalyticsTab = memo(function AnalyticsTab({
       suggestions.push({
         id: 'add-pricing',
         type: 'add',
-        title: 'Добавьте блок с ценами',
-        description: 'Страницы с прайсом получают на 40% больше заявок',
+        title: t('analytics.insights.addPricing', 'Добавьте блок с ценами'),
+        description: t('analytics.insights.addPricingDesc', 'Страницы с прайсом получают на 40% больше заявок'),
         action: () => onApplyInsight({ type: 'add', data: { blockType: 'pricing' } }),
         impact: 'high',
       });
@@ -97,27 +115,27 @@ export const AnalyticsTab = memo(function AnalyticsTab({
       suggestions.push({
         id: 'add-testimonials',
         type: 'add',
-        title: 'Добавьте отзывы',
-        description: 'Отзывы увеличивают доверие и конверсию на 25%',
+        title: t('analytics.insights.addTestimonials', 'Добавьте отзывы'),
+        description: t('analytics.insights.addTestimonialsDesc', 'Отзывы увеличивают доверие и конверсию на 25%'),
         action: () => onApplyInsight({ type: 'add', data: { blockType: 'testimonial' } }),
         impact: 'medium',
       });
     }
 
-    // Mock insight based on analytics
-    if (mockStats.topBlocks[0]?.percentage > 40) {
+    // Insight based on real analytics
+    if (stats.topBlocks[0]?.percentage > 40) {
       suggestions.push({
         id: 'duplicate-top',
         type: 'optimize',
-        title: 'Продублируйте популярную ссылку',
-        description: `"${mockStats.topBlocks[0].title}" получает 45% кликов. Добавьте её выше для большей видимости`,
-        action: () => onApplyInsight({ type: 'duplicate', blockId: mockStats.topBlocks[0].id }),
+        title: t('analytics.insights.duplicateTop', 'Продублируйте популярную ссылку'),
+        description: t('analytics.insights.duplicateTopDesc', `"${stats.topBlocks[0].title}" получает ${stats.topBlocks[0].percentage}% кликов`),
+        action: () => onApplyInsight({ type: 'duplicate', blockId: stats.topBlocks[0].id }),
         impact: 'medium',
       });
     }
 
     return suggestions;
-  }, [blocks, onApplyInsight]);
+  }, [blocks, onApplyInsight, stats.topBlocks, t]);
 
   const renderTrendIcon = (change: number) => {
     if (change > 0) return <TrendingUp className="h-4 w-4 text-emerald-500" />;
@@ -127,6 +145,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({
 
   const renderTrendBadge = (change: number) => {
     const isPositive = change > 0;
+    const displayChange = Math.abs(change) > 100 ? '>100' : Math.round(change);
     return (
       <Badge 
         variant="outline" 
@@ -137,7 +156,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({
           "bg-muted text-muted-foreground"
         )}
       >
-        {isPositive && '+'}{change}%
+        {isPositive && '+'}{displayChange}%
       </Badge>
     );
   };
@@ -168,7 +187,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({
           {(['7d', '14d', '30d'] as Period[]).map((p) => (
             <button
               key={p}
-              onClick={() => setPeriod(p)}
+              onClick={() => handlePeriodChange(p)}
               className={cn(
                 "flex-1 py-2.5 rounded-xl text-sm font-bold transition-all",
                 period === p
@@ -176,9 +195,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({
                   : "bg-muted/50 text-muted-foreground"
               )}
             >
-              {p === '7d' && '7 дней'}
-              {p === '14d' && '14 дней'}
-              {p === '30d' && '30 дней'}
+              {t(`analytics.period.${p}`, p === '7d' ? '7 дней' : p === '14d' ? '14 дней' : '30 дней')}
             </button>
           ))}
         </div>
@@ -192,12 +209,12 @@ export const AnalyticsTab = memo(function AnalyticsTab({
               <div className="h-10 w-10 rounded-xl bg-blue-500/15 flex items-center justify-center">
                 <Eye className="h-5 w-5 text-blue-500" />
               </div>
-              {renderTrendIcon(mockStats.viewsChange)}
+              {renderTrendIcon(stats.viewsChange)}
             </div>
-            <div className="text-3xl font-black mb-1">{mockStats.views.toLocaleString()}</div>
+            <div className="text-3xl font-black mb-1">{stats.views.toLocaleString()}</div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">{t('analytics.views', 'Просмотры')}</span>
-              {renderTrendBadge(mockStats.viewsChange)}
+              {renderTrendBadge(stats.viewsChange)}
             </div>
           </Card>
 
@@ -206,12 +223,12 @@ export const AnalyticsTab = memo(function AnalyticsTab({
               <div className="h-10 w-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
                 <MousePointerClick className="h-5 w-5 text-emerald-500" />
               </div>
-              {renderTrendIcon(mockStats.clicksChange)}
+              {renderTrendIcon(stats.clicksChange)}
             </div>
-            <div className="text-3xl font-black mb-1">{mockStats.clicks.toLocaleString()}</div>
+            <div className="text-3xl font-black mb-1">{stats.clicks.toLocaleString()}</div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">{t('analytics.clicks', 'Клики')}</span>
-              {renderTrendBadge(mockStats.clicksChange)}
+              {renderTrendBadge(stats.clicksChange)}
             </div>
           </Card>
 
@@ -220,12 +237,12 @@ export const AnalyticsTab = memo(function AnalyticsTab({
               <div className="h-10 w-10 rounded-xl bg-violet-500/15 flex items-center justify-center">
                 <Users className="h-5 w-5 text-violet-500" />
               </div>
-              {renderTrendIcon(mockStats.visitorsChange)}
+              {renderTrendIcon(stats.visitorsChange)}
             </div>
-            <div className="text-3xl font-black mb-1">{mockStats.uniqueVisitors.toLocaleString()}</div>
+            <div className="text-3xl font-black mb-1">{stats.uniqueVisitors.toLocaleString()}</div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">{t('analytics.uniqueVisitors', 'Уникальные посетители')}</span>
-              {renderTrendBadge(mockStats.visitorsChange)}
+              {renderTrendBadge(stats.visitorsChange)}
             </div>
           </Card>
         </div>
@@ -285,21 +302,25 @@ export const AnalyticsTab = memo(function AnalyticsTab({
         <div className="space-y-3">
           <h2 className="font-bold px-1">{t('analytics.topBlocks', 'Популярные блоки')}</h2>
           <Card className="divide-y divide-border/50">
-            {mockStats.topBlocks.map((block, index) => (
+            {stats.topBlocks.length > 0 ? stats.topBlocks.map((block, index) => (
               <div key={block.id} className="p-4 flex items-center gap-4">
                 <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center font-bold text-muted-foreground">
                   {index + 1}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-medium truncate">{block.title}</div>
-                  <div className="text-sm text-muted-foreground">{block.clicks} кликов</div>
+                  <div className="text-sm text-muted-foreground">{block.clicks} {t('analytics.clicks', 'кликов')}</div>
                 </div>
                 <div className="w-20">
                   <Progress value={block.percentage} className="h-2" />
                   <div className="text-xs text-right text-muted-foreground mt-1">{block.percentage}%</div>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="p-4 text-center text-muted-foreground">
+                {t('analytics.noData', 'Нет данных за выбранный период')}
+              </div>
+            )}
           </Card>
         </div>
 
@@ -309,18 +330,18 @@ export const AnalyticsTab = memo(function AnalyticsTab({
           <div className="grid grid-cols-3 gap-3">
             <Card className="p-4 text-center">
               <Smartphone className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-              <div className="text-2xl font-black">{mockStats.devices.mobile}%</div>
-              <div className="text-xs text-muted-foreground">Телефон</div>
+              <div className="text-2xl font-black">{devicePercentages.mobile}%</div>
+              <div className="text-xs text-muted-foreground">{t('analytics.mobile', 'Телефон')}</div>
             </Card>
             <Card className="p-4 text-center">
               <Monitor className="h-6 w-6 mx-auto mb-2 text-emerald-500" />
-              <div className="text-2xl font-black">{mockStats.devices.desktop}%</div>
-              <div className="text-xs text-muted-foreground">Компьютер</div>
+              <div className="text-2xl font-black">{devicePercentages.desktop}%</div>
+              <div className="text-xs text-muted-foreground">{t('analytics.desktop', 'Компьютер')}</div>
             </Card>
             <Card className="p-4 text-center">
               <Globe className="h-6 w-6 mx-auto mb-2 text-violet-500" />
-              <div className="text-2xl font-black">{mockStats.devices.tablet}%</div>
-              <div className="text-xs text-muted-foreground">Планшет</div>
+              <div className="text-2xl font-black">{devicePercentages.tablet}%</div>
+              <div className="text-xs text-muted-foreground">{t('analytics.tablet', 'Планшет')}</div>
             </Card>
           </div>
         </div>
@@ -329,7 +350,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({
         <div className="space-y-3">
           <h2 className="font-bold px-1">{t('analytics.sources', 'Источники трафика')}</h2>
           <Card className="p-4 space-y-3">
-            {mockStats.sources.map((source) => (
+            {stats.sources.length > 0 ? stats.sources.map((source) => (
               <div key={source.name}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-medium">{source.name}</span>
@@ -337,7 +358,11 @@ export const AnalyticsTab = memo(function AnalyticsTab({
                 </div>
                 <Progress value={source.percentage} className="h-2" />
               </div>
-            ))}
+            )) : (
+              <div className="text-center text-muted-foreground">
+                {t('analytics.noData', 'Нет данных за выбранный период')}
+              </div>
+            )}
           </Card>
         </div>
       </div>
