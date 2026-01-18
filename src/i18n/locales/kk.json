@@ -361,7 +361,11 @@
     "confirmEmail": "Email-ды растаңыз",
     "alreadyHaveAccount": "Аккаунт бар ма?",
     "noAccount": "Аккаунт жоқ па?",
-    "orContinueWith": "Немесе жалғастыру"
+    "orContinueWith": "Немесе жалғастыру",
+    "getStarted": "Бастау",
+    "createAccount": "Аккаунт жасау",
+    "welcomeBack": "Қайта келдіңіз!",
+    "enterCredentials": "Кіру үшін деректеріңізді енгізіңіз"
   },
   "pricing": {
     "title": "Тарифтер",
@@ -405,5 +409,71 @@
     "unauthorized": "Авторизация қажет",
     "forbidden": "Қол жетімділік жоқ",
     "networkError": "Желі қатесі"
+  },
+  "toasts": {
+    "sharing": {
+      "linkCopied": "Сілтеме көшірілді!",
+      "copyError": "Сілтемені көшіру сәтсіз аяқталды"
+    },
+    "save": {
+      "success": "Өзгерістер сақталды",
+      "error": "Сақтау сәтсіз аяқталды"
+    },
+    "publish": {
+      "success": "Бет жарияланды!",
+      "error": "Жариялау сәтсіз аяқталды"
+    }
+  },
+  "admin": {
+    "noData": "Деректер жоқ",
+    "users": "Пайдаланушылар",
+    "totalUsers": "Барлық пайдаланушылар",
+    "premium": "Премиум",
+    "activeTrials": "Белсенді триалдар",
+    "withStreak": "Сериямен",
+    "pagesSection": "Беттер мен контент",
+    "total": "Барлығы",
+    "published": "Жарияланған",
+    "inGallery": "Галереяда",
+    "totalBlocks": "Барлық блоктар",
+    "engagementSection": "Белсенділік",
+    "views": "Қаралымдар",
+    "clicks": "Басулар",
+    "shares": "Бөлісулер",
+    "achievements": "Жетістіктер",
+    "socialSection": "Әлеуметтік",
+    "friendships": "Достықтар",
+    "accepted": "қабылданды",
+    "pending": "күтуде",
+    "collaborations": "Коллаборациялар"
+  },
+  "templates": {
+    "title": "Шаблондар",
+    "save": "Шаблон ретінде сақтау",
+    "apply": "Шаблон қолдану",
+    "myTemplates": "Менің шаблондарым",
+    "marketplace": "Маркетплейс"
+  },
+  "tokens": {
+    "balance": "Токен балансы",
+    "earn": "Табу",
+    "spend": "Жұмсау",
+    "history": "Тарих"
+  },
+  "referral": {
+    "title": "Реферал бағдарламасы",
+    "yourCode": "Сіздің код",
+    "invited": "Шақырылды",
+    "earned": "Табылды"
+  },
+  "premium": {
+    "upgrade": "Pro-ға жаңарту",
+    "features": "Pro мүмкіндіктері",
+    "trial": "Сынақ мерзімі",
+    "active": "Pro белсенді"
+  },
+  "pwa": {
+    "install": "Қолданбаны орнату",
+    "updateAvailable": "Жаңарту қол жетімді"
   }
 }

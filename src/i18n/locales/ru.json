@@ -361,7 +361,11 @@
     "confirmEmail": "Подтвердите email",
     "alreadyHaveAccount": "Уже есть аккаунт?",
     "noAccount": "Нет аккаунта?",
-    "orContinueWith": "Или продолжить с"
+    "orContinueWith": "Или продолжить с",
+    "getStarted": "Начать",
+    "createAccount": "Создать аккаунт",
+    "welcomeBack": "С возвращением!",
+    "enterCredentials": "Введите данные для входа"
   },
   "pricing": {
     "title": "Тарифы",
@@ -405,5 +409,71 @@
     "unauthorized": "Необходима авторизация",
     "forbidden": "Доступ запрещён",
     "networkError": "Ошибка сети"
+  },
+  "toasts": {
+    "sharing": {
+      "linkCopied": "Ссылка скопирована!",
+      "copyError": "Не удалось скопировать ссылку"
+    },
+    "save": {
+      "success": "Изменения сохранены",
+      "error": "Не удалось сохранить"
+    },
+    "publish": {
+      "success": "Страница опубликована!",
+      "error": "Не удалось опубликовать"
+    }
+  },
+  "admin": {
+    "noData": "Нет данных",
+    "users": "Пользователи",
+    "totalUsers": "Всего пользователей",
+    "premium": "Премиум",
+    "activeTrials": "Активные триалы",
+    "withStreak": "С серией",
+    "pagesSection": "Страницы и контент",
+    "total": "Всего",
+    "published": "Опубликовано",
+    "inGallery": "В галерее",
+    "totalBlocks": "Всего блоков",
+    "engagementSection": "Вовлечённость",
+    "views": "Просмотры",
+    "clicks": "Клики",
+    "shares": "Поделились",
+    "achievements": "Достижения",
+    "socialSection": "Социальное",
+    "friendships": "Дружбы",
+    "accepted": "принято",
+    "pending": "ожидает",
+    "collaborations": "Коллаборации"
+  },
+  "templates": {
+    "title": "Шаблоны",
+    "save": "Сохранить как шаблон",
+    "apply": "Применить шаблон",
+    "myTemplates": "Мои шаблоны",
+    "marketplace": "Маркетплейс"
+  },
+  "tokens": {
+    "balance": "Баланс токенов",
+    "earn": "Заработать",
+    "spend": "Потратить",
+    "history": "История"
+  },
+  "referral": {
+    "title": "Реферальная программа",
+    "yourCode": "Ваш код",
+    "invited": "Приглашено",
+    "earned": "Заработано"
+  },
+  "premium": {
+    "upgrade": "Улучшить до Pro",
+    "features": "Функции Pro",
+    "trial": "Пробный период",
+    "active": "Pro активен"
+  },
+  "pwa": {
+    "install": "Установить приложение",
+    "updateAvailable": "Доступно обновление"
   }
 }

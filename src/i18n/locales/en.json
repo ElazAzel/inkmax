@@ -361,7 +361,11 @@
     "confirmEmail": "Confirm your email",
     "alreadyHaveAccount": "Already have an account?",
     "noAccount": "No account?",
-    "orContinueWith": "Or continue with"
+    "orContinueWith": "Or continue with",
+    "getStarted": "Get Started",
+    "createAccount": "Create Account",
+    "welcomeBack": "Welcome back!",
+    "enterCredentials": "Enter your credentials to sign in"
   },
   "pricing": {
     "title": "Pricing",
@@ -405,5 +409,71 @@
     "unauthorized": "Authorization required",
     "forbidden": "Access denied",
     "networkError": "Network error"
+  },
+  "toasts": {
+    "sharing": {
+      "linkCopied": "Link copied!",
+      "copyError": "Failed to copy link"
+    },
+    "save": {
+      "success": "Changes saved",
+      "error": "Failed to save"
+    },
+    "publish": {
+      "success": "Page published!",
+      "error": "Failed to publish"
+    }
+  },
+  "admin": {
+    "noData": "No data",
+    "users": "Users",
+    "totalUsers": "Total users",
+    "premium": "Premium",
+    "activeTrials": "Active trials",
+    "withStreak": "With streak",
+    "pagesSection": "Pages & Content",
+    "total": "Total",
+    "published": "Published",
+    "inGallery": "In gallery",
+    "totalBlocks": "Total blocks",
+    "engagementSection": "Engagement",
+    "views": "Views",
+    "clicks": "Clicks",
+    "shares": "Shares",
+    "achievements": "Achievements",
+    "socialSection": "Social",
+    "friendships": "Friendships",
+    "accepted": "accepted",
+    "pending": "pending",
+    "collaborations": "Collaborations"
+  },
+  "templates": {
+    "title": "Templates",
+    "save": "Save as template",
+    "apply": "Apply template",
+    "myTemplates": "My Templates",
+    "marketplace": "Marketplace"
+  },
+  "tokens": {
+    "balance": "Token balance",
+    "earn": "Earn",
+    "spend": "Spend",
+    "history": "History"
+  },
+  "referral": {
+    "title": "Referral Program",
+    "yourCode": "Your code",
+    "invited": "Invited",
+    "earned": "Earned"
+  },
+  "premium": {
+    "upgrade": "Upgrade to Pro",
+    "features": "Pro features",
+    "trial": "Trial period",
+    "active": "Pro active"
+  },
+  "pwa": {
+    "install": "Install app",
+    "updateAvailable": "Update available"
   }
 }
