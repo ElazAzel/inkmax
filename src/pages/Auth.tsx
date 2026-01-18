@@ -546,7 +546,7 @@ export default function Auth() {
                           <span className="w-full border-t border-border/30" />
                         </div>
                         <div className="relative flex justify-center text-xs">
-                          <span className="bg-card px-2 text-muted-foreground">или</span>
+                          <span className="bg-card px-2 text-muted-foreground">{t('common.or', 'or')}</span>
                         </div>
                       </div>
                       <Button 
@@ -555,7 +555,7 @@ export default function Auth() {
                         className="w-full h-12 rounded-xl"
                         onClick={() => setAuthMode('reset-telegram')}
                       >
-                        Восстановить через Telegram
+                        {t('auth.telegram.recoverViaTelegram', 'Recover via Telegram')}
                       </Button>
                       <Button 
                         type="button"
@@ -570,9 +570,9 @@ export default function Auth() {
                 ) : authMode === 'reset-telegram' ? (
                   <div className="space-y-4 pt-4">
                     <div className="text-center mb-4">
-                      <h3 className="text-lg font-semibold">Восстановление через Telegram</h3>
+                      <h3 className="text-lg font-semibold">{t('auth.telegram.recoveryTitle', 'Recovery via Telegram')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        {telegramResetStep === 'request' ? 'Введите ваш Telegram Chat ID' : 'Введите код из Telegram'}
+                        {telegramResetStep === 'request' ? t('auth.telegram.enterChatId', 'Enter your Telegram Chat ID') : t('auth.telegram.enterCode', 'Enter code from Telegram')}
                       </p>
                     </div>
                     {telegramResetStep === 'request' ? (
@@ -584,7 +584,7 @@ export default function Auth() {
                           className="h-12 rounded-xl bg-card/40 backdrop-blur-xl border-border/30"
                         />
                         <Button onClick={handleTelegramResetRequest} className="w-full h-12 rounded-xl" disabled={isLoading}>
-                          {isLoading ? 'Отправка...' : 'Получить код'}
+                          {isLoading ? t('auth.telegram.sending', 'Sending...') : t('auth.telegram.getCode', 'Get code')}
                         </Button>
                       </div>
                     ) : (
@@ -599,12 +599,12 @@ export default function Auth() {
                         <Input
                           name="new-password"
                           type="password"
-                          placeholder="Новый пароль"
+                          placeholder={t('auth.telegram.newPassword', 'New password')}
                           required
                           className="h-12 rounded-xl bg-card/40"
                         />
                         <Button type="submit" className="w-full h-12 rounded-xl" disabled={isLoading}>
-                          {isLoading ? 'Сохранение...' : 'Сохранить пароль'}
+                          {isLoading ? t('auth.telegram.saving', 'Saving...') : t('auth.telegram.savePassword', 'Save password')}
                         </Button>
                       </form>
                     )}
@@ -613,7 +613,7 @@ export default function Auth() {
                       className="w-full rounded-xl"
                       onClick={() => { setAuthMode('signin'); setTelegramResetStep('request'); }}
                     >
-                      Назад
+                      {t('auth.telegram.back', 'Back')}
                     </Button>
                   </div>
                 ) : (
