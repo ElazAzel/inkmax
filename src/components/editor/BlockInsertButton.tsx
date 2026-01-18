@@ -40,49 +40,49 @@ interface BlockConfig {
   tier: BlockTier;
 }
 
-// Blocks with colorful icons like competitors
+// Blocks with colorful icons like competitors - labels are translation keys
 const ALL_BLOCKS: BlockConfig[] = [
   // Basic
-  { type: 'text', label: 'Текст', Icon: Type, color: 'bg-slate-500', tier: 'free' },
-  { type: 'link', label: 'Ссылка', Icon: Link2, color: 'bg-blue-500', tier: 'free' },
-  { type: 'button', label: 'Кнопка', Icon: () => <span className="text-xl font-black">▶</span>, color: 'bg-red-500', tier: 'free' },
-  { type: 'image', label: 'Фото', Icon: Image, color: 'bg-emerald-500', tier: 'free' },
+  { type: 'text', label: 'blockTypes.text', Icon: Type, color: 'bg-slate-500', tier: 'free' },
+  { type: 'link', label: 'blockTypes.link', Icon: Link2, color: 'bg-blue-500', tier: 'free' },
+  { type: 'button', label: 'blockTypes.button', Icon: () => <span className="text-xl font-black">▶</span>, color: 'bg-red-500', tier: 'free' },
+  { type: 'image', label: 'blockTypes.image', Icon: Image, color: 'bg-emerald-500', tier: 'free' },
   
   // Media
-  { type: 'video', label: 'Видео', Icon: Video, color: 'bg-rose-500', tier: 'pro' },
-  { type: 'carousel', label: 'Галерея', Icon: Layers, color: 'bg-violet-500', tier: 'pro' },
-  { type: 'avatar', label: 'Аватар', Icon: () => <span className="text-xl">👤</span>, color: 'bg-cyan-500', tier: 'free' },
-  { type: 'separator', label: 'Разделитель', Icon: () => <span className="text-xl">—</span>, color: 'bg-gray-400', tier: 'free' },
+  { type: 'video', label: 'blockTypes.video', Icon: Video, color: 'bg-rose-500', tier: 'pro' },
+  { type: 'carousel', label: 'blockTypes.carousel', Icon: Layers, color: 'bg-violet-500', tier: 'pro' },
+  { type: 'avatar', label: 'blockTypes.avatar', Icon: () => <span className="text-xl">👤</span>, color: 'bg-cyan-500', tier: 'free' },
+  { type: 'separator', label: 'blockTypes.separator', Icon: () => <span className="text-xl">—</span>, color: 'bg-gray-400', tier: 'free' },
   
   // Social
-  { type: 'socials', label: 'Соцсети', Icon: () => <span className="text-xl">@</span>, color: 'bg-pink-500', tier: 'free' },
-  { type: 'messenger', label: 'Мессенджеры', Icon: MessageCircle, color: 'bg-green-500', tier: 'free' },
-  { type: 'shoutout', label: 'Упоминание', Icon: Megaphone, color: 'bg-orange-500', tier: 'pro' },
+  { type: 'socials', label: 'blockTypes.socials', Icon: () => <span className="text-xl">@</span>, color: 'bg-pink-500', tier: 'free' },
+  { type: 'messenger', label: 'blockTypes.messenger', Icon: MessageCircle, color: 'bg-green-500', tier: 'free' },
+  { type: 'shoutout', label: 'blockTypes.shoutout', Icon: Megaphone, color: 'bg-orange-500', tier: 'pro' },
   
   // Business (now pro tier)
-  { type: 'product', label: 'Товар', Icon: ShoppingBag, color: 'bg-amber-500', tier: 'pro' },
-  { type: 'catalog', label: 'Каталог', Icon: ListOrdered, color: 'bg-teal-500', tier: 'pro' },
-  { type: 'pricing', label: 'Цены', Icon: DollarSign, color: 'bg-lime-500', tier: 'pro' },
-  { type: 'download', label: 'Файл', Icon: File, color: 'bg-indigo-500', tier: 'pro' },
+  { type: 'product', label: 'blockTypes.product', Icon: ShoppingBag, color: 'bg-amber-500', tier: 'pro' },
+  { type: 'catalog', label: 'blockTypes.catalog', Icon: ListOrdered, color: 'bg-teal-500', tier: 'pro' },
+  { type: 'pricing', label: 'blockTypes.pricing', Icon: DollarSign, color: 'bg-lime-500', tier: 'pro' },
+  { type: 'download', label: 'blockTypes.download', Icon: File, color: 'bg-indigo-500', tier: 'pro' },
   
   // Forms (now pro tier)
-  { type: 'form', label: 'Форма', Icon: FormInput, color: 'bg-purple-500', tier: 'pro' },
-  { type: 'newsletter', label: 'Рассылка', Icon: Mail, color: 'bg-sky-500', tier: 'pro' },
-  { type: 'booking', label: 'Запись', Icon: Calendar, color: 'bg-fuchsia-500', tier: 'pro' },
+  { type: 'form', label: 'blockTypes.form', Icon: FormInput, color: 'bg-purple-500', tier: 'pro' },
+  { type: 'newsletter', label: 'blockTypes.newsletter', Icon: Mail, color: 'bg-sky-500', tier: 'pro' },
+  { type: 'booking', label: 'blockTypes.booking', Icon: Calendar, color: 'bg-fuchsia-500', tier: 'pro' },
   
   // Interactive (now pro tier)
-  { type: 'testimonial', label: 'Отзывы', Icon: Star, color: 'bg-yellow-500', tier: 'pro' },
-  { type: 'scratch', label: 'Скретч', Icon: Gift, color: 'bg-red-400', tier: 'pro' },
-  { type: 'faq', label: 'FAQ', Icon: HelpCircle, color: 'bg-blue-400', tier: 'pro' },
-  { type: 'countdown', label: 'Таймер', Icon: Clock, color: 'bg-orange-400', tier: 'pro' },
+  { type: 'testimonial', label: 'blockTypes.testimonial', Icon: Star, color: 'bg-yellow-500', tier: 'pro' },
+  { type: 'scratch', label: 'blockTypes.scratch', Icon: Gift, color: 'bg-red-400', tier: 'pro' },
+  { type: 'faq', label: 'blockTypes.faq', Icon: HelpCircle, color: 'bg-blue-400', tier: 'pro' },
+  { type: 'countdown', label: 'blockTypes.countdown', Icon: Clock, color: 'bg-orange-400', tier: 'pro' },
   
   // Other
-  { type: 'map', label: 'Карта', Icon: MapPin, color: 'bg-green-600', tier: 'free' },
-  { type: 'before_after', label: 'До/После', Icon: Compass, color: 'bg-cyan-600', tier: 'pro' },
-  { type: 'custom_code', label: 'Код', Icon: Code, color: 'bg-slate-600', tier: 'pro' },
+  { type: 'map', label: 'blockTypes.map', Icon: MapPin, color: 'bg-green-600', tier: 'free' },
+  { type: 'before_after', label: 'blockTypes.beforeAfter', Icon: Compass, color: 'bg-cyan-600', tier: 'pro' },
+  { type: 'custom_code', label: 'blockTypes.customCode', Icon: Code, color: 'bg-slate-600', tier: 'pro' },
   
   // Social - Community
-  { type: 'community', label: 'Сообщество', Icon: () => <span className="text-xl">👥</span>, color: 'bg-indigo-400', tier: 'pro' },
+  { type: 'community', label: 'blockTypes.community', Icon: () => <span className="text-xl">👥</span>, color: 'bg-indigo-400', tier: 'pro' },
 ];
 
 export const BlockInsertButton = memo(function BlockInsertButton({ 
@@ -125,9 +125,9 @@ export const BlockInsertButton = memo(function BlockInsertButton({
 
   const handleInsert = (blockType: string, blockTier: BlockTier) => {
     if (!canUseBlock(blockTier)) {
-      toast.error('Этот блок доступен только в PRO', {
+      toast.error(t('blocks.proOnly', 'Этот блок доступен только в PRO'), {
         action: {
-          label: 'Upgrade',
+          label: t('actions.upgrade', 'Upgrade'),
           onClick: () => navigate('/pricing'),
         },
       });
@@ -135,7 +135,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
     }
     
     if (isAtBlockLimit) {
-      toast.error(`Достигнут лимит ${FREE_LIMITS.maxBlocks} блоков. Перейдите на Premium.`);
+      toast.error(t('blocks.limitReached', 'Достигнут лимит {{count}} блоков. Перейдите на Premium.', { count: FREE_LIMITS.maxBlocks }));
       return;
     }
     
@@ -234,7 +234,7 @@ export const BlockInsertButton = memo(function BlockInsertButton({
                     
                     {/* Label */}
                     <span className="text-sm font-bold text-center leading-tight">
-                      {block.label}
+                      {t(block.label, block.type)}
                     </span>
                     
                     {/* Lock/Crown badge */}
