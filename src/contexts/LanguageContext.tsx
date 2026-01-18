@@ -16,11 +16,26 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Normalize language code (handles 'kz' -> 'kk' migration)
+const normalizeLanguageCode = (lng: string): SupportedLanguage => {
+  if (!lng) return 'ru';
+  const code = lng.substring(0, 2).toLowerCase();
+  if (code === 'kz') return 'kk';
+  if (code === 'kk') return 'kk';
+  if (code === 'en') return 'en';
+  return 'ru';
+};
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const { i18n, t } = useTranslation();
-  const [currentLanguage, setCurrentLanguageState] = useState<SupportedLanguage>(
-    (i18n.language?.substring(0, 2) as SupportedLanguage) || 'ru'
-  );
+  const [currentLanguage, setCurrentLanguageState] = useState<SupportedLanguage>(() => {
+    // Migrate 'kz' to 'kk' on init
+    const stored = localStorage.getItem('i18nextLng');
+    if (stored === 'kz') {
+      localStorage.setItem('i18nextLng', 'kk');
+    }
+    return normalizeLanguageCode(i18n.language || stored || 'ru');
+  });
   const [isTranslating, setIsTranslating] = useState(false);
   const [autoTranslateEnabled, setAutoTranslateEnabled] = useState(() => {
     const stored = localStorage.getItem('autoTranslateEnabled');
@@ -29,16 +44,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Sync with i18n
   useEffect(() => {
-    const lang = i18n.language?.substring(0, 2) as SupportedLanguage;
-    if (lang && ['ru', 'en', 'kk'].includes(lang)) {
+    const lang = normalizeLanguageCode(i18n.language);
+    if (['ru', 'en', 'kk'].includes(lang)) {
       setCurrentLanguageState(lang);
     }
   }, [i18n.language]);
 
   const setCurrentLanguage = useCallback((lang: SupportedLanguage) => {
-    setCurrentLanguageState(lang);
-    i18n.changeLanguage(lang);
-    localStorage.setItem('i18nextLng', lang);
+    // Normalize in case 'kz' is passed
+    const normalizedLang = lang === 'kz' as any ? 'kk' : lang;
+    setCurrentLanguageState(normalizedLang);
+    i18n.changeLanguage(normalizedLang);
+    localStorage.setItem('i18nextLng', normalizedLang);
   }, [i18n]);
 
   // Save auto-translate preference
