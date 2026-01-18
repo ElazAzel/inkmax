@@ -53,14 +53,14 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
     // Token-based purchase (KZT = Linkkon tokens)
     if (tokenPrice) {
       if (!user) {
-        toast.error('Необходима авторизация для покупки');
+        toast.error(t('product.authRequired', 'Необходима авторизация для покупки'));
         return;
       }
       
       if (!hasEnoughTokens) {
-        // Redirect to WhatsApp for token purchase
         const deficit = tokenPrice - (tokens.balance?.balance || 0);
-        toast.info(`Недостаточно токенов. Нужно еще ${deficit.toFixed(0)} Linkkon.`);
+        toast.info(t('product.notEnoughTokens', { count: Math.ceil(deficit), defaultValue: `Недостаточно токенов. Нужно еще ${Math.ceil(deficit)} Linkkon.` }));
+        redirectToTokenPurchase(deficit, name);
         redirectToTokenPurchase(deficit, name);
         return;
       }
@@ -73,11 +73,11 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
           'product',
           block.id || `product-${Date.now()}`,
           tokenPrice,
-          `Покупка товара: ${name}`
+          t('product.purchaseDescription', 'Покупка товара: {{name}}', { name })
         );
         
         if (success) {
-          toast.success(`🎉 Вы успешно приобрели "${name}"!`);
+          toast.success(t('product.purchaseSuccess', '🎉 Вы успешно приобрели "{{name}}"!', { name }));
           tokens.refresh();
           setIsDetailOpen(false);
         }
@@ -156,7 +156,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
           {isPurchasing ? (
             <>
               <Loader2 className="h-5 w-5 animate-spin" />
-              Покупка...
+              {t('product.purchasing', 'Покупка...')}
             </>
           ) : !hasEnoughTokens && tokenPrice ? (
             <>

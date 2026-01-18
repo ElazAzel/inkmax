@@ -2,6 +2,7 @@
  * Wrapper component for paid blocks - handles token-based unlocking
  */
 import { memo, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,7 @@ export const PaidBlockWrapper = memo(function PaidBlockWrapper({
   children,
   isPreview = false,
 }: PaidBlockWrapperProps) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { balance, purchaseMarketplaceItem, refresh } = useTokens();
   const [unlocking, setUnlocking] = useState(false);
@@ -101,7 +103,7 @@ export const PaidBlockWrapper = memo(function PaidBlockWrapper({
 
   const handleUnlock = async () => {
     if (!user) {
-      toast.error('Войдите в аккаунт для покупки');
+      toast.error(t('paidContent.loginRequired', 'Войдите в аккаунт для покупки'));
       return;
     }
 
@@ -109,8 +111,8 @@ export const PaidBlockWrapper = memo(function PaidBlockWrapper({
     
     if (currentBalance < price) {
       const deficit = price - currentBalance;
-      toast.info(`Недостаточно токенов. Нужно еще ${deficit.toFixed(0)} Linkkon.`);
-      redirectToTokenPurchase(deficit, 'контент');
+      toast.info(t('paidContent.notEnoughTokens', { count: Math.ceil(deficit), defaultValue: `Недостаточно токенов. Нужно еще ${Math.ceil(deficit)} Linkkon.` }));
+      redirectToTokenPurchase(deficit, t('paidContent.content', 'контент'));
       return;
     }
 
@@ -121,7 +123,7 @@ export const PaidBlockWrapper = memo(function PaidBlockWrapper({
         'block_access',
         blockId,
         price,
-        'Разблокировка платного контента'
+        t('paidContent.unlockDescription', 'Разблокировка платного контента')
       );
 
       if (success) {
@@ -150,9 +152,9 @@ export const PaidBlockWrapper = memo(function PaidBlockWrapper({
           </div>
           
           <div>
-            <h3 className="font-semibold text-base sm:text-lg mb-1">Платный контент</h3>
+            <h3 className="font-semibold text-base sm:text-lg mb-1">{t('paidContent.title', 'Платный контент')}</h3>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Разблокируйте этот контент за Linkkon токены
+              {t('paidContent.unlockWithTokens', 'Разблокируйте этот контент за Linkkon токены')}
             </p>
           </div>
 
@@ -171,19 +173,19 @@ export const PaidBlockWrapper = memo(function PaidBlockWrapper({
             {unlocking ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Разблокировка...
+                {t('paidContent.unlocking', 'Разблокировка...')}
               </>
             ) : (
               <>
                 <Unlock className="h-4 w-4 mr-2" />
-                Разблокировать
+                {t('paidContent.unlock', 'Разблокировать')}
               </>
             )}
           </Button>
 
           {balance && (
             <p className="text-xs text-muted-foreground">
-              Ваш баланс: {balance.balance.toFixed(0)} Linkkon
+              {t('paidContent.yourBalance', 'Ваш баланс')}: {balance.balance.toFixed(0)} Linkkon
             </p>
           )}
         </div>
