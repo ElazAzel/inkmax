@@ -13,6 +13,8 @@ import {
   Eye,
   Upload,
   Wand2,
+  Monitor,
+  Smartphone,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +23,7 @@ import { BlockManager } from '@/components/editor/BlockManager';
 import { BlockInsertButton } from '@/components/editor/BlockInsertButton';
 import { AutoSaveIndicator, type SaveStatus } from '@/components/editor/AutoSaveIndicator';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { Block, GridConfig } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
@@ -68,10 +71,12 @@ export const EditorTab = memo(function EditorTab({
   onOpenTemplates,
 }: EditorTabProps) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   
   // UI State
   const [showBlockManager, setShowBlockManager] = useState(false);
   const [showAddBlock, setShowAddBlock] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('mobile');
 
   // Handle undo with toast
   const handleUndo = useCallback(() => {
@@ -182,23 +187,60 @@ export const EditorTab = memo(function EditorTab({
             )}
           </div>
 
-          {/* Center: Save status */}
-          <AutoSaveIndicator status={saveStatus} />
+          {/* Center: Save status + Desktop Preview Toggle (desktop only) */}
+          <div className="flex items-center gap-2">
+            <AutoSaveIndicator status={saveStatus} />
+            
+            {/* Desktop preview mode toggle - only on desktop */}
+            {!isMobile && (
+              <div className="flex items-center gap-0.5 bg-muted/50 rounded-xl p-0.5">
+                <Button
+                  variant={previewMode === 'mobile' ? 'secondary' : 'ghost'}
+                  size="icon"
+                  className="h-8 w-8 rounded-lg"
+                  onClick={() => setPreviewMode('mobile')}
+                >
+                  <Smartphone className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={previewMode === 'desktop' ? 'secondary' : 'ghost'}
+                  size="icon"
+                  className="h-8 w-8 rounded-lg"
+                  onClick={() => setPreviewMode('desktop')}
+                >
+                  <Monitor className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
 
-          {/* Right: Block Manager */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 rounded-xl"
-            onClick={() => setShowBlockManager(true)}
-          >
-            <Layers className="h-4.5 w-4.5" />
-          </Button>
+          {/* Right: Block Manager + Templates */}
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-xl"
+              onClick={onOpenTemplates}
+            >
+              <Wand2 className="h-4.5 w-4.5 text-violet-500" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-xl"
+              onClick={() => setShowBlockManager(true)}
+            >
+              <Layers className="h-4.5 w-4.5" />
+            </Button>
+          </div>
         </div>
       </header>
 
       {/* Main Canvas */}
-      <div className="pb-32">
+      <div className={cn(
+        "pb-32",
+        !isMobile && previewMode === 'mobile' && "max-w-md mx-auto"
+      )}>
         <PreviewEditor
           blocks={blocks}
           isPremium={isPremium}
@@ -215,7 +257,10 @@ export const EditorTab = memo(function EditorTab({
 
       {/* Floating Bottom Toolbar */}
       <div className="fixed bottom-20 left-0 right-0 z-40 px-3">
-        <div className="max-w-md mx-auto">
+        <div className={cn(
+          "mx-auto",
+          !isMobile && previewMode === 'mobile' ? "max-w-md" : "max-w-2xl"
+        )}>
           <div className="flex items-center justify-between gap-1.5 p-1.5 rounded-[20px] bg-card/92 backdrop-blur-2xl border border-border/15 shadow-2xl">
             {/* Add Block - Primary */}
             <Button
