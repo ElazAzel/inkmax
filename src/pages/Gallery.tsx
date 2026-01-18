@@ -29,6 +29,7 @@ import { CommunityGallery } from '@/components/gallery/CommunityGallery';
 import { Leaderboard } from '@/components/gallery/Leaderboard';
 import { TopReferrers } from '@/components/gallery/TopReferrers';
 import { NicheFilter } from '@/components/gallery/NicheFilter';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useGallery } from '@/hooks/useGallery';
 import { NICHES, NICHE_ICONS } from '@/lib/niches';
 import { cn } from '@/lib/utils';
@@ -91,6 +92,7 @@ export default function Gallery() {
                 {pages.length} {t('gallery.pages', 'страниц')}
               </p>
             </div>
+            <LanguageSwitcher />
             <Button 
               size="sm"
               className="h-10 rounded-xl font-bold"

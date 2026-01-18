@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { Globe, Check, Languages, Loader2 } from 'lucide-react';
+import { Globe, Check, Languages, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,8 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import type { SupportedLanguage } from '@/lib/i18n-helpers';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const languages = [
   { code: 'ru' as SupportedLanguage, name: 'Русский', flag: '🇷🇺' },
@@ -28,17 +30,43 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({ 
   onLanguageChange,
   showAutoTranslate = false,
-  isTranslating = false,
+  isTranslating: externalTranslating = false,
   onAutoTranslate,
 }: LanguageSwitcherProps) {
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  
+  // Use language context for auto-translate settings
+  const languageContext = (() => {
+    try {
+      return useLanguage();
+    } catch {
+      // Context not available (used outside provider)
+      return null;
+    }
+  })();
+
+  const isTranslating = externalTranslating || (languageContext?.isTranslating ?? false);
+  const autoTranslateEnabled = languageContext?.autoTranslateEnabled ?? false;
 
   const handleLanguageChange = (langCode: SupportedLanguage) => {
     const prevLang = i18n.language as SupportedLanguage;
-    i18n.changeLanguage(langCode);
+    
+    // Use context if available
+    if (languageContext) {
+      languageContext.setCurrentLanguage(langCode);
+    } else {
+      i18n.changeLanguage(langCode);
+    }
+    
     setIsOpen(false);
     onLanguageChange?.(prevLang, langCode);
+  };
+
+  const handleAutoTranslateToggle = () => {
+    if (languageContext) {
+      languageContext.setAutoTranslateEnabled(!autoTranslateEnabled);
+    }
   };
 
   const currentLanguage = languages.find(l => l.code === i18n.language) || languages[0];
@@ -68,12 +96,15 @@ export function LanguageSwitcher({
           <span className="text-sm font-medium text-foreground/80 hidden md:inline">
             {currentLanguage.name}
           </span>
+          {isTranslating && (
+            <Loader2 className="h-3 w-3 animate-spin text-primary" />
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
         className={cn(
-          "w-48 p-1.5",
+          "w-56 p-1.5",
           "bg-background/95 backdrop-blur-xl",
           "border border-border/50 shadow-xl",
           "rounded-xl",
@@ -104,6 +135,35 @@ export function LanguageSwitcher({
           </DropdownMenuItem>
         ))}
         
+        {/* Auto-translate toggle - always show if context is available */}
+        {languageContext && (
+          <>
+            <DropdownMenuSeparator className="my-1" />
+            <div
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                "transition-all duration-200"
+              )}
+            >
+              <Sparkles className={cn(
+                "h-4 w-4",
+                autoTranslateEnabled ? "text-primary" : "text-muted-foreground"
+              )} />
+              <span className={cn(
+                "flex-1 text-sm font-medium",
+                autoTranslateEnabled ? "text-foreground" : "text-muted-foreground"
+              )}>
+                {t('language.autoTranslate', 'Автоперевод')}
+              </span>
+              <Switch
+                checked={autoTranslateEnabled}
+                onCheckedChange={handleAutoTranslateToggle}
+                className="scale-90"
+              />
+            </div>
+          </>
+        )}
+        
         {showAutoTranslate && (
           <>
             <DropdownMenuSeparator className="my-1" />
@@ -129,7 +189,7 @@ export function LanguageSwitcher({
               <span className="flex-1 text-sm font-medium">
                 {isTranslating 
                   ? t('ai.translating', 'Перевод...') 
-                  : t('ai.autoTranslate', 'Автоперевод контента')
+                  : t('ai.translateNow', 'Перевести сейчас')
                 }
               </span>
             </DropdownMenuItem>

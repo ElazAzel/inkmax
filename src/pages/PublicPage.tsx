@@ -1,6 +1,7 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Share2, QrCode } from 'lucide-react';
 import { GridBlocksRenderer } from '@/components/blocks/GridBlocksRenderer';
@@ -12,10 +13,11 @@ import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
 import { useHeatmapTracking } from '@/hooks/useHeatmapTracking';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { trackShare } from '@/services/analytics';
 import { checkPremiumStatus } from '@/services/user';
 import { toast } from 'sonner';
-import type { PageData, PageBackground } from '@/types/page';
+import type { PageData, PageBackground, Block } from '@/types/page';
 import {
   Dialog,
   DialogContent,
@@ -26,11 +28,16 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function PublicPage() {
+  const { t } = useTranslation();
   const { compressed, slug } = useParams<{ compressed?: string; slug?: string }>();
   const [compressedPageData, setCompressedPageData] = useState<PageData | null>(null);
   const [showQR, setShowQR] = useState(false);
   const [showWatermark, setShowWatermark] = useState(true);
+  const [translatedBlocks, setTranslatedBlocks] = useState<Block[] | null>(null);
   const currentUrl = window.location.href;
+
+  // Language context for auto-translation
+  const { currentLanguage, translateBlocksToLanguage, isTranslating, autoTranslateEnabled } = useLanguage();
 
   // Use React Query for slug-based pages (with caching)
   const { data: cachedPageData, isLoading: isLoadingCached, error } = usePublicPage(slug);
@@ -64,6 +71,24 @@ export default function PublicPage() {
   // Enable heatmap tracking for published pages
   useHeatmapTracking(pageData?.id, !!slug && !!pageData?.id);
 
+  // Auto-translate blocks when language changes
+  useEffect(() => {
+    if (!pageData?.blocks || !autoTranslateEnabled) {
+      setTranslatedBlocks(null);
+      return;
+    }
+
+    // Translate blocks to current language
+    translateBlocksToLanguage(pageData.blocks, currentLanguage).then((blocks) => {
+      if (blocks !== pageData.blocks) {
+        setTranslatedBlocks(blocks);
+      }
+    });
+  }, [pageData?.blocks, currentLanguage, translateBlocksToLanguage, autoTranslateEnabled]);
+
+  // Use translated blocks if available, otherwise original
+  const displayBlocks = translatedBlocks || pageData?.blocks || [];
+
   // Build canonical URL for SEO
   const canonicalUrl = useMemo(() => {
     if (slug) {
@@ -84,20 +109,22 @@ export default function PublicPage() {
         url: currentUrl,
       }).catch(() => {
         navigator.clipboard.writeText(currentUrl);
-        toast.success('Link copied to clipboard');
+        toast.success(t('share.linkCopied', 'Ссылка скопирована'));
       });
     } else {
       navigator.clipboard.writeText(currentUrl);
-      toast.success('Link copied to clipboard');
+      toast.success(t('share.linkCopied', 'Ссылка скопирована'));
     }
   };
 
-  if (loading) {
+  if (loading || isTranslating) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading page...</p>
+          <p className="text-muted-foreground">
+            {isTranslating ? t('language.translating', 'Перевод...') : t('common.loading', 'Загрузка...')}
+          </p>
         </div>
       </div>
     );
@@ -107,8 +134,8 @@ export default function PublicPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">Page not found</h1>
-          <p className="text-muted-foreground">Invalid or corrupted link</p>
+          <h1 className="text-2xl font-bold mb-2">{t('errors.pageNotFound', 'Страница не найдена')}</h1>
+          <p className="text-muted-foreground">{t('errors.invalidLink', 'Неверная или повреждённая ссылка')}</p>
         </div>
       </div>
     );
@@ -158,7 +185,7 @@ export default function PublicPage() {
         <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
           {/* Grid Blocks - Same layout as editor */}
           <GridBlocksRenderer
-            blocks={pageData.blocks}
+            blocks={displayBlocks}
             pageOwnerId={pageData?.userId}
             pageId={pageData?.id}
             isOwnerPremium={isOwnerPremium}
@@ -170,11 +197,11 @@ export default function PublicPage() {
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2 justify-center">
             <Button variant="outline" onClick={handleShare} className="w-full sm:w-auto">
               <Share2 className="h-4 w-4 mr-2" />
-              Share Link
+              {t('share.shareLink', 'Поделиться')}
             </Button>
             <Button variant="outline" onClick={() => setShowQR(true)} className="w-full sm:w-auto">
               <QrCode className="h-4 w-4 mr-2" />
-              QR Code
+              {t('share.qrCode', 'QR-код')}
             </Button>
           </div>
 

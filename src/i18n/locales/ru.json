@@ -514,9 +514,23 @@
   "errors": {
     "general": "Произошла ошибка",
     "notFound": "Страница не найдена",
+    "pageNotFound": "Страница не найдена",
+    "invalidLink": "Неверная или повреждённая ссылка",
     "unauthorized": "Необходима авторизация",
     "forbidden": "Доступ запрещён",
     "networkError": "Ошибка сети"
+  },
+  "language": {
+    "autoTranslate": "Автоперевод",
+    "autoTranslated": "Контент автоматически переведён",
+    "translating": "Перевод...",
+    "translationError": "Ошибка автоперевода"
+  },
+  "share": {
+    "shareLink": "Поделиться",
+    "qrCode": "QR-код",
+    "linkCopied": "Ссылка скопирована",
+    "scanQR": "Отсканируйте код для перехода"
   },
   "toasts": {
     "sharing": {
