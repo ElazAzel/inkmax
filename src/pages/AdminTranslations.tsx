@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Shield, ArrowLeft, Search, Copy, Download, AlertTriangle,
-  CheckCircle, Languages, Filter, Loader2
+  CheckCircle, Languages, Loader2, Upload, RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -103,6 +103,7 @@ export default function AdminTranslations() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState<'all' | 'missing'>('all');
   const [selectedLang, setSelectedLang] = useState<LanguageCode>('ru');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -185,6 +186,65 @@ export default function AdminTranslations() {
     } catch {
       toast.error('Не удалось скопировать');
     }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const importedData = JSON.parse(text) as TranslationData;
+      
+      // Merge imported data with existing translations
+      setTranslations(prev => {
+        const updated = { ...prev };
+        updated[selectedLang] = mergeDeep(prev[selectedLang], importedData);
+        return updated;
+      });
+      
+      toast.success(`JSON для ${selectedLang.toUpperCase()} импортирован`);
+    } catch (error) {
+      toast.error('Ошибка парсинга JSON файла');
+      console.error('Import error:', error);
+    }
+    
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Deep merge function for nested objects
+  function mergeDeep(target: TranslationData, source: TranslationData): TranslationData {
+    const result = { ...target };
+    
+    for (const key of Object.keys(source)) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        if (target[key] && typeof target[key] === 'object') {
+          result[key] = mergeDeep(target[key] as TranslationData, source[key] as TranslationData);
+        } else {
+          result[key] = source[key];
+        }
+      } else {
+        result[key] = source[key];
+      }
+    }
+    
+    return result;
+  }
+
+  const resetToOriginal = () => {
+    setTranslations({
+      ru: JSON.parse(JSON.stringify(ru)),
+      en: JSON.parse(JSON.stringify(en)),
+      kk: JSON.parse(JSON.stringify(kk)),
+    });
+    toast.success('Переводы сброшены к исходным');
   };
 
   if (loading) {
@@ -313,18 +373,33 @@ export default function AdminTranslations() {
               </TabsTrigger>
             </TabsList>
             
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleFileImport}
+                className="hidden"
+              />
+              <Button variant="outline" size="sm" onClick={handleImportClick}>
+                <Upload className="h-4 w-4 mr-1" />
+                Импорт JSON
+              </Button>
               <Button variant="outline" size="sm" onClick={() => copyMissingKeys(selectedLang)}>
                 <AlertTriangle className="h-4 w-4 mr-1" />
-                Копировать отсутствующие
+                Отсутствующие
               </Button>
               <Button variant="outline" size="sm" onClick={() => copyToClipboard(selectedLang)}>
                 <Copy className="h-4 w-4 mr-1" />
-                Копировать JSON
+                Копировать
               </Button>
               <Button variant="outline" size="sm" onClick={() => downloadJSON(selectedLang)}>
                 <Download className="h-4 w-4 mr-1" />
                 Скачать
+              </Button>
+              <Button variant="ghost" size="sm" onClick={resetToOriginal}>
+                <RefreshCw className="h-4 w-4 mr-1" />
+                Сброс
               </Button>
             </div>
           </div>
@@ -404,11 +479,12 @@ export default function AdminTranslations() {
             <CardTitle className="text-lg">Инструкция</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p>1. Редактируйте переводы прямо в полях ввода</p>
-            <p>2. Используйте кнопку "Копировать JSON" чтобы получить обновленный файл</p>
-            <p>3. Замените содержимое соответствующего файла в <code className="bg-muted px-1 rounded">src/i18n/locales/*.json</code></p>
-            <p>4. Красные поля указывают на отсутствующие переводы</p>
-            <p className="text-amber-500">⚠️ Изменения не сохраняются автоматически - скопируйте JSON перед уходом!</p>
+            <p><strong>Редактирование:</strong> Изменяйте переводы прямо в полях ввода</p>
+            <p><strong>Импорт:</strong> Загрузите JSON файл кнопкой "Импорт JSON" — новые ключи добавятся, существующие обновятся</p>
+            <p><strong>Экспорт:</strong> Скачайте или скопируйте JSON и замените файл в <code className="bg-muted px-1 rounded">src/i18n/locales/*.json</code></p>
+            <p><strong>Отсутствующие:</strong> Красные поля и бейджи показывают ключи без перевода</p>
+            <p><strong>Сброс:</strong> Кнопка сброса вернёт исходные переводы из кодовой базы</p>
+            <p className="text-amber-500 pt-2">⚠️ Изменения хранятся в памяти — экспортируйте перед уходом!</p>
           </CardContent>
         </Card>
       </main>
