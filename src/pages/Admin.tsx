@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Shield, LogOut, BarChart3, Users, FileText, Activity, 
-  PieChart, TrendingUp, Crown, ShieldCheck, Loader2, Coins
+  PieChart, TrendingUp, Crown, ShieldCheck, Loader2, Coins, Languages
 } from 'lucide-react';
 
 // Lazy load heavy tab components
@@ -86,6 +86,15 @@ export default function Admin() {
             <h1 className="text-lg md:text-xl font-bold">{t('admin.title')}</h1>
           </div>
           <div className="flex items-center gap-2 md:gap-4">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate('/admin/translations')}
+              className="h-8 px-2 md:px-3"
+            >
+              <Languages className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Переводы</span>
+            </Button>
             <span className="text-xs md:text-sm text-muted-foreground hidden sm:block truncate max-w-[150px]">
               {user?.email}
             </span>
