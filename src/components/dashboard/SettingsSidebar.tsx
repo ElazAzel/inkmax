@@ -173,10 +173,10 @@ export function SettingsSidebar({
         <div className="flex items-center justify-between">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
             <TabsList className="grid w-full grid-cols-2 bg-background/50">
-              <TabsTrigger value="settings" className="text-xs">Настройки</TabsTrigger>
+              <TabsTrigger value="settings" className="text-xs">{t('dashboard.settings', 'Настройки')}</TabsTrigger>
               <TabsTrigger value="collabs" className="text-xs">
                 <Users className="h-3 w-3 mr-1" />
-                Коллабы
+                {t('dashboard.collabs', 'Коллабы')}
               </TabsTrigger>
             </TabsList>
           </Tabs>
