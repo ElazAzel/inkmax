@@ -1,4 +1,5 @@
 import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -80,6 +81,7 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
   }
 ) {
   return function WrappedBlockEditor(props: P) {
+    const { t } = useTranslation();
     const { formData, onChange } = props;
     const [advancedOpen, setAdvancedOpen] = useState(false);
     
@@ -153,7 +155,7 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
             >
               <div className="flex items-center gap-2">
                 <Settings2 className="h-4 w-4 text-primary" />
-                <span className="font-semibold">Дополнительные настройки</span>
+                <span className="font-semibold">{t('blockEditor.advancedSettings', 'Дополнительные настройки')}</span>
               </div>
               <ChevronDown className={cn(
                 "h-4 w-4 transition-transform",
@@ -167,7 +169,7 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
             <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border/50">
               <div className="flex items-center gap-2">
                 <Maximize2 className="h-4 w-4 text-primary" />
-                <Label className="text-base font-semibold">Размер блока</Label>
+                <Label className="text-base font-semibold">{t('blockEditor.blockSize', 'Размер блока')}</Label>
               </div>
               
               <div className="flex gap-2">
@@ -179,7 +181,7 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
                   className="flex-1"
                 >
                   <span className="w-5 h-3 rounded border bg-primary/30 mr-2" />
-                  Полная
+                  {t('blockEditor.sizeFull', 'Полная')}
                 </Button>
                 <Button
                   type="button"
@@ -189,7 +191,7 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
                   className="flex-1"
                 >
                   <span className="w-3 h-3 rounded border bg-primary/20 mr-2" />
-                  Половина
+                  {t('blockEditor.sizeHalf', 'Половина')}
                 </Button>
               </div>
             </div>
@@ -198,7 +200,7 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
             <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border/50">
               <div className="flex items-center gap-2">
                 <AlignVerticalJustifyCenter className="h-4 w-4 text-primary" />
-                <Label className="text-base font-semibold">Выравнивание</Label>
+                <Label className="text-base font-semibold">{t('blockEditor.alignment', 'Выравнивание')}</Label>
               </div>
               
               <div className="flex gap-2">
@@ -249,7 +251,7 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
             {/* Schedule Settings */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-base font-semibold">Расписание показа</Label>
+                <Label className="text-base font-semibold">{t('blockEditor.schedule', 'Расписание показа')}</Label>
                 {formData.schedule && (
                   <Button
                     variant="ghost"
@@ -258,33 +260,33 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
                     className="h-8"
                   >
                     <X className="h-4 w-4 mr-1" />
-                    Очистить
+                    {t('blockEditor.clearSchedule', 'Очистить')}
                   </Button>
                 )}
               </div>
               
               <div className="grid grid-cols-1 gap-3">
                 <div className="space-y-2">
-                  <Label className="text-sm">Появление</Label>
+                  <Label className="text-sm">{t('blockEditor.appearDate', 'Появление')}</Label>
                   <DateTimePicker
                     value={formData.schedule?.startDate}
                     onChange={(value) => handleScheduleChange('startDate', value)}
-                    placeholder="Выберите дату"
+                    placeholder={t('blockEditor.selectDate', 'Выберите дату')}
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-sm">Исчезновение</Label>
+                  <Label className="text-sm">{t('blockEditor.disappearDate', 'Исчезновение')}</Label>
                   <DateTimePicker
                     value={formData.schedule?.endDate}
                     onChange={(value) => handleScheduleChange('endDate', value)}
-                    placeholder="Выберите дату"
+                    placeholder={t('blockEditor.selectDate', 'Выберите дату')}
                   />
                 </div>
               </div>
               
               <p className="text-xs text-muted-foreground">
-                Блок будет виден только в указанный период
+                {t('blockEditor.scheduleHint', 'Блок будет виден только в указанный период')}
               </p>
             </div>
           </CollapsibleContent>
