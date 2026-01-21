@@ -458,7 +458,7 @@ function UserCard({ user, badge, action, showViewPage, onToggleLike, likedPages,
             onClick={handleLike}
             disabled={isLiking}
             className="h-8 w-8 p-0 rounded-lg"
-            title={isLiked ? 'Убрать лайк' : 'Поставить лайк'}
+            title={isLiked ? t('friends.removeLike', 'Убрать лайк') : t('friends.addLike', 'Поставить лайк')}
           >
             <Heart className={`h-4 w-4 transition-all ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
@@ -469,7 +469,7 @@ function UserCard({ user, badge, action, showViewPage, onToggleLike, likedPages,
             size="sm"
             onClick={handleViewPage}
             className="h-8 w-8 p-0 rounded-lg"
-            title="Открыть страницу"
+            title={t('friends.viewPage', 'Открыть страницу')}
           >
             <ExternalLink className="h-4 w-4" />
           </Button>

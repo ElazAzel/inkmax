@@ -44,6 +44,12 @@ import { redirectToTokenPurchase } from '@/lib/token-purchase-helper';
 import type { Block } from '@/types/page';
 import { createBlock as createBaseBlock } from '@/lib/block-factory';
 import { TemplatePreviewCard } from '@/components/templates/TemplatePreviewCard';
+import {
+  TEMPLATE_CATEGORY_KEYS,
+  type TemplateCategoryKey,
+  getTemplateCategoryLabel,
+  normalizeTemplateCategory,
+} from '@/lib/templateCategories';
 
 interface Author {
   username: string | null;
@@ -75,18 +81,7 @@ interface TemplateMarketplaceProps {
   onApplyTemplate: (blocks: Block[]) => void;
 }
 
-const CATEGORIES = [
-  'all',
-  'Бизнес',
-  'Творчество',
-  'Образование',
-  'Фитнес',
-  'Красота',
-  'Музыка',
-  'Фото',
-  'Блогер',
-  'Другое',
-];
+const CATEGORIES: TemplateCategoryKey[] = TEMPLATE_CATEGORY_KEYS;
 
 export const TemplateMarketplace = memo(function TemplateMarketplace({
   open,
@@ -101,7 +96,7 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [authorQuery, setAuthorQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState<TemplateCategoryKey>('all');
   const [activeTab, setActiveTab] = useState('popular');
   const [purchasedTemplates, setPurchasedTemplates] = useState<string[]>([]);
 
@@ -262,7 +257,7 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
       
       // Filter by category
       const matchesCategory = selectedCategory === 'all' || 
-        t.category === selectedCategory;
+        normalizeTemplateCategory(t.category) === selectedCategory;
       
       // Search by author
       const matchesAuthor = authorQuery === '' || 
@@ -331,18 +326,18 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
             {/* Filters row */}
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {/* Category filter */}
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as TemplateCategoryKey)}>
                 <SelectTrigger className="w-[130px] sm:w-[160px] h-9 sm:h-10 text-xs sm:text-sm">
                   <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   <SelectValue placeholder={t('templates.category', 'Категория')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">
-                    {t('templates.allCategories', 'Все категории')}
+                    {getTemplateCategoryLabel(t, 'all')}
                   </SelectItem>
                   {CATEGORIES.filter(c => c !== 'all').map((category) => (
                     <SelectItem key={category} value={category}>
-                      {category}
+                      {getTemplateCategoryLabel(t, category)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -520,7 +515,7 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                       
                       <div className="flex items-center justify-between mt-1.5 sm:mt-3">
                         <Badge variant="secondary" className="text-[8px] sm:text-xs px-1 sm:px-2">
-                          {template.category}
+                          {getTemplateCategoryLabel(t, template.category)}
                         </Badge>
                         
                         <div className="flex items-center gap-2 sm:gap-3 text-[9px] sm:text-xs text-muted-foreground">

@@ -23,16 +23,12 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
-
-const CATEGORIES = [
-  'Креаторы',
-  'Бизнес',
-  'Сервис',
-  'Недвижимость',
-  'Свадьба',
-  'Личное',
-  'Другое',
-];
+import {
+  TEMPLATE_CATEGORY_KEYS,
+  type TemplateCategoryKey,
+  getTemplateCategoryLabel,
+  normalizeTemplateCategory,
+} from '@/lib/templateCategories';
 
 interface UserTemplate {
   id: string;
@@ -68,7 +64,7 @@ export const EditTemplateDialog = memo(function EditTemplateDialog({
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Другое');
+  const [category, setCategory] = useState<TemplateCategoryKey>('other');
   const [isPublic, setIsPublic] = useState(false);
   const [isForSale, setIsForSale] = useState(false);
   const [price, setPrice] = useState('');
@@ -79,7 +75,7 @@ export const EditTemplateDialog = memo(function EditTemplateDialog({
     if (template) {
       setName(template.name);
       setDescription(template.description || '');
-      setCategory(template.category);
+      setCategory(normalizeTemplateCategory(template.category));
       setIsPublic(template.is_public);
       setIsForSale(template.is_for_sale);
       setPrice(template.price?.toString() || '');
@@ -178,14 +174,14 @@ export const EditTemplateDialog = memo(function EditTemplateDialog({
 
           <div className="space-y-2">
             <Label>{t('templates.category', 'Категория')}</Label>
-            <Select value={category} onValueChange={setCategory}>
+            <Select value={category} onValueChange={(value) => setCategory(value as TemplateCategoryKey)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
+                {TEMPLATE_CATEGORY_KEYS.filter((key) => key !== 'all').map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {getTemplateCategoryLabel(t, key)}
                   </SelectItem>
                 ))}
               </SelectContent>

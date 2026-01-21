@@ -85,7 +85,10 @@ export function useTokens() {
         use_ai: t('tokens.useAi', 'использование AI'),
       };
       
-      toast.success(`+${amount} Linkkon за ${actionLabels[actionType]}!`);
+      toast.success(t('tokens.toastEarned', '+{{count}} Linkkon за {{action}}!', {
+        count: amount,
+        action: actionLabels[actionType],
+      }));
       return true;
     }
     
@@ -116,7 +119,9 @@ export function useTokens() {
 
   const buyPremiumDay = useCallback(async () => {
     if (!user || !balance || balance.balance < PREMIUM_COST) {
-      toast.error(`Недостаточно Linkkon. Нужно ${PREMIUM_COST} токенов.`);
+      toast.error(t('tokens.insufficientForPremium', 'Недостаточно Linkkon. Нужно {{count}} токенов.', {
+        count: PREMIUM_COST,
+      }));
       return false;
     }
 
@@ -125,7 +130,7 @@ export function useTokens() {
       const result = await convertToPremium(user.id);
 
       if (result.success) {
-        toast.success('🎉 Вы получили 1 день Premium!');
+        toast.success(t('tokens.premiumGranted', '🎉 Вы получили 1 день Premium!'));
         setBalance(prev => prev ? {
           ...prev,
           balance: prev.balance - PREMIUM_COST,
@@ -134,15 +139,15 @@ export function useTokens() {
         return true;
       } else {
         const errorMessages: Record<string, string> = {
-          insufficient_tokens: 'Недостаточно токенов',
+          insufficient_tokens: t('tokens.insufficientTokens', 'Недостаточно токенов'),
         };
-        toast.error(errorMessages[result.error || ''] || 'Ошибка при конвертации');
+        toast.error(errorMessages[result.error || ''] || t('tokens.convertError', 'Ошибка при конвертации'));
         return false;
       }
     } finally {
       setConverting(false);
     }
-  }, [user, balance]);
+  }, [user, balance, t]);
 
   // Purchase marketplace item
   const purchaseMarketplaceItem = useCallback(async (
@@ -157,7 +162,9 @@ export function useTokens() {
     const { totalPrice } = calculatePriceWithFee(price);
     
     if (!balance || balance.balance < totalPrice) {
-      toast.error(`Недостаточно Linkkon. Нужно ${totalPrice.toFixed(2)} токенов.`);
+      toast.error(t('tokens.insufficientForPurchase', 'Недостаточно Linkkon. Нужно {{count}} токенов.', {
+        count: totalPrice.toFixed(2),
+      }));
       return false;
     }
 
@@ -169,16 +176,16 @@ export function useTokens() {
         balance: prev.balance - (result.totalCost || totalPrice),
         totalSpent: prev.totalSpent + (result.totalCost || totalPrice),
       } : null);
-      toast.success('✨ Покупка успешна!');
+      toast.success(t('tokens.purchaseSuccess', '✨ Покупка успешна!'));
       return true;
     } else {
       const errorMessages: Record<string, string> = {
-        insufficient_balance: 'Недостаточно токенов',
+        insufficient_balance: t('tokens.insufficientTokens', 'Недостаточно токенов'),
       };
-      toast.error(errorMessages[result.error || ''] || 'Ошибка при покупке');
+      toast.error(errorMessages[result.error || ''] || t('tokens.purchaseError', 'Ошибка при покупке'));
       return false;
     }
-  }, [user, balance]);
+  }, [user, balance, t]);
 
   // Request withdrawal (premium only)
   const submitWithdrawal = useCallback(async (
@@ -191,18 +198,18 @@ export function useTokens() {
     const result = await requestWithdrawal(user.id, amount, paymentMethod, paymentDetails);
 
     if (result.success) {
-      toast.success('Заявка на вывод создана!');
+      toast.success(t('tokens.withdrawalCreated', 'Заявка на вывод создана!'));
       loadWithdrawals();
       return true;
     } else {
       const errorMessages: Record<string, string> = {
-        premium_required: 'Вывод доступен только для Premium пользователей',
-        insufficient_balance: 'Недостаточно токенов',
+        premium_required: t('tokens.withdrawalPremiumRequired', 'Вывод доступен только для Premium пользователей'),
+        insufficient_balance: t('tokens.insufficientTokens', 'Недостаточно токенов'),
       };
-      toast.error(errorMessages[result.error || ''] || 'Ошибка при создании заявки');
+      toast.error(errorMessages[result.error || ''] || t('tokens.withdrawalError', 'Ошибка при создании заявки'));
       return false;
     }
-  }, [user, loadWithdrawals]);
+  }, [user, loadWithdrawals, t]);
 
   const canAffordPremium = balance ? balance.balance >= PREMIUM_COST : false;
 

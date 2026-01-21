@@ -105,7 +105,7 @@ export default function PublicPage() {
     
     if (navigator.share) {
       navigator.share({
-        title: pageData?.seo.title || pageData?.seo.description || 'Check out my page',
+        title: pageData?.seo.title || pageData?.seo.description || t('share.defaultTitle', 'Check out my page'),
         url: currentUrl,
       }).catch(() => {
         navigator.clipboard.writeText(currentUrl);
@@ -228,9 +228,9 @@ export default function PublicPage() {
       <Dialog open={showQR} onOpenChange={setShowQR}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>QR Code</DialogTitle>
+            <DialogTitle>{t('share.qrDialogTitle', 'QR Code')}</DialogTitle>
             <DialogDescription>
-              Scan this code to share your page
+              {t('share.qrDialogDescription', 'Scan this code to share your page')}
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center p-6">

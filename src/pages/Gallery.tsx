@@ -301,7 +301,7 @@ function FeaturedPageCard({ page, onCopy, onView }: FeaturedPageCardProps) {
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-sm truncate">{page.title || 'Untitled'}</h3>
+            <h3 className="font-bold text-sm truncate">{page.title || t('gallery.untitled', 'Untitled')}</h3>
             <p className="text-xs text-muted-foreground truncate">{page.description}</p>
           </div>
         </div>
@@ -350,6 +350,8 @@ interface GalleryPageCardProps {
 }
 
 function GalleryPageCard({ page, onCopy, onView, onLike }: GalleryPageCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card 
       className="overflow-hidden bg-card/50 border-border/30 hover:border-border/50 transition-all cursor-pointer active:scale-[0.98]"
@@ -379,7 +381,7 @@ function GalleryPageCard({ page, onCopy, onView, onLike }: GalleryPageCardProps)
               {page.title?.charAt(0) || 'L'}
             </AvatarFallback>
           </Avatar>
-          <span className="font-bold text-sm truncate flex-1">{page.title || 'Untitled'}</span>
+          <span className="font-bold text-sm truncate flex-1">{page.title || t('gallery.untitled', 'Untitled')}</span>
         </div>
         
         <div className="flex items-center justify-between">
@@ -399,7 +401,7 @@ function GalleryPageCard({ page, onCopy, onView, onLike }: GalleryPageCardProps)
             onClick={(e) => { e.stopPropagation(); onCopy(); }}
           >
             <Copy className="h-3 w-3 mr-1" />
-            Копировать
+            {t('common.copy', 'Copy')}
           </Button>
         </div>
       </div>

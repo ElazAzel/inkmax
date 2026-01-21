@@ -68,12 +68,12 @@ export default function Admin() {
     { value: 'overview', label: t('admin.overview'), icon: BarChart3 },
     { value: 'users', label: t('admin.users'), icon: Users },
     { value: 'pages', label: t('admin.pages'), icon: FileText },
-    { value: 'tokens', label: 'Токены', icon: Coins },
+    { value: 'tokens', label: t('admin.tokens', 'Токены'), icon: Coins },
     { value: 'analytics', label: t('admin.analytics'), icon: Activity },
     { value: 'charts', label: t('admin.charts'), icon: PieChart },
     { value: 'detailed', label: t('admin.detailed'), icon: TrendingUp },
     { value: 'tiers', label: t('admin.tiers'), icon: Crown },
-    { value: 'verification', label: 'Верификация', icon: ShieldCheck },
+    { value: 'verification', label: t('admin.verification', 'Верификация'), icon: ShieldCheck },
   ];
 
   return (
@@ -93,7 +93,7 @@ export default function Admin() {
               className="h-8 px-2 md:px-3"
             >
               <Languages className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Переводы</span>
+              <span className="hidden md:inline">{t('admin.translations', 'Переводы')}</span>
             </Button>
             <span className="text-xs md:text-sm text-muted-foreground hidden sm:block truncate max-w-[150px]">
               {user?.email}

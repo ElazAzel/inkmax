@@ -20,6 +20,7 @@
     "error": "Error",
     "success": "Success",
     "back": "Back",
+    "backHome": "Back to home",
     "next": "Next",
     "confirm": "Confirm",
     "apply": "Apply",
@@ -46,7 +47,10 @@
     "yes": "Yes",
     "no": "No",
     "or": "or",
-    "and": "and"
+    "and": "and",
+    "user": "User",
+    "friend": "Friend",
+    "recipient": "Recipient"
   },
   "form": {
     "fillRequired": "Please fill required fields",
@@ -106,7 +110,9 @@
     "previewDesc": "Custom image shown in the gallery",
     "removePreview": "Remove custom preview",
     "notifications": "Notifications",
+    "emailLabel": "Email",
     "emailDesc": "New leads via email",
+    "telegramLabel": "Telegram",
     "telegramDesc": "Instant notifications",
     "telegramChatId": "Your Chat ID",
     "telegramHelp": "Get your ID from",
@@ -289,6 +295,10 @@
       "freeAction": "Start free",
       "viewPlans": "Choose Pro",
       "otherPlans": "Other options:",
+      "annualPriceKzt": "31,320 ₸ for 12 months",
+      "annualPriceUsd": "$60/year",
+      "otherPlansSix": "6 months: 3,500 ₸/mo",
+      "otherPlansThree": "3 months: 4,350 ₸/mo",
       "free": {
         "item1": "6 basic blocks",
         "item2": "1 AI generation/month",
@@ -421,7 +431,8 @@
     "community": "Community",
     "beforeAfter": "Before/After",
     "customCode": "Code",
-    "scratch": "Scratch"
+    "scratch": "Scratch",
+    "search": "Search"
   },
 "auth": {
     "signIn": "Sign In",
@@ -493,6 +504,18 @@
   "pricing": {
     "title": "Pricing",
     "subtitle": "Choose the right plan",
+    "month": "mo",
+    "tokens": {
+      "title": "Or pay with Linkkon tokens",
+      "balanceDescription": "100 Linkkon = 1 day Premium. Your balance: {{balance}} tokens",
+      "converting": "Converting...",
+      "buyDay": "Buy 1 day for {{cost}} Linkkon",
+      "buyTokens": "Buy tokens"
+    },
+    "companyDetails": {
+      "nameLine": "IE BEEGIN • BIN: 971207300019",
+      "addressLine": "Almaty, Sholokhova st., 20/7"
+    },
     "free": {
       "title": "Free",
       "description": "To start",
@@ -524,7 +547,8 @@
     "popular": "Popular",
     "viewPage": "View",
     "like": "Like",
-    "views": "views"
+    "views": "views",
+    "untitled": "Untitled"
   },
   "errors": {
     "general": "An error occurred",
@@ -545,7 +569,10 @@
     "shareLink": "Share",
     "qrCode": "QR Code",
     "linkCopied": "Link copied",
-    "scanQR": "Scan to open the page"
+    "scanQR": "Scan to open the page",
+    "defaultTitle": "Check out my page",
+    "qrDialogTitle": "QR Code",
+    "qrDialogDescription": "Scan this code to share your page"
   },
   "toasts": {
     "sharing": {
@@ -566,10 +593,13 @@
     "overview": "Overview",
     "users": "Users",
     "pages": "Pages",
+    "tokens": "Tokens",
     "analytics": "Analytics",
     "charts": "Charts",
     "detailed": "Detailed",
     "tiers": "Tiers",
+    "verification": "Verification",
+    "translations": "Translations",
     "signOut": "Sign Out",
     "noData": "No data",
     "totalUsers": "Total users",
@@ -620,24 +650,264 @@
       "sat": "Sat"
     }
   },
+  "adminCharts": {
+    "userGrowth": "User growth",
+    "totalUsers": "Total users",
+    "newRegistrations": "New registrations (14 days)",
+    "users": "Users",
+    "pages": "Pages",
+    "blocks": "Blocks",
+    "eventsTitle": "Events (14 days)",
+    "userDistribution": "User distribution",
+    "eventTypes": "Event types",
+    "count": "Count",
+    "socialActivity": "Social activity",
+    "socialActivity14Days": "Social activity (14 days)",
+    "contentCreation14Days": "Content creation (14 days)",
+    "popularBlockTypes": "Popular block types",
+    "total": "Total",
+    "accepted": "Accepted",
+    "events": {
+      "views": "Views",
+      "clicks": "Clicks",
+      "shares": "Shares"
+    },
+    "social": {
+      "friendships": "Friendships",
+      "collaborations": "Collaborations",
+      "teams": "Teams"
+    }
+  },
+  "adminTokens": {
+    "title": "Token economy",
+    "stats": {
+      "inCirculation": "In circulation",
+      "inCirculationDesc": "All user tokens",
+      "totalEarned": "Total earned",
+      "totalSpent": "Total spent",
+      "platformFee": "Platform fee",
+      "platformFeeDesc": "4% of sales",
+      "premiumPurchases": "Premium purchases",
+      "templatePurchases": "Template purchases",
+      "productPurchases": "Product purchases",
+      "activeUsers": "Active users",
+      "pendingWithdrawals": "Pending withdrawals",
+      "paidOut": "Paid out"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "transactions": "Transactions",
+      "withdrawals": "Withdrawals"
+    },
+    "distributionTitle": "Distribution by transaction type",
+    "historyTitle": "Transaction history",
+    "withdrawalsTitle": "Withdrawal requests",
+    "noData": "No data",
+    "noTransactions": "No transactions",
+    "noWithdrawals": "No withdrawals",
+    "platformFeeLabel": "Fee",
+    "notProvided": "Not provided",
+    "filter": {
+      "allTypes": "All types",
+      "premium": "Premium",
+      "templates": "Templates",
+      "products": "Products",
+      "paidBlocks": "Paid blocks"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "completed": "Completed",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "markPaid": "Mark as paid"
+    }
+  },
+  "achievements": {
+    "rewardDescription": "Achievement reward: {{title}}"
+  },
   "templates": {
     "title": "Templates",
     "save": "Save as template",
     "apply": "Apply template",
     "myTemplates": "My Templates",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "categories": {
+      "all": "All",
+      "creators": "Creators",
+      "business": "Business",
+      "service": "Service",
+      "realEstate": "Real estate",
+      "wedding": "Wedding",
+      "personal": "Personal",
+      "experts": "Experts",
+      "premium": "Premium",
+      "other": "Other"
+    }
+  },
+  "blockPreview": {
+    "title": "Block preview",
+    "unavailable": "Preview unavailable",
+    "linkTitle": "My link",
+    "buttonTitle": "Click me",
+    "textContent": "This is a text block",
+    "imageAlt": "Sample image",
+    "socialsTitle": "My socials",
+    "productName": "Product",
+    "productDescription": "Product description",
+    "videoTitle": "Video",
+    "carouselImage1": "Image 1",
+    "carouselImage2": "Image 2",
+    "customCodeHtml": "<div style=\"padding: 20px; text-align: center;\">Custom HTML</div>",
+    "formTitle": "Contact form",
+    "formButton": "Send",
+    "newsletterTitle": "Subscribe to the newsletter",
+    "newsletterDescription": "Get news first",
+    "newsletterButton": "Subscribe",
+    "testimonialName": "John Doe",
+    "testimonialText": "Great service!",
+    "messengerTitle": "Contact me",
+    "downloadTitle": "Download file",
+    "downloadDescription": "File description",
+    "scratchTitle": "Scratch and win",
+    "scratchReveal": "20% off!"
+  },
+  "animationSettings": {
+    "title": "Entrance animation",
+    "type": "Animation type",
+    "none": "No animation",
+    "fadeIn": "Fade in",
+    "slideUp": "Slide up",
+    "scaleIn": "Scale in",
+    "bounce": "Bounce",
+    "speed": "Animation speed",
+    "speedSlow": "Slow (0.8s)",
+    "speedNormal": "Normal (0.5s)",
+    "speedFast": "Fast (0.3s)",
+    "delay": "Delay: {{value}}ms",
+    "delayHint": "Time before animation starts (0-2000ms)"
   },
   "tokens": {
     "balance": "Token balance",
     "earn": "Earn",
     "spend": "Spend",
-    "history": "History"
+    "history": "History",
+    "dailyVisit": "daily login",
+    "addBlock": "adding a block",
+    "useAi": "using AI",
+    "toastEarned": "+{{count}} Linkkon for {{action}}!",
+    "insufficientForPremium": "Not enough Linkkon. {{count}} tokens required.",
+    "premiumGranted": "🎉 You received 1 day of Premium!",
+    "insufficientTokens": "Not enough tokens",
+    "convertError": "Conversion error",
+    "insufficientForPurchase": "Not enough Linkkon. {{count}} tokens required.",
+    "purchaseSuccess": "✨ Purchase successful!",
+    "purchaseError": "Purchase error",
+    "withdrawalCreated": "Withdrawal request created!",
+    "withdrawalPremiumRequired": "Withdrawals are available only for Premium users",
+    "withdrawalError": "Withdrawal request error"
+  },
+  "quests": {
+    "dailyVisit": {
+      "title": "Daily visit",
+      "description": "Open the app"
+    },
+    "addBlock": {
+      "title": "Add a block",
+      "description": "Add a new block to your page"
+    },
+    "editProfile": {
+      "title": "Update profile",
+      "description": "Change your name or bio"
+    },
+    "sharePage": {
+      "title": "Share your page",
+      "description": "Copy the link to your page"
+    },
+    "useAi": {
+      "title": "Use AI",
+      "description": "Generate content with AI"
+    },
+    "toastDailyVisit": "👋 +{{count}} Linkkon for a daily visit!",
+    "toastCompleted": "{{icon}} +{{count}} Linkkon for \"{{title}}\"!",
+    "panelTitle": "Daily quests",
+    "allCompleted": "🎉 All quests completed!",
+    "tokensEarned": "+{{count}} Linkkon earned"
   },
   "referral": {
     "title": "Referral Program",
     "yourCode": "Your code",
     "invited": "Invited",
-    "earned": "Earned"
+    "earned": "Earned",
+    "toastSuccess": "🎉 +{{count}} days of Premium for you and your friend!",
+    "codeCopied": "Code copied!",
+    "linkCopied": "Link copied!",
+    "errors": {
+      "invalidCode": "Invalid invite code",
+      "alreadyReferred": "You already used a referral code",
+      "selfReferral": "You can't use your own code",
+      "applyFailed": "Failed to apply code"
+    }
+  },
+  "social": {
+    "weeklyChallenge": "Weekly challenge",
+    "challenge": "Challenge",
+    "activity": {
+      "pagePublished": "published a page",
+      "newBlock": "added a new block",
+      "achievement": "earned an achievement",
+      "streakMilestone": "reached a streak milestone",
+      "challengeCompleted": "completed a challenge",
+      "giftSent": "sent a gift",
+      "giftReceived": "received a gift",
+      "pageBoosted": "boosted a page",
+      "newFriend": "added a friend",
+      "pageLiked": "liked a page"
+    },
+    "feed": {
+      "emptyTitle": "No activity yet",
+      "emptyDescription": "Add friends to see their activity",
+      "title": "Friends feed",
+      "events_one": "{{count}} event",
+      "events_other": "{{count}} events"
+    },
+    "metadata": {
+      "achievement": "🏆 {{title}}",
+      "achievementFallback": "New achievement",
+      "streak": "🔥 {{count}} days in a row",
+      "challenge": "✅ {{title}}",
+      "challengeFallback": "Challenge completed",
+      "gift": "💝 +{{count}} Premium days",
+      "boost": "🚀 {{type}} boost",
+      "boostFallback": "standard"
+    },
+    "pendingGifts": {
+      "title": "Gifts for you!",
+      "count_one": "{{count}} gift",
+      "count_other": "{{count}} gifts",
+      "days_one": "+{{count}} day",
+      "days_other": "+{{count}} days",
+      "activate": "Activate"
+    },
+    "weeklyChallenges": {
+      "title": "Weekly challenges",
+      "completed": "{{completed}}/{{total}} completed",
+      "refreshesOnMonday": "Refresh every Monday",
+      "daysLeftShort": "{{count}} days",
+      "rewardHoursShort": "+{{count}}h",
+      "stats": {
+        "completed": "Completed",
+        "rewards": "Rewards",
+        "toClaim": "To claim"
+      },
+      "claim": "Claim",
+      "claimed": "Claimed"
+    }
   },
   "premium": {
     "upgrade": "Upgrade to Pro",
@@ -740,6 +1010,18 @@
   },
   "teams": {
     "title": "Teams",
+    "myTeams": "My teams",
+    "noTeams": "You're not in any team yet",
+    "createTeam": "Create team",
+    "teamNamePlaceholder": "Team name",
+    "teamSlugPlaceholder": "Team URL (slug)",
+    "teamDescriptionPlaceholder": "Team description",
+    "createTeamButton": "Create team",
+    "leave": "Leave",
+    "notFoundTitle": "Team not found",
+    "notFoundDesc": "This team does not exist or is private.",
+    "membersTitle": "Team members",
+    "noMembers": "There are no members in this team yet",
     "settings": "Team Settings",
     "name": "Name",
     "description": "Description",
@@ -801,7 +1083,23 @@
     "likeRemoved": "Like removed",
     "pageLiked": "Page liked!",
     "pageNotPublished": "Page not published",
-    "giftPremium": "Gift Premium"
+    "giftPremium": "Gift Premium",
+    "requestSent": "Friend request sent",
+    "requestAccepted": "Request accepted!",
+    "requestRejected": "Request rejected",
+    "friendRemoved": "Friend removed",
+    "addLike": "Add like",
+    "removeLike": "Remove like",
+    "viewPage": "View page",
+    "errors": {
+      "cannotAddSelf": "You can't add yourself",
+      "friendshipExists": "You're already friends or a request exists",
+      "notAuthenticated": "Please sign in",
+      "sendRequest": "Failed to send request",
+      "acceptRequest": "Failed to accept request",
+      "rejectRequest": "Failed to reject request",
+      "removeFriend": "Failed to remove friend"
+    }
   },
   "gift": {
     "title": "Gift Premium",
@@ -988,14 +1286,59 @@
     "save": "Save",
     "noBlocks": "No blocks",
     "initiator": "Initiator",
-    "partner": "Partner"
+    "partner": "Partner",
+    "userSearchPlaceholder": "Search by name...",
+    "myShoutouts": "My recommendations",
+    "noShoutouts": "You haven't recommended anyone yet",
+    "addShoutout": "Add shoutout",
+    "shoutoutRecommendTitle": "Recommend {{name}}",
+    "shoutoutReasonPlaceholder": "Write why you're recommending this person...",
+    "title": "Collaboration",
+    "notFoundTitle": "Collaboration not found",
+    "notFoundDesc": "This page does not exist or the collaboration has not been accepted yet.",
+    "pageNoBlocks": "No blocks have been added yet"
+  },
+  "collaboration": {
+    "tabs": {
+      "collabs": "Collabs",
+      "promo": "Cross-promo",
+      "shoutouts": "Shoutouts",
+      "teams": "Teams"
+    },
+    "incomingRequests": "Incoming requests",
+    "activeCollabs": "Active collaborations",
+    "noActiveCollabs": "No active collaborations",
+    "manageBlocks": "Manage blocks",
+    "sharedPage": "Shared page",
+    "findPartner": "Find a partner",
+    "promoTitle": "Cross-promo by niche",
+    "nicheUsers": "Users in \"{{niche}}\" niche",
+    "offer": "Offer",
+    "noMembers": "No members",
+    "members": "Members",
+    "user": "User",
+    "owner": "Owner"
+  },
+  "shoutout": {
+    "selectedUser": "Selected user",
+    "selectUser": "Choose a user to recommend",
+    "searchPlaceholder": "Search by name or @username...",
+    "searchMinChars": "Enter at least 2 characters",
+    "searchError": "Search error. Try again later.",
+    "noResults": "No users found. Try another query.",
+    "reasonLabel": "Why do you recommend?",
+    "reasonPlaceholder": "Great specialist, highly recommend!",
+    "blockDescription": "Recommend other users to your audience"
   },
   "dashboard": {
     "loadError": "Load Error",
     "loadErrorDesc": "Failed to load page data",
     "tryAgain": "Try Again",
     "settings": "Settings",
-    "collabs": "Collabs"
+    "collabs": "Collabs",
+    "aiBlocksCreated": "✨ Created {{count}} blocks with AI",
+    "blocksAdded": "Added {{count}} blocks",
+    "onboardingComplete": "Welcome! Start building your page."
   },
   "blockEditor": {
     "advancedSettings": "Advanced settings",

@@ -545,10 +545,12 @@ export default function Index() {
                       <Crown className="h-4 w-4 text-amber-500" />
                     </h3>
                     <p className="text-2xl font-black">
-                      {isKZ ? '2 610 ₸' : '$5'}<span className="text-base font-normal text-muted-foreground">/мес</span>
+                      {isKZ ? '2 610 ₸' : '$5'}<span className="text-base font-normal text-muted-foreground">/{t('pricing.month', 'мес')}</span>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {isKZ ? '31 320 ₸ за 12 месяцев' : '$60/year'}
+                      {isKZ
+                        ? t('landing.pricing.annualPriceKzt', '31 320 ₸ за 12 месяцев')
+                        : t('landing.pricing.annualPriceUsd', '$60/year')}
                     </p>
                   </div>
                 </div>
@@ -572,8 +574,8 @@ export default function Index() {
                     {t('landing.pricing.otherPlans', 'Другие варианты:')}
                   </p>
                   <div className="flex justify-center gap-4 text-xs">
-                    <span className="text-muted-foreground">6 мес: <strong>3 500 ₸/мес</strong></span>
-                    <span className="text-muted-foreground">3 мес: <strong>4 350 ₸/мес</strong></span>
+                    <span className="text-muted-foreground">{t('landing.pricing.otherPlansSix', '6 мес: 3 500 ₸/мес')}</span>
+                    <span className="text-muted-foreground">{t('landing.pricing.otherPlansThree', '3 мес: 4 350 ₸/мес')}</span>
                   </div>
                 </div>
               </Card>
@@ -650,8 +652,8 @@ export default function Index() {
             </div>
 
             <div className="text-center text-xs text-muted-foreground space-y-1">
-              <p>ИП BEEGIN - БИН: 971207300019</p>
-              <p>г. Алматы, ул. Шолохова, д. 20/7</p>
+              <p>{t('pricing.companyDetails.nameLine', 'ИП BEEGIN • БИН: 971207300019')}</p>
+              <p>{t('pricing.companyDetails.addressLine', 'г. Алматы, ул. Шолохова, д. 20/7')}</p>
               <div className="flex items-center justify-center gap-4 pt-2">
                 <a href="mailto:admin@lnkmx.my" className="flex items-center gap-1 hover:text-foreground transition-colors">
                   <Mail className="h-3 w-3" />
