@@ -204,7 +204,7 @@
       "mainHighlight": "Бір сілтемеден - өтініштерге",
       "valueProposition": "Мамандар, фрилансерлер мен бизнеске арналған AI сайт конструкторы. Дизайнер мен бағдарламашыларсыз бет жасаңыз, өтініштерді қабылдаңыз және тәртіп орнатыңыз.",
       "benefit1": "AI бетті және мәтіндерді өзі жинайды",
-      "benefit2": "Өтініштер mini-CRM мен Telegram-ға келеді",
+      "benefit2": "Өтініштер Мини-CRM мен Telegram-ға келеді",
       "benefit3": "Аналитика нақты не жұмыс істейтінін көрсетеді",
       "primaryCta": "Бетті тегін жасау",
       "secondaryCta": "Мысалдарды көру",
@@ -891,7 +891,7 @@
         "description": "Нишаны таңдаңыз — AI 30 секундта қажетті блоктары бар бетті жасайды. Free: айына 1, Premium: айына 5."
       },
       "miniCrm": {
-        "title": "Кіріктірілген Mini-CRM",
+        "title": "Кіріктірілген Мини-CRM",
         "description": "Өтінімдерді LinkMAX ішінде басқарыңыз. Статустар, тарих, Telegram хабарламалары — барлығы бір жерде."
       },
       "telegram": {
@@ -912,7 +912,7 @@
       }
     },
     "comparison": {
-      "title": "Free vs Premium",
+      "title": "Free және Premium",
       "featureLabel": "Мүмкіндік",
       "freeLabel": "Тегін",
       "premiumLabel": "Premium",
@@ -933,7 +933,7 @@
           "premiumValue": "25+"
         },
         "miniCrm": {
-          "label": "Mini-CRM жүйесі"
+          "label": "Мини-CRM жүйесі"
         },
         "clickAnalytics": {
           "label": "Клик аналитикасы",

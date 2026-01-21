@@ -204,7 +204,7 @@
       "mainHighlight": "Из одной ссылки - в заявки",
       "valueProposition": "AI-конструктор сайтов для экспертов, фрилансеров и бизнеса. Создавайте страницу, принимайте заявки и наводите порядок без дизайнеров и программистов.",
       "benefit1": "AI сам собирает страницу и тексты",
-      "benefit2": "Заявки приходят в mini-CRM и Telegram",
+      "benefit2": "Заявки приходят в Мини-CRM и Telegram",
       "benefit3": "Аналитика показывает, что реально работает",
       "primaryCta": "Создать страницу бесплатно",
       "secondaryCta": "Посмотреть примеры",
@@ -891,7 +891,7 @@
         "description": "Выберите нишу — AI создаст страницу с нужными блоками за 30 секунд. Free: 1/мес, Premium: 5/мес."
       },
       "miniCrm": {
-        "title": "Встроенная Mini-CRM",
+        "title": "Встроенная Мини-CRM",
         "description": "Управляйте заявками прямо в LinkMAX. Статусы, история, Telegram-уведомления — всё в одном месте."
       },
       "telegram": {
@@ -912,7 +912,7 @@
       }
     },
     "comparison": {
-      "title": "Free vs Premium",
+      "title": "Free и Premium",
       "featureLabel": "Функция",
       "freeLabel": "Бесплатно",
       "premiumLabel": "Premium",
@@ -933,7 +933,7 @@
           "premiumValue": "25+"
         },
         "miniCrm": {
-          "label": "Mini-CRM система"
+          "label": "Мини-CRM система"
         },
         "clickAnalytics": {
           "label": "Аналитика кликов",
