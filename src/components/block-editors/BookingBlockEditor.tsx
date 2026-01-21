@@ -79,26 +79,26 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
   return (
     <BlockEditorWrapper
       isPremium
-      description={t('blocks.booking.description', 'Блок для записи на прием с календарем и слотами')}
+      description={t('bookingBlock.description', 'Блок для записи на прием с календарем и слотами')}
     >
       <div className="space-y-6">
         {/* Basic Settings */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>{t('blocks.booking.blockTitle', 'Заголовок')}</Label>
+            <Label>{t('bookingBlock.blockTitle', 'Заголовок')}</Label>
             <Input
               value={typeof block.title === 'string' ? block.title : ''}
               onChange={e => handleChange({ title: e.target.value })}
-              placeholder={t('blocks.booking.titlePlaceholder', 'Записаться на прием')}
+              placeholder={t('bookingBlock.titlePlaceholder', 'Записаться на прием')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>{t('blocks.booking.blockDescription', 'Описание')}</Label>
+            <Label>{t('bookingBlock.blockDescription', 'Описание')}</Label>
             <Textarea
               value={typeof block.description === 'string' ? block.description : ''}
               onChange={e => handleChange({ description: e.target.value })}
-              placeholder={t('blocks.booking.descriptionPlaceholder', 'Выберите удобное время для записи')}
+              placeholder={t('bookingBlock.descriptionPlaceholder', 'Выберите удобное время для записи')}
               rows={2}
             />
           </div>
@@ -110,12 +110,12 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
         <div className="space-y-4">
           <h4 className="font-medium flex items-center gap-2">
             <Clock className="h-4 w-4" />
-            {t('blocks.booking.workingHours', 'Рабочие часы')}
+            {t('bookingBlock.workingHours', 'Рабочие часы')}
           </h4>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>{t('blocks.booking.startHour', 'Начало')}</Label>
+              <Label>{t('bookingBlock.startHour', 'Начало')}</Label>
               <Select
                 value={String(block.workingHoursStart || 9)}
                 onValueChange={v => handleChange({ workingHoursStart: Number(v) })}
@@ -134,7 +134,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
             </div>
 
             <div className="space-y-2">
-              <Label>{t('blocks.booking.endHour', 'Конец')}</Label>
+              <Label>{t('bookingBlock.endHour', 'Конец')}</Label>
               <Select
                 value={String(block.workingHoursEnd || 18)}
                 onValueChange={v => handleChange({ workingHoursEnd: Number(v) })}
@@ -154,7 +154,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
           </div>
 
           <div className="space-y-2">
-            <Label>{t('blocks.booking.slotDuration', 'Длительность слота (минут)')}</Label>
+            <Label>{t('bookingBlock.slotDuration', 'Длительность слота (минут)')}</Label>
             <Select
               value={String(block.slotDuration || 60)}
               onValueChange={v => handleChange({ slotDuration: Number(v) })}
@@ -163,12 +163,12 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="15">15 минут</SelectItem>
-                <SelectItem value="30">30 минут</SelectItem>
-                <SelectItem value="45">45 минут</SelectItem>
-                <SelectItem value="60">1 час</SelectItem>
-                <SelectItem value="90">1.5 часа</SelectItem>
-                <SelectItem value="120">2 часа</SelectItem>
+                <SelectItem value="15">{t('bookingBlock.min15', '15 минут')}</SelectItem>
+                <SelectItem value="30">{t('bookingBlock.min30', '30 минут')}</SelectItem>
+                <SelectItem value="45">{t('bookingBlock.min45', '45 минут')}</SelectItem>
+                <SelectItem value="60">{t('bookingBlock.hour1', '1 час')}</SelectItem>
+                <SelectItem value="90">{t('bookingBlock.hour1_5', '1.5 часа')}</SelectItem>
+                <SelectItem value="120">{t('bookingBlock.hour2', '2 часа')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -180,7 +180,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
         <div className="space-y-4">
           <h4 className="font-medium flex items-center gap-2">
             <CalendarDays className="h-4 w-4" />
-            {t('blocks.booking.workingDays', 'Рабочие дни')}
+            {t('bookingBlock.workingDays', 'Рабочие дни')}
           </h4>
           
           <div className="flex flex-wrap gap-2">
@@ -195,13 +195,13 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
                   }`}
                   onClick={() => handleToggleDay(day.value)}
                 >
-                  {t(`days.${day.key}`, day.key.substring(0, 2)).substring(0, 2)}
+                  {t(`days.${day.key}`, day.key.substring(0, 2))}
                 </Badge>
               );
             })}
           </div>
           <p className="text-xs text-muted-foreground">
-            {t('blocks.booking.clickToToggle', 'Нажмите на день чтобы включить/выключить')}
+            {t('bookingBlock.clickToToggle', 'Нажмите на день чтобы включить/выключить')}
           </p>
         </div>
 
@@ -210,16 +210,16 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
         {/* Custom Slots */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="font-medium">{t('blocks.booking.customSlots', 'Кастомные слоты')}</h4>
+            <h4 className="font-medium">{t('bookingBlock.customSlots', 'Кастомные слоты')}</h4>
             <Button size="sm" variant="outline" onClick={handleAddSlot}>
               <Plus className="h-4 w-4 mr-1" />
-              {t('blocks.booking.addSlot', 'Добавить')}
+              {t('bookingBlock.addSlot', 'Добавить')}
             </Button>
           </div>
 
           {(block.slots || []).length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {t('blocks.booking.noCustomSlots', 'Слоты генерируются автоматически на основе рабочих часов')}
+              {t('bookingBlock.noCustomSlots', 'Слоты генерируются автоматически на основе рабочих часов')}
             </p>
           ) : (
             <div className="space-y-2">
@@ -259,10 +259,10 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
 
         {/* Advanced Settings */}
         <div className="space-y-4">
-          <h4 className="font-medium">{t('blocks.booking.advanced', 'Дополнительно')}</h4>
+          <h4 className="font-medium">{t('bookingBlock.advanced', 'Дополнительно')}</h4>
           
           <div className="space-y-2">
-            <Label>{t('blocks.booking.maxDays', 'Максимум дней для записи')}</Label>
+            <Label>{t('bookingBlock.maxDays', 'Максимум дней для записи')}</Label>
             <Select
               value={String(block.maxBookingDays || 30)}
               onValueChange={v => handleChange({ maxBookingDays: Number(v) })}
@@ -271,20 +271,20 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="7">7 дней</SelectItem>
-                <SelectItem value="14">14 дней</SelectItem>
-                <SelectItem value="30">30 дней</SelectItem>
-                <SelectItem value="60">60 дней</SelectItem>
-                <SelectItem value="90">90 дней</SelectItem>
+                <SelectItem value="7">{t('bookingBlock.days7', '7 дней')}</SelectItem>
+                <SelectItem value="14">{t('bookingBlock.days14', '14 дней')}</SelectItem>
+                <SelectItem value="30">{t('bookingBlock.days30', '30 дней')}</SelectItem>
+                <SelectItem value="60">{t('bookingBlock.days60', '60 дней')}</SelectItem>
+                <SelectItem value="90">{t('bookingBlock.days90', '90 дней')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>{t('blocks.booking.requirePhone', 'Телефон обязателен')}</Label>
+              <Label>{t('bookingBlock.requirePhone', 'Телефон обязателен')}</Label>
               <p className="text-xs text-muted-foreground">
-                {t('blocks.booking.requirePhoneDesc', 'Клиент должен указать телефон')}
+                {t('bookingBlock.requirePhoneDesc', 'Клиент должен указать телефон')}
               </p>
             </div>
             <Switch
@@ -295,9 +295,9 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>{t('blocks.booking.requireEmail', 'Email обязателен')}</Label>
+              <Label>{t('bookingBlock.requireEmail', 'Email обязателен')}</Label>
               <p className="text-xs text-muted-foreground">
-                {t('blocks.booking.requireEmailDesc', 'Клиент должен указать email')}
+                {t('bookingBlock.requireEmailDesc', 'Клиент должен указать email')}
               </p>
             </div>
             <Switch
@@ -313,14 +313,14 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
         <div className="space-y-4">
           <h4 className="font-medium flex items-center gap-2">
             <Wallet className="h-4 w-4" />
-            {t('blocks.booking.prepayment', 'Предоплата')}
+            {t('bookingBlock.prepayment', 'Предоплата')}
           </h4>
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>{t('blocks.booking.requirePrepayment', 'Требовать предоплату')}</Label>
+              <Label>{t('bookingBlock.requirePrepayment', 'Требовать предоплату')}</Label>
               <p className="text-xs text-muted-foreground">
-                {t('blocks.booking.prepaymentDesc', 'После записи клиент перейдёт в WhatsApp для оплаты')}
+                {t('bookingBlock.prepaymentDesc', 'После записи клиент перейдёт в WhatsApp для оплаты')}
               </p>
             </div>
             <Switch
@@ -332,7 +332,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
           {block.requirePrepayment && (
             <>
               <div className="space-y-2">
-                <Label>{t('blocks.booking.prepaymentPhone', 'WhatsApp для оплаты')}</Label>
+                <Label>{t('bookingBlock.prepaymentPhone', 'WhatsApp для оплаты')}</Label>
                 <Input
                   value={block.prepaymentPhone || ''}
                   onChange={e => handleChange({ prepaymentPhone: e.target.value })}
@@ -340,13 +340,13 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
                   type="tel"
                 />
                 <p className="text-xs text-muted-foreground">
-                  {t('blocks.booking.phoneHint', 'Номер телефона с WhatsApp для приёма оплаты')}
+                  {t('bookingBlock.phoneHint', 'Номер телефона с WhatsApp для приёма оплаты')}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>{t('blocks.booking.prepaymentAmount', 'Сумма предоплаты')}</Label>
+                  <Label>{t('bookingBlock.prepaymentAmount', 'Сумма предоплаты')}</Label>
                   <Input
                     type="number"
                     value={block.prepaymentAmount || ''}
@@ -355,7 +355,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>{t('blocks.booking.currency', 'Валюта')}</Label>
+                  <Label>{t('bookingBlock.currency', 'Валюта')}</Label>
                   <CurrencySelect
                     value={block.prepaymentCurrency || 'KZT'}
                     onValueChange={v => handleChange({ prepaymentCurrency: v as any })}
@@ -372,15 +372,15 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
         <div className="space-y-4">
           <h4 className="font-medium flex items-center gap-2">
             <Bell className="h-4 w-4" />
-            {t('blocks.booking.notifications', 'Уведомления в Telegram')}
+            {t('bookingBlock.notifications', 'Уведомления в Telegram')}
           </h4>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>{t('blocks.booking.dailyReminder', 'Утреннее напоминание')}</Label>
+                <Label>{t('bookingBlock.dailyReminder', 'Утреннее напоминание')}</Label>
                 <p className="text-xs text-muted-foreground">
-                  {t('blocks.booking.dailyReminderDesc', 'Получите список записей на сегодня')}
+                  {t('bookingBlock.dailyReminderDesc', 'Получите список записей на сегодня')}
                 </p>
               </div>
               <Switch
@@ -392,7 +392,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
             {block.dailyReminderEnabled && (
               <div className="flex items-center gap-2 ml-0">
                 <Label className="text-sm text-muted-foreground whitespace-nowrap">
-                  {t('blocks.booking.reminderTime', 'Время напоминания')}:
+                  {t('bookingBlock.reminderTime', 'Время напоминания')}:
                 </Label>
                 <Input
                   type="time"
@@ -408,10 +408,10 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
             <div className="space-y-0.5">
               <Label className="flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
-                {t('blocks.booking.weeklyMotivation', 'Мотивация на неделю')}
+                {t('bookingBlock.weeklyMotivation', 'Мотивация на неделю')}
               </Label>
               <p className="text-xs text-muted-foreground">
-                {t('blocks.booking.weeklyMotivationDesc', 'Понедельник в 9:00 — персональное вдохновение')}
+                {t('bookingBlock.weeklyMotivationDesc', 'Понедельник в 9:00 — персональное вдохновение')}
               </p>
             </div>
             <Switch
