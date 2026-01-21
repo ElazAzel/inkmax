@@ -20,6 +20,7 @@
     "error": "Қате",
     "success": "Сәтті",
     "back": "Артқа",
+    "backHome": "Басты бетке",
     "next": "Келесі",
     "confirm": "Растау",
     "apply": "Қолдану",
@@ -46,7 +47,8 @@
     "yes": "Иә",
     "no": "Жоқ",
     "or": "немесе",
-    "and": "және"
+    "and": "және",
+    "user": "Пайдаланушы"
   },
   "form": {
     "fillRequired": "Міндетті өрістерді толтырыңыз",
@@ -493,6 +495,18 @@
   "pricing": {
     "title": "Тарифтер",
     "subtitle": "Сәйкес жоспарды таңдаңыз",
+    "month": "ай",
+    "tokens": {
+      "title": "Немесе Linkkon токендерімен төлеңіз",
+      "balanceDescription": "100 Linkkon = 1 күн Premium. Балансыңыз: {{balance}} токен",
+      "converting": "Айырбастау...",
+      "buyDay": "{{cost}} Linkkon үшін 1 күн сатып алу",
+      "buyTokens": "Токен сатып алу"
+    },
+    "companyDetails": {
+      "nameLine": "ИП BEEGIN • БИН: 971207300019",
+      "addressLine": "Алматы қ., Шолохов к-сі, 20/7"
+    },
     "free": {
       "title": "Free",
       "description": "Бастау үшін",
@@ -566,10 +580,13 @@
     "overview": "Шолу",
     "users": "Пайдаланушылар",
     "pages": "Беттер",
+    "tokens": "Токендер",
     "analytics": "Аналитика",
     "charts": "Графиктер",
     "detailed": "Толық",
     "tiers": "Тарифтер",
+    "verification": "Тексеру",
+    "translations": "Аудармалар",
     "signOut": "Шығу",
     "noData": "Деректер жоқ",
     "totalUsers": "Барлық пайдаланушылар",
@@ -740,6 +757,10 @@
   },
   "teams": {
     "title": "Командалар",
+    "notFoundTitle": "Команда табылмады",
+    "notFoundDesc": "Бұл команда жоқ немесе жабық.",
+    "membersTitle": "Команда мүшелері",
+    "noMembers": "Командада әлі қатысушылар жоқ",
     "settings": "Команда баптаулары",
     "name": "Атауы",
     "description": "Сипаттама",
@@ -988,7 +1009,11 @@
     "save": "Сақтау",
     "noBlocks": "Блоктар жоқ",
     "initiator": "Бастаушы",
-    "partner": "Серіктес"
+    "partner": "Серіктес",
+    "title": "Коллаборация",
+    "notFoundTitle": "Коллаборация табылмады",
+    "notFoundDesc": "Бұл бет жоқ немесе коллаборация әлі қабылданбаған.",
+    "pageNoBlocks": "Блоктар әлі қосылмаған"
   },
   "dashboard": {
     "loadError": "Жүктеу қатесі",

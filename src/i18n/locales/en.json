@@ -20,6 +20,7 @@
     "error": "Error",
     "success": "Success",
     "back": "Back",
+    "backHome": "Back to home",
     "next": "Next",
     "confirm": "Confirm",
     "apply": "Apply",
@@ -46,7 +47,8 @@
     "yes": "Yes",
     "no": "No",
     "or": "or",
-    "and": "and"
+    "and": "and",
+    "user": "User"
   },
   "form": {
     "fillRequired": "Please fill required fields",
@@ -493,6 +495,18 @@
   "pricing": {
     "title": "Pricing",
     "subtitle": "Choose the right plan",
+    "month": "mo",
+    "tokens": {
+      "title": "Or pay with Linkkon tokens",
+      "balanceDescription": "100 Linkkon = 1 day Premium. Your balance: {{balance}} tokens",
+      "converting": "Converting...",
+      "buyDay": "Buy 1 day for {{cost}} Linkkon",
+      "buyTokens": "Buy tokens"
+    },
+    "companyDetails": {
+      "nameLine": "IE BEEGIN • BIN: 971207300019",
+      "addressLine": "Almaty, Sholokhova st., 20/7"
+    },
     "free": {
       "title": "Free",
       "description": "To start",
@@ -566,10 +580,13 @@
     "overview": "Overview",
     "users": "Users",
     "pages": "Pages",
+    "tokens": "Tokens",
     "analytics": "Analytics",
     "charts": "Charts",
     "detailed": "Detailed",
     "tiers": "Tiers",
+    "verification": "Verification",
+    "translations": "Translations",
     "signOut": "Sign Out",
     "noData": "No data",
     "totalUsers": "Total users",
@@ -740,6 +757,10 @@
   },
   "teams": {
     "title": "Teams",
+    "notFoundTitle": "Team not found",
+    "notFoundDesc": "This team does not exist or is private.",
+    "membersTitle": "Team members",
+    "noMembers": "There are no members in this team yet",
     "settings": "Team Settings",
     "name": "Name",
     "description": "Description",
@@ -988,7 +1009,11 @@
     "save": "Save",
     "noBlocks": "No blocks",
     "initiator": "Initiator",
-    "partner": "Partner"
+    "partner": "Partner",
+    "title": "Collaboration",
+    "notFoundTitle": "Collaboration not found",
+    "notFoundDesc": "This page does not exist or the collaboration has not been accepted yet.",
+    "pageNoBlocks": "No blocks have been added yet"
   },
   "dashboard": {
     "loadError": "Load Error",
