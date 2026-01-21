@@ -345,15 +345,24 @@ export default function Alternatives() {
         <main className="container mx-auto px-4 py-8 max-w-6xl">
           {/* Hero Section */}
           <section className="text-center mb-12 sm:mb-16">
-            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
+            <Badge
+              data-testid="alternatives-hero-badge"
+              className="mb-4 bg-primary/10 text-primary border-primary/20"
+            >
               {t('alternatives.hero.badge', '2026 Comparison')}
             </Badge>
             
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight">
+            <h1
+              data-testid="alternatives-hero-title"
+              className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight"
+            >
               {t('alternatives.hero.title', 'LinkMAX vs Linktree vs Taplink')}
             </h1>
             
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p
+              data-testid="alternatives-hero-description"
+              className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8"
+            >
               {t(
                 'alternatives.hero.description',
                 'Discover why thousands of users are switching from Linktree and Taplink to LinkMAX. Detailed comparison of features, pricing and capabilities.'
@@ -363,10 +372,14 @@ export default function Alternatives() {
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" onClick={() => navigate('/auth')} className="rounded-xl">
                 <Sparkles className="h-5 w-5 mr-2" />
-                {t('alternatives.hero.ctaPrimary', 'Try for Free')}
+                <span data-testid="alternatives-hero-primary-cta">
+                  {t('alternatives.hero.ctaPrimary', 'Try for Free')}
+                </span>
               </Button>
               <Button size="lg" variant="outline" onClick={() => navigate('/pricing')} className="rounded-xl">
-                {t('alternatives.hero.ctaSecondary', 'View Pricing')}
+                <span data-testid="alternatives-hero-secondary-cta">
+                  {t('alternatives.hero.ctaSecondary', 'View Pricing')}
+                </span>
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </div>

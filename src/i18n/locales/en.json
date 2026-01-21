@@ -537,6 +537,9 @@
       "themes": "Premium themes"
     },
     "choosePlan": "Choose plan",
+    "description": "Unlock all LinkMAX features for your business",
+    "alreadyFree": "The free plan is already active",
+    "comingSoon": "Payments are coming soon. Stay tuned for updates.",
     "currentPlan": "Current plan"
   },
   "gallery": {
