@@ -48,6 +48,21 @@
     "or": "or",
     "and": "and"
   },
+  "form": {
+    "fillRequired": "Please fill required fields",
+    "success": "Form submitted successfully!",
+    "error": "Error submitting form",
+    "enterPlaceholder": "Enter",
+    "submitting": "Submitting..."
+  },
+  "profile": {
+    "nameSaved": "Name saved",
+    "bioSaved": "Bio saved",
+    "namePlaceholder": "Your name",
+    "clickToEdit": "Click to edit",
+    "addName": "Add name",
+    "addBio": "Add bio"
+  },
   "verification": {
     "platformBadge": "Identity verified by platform",
     "premiumBadge": "Premium account",
@@ -854,7 +869,57 @@
     "restored": "Block restored",
     "addFailed": "Failed to add block",
     "premiumRequired": "This block is PRO only",
-    "limitReached": "Block limit reached. Upgrade to Premium."
+    "limitReached": "Block limit reached. Upgrade to Premium.",
+    "pricing": {
+      "empty": "Add services",
+      "hit": "Popular"
+    },
+    "faq": {
+      "empty": "Add questions and answers"
+    },
+    "countdown": {
+      "expired": "Time is up!",
+      "noDate": "Set a date",
+      "days": "days",
+      "hours": "hours",
+      "minutes": "minutes",
+      "seconds": "seconds"
+    },
+    "beforeAfter": {
+      "before": "Before",
+      "after": "After",
+      "noImages": "Add images"
+    },
+    "map": {
+      "noAddress": "Specify address"
+    },
+    "catalog": {
+      "empty": "Add products to catalog",
+      "uncategorized": "Uncategorized"
+    },
+    "community": {
+      "title": "Title",
+      "titlePlaceholder": "My Private Club",
+      "description": "Description",
+      "descriptionPlaceholder": "Exclusive content, behind the scenes, Q&A",
+      "telegramLink": "Telegram Link",
+      "linkHint": "Use an invite link to your private channel or group",
+      "memberCount": "Member Count",
+      "icon": "Icon",
+      "style": "Style",
+      "iconUsers": "Members",
+      "iconCrown": "Crown",
+      "iconStar": "Star",
+      "iconHeart": "Heart",
+      "iconZap": "Lightning",
+      "iconLock": "Lock",
+      "styleDefault": "Default",
+      "styleDefaultDesc": "Simple and clean",
+      "stylePremium": "Premium",
+      "stylePremiumDesc": "Golden gradient",
+      "styleExclusive": "Exclusive",
+      "styleExclusiveDesc": "Purple gradient"
+    }
   },
   "product": {
     "authRequired": "Login required to purchase",
@@ -1055,6 +1120,37 @@
     "reminderTime": "Reminder time",
     "weeklyMotivation": "Weekly motivation",
     "weeklyMotivationDesc": "Monday at 9:00 AM — personal inspiration"
+  },
+  "mapBlock": {
+    "address": "Address",
+    "addressPlaceholder": "New York, 5th Avenue 123",
+    "hint": "Enter address — the map will find the location automatically",
+    "enterAddress": "Enter address"
+  },
+  "booking": {
+    "title": "Book Now",
+    "step1": "Date",
+    "step2": "Time",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "loadingSlots": "Loading...",
+    "noSlotsTitle": "No slots",
+    "noSlotsHint": "Choose another date",
+    "continue": "Continue",
+    "available": "Available",
+    "booked": "Booked",
+    "confirmBooking": "Confirm Booking",
+    "name": "Your name",
+    "namePlaceholder": "Enter your name",
+    "phone": "Phone",
+    "email": "Email",
+    "notes": "Notes",
+    "notesPlaceholder": "Additional information...",
+    "confirm": "Book",
+    "confirmAndPay": "Book and Pay",
+    "prepaymentNote": "After booking you will be redirected to WhatsApp for payment",
+    "success": "You have successfully booked!",
+    "error": "Booking error. Please try again."
   },
   "days": {
     "sunday": "Sun",

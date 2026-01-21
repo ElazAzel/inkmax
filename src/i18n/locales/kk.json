@@ -48,6 +48,21 @@
     "or": "немесе",
     "and": "және"
   },
+  "form": {
+    "fillRequired": "Міндетті өрістерді толтырыңыз",
+    "success": "Форма сәтті жіберілді!",
+    "error": "Форма жіберу қатесі",
+    "enterPlaceholder": "Енгізіңіз",
+    "submitting": "Жіберілуде..."
+  },
+  "profile": {
+    "nameSaved": "Аты сақталды",
+    "bioSaved": "Сипаттама сақталды",
+    "namePlaceholder": "Сіздің атыңыз",
+    "clickToEdit": "Өңдеу үшін басыңыз",
+    "addName": "Атын қосу",
+    "addBio": "Сипаттама қосу"
+  },
   "verification": {
     "platformBadge": "Жеке басы платформамен расталған",
     "premiumBadge": "Premium аккаунт",
@@ -854,7 +869,57 @@
     "restored": "Блок қалпына келтірілді",
     "addFailed": "Блок қосу сәтсіз аяқталды",
     "premiumRequired": "Бұл блок тек PRO үшін",
-    "limitReached": "Блок шегіне жетті. Premium-ға жаңартыңыз."
+    "limitReached": "Блок шегіне жетті. Premium-ға жаңартыңыз.",
+    "pricing": {
+      "empty": "Қызметтерді қосыңыз",
+      "hit": "Танымал"
+    },
+    "faq": {
+      "empty": "Сұрақтар мен жауаптарды қосыңыз"
+    },
+    "countdown": {
+      "expired": "Уақыт аяқталды!",
+      "noDate": "Күнді көрсетіңіз",
+      "days": "күн",
+      "hours": "сағат",
+      "minutes": "минут",
+      "seconds": "секунд"
+    },
+    "beforeAfter": {
+      "before": "Бұрын",
+      "after": "Кейін",
+      "noImages": "Суреттерді қосыңыз"
+    },
+    "map": {
+      "noAddress": "Мекенжайды көрсетіңіз"
+    },
+    "catalog": {
+      "empty": "Каталогқа тауарларды қосыңыз",
+      "uncategorized": "Санатсыз"
+    },
+    "community": {
+      "title": "Атауы",
+      "titlePlaceholder": "Менің жабық клубым",
+      "description": "Сипаттама",
+      "descriptionPlaceholder": "Эксклюзивті контент, сахна артындағы, сұрақ-жауап",
+      "telegramLink": "Telegram сілтемесі",
+      "linkHint": "Жабық арнаңызға немесе топқа шақыру сілтемесін қолданыңыз",
+      "memberCount": "Мүшелер саны",
+      "icon": "Белгіше",
+      "style": "Стиль",
+      "iconUsers": "Мүшелер",
+      "iconCrown": "Тәж",
+      "iconStar": "Жұлдыз",
+      "iconHeart": "Жүрек",
+      "iconZap": "Найзағай",
+      "iconLock": "Құлып",
+      "styleDefault": "Стандартты",
+      "styleDefaultDesc": "Қарапайым және таза",
+      "stylePremium": "Premium",
+      "stylePremiumDesc": "Алтын градиент",
+      "styleExclusive": "Exclusive",
+      "styleExclusiveDesc": "Күлгін градиент"
+    }
   },
   "product": {
     "authRequired": "Сатып алу үшін авторизация қажет",
@@ -1055,6 +1120,37 @@
     "reminderTime": "Еске салу уақыты",
     "weeklyMotivation": "Апталық мотивация",
     "weeklyMotivationDesc": "Дүйсенбі сағат 9:00 — жеке шабыт"
+  },
+  "mapBlock": {
+    "address": "Мекенжай",
+    "addressPlaceholder": "Алматы, Абай көшесі 150",
+    "hint": "Мекенжайды енгізіңіз — карта орынды автоматты түрде табады",
+    "enterAddress": "Мекенжайды енгізіңіз"
+  },
+  "booking": {
+    "title": "Жазылу",
+    "step1": "Күні",
+    "step2": "Уақыты",
+    "today": "Бүгін",
+    "tomorrow": "Ертең",
+    "loadingSlots": "Жүктеу...",
+    "noSlotsTitle": "Слоттар жоқ",
+    "noSlotsHint": "Басқа күнді таңдаңыз",
+    "continue": "Жалғастыру",
+    "available": "Бос",
+    "booked": "Бос емес",
+    "confirmBooking": "Жазылуды растау",
+    "name": "Сіздің атыңыз",
+    "namePlaceholder": "Атыңызды енгізіңіз",
+    "phone": "Телефон",
+    "email": "Email",
+    "notes": "Түсініктеме",
+    "notesPlaceholder": "Қосымша ақпарат...",
+    "confirm": "Жазылу",
+    "confirmAndPay": "Жазылу және төлеу",
+    "prepaymentNote": "Жазылғаннан кейін сіз төлем үшін WhatsApp-қа бағытталасыз",
+    "success": "Сіз сәтті жазылдыңыз!",
+    "error": "Жазылу қатесі. Қайталап көріңіз."
   },
   "days": {
     "sunday": "Жс",

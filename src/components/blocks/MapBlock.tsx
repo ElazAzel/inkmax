@@ -11,7 +11,7 @@ interface MapBlockProps {
 }
 
 export function MapBlock({ block }: MapBlockProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const address = getTranslatedString(block.address, i18n.language as SupportedLanguage);
 
   const paddingMap = { none: '', sm: 'p-2', md: 'p-4', lg: 'p-6', xl: 'p-8' };
@@ -26,9 +26,9 @@ export function MapBlock({ block }: MapBlockProps) {
   if (!address) {
     return (
       <div className="w-full h-40 sm:h-48 flex items-center justify-center bg-muted rounded-xl">
-        <div className="text-center text-muted-foreground">
+      <div className="text-center text-muted-foreground">
           <MapPin className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
-          <p className="text-xs sm:text-sm">Укажите адрес</p>
+          <p className="text-xs sm:text-sm">{t('blocks.map.noAddress', 'Укажите адрес')}</p>
         </div>
       </div>
     );
