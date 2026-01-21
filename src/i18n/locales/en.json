@@ -727,7 +727,115 @@
     }
   },
   "achievements": {
-    "rewardDescription": "Achievement reward: {{title}}"
+    "title": "Achievements",
+    "progress": "{{unlocked}} of {{total}} unlocked",
+    "newAchievement": "New achievement!",
+    "rewardDescription": "Achievement reward: {{title}}",
+    "emptyTitle": "No achievements",
+    "emptyDescription": "There are no achievements in this category yet",
+    "sections": {
+      "unlocked": "Unlocked ({{count}})",
+      "locked": "Locked ({{count}})"
+    },
+    "categories": {
+      "all": "All",
+      "blocks": "Blocks",
+      "features": "Features",
+      "milestones": "Milestones",
+      "social": "Social"
+    },
+    "rarity": {
+      "common": "Common",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    },
+    "items": {
+      "firstLink": {
+        "title": "First link",
+        "description": "Add your first link"
+      },
+      "socialButterfly": {
+        "title": "Social butterfly",
+        "description": "Add a social block"
+      },
+      "merchant": {
+        "title": "Merchant",
+        "description": "Add your first product"
+      },
+      "contentCreator": {
+        "title": "Content creator",
+        "description": "Add a video block"
+      },
+      "galleryMaster": {
+        "title": "Gallery master",
+        "description": "Create an image carousel"
+      },
+      "developer": {
+        "title": "Developer",
+        "description": "Use the custom code block"
+      },
+      "communicator": {
+        "title": "Communicator",
+        "description": "Add a contact form"
+      },
+      "searchGuru": {
+        "title": "Search guru",
+        "description": "Add an AI Search block"
+      },
+      "aiPowered": {
+        "title": "AI assistant",
+        "description": "Use AI to generate content"
+      },
+      "templateUser": {
+        "title": "Quick start",
+        "description": "Use a ready-made template"
+      },
+      "chatbotExpert": {
+        "title": "Chatbot expert",
+        "description": "Set up an AI chatbot"
+      },
+      "collector": {
+        "title": "Collector",
+        "description": "Add 5 different block types"
+      },
+      "masterBuilder": {
+        "title": "Master builder",
+        "description": "Add 10 blocks to the page"
+      },
+      "completionist": {
+        "title": "Completionist",
+        "description": "Use all block types"
+      },
+      "publisher": {
+        "title": "Publisher",
+        "description": "Publish your first page"
+      },
+      "popular": {
+        "title": "Popular",
+        "description": "Get 100 views"
+      },
+      "influencer": {
+        "title": "Influencer",
+        "description": "Get 1000 views"
+      },
+      "firstFriend": {
+        "title": "First friend",
+        "description": "Add your first friend"
+      },
+      "socialCircle": {
+        "title": "Social circle",
+        "description": "Add 5 friends"
+      },
+      "networkingPro": {
+        "title": "Networking pro",
+        "description": "Add 10 friends"
+      },
+      "communityLeader": {
+        "title": "Community leader",
+        "description": "Add 25 friends"
+      }
+    }
   },
   "templates": {
     "title": "Templates",
@@ -748,6 +856,144 @@
       "experts": "Experts",
       "premium": "Premium",
       "other": "Other"
+    }
+  },
+  "alternatives": {
+    "seo": {
+      "title": "LinkMAX vs Linktree vs Taplink — 2026 Comparison | Best Alternative",
+      "description": "Detailed comparison of LinkMAX, Linktree and Taplink. Discover why LinkMAX is the best free alternative with AI generation, CRM and 0% commission. Feature and pricing comparison table.",
+      "keywords": "linktree vs taplink, taplink alternative, linktree alternative free, best link in bio, linktree taplink comparison, free taplink alternative, linktree replacement, beacons vs linktree, lnk.bio alternative, shorby alternative",
+      "schemaName": "Link in Bio Platforms Comparison",
+      "schemaDescription": "AI-powered link-in-bio builder with CRM and 0% commission",
+      "defaultTitle": "LinkMAX - AI-Powered Link-in-Bio Platform"
+    },
+    "header": {
+      "cta": "Get Started"
+    },
+    "hero": {
+      "badge": "2026 Comparison",
+      "title": "LinkMAX vs Linktree vs Taplink",
+      "description": "Discover why thousands of users are switching from Linktree and Taplink to LinkMAX. Detailed comparison of features, pricing and capabilities.",
+      "ctaPrimary": "Try for Free",
+      "ctaSecondary": "View Pricing"
+    },
+    "winner": {
+      "title": "LinkMAX — Best Choice in 2026",
+      "description": "AI generation, built-in CRM, Telegram notifications and 40-50% lower price than competitors. All this makes LinkMAX the best Linktree and Taplink alternative."
+    },
+    "advantages": {
+      "title": "Why is LinkMAX Better?",
+      "aiGeneration": {
+        "title": "AI Generation in 2 Minutes",
+        "description": "Choose your niche — AI creates a page with the right blocks in 30 seconds. Free: 1/mo, Premium: 5/mo."
+      },
+      "miniCrm": {
+        "title": "Built-in Mini-CRM",
+        "description": "Manage leads right in LinkMAX. Statuses, history, Telegram notifications — all in one place."
+      },
+      "telegram": {
+        "title": "Telegram Notifications",
+        "description": "Instant notifications about new leads in Telegram. Never miss a client."
+      },
+      "pricing": {
+        "title": "Affordable Pricing",
+        "description": "From $5.10/month with annual subscription. Payment via RoboKassa. 14-day refund policy."
+      },
+      "localization": {
+        "title": "RU/EN/KZ Localization",
+        "description": "Full Russian, English and Kazakh language support."
+      },
+      "analytics": {
+        "title": "Analytics & Gamification",
+        "description": "Click stats, Linkkon tokens, achievements, streaks. Grow your page like a game."
+      }
+    },
+    "comparison": {
+      "title": "Free vs Premium",
+      "featureLabel": "Feature",
+      "freeLabel": "Free",
+      "premiumLabel": "Premium",
+      "rows": {
+        "freePlan": {
+          "label": "Free Plan",
+          "freeNote": "10 blocks",
+          "premiumNote": "25+ blocks"
+        },
+        "aiGeneration": {
+          "label": "AI Page Generation",
+          "freeNote": "1/month",
+          "premiumNote": "5/month"
+        },
+        "blockTypes": {
+          "label": "Number of Block Types",
+          "freeValue": "10+",
+          "premiumValue": "25+"
+        },
+        "miniCrm": {
+          "label": "Mini-CRM System"
+        },
+        "clickAnalytics": {
+          "label": "Click Analytics",
+          "freeValue": "Basic",
+          "premiumValue": "Advanced"
+        },
+        "telegramNotifications": {
+          "label": "Telegram Notifications"
+        },
+        "leadForms": {
+          "label": "Lead Capture Forms"
+        },
+        "blockScheduler": {
+          "label": "Block Scheduler"
+        },
+        "mobileEditor": {
+          "label": "Mobile Editor (PWA)"
+        },
+        "premiumThemes": {
+          "label": "Premium Themes & Animations"
+        },
+        "priceLists": {
+          "label": "Price Lists & Catalogs"
+        },
+        "localization": {
+          "label": "RU/EN/KZ Support"
+        },
+        "gamification": {
+          "label": "Tokens & Gamification"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Premium Pricing",
+      "badges": {
+        "best": "Best",
+        "popular": "Popular"
+      },
+      "perMonth": "/month",
+      "note": "* Payment via RoboKassa. Monthly price when paying for the specified period.",
+      "periods": {
+        "three": "3 months",
+        "six": "6 months",
+        "twelve": "12 months"
+      }
+    },
+    "migration": {
+      "title": "Easy Migration from Linktree or Taplink",
+      "description": "AI automatically creates a page based on your description. Just describe your business — and get a ready page in 2 minutes!",
+      "cta": "Switch to LinkMAX"
+    },
+    "finalCta": {
+      "title": "Ready to Try?",
+      "description": "Create a free page right now and see for yourself why LinkMAX is the best choice.",
+      "primary": "Start for Free",
+      "secondary": "View Examples"
+    },
+    "footer": {
+      "pricing": "Pricing",
+      "gallery": "Gallery",
+      "signIn": "Sign In",
+      "company": "IP BEEGIN • BIN: 971207300019",
+      "address": "Almaty, Sholokhov St., 20/7"
     }
   },
   "blockPreview": {
@@ -874,6 +1120,8 @@
       "emptyDescription": "Add friends to see their activity",
       "title": "Friends feed",
       "events_one": "{{count}} event",
+      "events_few": "{{count}} events",
+      "events_many": "{{count}} events",
       "events_other": "{{count}} events"
     },
     "metadata": {
@@ -889,8 +1137,12 @@
     "pendingGifts": {
       "title": "Gifts for you!",
       "count_one": "{{count}} gift",
+      "count_few": "{{count}} gifts",
+      "count_many": "{{count}} gifts",
       "count_other": "{{count}} gifts",
       "days_one": "+{{count}} day",
+      "days_few": "+{{count}} days",
+      "days_many": "+{{count}} days",
       "days_other": "+{{count}} days",
       "activate": "Activate"
     },
@@ -1233,6 +1485,10 @@
   "paidContent": {
     "title": "Paid Content",
     "description": "Unlock this content with Linkkon tokens",
+    "settingsDescription": "Restrict access to the block content. Visitors can unlock it with Linkkon tokens (1 token = 1 ₸).",
+    "priceLabel": "Price (in Linkkon tokens)",
+    "pricePlaceholder": "100",
+    "priceHint": "Minimum: 1 token. Recommended: 50-500 tokens.",
     "unlock": "Unlock",
     "unlocking": "Unlocking...",
     "yourBalance": "Your balance",
@@ -1352,7 +1608,29 @@
     "appearDate": "Appear",
     "disappearDate": "Disappear",
     "selectDate": "Select date",
-    "scheduleHint": "Block will be visible only during the specified period"
+    "scheduleHint": "Block will be visible only during the specified period",
+    "premiumFeature": "This is a Premium feature."
+  },
+  "currency": {
+    "names": {
+      "KZT": "Tenge (Kazakhstan)",
+      "RUB": "Ruble (Russia)",
+      "BYN": "Ruble (Belarus)",
+      "AMD": "Dram (Armenia)",
+      "AZN": "Manat (Azerbaijan)",
+      "KGS": "Som (Kyrgyzstan)",
+      "TJS": "Somoni (Tajikistan)",
+      "TMT": "Manat (Turkmenistan)",
+      "UZS": "Som (Uzbekistan)",
+      "USD": "US Dollar",
+      "EUR": "Euro",
+      "GBP": "Pound Sterling",
+      "CNY": "Yuan",
+      "JPY": "Yen",
+      "CHF": "Swiss Franc",
+      "CAD": "Canadian Dollar",
+      "AUD": "Australian Dollar"
+    }
   },
   "separatorBlock": {
     "lineStyle": "Line style",

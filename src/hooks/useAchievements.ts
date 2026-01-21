@@ -85,7 +85,7 @@ export function useAchievements() {
             tokenReward,
             `achievement_${achievement.rarity}`,
             t('achievements.rewardDescription', 'Награда за достижение: {{title}}', {
-              title: achievement.title,
+              title: t(achievement.titleKey),
             })
           );
 

@@ -727,7 +727,115 @@
     }
   },
   "achievements": {
-    "rewardDescription": "Награда за достижение: {{title}}"
+    "title": "Достижения",
+    "progress": "{{unlocked}} из {{total}} открыто",
+    "newAchievement": "Новое достижение!",
+    "rewardDescription": "Награда за достижение: {{title}}",
+    "emptyTitle": "Нет достижений",
+    "emptyDescription": "В этой категории пока нет достижений",
+    "sections": {
+      "unlocked": "Открытые ({{count}})",
+      "locked": "Заблокированные ({{count}})"
+    },
+    "categories": {
+      "all": "Все",
+      "blocks": "Блоки",
+      "features": "Функции",
+      "milestones": "Вехи",
+      "social": "Соц."
+    },
+    "rarity": {
+      "common": "Обычное",
+      "rare": "Редкое",
+      "epic": "Эпическое",
+      "legendary": "Легендарное"
+    },
+    "items": {
+      "firstLink": {
+        "title": "Первая ссылка",
+        "description": "Добавьте свою первую ссылку"
+      },
+      "socialButterfly": {
+        "title": "Социальная бабочка",
+        "description": "Добавьте блок социальных сетей"
+      },
+      "merchant": {
+        "title": "Торговец",
+        "description": "Добавьте первый товар в магазин"
+      },
+      "contentCreator": {
+        "title": "Создатель контента",
+        "description": "Добавьте видео блок"
+      },
+      "galleryMaster": {
+        "title": "Мастер галерей",
+        "description": "Создайте карусель изображений"
+      },
+      "developer": {
+        "title": "Разработчик",
+        "description": "Используйте блок с кастомным кодом"
+      },
+      "communicator": {
+        "title": "Коммуникатор",
+        "description": "Добавьте форму обратной связи"
+      },
+      "searchGuru": {
+        "title": "Гуру поиска",
+        "description": "Добавьте AI Search блок"
+      },
+      "aiPowered": {
+        "title": "AI-помощник",
+        "description": "Используйте AI для генерации контента"
+      },
+      "templateUser": {
+        "title": "Быстрый старт",
+        "description": "Используйте готовый шаблон"
+      },
+      "chatbotExpert": {
+        "title": "Эксперт чат-ботов",
+        "description": "Настройте AI чат-бота"
+      },
+      "collector": {
+        "title": "Коллекционер",
+        "description": "Добавьте 5 разных типов блоков"
+      },
+      "masterBuilder": {
+        "title": "Мастер-строитель",
+        "description": "Добавьте 10 блоков на страницу"
+      },
+      "completionist": {
+        "title": "Перфекционист",
+        "description": "Используйте все типы блоков"
+      },
+      "publisher": {
+        "title": "Издатель",
+        "description": "Опубликуйте свою первую страницу"
+      },
+      "popular": {
+        "title": "Популярный",
+        "description": "Получите 100 просмотров"
+      },
+      "influencer": {
+        "title": "Инфлюенсер",
+        "description": "Получите 1000 просмотров"
+      },
+      "firstFriend": {
+        "title": "Первый друг",
+        "description": "Добавьте первого друга"
+      },
+      "socialCircle": {
+        "title": "Социальный круг",
+        "description": "Добавьте 5 друзей"
+      },
+      "networkingPro": {
+        "title": "Мастер нетворкинга",
+        "description": "Добавьте 10 друзей"
+      },
+      "communityLeader": {
+        "title": "Лидер сообщества",
+        "description": "Добавьте 25 друзей"
+      }
+    }
   },
   "templates": {
     "title": "Шаблоны",
@@ -748,6 +856,144 @@
       "experts": "Эксперты",
       "premium": "Премиум",
       "other": "Другое"
+    }
+  },
+  "alternatives": {
+    "seo": {
+      "title": "LinkMAX vs Linktree vs Taplink — Сравнение 2026 | Лучшая альтернатива",
+      "description": "Подробное сравнение LinkMAX, Linktree и Taplink. Узнайте, почему LinkMAX — лучшая бесплатная альтернатива с AI-генерацией, CRM и 0% комиссии. Таблица сравнения функций и цен.",
+      "keywords": "linktree vs taplink, taplink альтернатива, linktree альтернатива бесплатно, лучший link in bio, сравнение linktree taplink, бесплатный аналог taplink, замена linktree, hipolink альтернатива, beacons vs linktree, lnk.bio альтернатива",
+      "schemaName": "Сравнение Link in Bio платформ",
+      "schemaDescription": "AI-конструктор link-in-bio с CRM и 0% комиссии",
+      "defaultTitle": "LinkMAX - AI-конструктор Link-in-Bio"
+    },
+    "header": {
+      "cta": "Начать"
+    },
+    "hero": {
+      "badge": "Сравнение 2026",
+      "title": "LinkMAX vs Linktree vs Taplink",
+      "description": "Узнайте, почему тысячи пользователей переходят с Linktree и Taplink на LinkMAX. Подробное сравнение функций, цен и возможностей.",
+      "ctaPrimary": "Попробовать бесплатно",
+      "ctaSecondary": "Посмотреть цены"
+    },
+    "winner": {
+      "title": "LinkMAX — лучший выбор в 2026",
+      "description": "AI-генерация, встроенная CRM, Telegram-уведомления и цена на 40-50% ниже конкурентов. Всё это делает LinkMAX лучшей альтернативой Linktree и Taplink."
+    },
+    "advantages": {
+      "title": "Почему LinkMAX лучше?",
+      "aiGeneration": {
+        "title": "AI-генерация за 2 минуты",
+        "description": "Выберите нишу — AI создаст страницу с нужными блоками за 30 секунд. Free: 1/мес, Premium: 5/мес."
+      },
+      "miniCrm": {
+        "title": "Встроенная Mini-CRM",
+        "description": "Управляйте заявками прямо в LinkMAX. Статусы, история, Telegram-уведомления — всё в одном месте."
+      },
+      "telegram": {
+        "title": "Telegram-уведомления",
+        "description": "Мгновенные уведомления о новых заявках в Telegram. Не пропустите ни одного клиента."
+      },
+      "pricing": {
+        "title": "Доступные цены",
+        "description": "От 2 610₸/мес (~$5.10) при годовой подписке. Оплата через RoboKassa. 14 дней на возврат."
+      },
+      "localization": {
+        "title": "Локализация RU/EN/KZ",
+        "description": "Полная поддержка русского, английского и казахского языков."
+      },
+      "analytics": {
+        "title": "Аналитика и геймификация",
+        "description": "Статистика кликов, Linkkon токены, достижения, стрики. Развивайте страницу как игру."
+      }
+    },
+    "comparison": {
+      "title": "Free vs Premium",
+      "featureLabel": "Функция",
+      "freeLabel": "Бесплатно",
+      "premiumLabel": "Premium",
+      "rows": {
+        "freePlan": {
+          "label": "Бесплатный тариф",
+          "freeNote": "10 блоков",
+          "premiumNote": "25+ блоков"
+        },
+        "aiGeneration": {
+          "label": "AI-генерация страницы",
+          "freeNote": "1/мес",
+          "premiumNote": "5/мес"
+        },
+        "blockTypes": {
+          "label": "Количество типов блоков",
+          "freeValue": "10+",
+          "premiumValue": "25+"
+        },
+        "miniCrm": {
+          "label": "Mini-CRM система"
+        },
+        "clickAnalytics": {
+          "label": "Аналитика кликов",
+          "freeValue": "Базовая",
+          "premiumValue": "Расширенная"
+        },
+        "telegramNotifications": {
+          "label": "Telegram-уведомления"
+        },
+        "leadForms": {
+          "label": "Формы сбора заявок"
+        },
+        "blockScheduler": {
+          "label": "Планировщик блоков"
+        },
+        "mobileEditor": {
+          "label": "Мобильный редактор (PWA)"
+        },
+        "premiumThemes": {
+          "label": "Премиум-темы и анимации"
+        },
+        "priceLists": {
+          "label": "Прайс-листы и каталоги"
+        },
+        "localization": {
+          "label": "Поддержка RU/EN/KZ"
+        },
+        "gamification": {
+          "label": "Токены и геймификация"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Цены на Premium",
+      "badges": {
+        "best": "Лучшее",
+        "popular": "Популярный"
+      },
+      "perMonth": "/месяц",
+      "note": "* Оплата через RoboKassa. Цена за месяц при оплате за указанный период.",
+      "periods": {
+        "three": "3 месяца",
+        "six": "6 месяцев",
+        "twelve": "12 месяцев"
+      }
+    },
+    "migration": {
+      "title": "Легкий переход с Linktree или Taplink",
+      "description": "AI автоматически создаст страницу на основе вашего описания. Просто опишите свой бизнес — и получите готовую страницу за 2 минуты!",
+      "cta": "Перейти на LinkMAX"
+    },
+    "finalCta": {
+      "title": "Готовы попробовать?",
+      "description": "Создайте бесплатную страницу прямо сейчас и убедитесь сами, почему LinkMAX — лучший выбор.",
+      "primary": "Начать бесплатно",
+      "secondary": "Посмотреть примеры"
+    },
+    "footer": {
+      "pricing": "Тарифы",
+      "gallery": "Галерея",
+      "signIn": "Войти",
+      "company": "ИП BEEGIN • БИН: 971207300019",
+      "address": "г. Алматы, ул. Шолохова, д. 20/7"
     }
   },
   "blockPreview": {
@@ -1240,6 +1486,10 @@
   "paidContent": {
     "title": "Платный контент",
     "description": "Разблокируйте этот контент за Linkkon токены",
+    "settingsDescription": "Ограничьте доступ к контенту блока. Посетители смогут разблокировать его за Linkkon токены (1 токен = 1 ₸).",
+    "priceLabel": "Цена (в Linkkon токенах)",
+    "pricePlaceholder": "100",
+    "priceHint": "Минимум: 1 токен. Рекомендуется: 50-500 токенов.",
     "unlock": "Разблокировать",
     "unlocking": "Разблокировка...",
     "yourBalance": "Ваш баланс",
@@ -1359,7 +1609,29 @@
     "appearDate": "Появление",
     "disappearDate": "Исчезновение",
     "selectDate": "Выберите дату",
-    "scheduleHint": "Блок будет виден только в указанный период"
+    "scheduleHint": "Блок будет виден только в указанный период",
+    "premiumFeature": "Это Premium-функция."
+  },
+  "currency": {
+    "names": {
+      "KZT": "Тенге (Казахстан)",
+      "RUB": "Рубль (Россия)",
+      "BYN": "Рубль (Беларусь)",
+      "AMD": "Драм (Армения)",
+      "AZN": "Манат (Азербайджан)",
+      "KGS": "Сом (Кыргызстан)",
+      "TJS": "Сомони (Таджикистан)",
+      "TMT": "Манат (Туркменистан)",
+      "UZS": "Сум (Узбекистан)",
+      "USD": "Доллар США",
+      "EUR": "Евро",
+      "GBP": "Фунт стерлингов",
+      "CNY": "Юань",
+      "JPY": "Йена",
+      "CHF": "Швейцарский франк",
+      "CAD": "Канадский доллар",
+      "AUD": "Австралийский доллар"
+    }
   },
   "separatorBlock": {
     "lineStyle": "Стиль линии",

@@ -727,7 +727,115 @@
     }
   },
   "achievements": {
-    "rewardDescription": "Жетістік үшін сыйақы: {{title}}"
+    "title": "Жетістіктер",
+    "progress": "{{unlocked}} / {{total}} ашылды",
+    "newAchievement": "Жаңа жетістік!",
+    "rewardDescription": "Жетістік үшін сыйақы: {{title}}",
+    "emptyTitle": "Жетістіктер жоқ",
+    "emptyDescription": "Бұл санатта әзірге жетістік жоқ",
+    "sections": {
+      "unlocked": "Ашылған ({{count}})",
+      "locked": "Құлыптаулы ({{count}})"
+    },
+    "categories": {
+      "all": "Барлығы",
+      "blocks": "Блоктар",
+      "features": "Функциялар",
+      "milestones": "Кезеңдер",
+      "social": "Әлеум."
+    },
+    "rarity": {
+      "common": "Қарапайым",
+      "rare": "Сирек",
+      "epic": "Эпикалық",
+      "legendary": "Аңызға айналған"
+    },
+    "items": {
+      "firstLink": {
+        "title": "Бірінші сілтеме",
+        "description": "Бірінші сілтемеңізді қосыңыз"
+      },
+      "socialButterfly": {
+        "title": "Әлеуметтік көбелек",
+        "description": "Әлеуметтік желілер блогын қосыңыз"
+      },
+      "merchant": {
+        "title": "Саудагер",
+        "description": "Алғашқы тауарыңызды қосыңыз"
+      },
+      "contentCreator": {
+        "title": "Контент жасаушы",
+        "description": "Бейне блогын қосыңыз"
+      },
+      "galleryMaster": {
+        "title": "Галерея шебері",
+        "description": "Сурет каруселін жасаңыз"
+      },
+      "developer": {
+        "title": "Әзірлеуші",
+        "description": "Кастом код блогын пайдаланыңыз"
+      },
+      "communicator": {
+        "title": "Коммуникатор",
+        "description": "Кері байланыс формасын қосыңыз"
+      },
+      "searchGuru": {
+        "title": "Іздеу гуруы",
+        "description": "AI Search блогын қосыңыз"
+      },
+      "aiPowered": {
+        "title": "AI-көмекші",
+        "description": "Контент жасау үшін AI пайдаланыңыз"
+      },
+      "templateUser": {
+        "title": "Жылдам бастау",
+        "description": "Дайын шаблонды қолданыңыз"
+      },
+      "chatbotExpert": {
+        "title": "Чат-бот сарапшысы",
+        "description": "AI чат-ботын баптаңыз"
+      },
+      "collector": {
+        "title": "Жинақтаушы",
+        "description": "5 түрлі блок түрін қосыңыз"
+      },
+      "masterBuilder": {
+        "title": "Құрастыру шебері",
+        "description": "Бетке 10 блок қосыңыз"
+      },
+      "completionist": {
+        "title": "Перфекционист",
+        "description": "Барлық блок түрлерін пайдаланыңыз"
+      },
+      "publisher": {
+        "title": "Баспагер",
+        "description": "Алғашқы бетіңізді жариялаңыз"
+      },
+      "popular": {
+        "title": "Танымал",
+        "description": "100 қаралым алыңыз"
+      },
+      "influencer": {
+        "title": "Инфлюенсер",
+        "description": "1000 қаралым алыңыз"
+      },
+      "firstFriend": {
+        "title": "Бірінші дос",
+        "description": "Алғашқы досыңызды қосыңыз"
+      },
+      "socialCircle": {
+        "title": "Әлеуметтік шеңбер",
+        "description": "5 дос қосыңыз"
+      },
+      "networkingPro": {
+        "title": "Нетворкинг шебері",
+        "description": "10 дос қосыңыз"
+      },
+      "communityLeader": {
+        "title": "Қауымдастық көшбасшысы",
+        "description": "25 дос қосыңыз"
+      }
+    }
   },
   "templates": {
     "title": "Шаблондар",
@@ -748,6 +856,144 @@
       "experts": "Сарапшылар",
       "premium": "Премиум",
       "other": "Басқа"
+    }
+  },
+  "alternatives": {
+    "seo": {
+      "title": "LinkMAX vs Linktree vs Taplink — 2026 салыстыру | Ең жақсы балама",
+      "description": "LinkMAX, Linktree және Taplink толық салыстыруы. AI генерациясы, CRM және 0% комиссиясы бар ең жақсы тегін балама екенін біліңіз. Функциялар мен баға салыстыру кестесі.",
+      "keywords": "linktree vs taplink, taplink баламасы, linktree тегін баламасы, ең жақсы link in bio, linktree taplink салыстыру, taplink тегін баламасы, linktree алмастыру, hipolink баламасы, beacons vs linktree, lnk.bio баламасы, shorby баламасы",
+      "schemaName": "Link in Bio платформаларын салыстыру",
+      "schemaDescription": "CRM және 0% комиссиясы бар AI link-in-bio конструкторы",
+      "defaultTitle": "LinkMAX - AI Link-in-Bio платформасы"
+    },
+    "header": {
+      "cta": "Бастау"
+    },
+    "hero": {
+      "badge": "2026 салыстыру",
+      "title": "LinkMAX vs Linktree vs Taplink",
+      "description": "Мыңдаған пайдаланушы Linktree және Taplink-тен LinkMAX-қа ауысып жатқанын біліңіз. Функциялар, бағалар және мүмкіндіктер бойынша толық салыстыру.",
+      "ctaPrimary": "Тегін қолданып көру",
+      "ctaSecondary": "Бағаларды көру"
+    },
+    "winner": {
+      "title": "LinkMAX — 2026 жылғы ең жақсы таңдау",
+      "description": "AI генерациясы, кіріктірілген CRM, Telegram хабарламалары және бәсекелестерден 40-50% төмен баға. Мұның бәрі LinkMAX-ты Linktree және Taplink үшін ең жақсы балама етеді."
+    },
+    "advantages": {
+      "title": "Неге LinkMAX жақсы?",
+      "aiGeneration": {
+        "title": "2 минутта AI генерациясы",
+        "description": "Нишаны таңдаңыз — AI 30 секундта қажетті блоктары бар бетті жасайды. Free: айына 1, Premium: айына 5."
+      },
+      "miniCrm": {
+        "title": "Кіріктірілген Mini-CRM",
+        "description": "Өтінімдерді LinkMAX ішінде басқарыңыз. Статустар, тарих, Telegram хабарламалары — барлығы бір жерде."
+      },
+      "telegram": {
+        "title": "Telegram хабарламалары",
+        "description": "Telegram-да жаңа өтінімдер туралы жедел хабарламалар. Бірде-бір клиентті жіберіп алмаңыз."
+      },
+      "pricing": {
+        "title": "Қолжетімді бағалар",
+        "description": "Жылдық жазылымда айына 2 610₸ (~$5.10) бастап. RoboKassa арқылы төлем. 14 күн ішінде қайтару."
+      },
+      "localization": {
+        "title": "RU/EN/KZ локализациясы",
+        "description": "Орыс, ағылшын және қазақ тілдерін толық қолдау."
+      },
+      "analytics": {
+        "title": "Аналитика және геймификация",
+        "description": "Клик статистикасы, Linkkon токендері, жетістіктер, стриктер. Бетті ойын сияқты дамыту."
+      }
+    },
+    "comparison": {
+      "title": "Free vs Premium",
+      "featureLabel": "Мүмкіндік",
+      "freeLabel": "Тегін",
+      "premiumLabel": "Premium",
+      "rows": {
+        "freePlan": {
+          "label": "Тегін тариф",
+          "freeNote": "10 блок",
+          "premiumNote": "25+ блок"
+        },
+        "aiGeneration": {
+          "label": "AI арқылы бет генерациясы",
+          "freeNote": "айына 1",
+          "premiumNote": "айына 5"
+        },
+        "blockTypes": {
+          "label": "Блок түрлерінің саны",
+          "freeValue": "10+",
+          "premiumValue": "25+"
+        },
+        "miniCrm": {
+          "label": "Mini-CRM жүйесі"
+        },
+        "clickAnalytics": {
+          "label": "Клик аналитикасы",
+          "freeValue": "Негізгі",
+          "premiumValue": "Кеңейтілген"
+        },
+        "telegramNotifications": {
+          "label": "Telegram хабарламалары"
+        },
+        "leadForms": {
+          "label": "Өтінім жинау формалары"
+        },
+        "blockScheduler": {
+          "label": "Блок жоспарлағышы"
+        },
+        "mobileEditor": {
+          "label": "Мобильді редактор (PWA)"
+        },
+        "premiumThemes": {
+          "label": "Премиум тақырыптар мен анимациялар"
+        },
+        "priceLists": {
+          "label": "Прайс-листтер мен каталогтар"
+        },
+        "localization": {
+          "label": "RU/EN/KZ қолдауы"
+        },
+        "gamification": {
+          "label": "Токендер және геймификация"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Premium бағалары",
+      "badges": {
+        "best": "Үздік",
+        "popular": "Танымал"
+      },
+      "perMonth": "/ай",
+      "note": "* RoboKassa арқылы төлем. Көрсетілген кезеңге төлегенде айлық баға.",
+      "periods": {
+        "three": "3 ай",
+        "six": "6 ай",
+        "twelve": "12 ай"
+      }
+    },
+    "migration": {
+      "title": "Linktree немесе Taplink-тен оңай көшу",
+      "description": "AI сіздің сипаттамаңызға негізделіп автоматты түрде бет жасайды. Бизнесіңізді сипаттаңыз — 2 минутта дайын бет алыңыз!",
+      "cta": "LinkMAX-қа көшу"
+    },
+    "finalCta": {
+      "title": "Сынап көруге дайынсыз ба?",
+      "description": "Қазір тегін бет жасаңыз және неге LinkMAX ең жақсы таңдау екенін өзіңіз көріңіз.",
+      "primary": "Тегін бастау",
+      "secondary": "Мысалдарды көру"
+    },
+    "footer": {
+      "pricing": "Бағалар",
+      "gallery": "Галерея",
+      "signIn": "Кіру",
+      "company": "ИП BEEGIN • БИН: 971207300019",
+      "address": "Алматы қ., Шолохова көш., 20/7"
     }
   },
   "blockPreview": {
@@ -874,6 +1120,8 @@
       "emptyDescription": "Белсенділікті көру үшін достар қосыңыз",
       "title": "Достар лентасы",
       "events_one": "{{count}} оқиға",
+      "events_few": "{{count}} оқиға",
+      "events_many": "{{count}} оқиға",
       "events_other": "{{count}} оқиға"
     },
     "metadata": {
@@ -889,8 +1137,12 @@
     "pendingGifts": {
       "title": "Сізге сыйлықтар!",
       "count_one": "{{count}} сыйлық",
+      "count_few": "{{count}} сыйлық",
+      "count_many": "{{count}} сыйлық",
       "count_other": "{{count}} сыйлық",
       "days_one": "+{{count}} күн",
+      "days_few": "+{{count}} күн",
+      "days_many": "+{{count}} күн",
       "days_other": "+{{count}} күн",
       "activate": "Қосу"
     },
@@ -1233,6 +1485,10 @@
   "paidContent": {
     "title": "Ақылы контент",
     "description": "Бұл контентті Linkkon токендерімен ашыңыз",
+    "settingsDescription": "Блок контентіне қолжетімділікті шектеңіз. Келушілер оны Linkkon токендерімен аша алады (1 токен = 1 ₸).",
+    "priceLabel": "Бағасы (Linkkon токендерінде)",
+    "pricePlaceholder": "100",
+    "priceHint": "Ең төмені: 1 токен. Ұсынылатын: 50-500 токен.",
     "unlock": "Ашу",
     "unlocking": "Ашылуда...",
     "yourBalance": "Сіздің балансыңыз",
@@ -1352,7 +1608,29 @@
     "appearDate": "Пайда болу",
     "disappearDate": "Жоғалу",
     "selectDate": "Күнді таңдаңыз",
-    "scheduleHint": "Блок тек көрсетілген кезеңде көрінеді"
+    "scheduleHint": "Блок тек көрсетілген кезеңде көрінеді",
+    "premiumFeature": "Бұл Premium функциясы."
+  },
+  "currency": {
+    "names": {
+      "KZT": "Теңге (Қазақстан)",
+      "RUB": "Рубль (Ресей)",
+      "BYN": "Рубль (Беларусь)",
+      "AMD": "Драм (Армения)",
+      "AZN": "Манат (Әзірбайжан)",
+      "KGS": "Сом (Қырғызстан)",
+      "TJS": "Сомони (Тәжікстан)",
+      "TMT": "Манат (Түрікменстан)",
+      "UZS": "Сум (Өзбекстан)",
+      "USD": "АҚШ доллары",
+      "EUR": "Еуро",
+      "GBP": "Фунт стерлинг",
+      "CNY": "Юань",
+      "JPY": "Йена",
+      "CHF": "Швейцария франкі",
+      "CAD": "Канада доллары",
+      "AUD": "Аустралия доллары"
+    }
   },
   "separatorBlock": {
     "lineStyle": "Сызық стилі",
