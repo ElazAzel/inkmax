@@ -324,10 +324,12 @@ export default function Pricing() {
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2">
               <Coins className="h-6 w-6 text-amber-500" />
-              <h3 className="text-xl font-bold">Или платите Linkkon токенами</h3>
+              <h3 className="text-xl font-bold">{t('pricing.tokens.title', 'Или платите Linkkon токенами')}</h3>
             </div>
             <p className="text-sm text-muted-foreground">
-              100 Linkkon = 1 день Premium. Ваш баланс: <span className="font-bold text-amber-500">{balance?.balance?.toFixed(0) || 0}</span> токенов
+              {t('pricing.tokens.balanceDescription', '100 Linkkon = 1 день Premium. Ваш баланс: {{balance}} токенов', {
+                balance: balance?.balance?.toFixed(0) || 0,
+              })}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
@@ -336,14 +338,16 @@ export default function Pricing() {
                 className="bg-gradient-to-r from-violet-500 to-purple-600"
               >
                 <Crown className="h-4 w-4 mr-2" />
-                {converting ? 'Конвертация...' : `Купить 1 день за ${premiumCost} Linkkon`}
+                {converting
+                  ? t('pricing.tokens.converting', 'Конвертация...')
+                  : t('pricing.tokens.buyDay', 'Купить 1 день за {{cost}} Linkkon', { cost: premiumCost })}
               </Button>
               <Button
                 variant="outline"
                 onClick={() => redirectToTokenPurchase(100, 'Premium')}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
-                Купить токены
+                {t('pricing.tokens.buyTokens', 'Купить токены')}
               </Button>
             </div>
           </div>
@@ -368,8 +372,8 @@ export default function Pricing() {
           
           {/* Company Details for RoboKassa compliance */}
           <div className="text-xs text-muted-foreground pt-4 border-t border-border/30">
-            <p className="mb-1">ИП BEEGIN • БИН: 971207300019</p>
-            <p className="mb-2">г. Алматы, ул. Шолохова, д. 20/7</p>
+            <p className="mb-1">{t('pricing.companyDetails.nameLine', 'ИП BEEGIN • БИН: 971207300019')}</p>
+            <p className="mb-2">{t('pricing.companyDetails.addressLine', 'г. Алматы, ул. Шолохова, д. 20/7')}</p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a href="mailto:admin@lnkmx.my" className="hover:text-foreground transition-colors">
                 admin@lnkmx.my
