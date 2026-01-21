@@ -20,8 +20,15 @@ npm run dev
 # Build for production
 npm run build
 
-# Run tests
-npm run test
+# Run lint
+npm run lint
+
+# Run i18n checks
+npm run i18n:check
+npm run lint:i18n
+
+# Run E2E tests
+npm run e2e
 ```
 
 ## Tech Stack
@@ -161,9 +168,19 @@ TELEGRAM_BOT_TOKEN=xxx (Edge Functions only)
 ### Testing
 
 ```bash
-npm run test        # Run unit tests
-npm run test:ui     # Interactive test UI
+npm run lint        # Lint
+npm run lint:i18n   # i18n lint for JSX literals
+npm run i18n:check  # Validate locale alignment and placeholders
+npm run e2e         # Playwright E2E
 ```
+
+### Localization workflow
+
+- Add new UI strings via `t('namespace.key')` and update `src/i18n/locales/{ru,en,kk}.json`.
+- Run `npm run i18n:check` to validate alignment and placeholders.
+- Run `npm run lint:i18n` to prevent hardcoded JSX strings.
+- Use `npm run i18n:export` and `npm run i18n:import` for translator workflows.
+- See `docs/translation_playbook.md` and `docs/i18n_ops.md` for playbook, governance, and rollout guidance.
 
 ### Deployment
 
