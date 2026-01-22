@@ -19,6 +19,7 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 ## Pricing Structure
 
 ### Free Tier
+
 - 5 blocks per page limit
 - 1 AI generation per month
 - Basic blocks only
@@ -26,6 +27,7 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - Community gallery access
 
 ### Pro Tier
+
 - Unlimited blocks
 - 5 AI generations per month
 - All premium blocks
@@ -35,13 +37,15 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - Priority support
 
 ### Pro Pricing (KZT)
-| Period | Monthly Rate | Total |
-|--------|--------------|-------|
-| 3 months | 4,350 ₸ | 13,050 ₸ |
-| 6 months | 3,500 ₸ | 21,000 ₸ |
-| 12 months | 2,610 ₸ | 31,320 ₸ |
+
+| Period    | Monthly Rate | Total    |
+| --------- | ------------ | -------- |
+| 3 months  | 4,350 ₸      | 13,050 ₸ |
+| 6 months  | 3,500 ₸      | 21,000 ₸ |
+| 12 months | 2,610 ₸      | 31,320 ₸ |
 
 ### Payment Methods
+
 - RoboKassa (primary gateway)
 - Bank cards (Visa, Mastercard, etc.)
 - Kaspi transfers
@@ -50,6 +54,7 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 ## Architecture
 
 ### Frontend
+
 - React 18 with TypeScript
 - Vite build system
 - Tailwind CSS with custom design tokens
@@ -57,7 +62,8 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - i18next for localization
 - PWA with offline support
 
-### Backend (Lovable Cloud / Supabase)
+### Backend ( Supabase)
+
 - PostgreSQL database
 - Row Level Security (RLS)
 - Edge Functions for serverless logic
@@ -65,6 +71,7 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - Storage for media files
 
 ### AI Integration
+
 - Gemini 2.5 Flash (page generation, content)
 - AI Chatbot for visitor Q&A
 - Auto-translation system
@@ -72,12 +79,14 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 ## Database Schema
 
 ### Core Tables
+
 - `pages` - User pages with theme/SEO settings
 - `blocks` - Page blocks with content JSON
 - `user_profiles` - User data, premium status, streaks
 - `user_roles` - Admin/moderator roles
 
 ### CRM Tables
+
 - `leads` - Lead records from forms
 - `lead_interactions` - Communication history
 - `crm_automations` - Automation rules
@@ -85,6 +94,7 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - `booking_slots` - Available time slots
 
 ### Social Tables
+
 - `collaborations` - Collab requests
 - `teams` - Team pages
 - `team_members` - Team membership
@@ -92,6 +102,7 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - `friendships` - Friend connections
 
 ### Gamification Tables
+
 - `user_achievements` - Unlocked achievements
 - `daily_quests_completed` - Quest completions
 - `weekly_challenges` - Active challenges
@@ -99,15 +110,18 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - `user_tokens` - Token balances
 
 ### Referral Tables
+
 - `referral_codes` - User referral codes
 - `referrals` - Referral tracking
 
 ### Template Tables
+
 - `user_templates` - Saved templates
 - `template_likes` - Template likes
 - `template_purchases` - Template sales
 
 ### Analytics Tables
+
 - `analytics` - Event tracking
 - `page_likes` - Gallery likes
 - `page_boosts` - Promoted pages
@@ -115,11 +129,13 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 ## Edge Functions
 
 ### AI Functions
+
 - `ai-content-generator` - Page/content generation
 - `chatbot-stream` - AI chatbot streaming
 - `translate-content` - Auto-translation
 
 ### Notification Functions
+
 - `send-booking-notification` - Booking alerts
 - `send-booking-reminder` - Booking reminders
 - `send-collab-notification` - Collab requests
@@ -132,20 +148,24 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - `send-weekly-motivation` - Engagement emails
 
 ### CRM Functions
+
 - `create-lead` - Lead creation
 - `process-crm-automations` - Automation runner
 
 ### Telegram Functions
+
 - `telegram-bot-webhook` - Bot webhook handler
 - `telegram-password-reset` - Password recovery
 - `validate-telegram` - Account verification
 
 ### Utility Functions
+
 - `seed-demo-accounts` - Demo account generator
 
 ## URL Structure
 
 ### Public Routes
+
 - `/` - Landing page
 - `/:username` - Public user page
 - `/gallery` - Community gallery
@@ -156,10 +176,12 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 - `/payment-terms` - Payment Terms
 
 ### Protected Routes
+
 - `/dashboard` - User dashboard/editor
 - `/admin` - Admin panel
 
 ### Special Routes
+
 - `/auth` - Authentication
 - `/install` - PWA installation
 - `/team/:slug` - Team pages
@@ -169,17 +191,20 @@ lnkmx is a SaaS platform for creating AI-powered personal mini-websites (link-in
 ## Security
 
 ### Authentication
+
 - Email/password signup
 - Auto-confirm enabled
 - Telegram verification (optional)
 - Password reset via email/Telegram
 
 ### Authorization
+
 - Row Level Security on all tables
 - Role-based admin access
 - JWT token validation
 
 ### Data Protection
+
 - HTTPS everywhere
 - Password hashing (bcrypt)
 - Input sanitization (DOMPurify)
