@@ -1,12 +1,27 @@
 // CRITICAL: i18n must be imported FIRST, before any React components
 import "./i18n/config";
 
-import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import { ViteSSG } from "vite-plugin-ssg/react";
+import { createRoutesFromElements } from "react-router-dom";
 import "./index.css";
 import { checkCacheVersion } from "./lib/cache-utils";
+import { AppRoutes } from "./routes";
+import App from "./App";
 
-// Check and clear outdated cache on app load
-checkCacheVersion();
-
-createRoot(document.getElementById("root")!).render(<App />);
+export const createApp = ViteSSG(
+  App,
+  {
+    routes: createRoutesFromElements(<AppRoutes />),
+    base: import.meta.env.BASE_URL,
+    includedRoutes: (paths) => {
+      const staticRoutes = paths.filter((path) => !path.includes(":"));
+      const landingLangRoutes = ["/?lang=ru", "/?lang=en", "/?lang=kk"];
+      return Array.from(new Set([...staticRoutes, ...landingLangRoutes]));
+    },
+  },
+  ({ isClient }) => {
+    if (isClient) {
+      checkCacheVersion();
+    }
+  }
+);

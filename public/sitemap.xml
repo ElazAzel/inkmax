@@ -3,7 +3,7 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://lnkmx.my/</loc>
-    <lastmod>2026-01-15</lastmod>
+    <lastmod>2025-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/?lang=ru"/>
@@ -13,38 +13,62 @@
   </url>
   <url>
     <loc>https://lnkmx.my/gallery</loc>
-    <lastmod>2026-01-15</lastmod>
+    <lastmod>2025-02-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/gallery?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/gallery?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/gallery?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/gallery"/>
   </url>
   <url>
     <loc>https://lnkmx.my/pricing</loc>
-    <lastmod>2026-01-15</lastmod>
+    <lastmod>2025-02-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/pricing?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/pricing?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/pricing?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/pricing"/>
   </url>
   <url>
     <loc>https://lnkmx.my/alternatives</loc>
-    <lastmod>2026-01-15</lastmod>
+    <lastmod>2025-02-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://lnkmx.my/auth</loc>
-    <lastmod>2026-01-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/alternatives?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/alternatives?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/alternatives?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/alternatives"/>
   </url>
   <url>
     <loc>https://lnkmx.my/terms</loc>
-    <lastmod>2026-01-15</lastmod>
+    <lastmod>2025-02-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/terms?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/terms?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/terms?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/terms"/>
   </url>
   <url>
     <loc>https://lnkmx.my/privacy</loc>
-    <lastmod>2026-01-15</lastmod>
+    <lastmod>2025-02-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/privacy?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/privacy?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/privacy?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/privacy"/>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/payment-terms</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/payment-terms?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/payment-terms?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/payment-terms?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/payment-terms"/>
   </url>
 </urlset>
