@@ -34,14 +34,21 @@ import { useGallery } from '@/hooks/useGallery';
 import { NICHES, NICHE_ICONS } from '@/lib/niches';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 
 export default function Gallery() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { pages, loading, likePage } = useGallery();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedNiche, setSelectedNiche] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'gallery' | 'leaderboard'>('gallery');
+  const canonical = 'https://lnkmx.my/gallery';
+  const seoTitle = t('gallery.seo.title', 'lnkmx Gallery — Link in Bio Examples & Templates');
+  const seoDescription = t(
+    'gallery.seo.description',
+    'Explore real lnkmx link in bio pages by creators and businesses. Find templates, niches, and inspiration for your mini-site.'
+  );
 
   // Quick stats
   const totalLikes = pages.reduce((sum, p) => sum + (p.gallery_likes || 0), 0);
@@ -73,7 +80,20 @@ export default function Gallery() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <>
+      <StaticSEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonical}
+        currentLanguage={i18n.language}
+        alternates={[
+          { hreflang: 'ru', href: `${canonical}?lang=ru` },
+          { hreflang: 'en', href: `${canonical}?lang=en` },
+          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'x-default', href: canonical },
+        ]}
+      />
+      <div className="min-h-screen bg-background pb-20">
       {/* Header - Sticky glass effect */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/10">
         <div className="px-5 pt-4 pb-3">
@@ -259,7 +279,8 @@ export default function Gallery() {
           <TopReferrers />
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -282,6 +303,8 @@ function FeaturedPageCard({ page, onCopy, onView }: FeaturedPageCardProps) {
             src={page.preview_url} 
             alt={page.title} 
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         )}
         {page.is_premium && (
@@ -364,6 +387,8 @@ function GalleryPageCard({ page, onCopy, onView, onLike }: GalleryPageCardProps)
             src={page.preview_url} 
             alt={page.title} 
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         )}
         {page.is_premium && (

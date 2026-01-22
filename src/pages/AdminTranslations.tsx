@@ -13,6 +13,7 @@ import {
   CheckCircle, Languages, Loader2, Upload, RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 
 import ru from '@/i18n/locales/ru.json';
 import en from '@/i18n/locales/en.json';
@@ -91,7 +92,13 @@ function setNestedValue(obj: TranslationData, key: string, value: string): void 
 
 export default function AdminTranslations() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const canonical = 'https://lnkmx.my/admin/translations';
+  const seoTitle = t('adminTranslations.seo.title', 'lnkmx Admin Translations');
+  const seoDescription = t(
+    'adminTranslations.seo.description',
+    'Internal translation management for lnkmx.'
+  );
   const { isAdmin, loading } = useAdminAuth();
   
   const [translations, setTranslations] = useState<Record<LanguageCode, TranslationData>>({
@@ -260,7 +267,21 @@ export default function AdminTranslations() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <StaticSEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonical}
+        currentLanguage={i18n.language}
+        indexable={false}
+        alternates={[
+          { hreflang: 'ru', href: `${canonical}?lang=ru` },
+          { hreflang: 'en', href: `${canonical}?lang=en` },
+          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'x-default', href: canonical },
+        ]}
+      />
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -488,6 +509,7 @@ export default function AdminTranslations() {
           </CardContent>
         </Card>
       </main>
-    </div>
+      </div>
+    </>
   );
 }

@@ -197,8 +197,7 @@
     "gallery": {
       "badge": "Community",
       "title": "Explore Community Pages",
-      "subtitle": "Get inspired by amazing pages created by our community",
-      "viewAll": "Explore All Pages"
+      "subtitle": "Get inspired by amazing pages created by our community"
     },
     "nav": {
       "signIn": "Sign In",
@@ -211,37 +210,32 @@
     },
     "hero": {
       "badge": "AI Mini-Site Builder",
-      "mainTitle": "Build a selling mini-site in ~2 minutes",
-      "mainHighlight": "From one link - to leads",
-      "valueProposition": "AI site builder for experts, freelancers and businesses. Create a page, accept leads, and get organized without designers or developers.",
-      "benefit1": "AI builds the page and texts for you",
-      "benefit2": "Leads come to mini-CRM and Telegram",
-      "benefit3": "Analytics shows what actually works",
+      "mainTitle": "Build your link in bio and mini-site in 2 minutes",
+      "mainHighlight": "One link → leads and bookings",
+      "valueProposition": "AI builder for creators, experts, and small businesses. Create a link page, pricing, and lead form without designers.",
+      "benefit1": "AI drafts the structure and copy",
+      "benefit2": "Leads flow into CRM and Telegram",
+      "benefit3": "Analytics show what converts",
       "primaryCta": "Create page for free",
       "secondaryCta": "View examples",
       "microNote": "Free. Ready builder. In 2 minutes."
     },
-    "gallery": {
-      "badge": "Community",
-      "title": "Explore Community Pages",
-      "subtitle": "Get inspired by amazing pages created by our community"
-    },
     "forWhom": {
-      "title": "Who is lnkmx for",
+      "title": "Who lnkmx is for",
       "expert": {
-        "title": "Experts",
-        "desc": "Booking, cases, pricing"
+        "title": "Experts & coaches",
+        "desc": "Services, cases, booking"
       },
       "freelancer": {
         "title": "Freelancers",
-        "desc": "Portfolio, leads"
+        "desc": "Portfolio and inquiries"
       },
       "beauty": {
-        "title": "Beauty",
+        "title": "Beauty & services",
         "desc": "Booking, reviews, location"
       },
       "business": {
-        "title": "Business",
+        "title": "Small business",
         "desc": "Catalog, CRM, analytics"
       }
     },
@@ -249,7 +243,7 @@
       "title": "Why leads are lost",
       "item1": "Bio is chaos: pricing, booking, and cases scattered across posts and links",
       "item2": "People ask the same questions, you answer manually and forget appointments",
-      "item3": "Taplink becomes a \"link menu\", not a path to booking",
+      "item3": "A generic link-in-bio turns into a list of links without a clear path to conversion",
       "item4": "No understanding: what actually gets clicked and where attention is lost",
       "solution": "lnkmx creates one clear page where visitors quickly understand who you are, how you help, how much it costs, and where to click to book. And you see leads and analytics in one place."
     },
@@ -257,16 +251,16 @@
       "title": "How it works",
       "cta": "Try now",
       "step1": {
-        "title": "Choose your niche",
-        "description": "Tell us who you are and write a couple sentences about yourself"
+        "title": "Tell us about your work",
+        "description": "Niche, services, and links — AI understands the context"
       },
       "step2": {
         "title": "AI builds the page",
-        "description": "AI creates structure, texts, CTAs and basic pricing"
+        "description": "Ready blocks, copy, and CTAs you can edit"
       },
       "step3": {
-        "title": "Get leads",
-        "description": "Publish and receive leads in mini-CRM + Telegram"
+        "title": "Publish and collect leads",
+        "description": "Your link is ready for socials, leads go to CRM"
       }
     },
     "features": {
@@ -343,81 +337,75 @@
       "title": "Frequently Asked Questions",
       "subtitle": "Answers to popular questions about lnkmx",
       "q1": {
-        "question": "What is lnkmx and what is it for?",
-        "answer": "lnkmx is an AI mini-site builder that lets you create a selling page in 2 minutes. Perfect for experts, freelancers, and businesses to combine all links, social media, and contact info in one place."
+        "question": "What is lnkmx and who is it for?",
+        "answer": "lnkmx is an AI builder for link in bio pages and mini-sites that helps you collect links, services, and lead forms in one place."
       },
       "q2": {
         "question": "How much does lnkmx cost?",
-        "answer": "The basic plan is free forever. Premium: 3 months - $8.50/mo, 6 months - $6.80/mo, 12 months - $5.10/mo. 14-day refund policy."
+        "answer": "The basic plan is free forever. Pro: 3 months — 4,350₸/mo, 6 months — 3,500₸/mo, 12 months — 2,610₸/mo. Online payment and 14‑day refund."
       },
       "q3": {
         "question": "How does AI page generation work?",
-        "answer": "Choose a niche (barber, photographer, trainer), and AI creates a ready page with profile and blocks in 30 seconds."
+        "answer": "Pick a niche and share a few details — AI builds the structure, copy, and CTAs in minutes. Free: 1 generation/month, Pro: 5/month."
       },
       "q4": {
         "question": "What blocks are available?",
-        "answer": "20+ block types: profile, links, buttons, images, videos, carousels, products, price lists, forms, maps, messengers, testimonials, FAQ, countdown timers, and more."
+        "answer": "20+ blocks: profile, links, buttons, images, video, carousels, products, price lists, forms, maps, messengers, reviews, FAQ, timers, and more."
       },
       "q5": {
-        "question": "Is there CRM and analytics?",
-        "answer": "Yes! Premium includes full CRM for lead management and Telegram notifications for new leads. Analytics shows clicks, traffic sources, and visitor behavior."
+        "question": "Do you have CRM and analytics?",
+        "answer": "Yes. Pro includes CRM for leads and Telegram notifications. Analytics show clicks, sources, and behavior."
       },
       "q6": {
-        "question": "Is mobile editing supported?",
-        "answer": "Yes! lnkmx is built mobile-first. You can fully edit your page from your smartphone."
+        "question": "Is there a mobile editor?",
+        "answer": "Yes. You can edit your page directly from your phone."
       },
       "q7": {
-        "question": "How is lnkmx better than Linktree and Taplink?",
-        "answer": "AI generation in 2 minutes, 0% commission, built-in CRM, Telegram notifications, modern design, RU/KZ language support. Prices from $5.10/month."
+        "question": "What integrations are supported?",
+        "answer": "Telegram for lead alerts and Google Calendar for scheduling. Socials and messengers are available as blocks."
+      },
+      "q8": {
+        "question": "Do you take a commission on sales?",
+        "answer": "No. 0% commission on your sales — you only pay the subscription."
+      },
+      "q9": {
+        "question": "How can I pay for Pro?",
+        "answer": "Pay by card and available payment methods. You can also use tokens (100 tokens = 1 day Pro)."
+      },
+      "q10": {
+        "question": "What is the refund policy?",
+        "answer": "Refunds are available within 14 days of payment according to local regulations. See the user agreement for details."
+      },
+      "q11": {
+        "question": "Can I see real examples?",
+        "answer": "Yes. The gallery features real pages from creators, shops, and service providers."
+      },
+      "q12": {
+        "question": "How is lnkmx different from Linktree or Taplink?",
+        "answer": "lnkmx includes AI page creation, CRM, and notifications without extra fees, plus flexible blocks and local languages."
+      },
+      "q13": {
+        "question": "Is lnkmx suitable for shops or services?",
+        "answer": "Yes. Add a catalog, pricing, lead forms, and contact buttons to speed up booking or orders."
+      },
+      "q14": {
+        "question": "Can I connect my own domain?",
+        "answer": "Yes, Pro includes custom domains and branding."
       }
     }
   },
   "dashboard": {
-    "tabs": {
-      "projects": "Projects",
-      "editor": "Editor",
-      "crm": "CRM",
-      "analytics": "Analytics",
-      "gallery": "Gallery",
-      "settings": "Settings"
-    },
-    "editor": {
-      "addBlock": "Add Block",
-      "preview": "Preview",
-      "publish": "Publish",
-      "unpublish": "Unpublish",
-      "undo": "Undo",
-      "redo": "Redo",
-      "structure": "Structure",
-      "reorder": "Reorder",
-      "theme": "Theme",
-      "background": "Background"
-    },
-    "crm": {
-      "leads": "Leads",
-      "bookings": "Bookings",
-      "automations": "Automations",
-      "analytics": "Analytics",
-      "newLead": "New Lead",
-      "contacted": "Contacted",
-      "qualified": "Qualified",
-      "converted": "Converted",
-      "lost": "Lost"
-    },
-    "analytics": {
-      "views": "Views",
-      "clicks": "Clicks",
-      "leads": "Leads",
-      "conversion": "Conversion",
-      "sources": "Sources",
-      "devices": "Devices",
-      "topBlocks": "Top Blocks"
-    },
-    "publishing": {
-      "pagePublished": "Page published!",
-      "copyLink": "Copy link",
-      "share": "Share",
-      "qrCode": "QR Code"
+    "loadError": "Load Error",
+    "loadErrorDesc": "Failed to load page data",
+    "tryAgain": "Try Again",
+    "settings": "Settings",
+    "collabs": "Collabs",
+    "aiBlocksCreated": "✨ Created {{count}} blocks with AI",
+    "blocksAdded": "Added {{count}} blocks",
+    "onboardingComplete": "Welcome! Start building your page.",
+    "seo": {
+      "title": "lnkmx Dashboard",
+      "description": "Manage your pages, leads, and analytics in one place."
     }
   },
   "blocks": {
@@ -431,26 +419,74 @@
     "messenger": "Messenger",
     "separator": "Separator",
     "product": "Product",
-    "catalog": "Catalog",
-    "pricing": "Pricing",
+    "catalog": {
+      "empty": "Add products to catalog",
+      "uncategorized": "Uncategorized"
+    },
+    "pricing": {
+      "empty": "Add services",
+      "hit": "Popular"
+    },
     "form": "Form",
     "booking": "Booking",
-    "map": "Map",
-    "faq": "FAQ",
-    "testimonial": "Testimonial",
-    "countdown": "Countdown",
-    "carousel": "Carousel",
+    "map": {
+      "noAddress": "Specify address"
+    },
+    "faq": {
+      "empty": "Add questions and answers"
+    },
+    "testimonial": "Testimonials",
+    "countdown": {
+      "expired": "Time is up!",
+      "noDate": "Set a date",
+      "days": "days",
+      "hours": "hours",
+      "minutes": "minutes",
+      "seconds": "seconds"
+    },
+    "carousel": "Gallery",
     "newsletter": "Newsletter",
     "avatar": "Avatar",
-    "download": "Download",
+    "download": "File",
     "shoutout": "Shoutout",
-    "community": "Community",
-    "beforeAfter": "Before/After",
+    "community": {
+      "title": "Title",
+      "titlePlaceholder": "My Private Club",
+      "description": "Description",
+      "descriptionPlaceholder": "Exclusive content, behind the scenes, Q&A",
+      "telegramLink": "Telegram Link",
+      "linkHint": "Use an invite link to your private channel or group",
+      "memberCount": "Member Count",
+      "icon": "Icon",
+      "style": "Style",
+      "iconUsers": "Members",
+      "iconCrown": "Crown",
+      "iconStar": "Star",
+      "iconHeart": "Heart",
+      "iconZap": "Lightning",
+      "iconLock": "Lock",
+      "styleDefault": "Default",
+      "styleDefaultDesc": "Simple and clean",
+      "stylePremium": "Premium",
+      "stylePremiumDesc": "Golden gradient",
+      "styleExclusive": "Exclusive",
+      "styleExclusiveDesc": "Purple gradient"
+    },
+    "beforeAfter": {
+      "before": "Before",
+      "after": "After",
+      "noImages": "Add images"
+    },
     "customCode": "Code",
     "scratch": "Scratch",
-    "search": "Search"
+    "added": "Block added",
+    "deleted": "Block deleted",
+    "restored": "Block restored",
+    "addFailed": "Failed to add block",
+    "premiumRequired": "This block is PRO only",
+    "limitReached": "Block limit reached. Upgrade to Premium."
   },
-"auth": {
+  "auth": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "signOut": "Sign Out",
@@ -515,6 +551,10 @@
       "savePassword": "Save password",
       "back": "Back",
       "recoverViaTelegram": "Recover via Telegram"
+    },
+    "seo": {
+      "title": "Sign in to lnkmx",
+      "description": "Sign in to create and publish your link in bio page."
     }
   },
   "pricing": {
@@ -556,7 +596,11 @@
     "description": "Unlock all LinkMAX features for your business",
     "alreadyFree": "The free plan is already active",
     "comingSoon": "Payments are coming soon. Stay tuned for updates.",
-    "currentPlan": "Current plan"
+    "currentPlan": "Current plan",
+    "seo": {
+      "title": "lnkmx Pricing — plans for link in bio and mini-sites",
+      "description": "Compare free and Pro plans: AI generation, CRM, analytics, and branding for your link in bio page."
+    }
   },
   "gallery": {
     "title": "Page Gallery",
@@ -572,7 +616,11 @@
     "alreadyLiked": "You already liked this page",
     "views": "views",
     "untitled": "Untitled",
-    "empty": "No pages found"
+    "empty": "No pages found",
+    "seo": {
+      "title": "lnkmx Gallery — link in bio examples & templates",
+      "description": "Real lnkmx pages from creators and businesses. Browse niches, templates, and inspiration."
+    }
   },
   "errors": {
     "general": "An error occurred",
@@ -672,6 +720,10 @@
       "thu": "Thu",
       "fri": "Fri",
       "sat": "Sat"
+    },
+    "seo": {
+      "title": "lnkmx Admin",
+      "description": "Internal admin tools for lnkmx."
     }
   },
   "adminCharts": {
@@ -1410,91 +1462,6 @@
     "errorCheck": "Verification error. Try again",
     "pasteError": "Failed to paste"
   },
-  "blocks": {
-    "profile": "Profile",
-    "link": "Link",
-    "button": "Button",
-    "text": "Text",
-    "image": "Image",
-    "video": "Video",
-    "socials": "Socials",
-    "messenger": "Messenger",
-    "separator": "Separator",
-    "product": "Product",
-    "catalog": "Catalog",
-    "pricing": "Pricing",
-    "form": "Form",
-    "booking": "Booking",
-    "map": "Map",
-    "faq": "FAQ",
-    "testimonial": "Testimonials",
-    "countdown": "Timer",
-    "carousel": "Gallery",
-    "newsletter": "Newsletter",
-    "avatar": "Avatar",
-    "download": "File",
-    "shoutout": "Shoutout",
-    "community": "Community",
-    "beforeAfter": "Before/After",
-    "customCode": "Code",
-    "scratch": "Scratch",
-    "added": "Block added",
-    "deleted": "Block deleted",
-    "restored": "Block restored",
-    "addFailed": "Failed to add block",
-    "premiumRequired": "This block is PRO only",
-    "limitReached": "Block limit reached. Upgrade to Premium.",
-    "pricing": {
-      "empty": "Add services",
-      "hit": "Popular"
-    },
-    "faq": {
-      "empty": "Add questions and answers"
-    },
-    "countdown": {
-      "expired": "Time is up!",
-      "noDate": "Set a date",
-      "days": "days",
-      "hours": "hours",
-      "minutes": "minutes",
-      "seconds": "seconds"
-    },
-    "beforeAfter": {
-      "before": "Before",
-      "after": "After",
-      "noImages": "Add images"
-    },
-    "map": {
-      "noAddress": "Specify address"
-    },
-    "catalog": {
-      "empty": "Add products to catalog",
-      "uncategorized": "Uncategorized"
-    },
-    "community": {
-      "title": "Title",
-      "titlePlaceholder": "My Private Club",
-      "description": "Description",
-      "descriptionPlaceholder": "Exclusive content, behind the scenes, Q&A",
-      "telegramLink": "Telegram Link",
-      "linkHint": "Use an invite link to your private channel or group",
-      "memberCount": "Member Count",
-      "icon": "Icon",
-      "style": "Style",
-      "iconUsers": "Members",
-      "iconCrown": "Crown",
-      "iconStar": "Star",
-      "iconHeart": "Heart",
-      "iconZap": "Lightning",
-      "iconLock": "Lock",
-      "styleDefault": "Default",
-      "styleDefaultDesc": "Simple and clean",
-      "stylePremium": "Premium",
-      "stylePremiumDesc": "Golden gradient",
-      "styleExclusive": "Exclusive",
-      "styleExclusiveDesc": "Purple gradient"
-    }
-  },
   "product": {
     "authRequired": "Login required to purchase",
     "notEnoughTokens": "Not enough tokens",
@@ -1609,16 +1576,6 @@
     "reasonLabel": "Why do you recommend?",
     "reasonPlaceholder": "Great specialist, highly recommend!",
     "blockDescription": "Recommend other users to your audience"
-  },
-  "dashboard": {
-    "loadError": "Load Error",
-    "loadErrorDesc": "Failed to load page data",
-    "tryAgain": "Try Again",
-    "settings": "Settings",
-    "collabs": "Collabs",
-    "aiBlocksCreated": "✨ Created {{count}} blocks with AI",
-    "blocksAdded": "Added {{count}} blocks",
-    "onboardingComplete": "Welcome! Start building your page."
   },
   "blockEditor": {
     "advancedSettings": "Advanced settings",
@@ -1805,5 +1762,24 @@
     "thursday": "Thu",
     "friday": "Fri",
     "saturday": "Sat"
+  },
+  "seo": {
+    "landing": {
+      "title": "lnkmx — link in bio & mini-site in 2 minutes",
+      "description": "AI builder for link in bio pages and mini-sites. Create a link page, pricing, and lead form in 2 minutes.",
+      "keywords": "link in bio, link page, mini-site, linktree alternative, taplink alternative"
+    }
+  },
+  "adminTranslations": {
+    "seo": {
+      "title": "lnkmx Translations",
+      "description": "Internal translation management for lnkmx."
+    }
+  },
+  "install": {
+    "seo": {
+      "title": "Install lnkmx",
+      "description": "Install lnkmx as a PWA for faster access."
+    }
   }
 }

@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { useEditorHistory } from '@/hooks/useEditorHistory';
+import { useTranslation } from 'react-i18next';
+import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 
 // Layout & Navigation
 import { AppTabBar } from '@/components/layout/AppTabBar';
@@ -46,6 +48,10 @@ type TabId = 'projects' | 'editor' | 'crm' | 'analytics' | 'gallery' | 'settings
 export default function Dashboard() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t, i18n } = useTranslation();
+  const canonical = 'https://lnkmx.my/dashboard';
+  const seoTitle = t('dashboard.seo.title', 'lnkmx Dashboard');
+  const seoDescription = t('dashboard.seo.description', 'Manage your lnkmx pages, leads, and analytics.');
   const dashboard = useDashboard();
   const { canUseCustomPageBackground } = useFreemiumLimits();
   
@@ -111,8 +117,22 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background relative">
-      <BackgroundEffects />
+    <>
+      <StaticSEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonical}
+        currentLanguage={i18n.language}
+        indexable={false}
+        alternates={[
+          { hreflang: 'ru', href: `${canonical}?lang=ru` },
+          { hreflang: 'en', href: `${canonical}?lang=en` },
+          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'x-default', href: canonical },
+        ]}
+      />
+      <div className="min-h-screen bg-background relative">
+        <BackgroundEffects />
 
       {/* Migration Notice */}
       {dashboard.user && (
@@ -322,6 +342,7 @@ export default function Dashboard() {
         userId={dashboard.user?.id}
         publishedUrl={dashboard.sharingState.publishedUrl}
       />
-    </div>
+      </div>
+    </>
   );
 }
