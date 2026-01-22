@@ -170,6 +170,11 @@
     "chef": "Chef"
   },
   "onboarding": {
+    "goalTitle": "What do you want from this page?",
+    "goalDescription": "We’ll build blocks that get you there faster.",
+    "goalClicks": "Clicks",
+    "goalLeads": "Leads",
+    "goalBookings": "Bookings",
     "nicheTitle": "Choose Your Niche",
     "nicheDescription": "AI will create your personal page in 1 minute",
     "detailsTitle": "Tell Us About Yourself",
