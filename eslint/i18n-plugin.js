@@ -63,7 +63,7 @@ const noLiteralStringRule = {
       JSXAttribute(node) {
         if (!options.markupOnly) return;
         const attrName = getAttributeName(node);
-        if (!attrName || ignoreAttributes.has(attrName) || attrName.startsWith("aria-")) return;
+        if (!attrName || ignoreAttributes.has(attrName)) return;
         if (!node.value) return;
         if (isStringLiteral(node.value)) {
           if (isIgnoredText(node.value.value, options.ignorePattern)) return;
