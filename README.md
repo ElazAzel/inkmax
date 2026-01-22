@@ -33,14 +33,14 @@ npm run e2e
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui |
-| Backend | Supabase (PostgreSQL, Edge Functions, Storage, Auth) |
-| AI | Gemini 2.5 Flash (content generation, translations) |
-| State | TanStack Query, React Context |
-| i18n | i18next (RU/EN/KK) |
-| PWA | vite-plugin-pwa |
+| Layer    | Technology                                           |
+| -------- | ---------------------------------------------------- |
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui  |
+| Backend  | Supabase (PostgreSQL, Edge Functions, Storage, Auth) |
+| AI       | Gemini 2.5 Flash (content generation, translations)  |
+| State    | TanStack Query, React Context                        |
+| i18n     | i18next (RU/EN/KK)                                   |
+| PWA      | vite-plugin-pwa                                      |
 
 ## Architecture
 
@@ -74,35 +74,35 @@ src/
 
 ### Core Tables
 
-| Table | Purpose |
-|-------|---------|
-| `pages` | User pages with theme/SEO settings |
-| `blocks` | Page content blocks (JSON content) |
-| `user_profiles` | User metadata, premium status |
-| `user_roles` | Role-based access (admin/moderator/user) |
+| Table           | Purpose                                  |
+| --------------- | ---------------------------------------- |
+| `pages`         | User pages with theme/SEO settings       |
+| `blocks`        | Page content blocks (JSON content)       |
+| `user_profiles` | User metadata, premium status            |
+| `user_roles`    | Role-based access (admin/moderator/user) |
 
 ### Features
 
-| Table | Purpose |
-|-------|---------|
-| `leads` | CRM leads from forms |
-| `bookings` | Appointment bookings |
-| `analytics` | Page view/click events |
-| `collaborations` | User collaborations |
-| `teams` | Team pages |
+| Table            | Purpose                |
+| ---------------- | ---------------------- |
+| `leads`          | CRM leads from forms   |
+| `bookings`       | Appointment bookings   |
+| `analytics`      | Page view/click events |
+| `collaborations` | User collaborations    |
+| `teams`          | Team pages             |
 
 ## Edge Functions
 
-| Function | Purpose |
-|----------|---------|
-| `ai-content-generator` | AI page/block generation |
-| `chatbot-stream` | AI chatbot responses |
-| `translate-content` | Content translation |
-| `create-lead` | Lead capture |
+| Function                    | Purpose                    |
+| --------------------------- | -------------------------- |
+| `ai-content-generator`      | AI page/block generation   |
+| `chatbot-stream`            | AI chatbot responses       |
+| `translate-content`         | Content translation        |
+| `create-lead`               | Lead capture               |
 | `send-booking-notification` | Booking alerts to Telegram |
-| `send-lead-notification` | Lead alerts to Telegram |
-| `telegram-bot-webhook` | Telegram bot integration |
-| `validate-telegram` | Telegram auth verification |
+| `send-lead-notification`    | Lead alerts to Telegram    |
+| `telegram-bot-webhook`      | Telegram bot integration   |
+| `validate-telegram`         | Telegram auth verification |
 
 ## Security
 
@@ -128,22 +128,22 @@ All tables have RLS enabled with policies:
 
 ## URL Structure
 
-| Route | Access | Description |
-|-------|--------|-------------|
-| `/` | Public | Landing page |
-| `/:username` | Public | User's bio page |
-| `/gallery` | Public | Community gallery |
-| `/dashboard` | Auth | User dashboard |
-| `/admin` | Admin | Admin panel |
-| `/auth` | Public | Login/signup |
-| `/team/:slug` | Public | Team pages |
+| Route         | Access | Description       |
+| ------------- | ------ | ----------------- |
+| `/`           | Public | Landing page      |
+| `/:username`  | Public | User's bio page   |
+| `/gallery`    | Public | Community gallery |
+| `/dashboard`  | Auth   | User dashboard    |
+| `/admin`      | Admin  | Admin panel       |
+| `/auth`       | Public | Login/signup      |
+| `/team/:slug` | Public | Team pages        |
 
 ## Pricing (KZT)
 
-| Plan | Price | Features |
-|------|-------|----------|
-| Free | 0₸ | 6 blocks, basic analytics |
-| Pro | 2,610₸/mo | Unlimited blocks, AI, CRM, no watermark |
+| Plan | Price     | Features                                |
+| ---- | --------- | --------------------------------------- |
+| Free | 0₸        | 6 blocks, basic analytics               |
+| Pro  | 2,610₸/mo | Unlimited blocks, AI, CRM, no watermark |
 
 Payments via RoboKassa (14-day refund policy per Kazakhstan law).
 
@@ -185,6 +185,7 @@ npm run e2e         # Playwright E2E
 ### Deployment
 
 Automatic deployment via Lovable Cloud:
+
 - Push to main → auto-deploy
 - Edge functions deploy with code changes
 
@@ -195,5 +196,3 @@ Automatic deployment via Lovable Cloud:
 - **Contact**: admin@lnkmx.my
 
 ---
-
-Built with [Lovable](https://lovable.dev)
