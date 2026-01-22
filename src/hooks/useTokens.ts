@@ -162,8 +162,9 @@ export function useTokens() {
     const { totalPrice } = calculatePriceWithFee(price);
     
     if (!balance || balance.balance < totalPrice) {
-      toast.error(t('tokens.insufficientForPurchase', 'Недостаточно Linkkon. Нужно {{count}} токенов.', {
-        count: totalPrice.toFixed(2),
+      toast.error(t('tokens.insufficientForPurchase', {
+        count: Number(totalPrice.toFixed(2)),
+        defaultValue: 'Недостаточно Linkkon. Нужно {{count}} токенов.',
       }));
       return false;
     }

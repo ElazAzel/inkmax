@@ -535,7 +535,7 @@ const TEMPLATES: Template[] = [
   },
 ];
 
-const CATEGORIES: TemplateCategoryKey[] = TEMPLATE_CATEGORY_KEYS;
+const CATEGORIES: TemplateCategoryKey[] = [...TEMPLATE_CATEGORY_KEYS];
 
 interface TemplateGalleryProps {
   open: boolean;
