@@ -42,3 +42,4 @@ call repositories → repositories talk to Supabase through the platform client.
 - Keep domain entities free of React or infrastructure dependencies.
 - When adding a new workflow, start in `use-cases/` and only add services if logic
   spans multiple repositories or external systems.
+- See `docs/DEPENDENCY_MAP.md` for dependency rules, analysis commands, and quality gates.

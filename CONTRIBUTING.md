@@ -40,6 +40,11 @@ Thanks for contributing! This guide keeps changes consistent and easy to review.
 npm run dev
 npm run build
 npm run lint
+npm run analyze:deps
+npm run analyze:cycles
+npm run analyze:layers
+npm run analyze:unused
+npm run quality:gate
 npm run i18n:check
 npm run lint:i18n
 npm run e2e

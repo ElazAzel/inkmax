@@ -1,6 +1,6 @@
 /**
- * Database module - re-exports from services for backward compatibility
- * @deprecated Use services/pages.ts and services/user.ts directly
+ * Database module - legacy re-exports for backward compatibility.
+ * @deprecated Use services/pages.ts and services/user.ts directly.
  */
 
 // Page operations

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { loadPageBySlug, loadUserPage, savePage, publishPage } from '@/lib/database';
+import { loadPageBySlug, loadUserPage, savePage, publishPage } from '@/services/database';
 import type { PageData } from '@/types/page';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';

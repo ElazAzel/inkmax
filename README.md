@@ -72,6 +72,19 @@ src/
 5. **Hooks** - UI state coordination
 6. **Components** - Presentation layer
 
+### Entrypoints & Routing
+
+- `src/main.tsx` boots the app and initializes i18n.
+- `src/App.tsx` defines route-level pages and layouts.
+
+### Dependency Analysis
+
+- `npm run analyze:deps` — dependency listing.
+- `npm run analyze:cycles` — fail on circular deps.
+- `npm run analyze:layers` — fail on layer violations.
+- `npm run analyze:unused` — unused files/exports.
+- `npm run quality:gate` — run all checks.
+
 ## Database Schema
 
 ### Core Tables
