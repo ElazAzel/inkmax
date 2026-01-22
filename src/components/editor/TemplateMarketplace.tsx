@@ -81,7 +81,7 @@ interface TemplateMarketplaceProps {
   onApplyTemplate: (blocks: Block[]) => void;
 }
 
-const CATEGORIES: TemplateCategoryKey[] = TEMPLATE_CATEGORY_KEYS;
+const CATEGORIES: TemplateCategoryKey[] = [...TEMPLATE_CATEGORY_KEYS];
 
 export const TemplateMarketplace = memo(function TemplateMarketplace({
   open,
