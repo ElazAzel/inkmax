@@ -18,6 +18,7 @@ export const createApp = ViteSSG(
       const landingLangRoutes = ["/?lang=ru", "/?lang=en", "/?lang=kk"];
       return Array.from(new Set([...staticRoutes, ...landingLangRoutes]));
     },
+    includedRoutes: (paths) => paths.filter((path) => !path.includes(":")),
   },
   ({ isClient }) => {
     if (isClient) {
