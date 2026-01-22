@@ -1,17 +1,18 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { Clock, Plus, Trash2, CalendarDays, Wallet, Bell, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BlockEditorWrapper } from './BlockEditorWrapper';
 import type { BookingBlock } from '@/types/page';
+import { createMultilingualString, isMultilingualString, type MultilingualString } from '@/lib/i18n-helpers';
 
 interface BookingBlockEditorProps {
   formData: BookingBlock;
@@ -37,6 +38,15 @@ const DAYS_OF_WEEK = [
 export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorProps) {
   const { t } = useTranslation();
   const block = formData;
+
+  // Ensure title and description are MultilingualString
+  const titleValue: MultilingualString = isMultilingualString(block.title) 
+    ? block.title 
+    : createMultilingualString(typeof block.title === 'string' ? block.title : '');
+  
+  const descriptionValue: MultilingualString = isMultilingualString(block.description)
+    ? block.description
+    : createMultilingualString(typeof block.description === 'string' ? block.description : '');
 
   // Merge updates with formData
   const handleChange = (updates: Partial<BookingBlock>) => {
@@ -84,24 +94,21 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
       <div className="space-y-6">
         {/* Basic Settings */}
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>{t('bookingBlock.blockTitle', 'Заголовок')}</Label>
-            <Input
-              value={typeof block.title === 'string' ? block.title : ''}
-              onChange={e => handleChange({ title: e.target.value })}
-              placeholder={t('bookingBlock.titlePlaceholder', 'Записаться на прием')}
-            />
-          </div>
+          <MultilingualInput
+            label={t('bookingBlock.blockTitle', 'Заголовок')}
+            value={titleValue}
+            onChange={(val) => handleChange({ title: val })}
+            type="input"
+            placeholder={t('bookingBlock.titlePlaceholder', 'Записаться на прием')}
+          />
 
-          <div className="space-y-2">
-            <Label>{t('bookingBlock.blockDescription', 'Описание')}</Label>
-            <Textarea
-              value={typeof block.description === 'string' ? block.description : ''}
-              onChange={e => handleChange({ description: e.target.value })}
-              placeholder={t('bookingBlock.descriptionPlaceholder', 'Выберите удобное время для записи')}
-              rows={2}
-            />
-          </div>
+          <MultilingualInput
+            label={t('bookingBlock.blockDescription', 'Описание')}
+            value={descriptionValue}
+            onChange={(val) => handleChange({ description: val })}
+            type="textarea"
+            placeholder={t('bookingBlock.descriptionPlaceholder', 'Выберите удобное время для записи')}
+          />
         </div>
 
         <Separator />
