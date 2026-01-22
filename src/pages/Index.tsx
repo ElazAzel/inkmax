@@ -146,6 +146,7 @@ export default function Index() {
                     variant="ghost" 
                     size="sm"
                     onClick={handleViewExamples}
+                    data-testid="landing-nav-examples"
                     className="hidden sm:flex rounded-xl hover:scale-105 transition-transform"
                   >
                     <Users className="h-4 w-4 mr-1.5" />
@@ -153,6 +154,7 @@ export default function Index() {
                   </Button>
                   <Button 
                     onClick={handleCreatePage}
+                    data-testid="landing-nav-create"
                     className="rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
                     size="sm"
                   >
@@ -174,13 +176,19 @@ export default function Index() {
             heroAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
             {/* Badge */}
-            <Badge className="mb-6 h-8 px-4 text-sm font-bold bg-primary/10 text-primary border-primary/20 rounded-full">
+            <Badge
+              data-testid="landing-hero-badge"
+              className="mb-6 h-8 px-4 text-sm font-bold bg-primary/10 text-primary border-primary/20 rounded-full"
+            >
               <Bot className="h-4 w-4 mr-2" />
               {t('landing.hero.badge', 'AI-конструктор мини-сайтов')}
             </Badge>
 
             {/* Main Headline - Clear and result-focused */}
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-4 leading-[1.15]">
+            <h1
+              data-testid="landing-hero-title"
+              className="text-3xl sm:text-4xl font-black tracking-tight mb-4 leading-[1.15]"
+            >
               {t('landing.hero.mainTitle', 'Соберите продающий мини-сайт за ~2 минуты')}
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-violet-500">
@@ -189,7 +197,10 @@ export default function Index() {
             </h1>
 
             {/* Subhead - What it is and for whom */}
-            <p className="text-base text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
+            <p
+              data-testid="landing-hero-description"
+              className="text-base text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed"
+            >
               {t('landing.hero.valueProposition', 'AI-конструктор сайтов для экспертов, фрилансеров и бизнеса. Создавайте страницу, принимайте заявки и наводите порядок без дизайнеров и программистов.')}
             </p>
 
@@ -217,6 +228,7 @@ export default function Index() {
               <Button 
                 size="lg"
                 onClick={handleCreatePage}
+                data-testid="landing-hero-primary-cta"
                 className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 <Zap className="h-5 w-5 mr-2" />
@@ -226,6 +238,7 @@ export default function Index() {
                 variant="outline"
                 size="lg"
                 onClick={handleViewExamples}
+                data-testid="landing-hero-secondary-cta"
                 className="h-14 rounded-2xl text-base font-bold hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 <Users className="h-5 w-5 mr-2" />
@@ -545,10 +558,12 @@ export default function Index() {
                       <Crown className="h-4 w-4 text-amber-500" />
                     </h3>
                     <p className="text-2xl font-black">
-                      {isKZ ? '2 610 ₸' : '$5'}<span className="text-base font-normal text-muted-foreground">/мес</span>
+                      {isKZ ? '2 610 ₸' : '$5'}<span className="text-base font-normal text-muted-foreground">/{t('pricing.month', 'мес')}</span>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {isKZ ? '31 320 ₸ за 12 месяцев' : '$60/year'}
+                      {isKZ
+                        ? t('landing.pricing.annualPriceKzt', '31 320 ₸ за 12 месяцев')
+                        : t('landing.pricing.annualPriceUsd', '$60/year')}
                     </p>
                   </div>
                 </div>
@@ -572,8 +587,8 @@ export default function Index() {
                     {t('landing.pricing.otherPlans', 'Другие варианты:')}
                   </p>
                   <div className="flex justify-center gap-4 text-xs">
-                    <span className="text-muted-foreground">6 мес: <strong>3 500 ₸/мес</strong></span>
-                    <span className="text-muted-foreground">3 мес: <strong>4 350 ₸/мес</strong></span>
+                    <span className="text-muted-foreground">{t('landing.pricing.otherPlansSix', '6 мес: 3 500 ₸/мес')}</span>
+                    <span className="text-muted-foreground">{t('landing.pricing.otherPlansThree', '3 мес: 4 350 ₸/мес')}</span>
                   </div>
                 </div>
               </Card>
@@ -650,8 +665,8 @@ export default function Index() {
             </div>
 
             <div className="text-center text-xs text-muted-foreground space-y-1">
-              <p>ИП BEEGIN - БИН: 971207300019</p>
-              <p>г. Алматы, ул. Шолохова, д. 20/7</p>
+              <p>{t('pricing.companyDetails.nameLine', 'ИП BEEGIN • БИН: 971207300019')}</p>
+              <p>{t('pricing.companyDetails.addressLine', 'г. Алматы, ул. Шолохова, д. 20/7')}</p>
               <div className="flex items-center justify-center gap-4 pt-2">
                 <a href="mailto:admin@lnkmx.my" className="flex items-center gap-1 hover:text-foreground transition-colors">
                   <Mail className="h-3 w-3" />

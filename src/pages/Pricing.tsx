@@ -152,10 +152,16 @@ export default function Pricing() {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Title Section */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+          <h2
+            data-testid="pricing-title"
+            className="text-3xl sm:text-4xl font-bold mb-4"
+          >
             {t('pricing.choosePlan', 'Выберите подходящий тариф')}
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p
+            data-testid="pricing-description"
+            className="text-muted-foreground text-lg max-w-2xl mx-auto"
+          >
             {t('pricing.description', 'Разблокируйте все возможности LinkMAX для вашего бизнеса')}
           </p>
         </div>
@@ -302,6 +308,7 @@ export default function Pricing() {
 
                   {/* CTA Button */}
                   <Button
+                    data-testid={`pricing-plan-${key}-cta`}
                     className="w-full mt-4"
                     variant={isCurrentPlan ? 'outline' : 'popular' in plan && plan.popular ? 'default' : 'outline'}
                     disabled={isCurrentPlan || isLoading}

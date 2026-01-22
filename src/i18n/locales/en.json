@@ -48,6 +48,9 @@
     "no": "No",
     "or": "or",
     "and": "and",
+    "user": "User",
+    "friend": "Friend",
+    "recipient": "Recipient"
     "user": "User"
   },
   "form": {
@@ -108,7 +111,9 @@
     "previewDesc": "Custom image shown in the gallery",
     "removePreview": "Remove custom preview",
     "notifications": "Notifications",
+    "emailLabel": "Email",
     "emailDesc": "New leads via email",
+    "telegramLabel": "Telegram",
     "telegramDesc": "Instant notifications",
     "telegramChatId": "Your Chat ID",
     "telegramHelp": "Get your ID from",
@@ -291,6 +296,10 @@
       "freeAction": "Start free",
       "viewPlans": "Choose Pro",
       "otherPlans": "Other options:",
+      "annualPriceKzt": "31,320 ₸ for 12 months",
+      "annualPriceUsd": "$60/year",
+      "otherPlansSix": "6 months: 3,500 ₸/mo",
+      "otherPlansThree": "3 months: 4,350 ₸/mo",
       "free": {
         "item1": "6 basic blocks",
         "item2": "1 AI generation/month",
@@ -423,7 +432,8 @@
     "community": "Community",
     "beforeAfter": "Before/After",
     "customCode": "Code",
-    "scratch": "Scratch"
+    "scratch": "Scratch",
+    "search": "Search"
   },
 "auth": {
     "signIn": "Sign In",
@@ -528,6 +538,9 @@
       "themes": "Premium themes"
     },
     "choosePlan": "Choose plan",
+    "description": "Unlock all LinkMAX features for your business",
+    "alreadyFree": "The free plan is already active",
+    "comingSoon": "Payments are coming soon. Stay tuned for updates.",
     "currentPlan": "Current plan"
   },
   "gallery": {
@@ -538,7 +551,8 @@
     "popular": "Popular",
     "viewPage": "View",
     "like": "Like",
-    "views": "views"
+    "views": "views",
+    "untitled": "Untitled"
   },
   "errors": {
     "general": "An error occurred",
@@ -559,7 +573,10 @@
     "shareLink": "Share",
     "qrCode": "QR Code",
     "linkCopied": "Link copied",
-    "scanQR": "Scan to open the page"
+    "scanQR": "Scan to open the page",
+    "defaultTitle": "Check out my page",
+    "qrDialogTitle": "QR Code",
+    "qrDialogDescription": "Scan this code to share your page"
   },
   "toasts": {
     "sharing": {
@@ -637,24 +654,516 @@
       "sat": "Sat"
     }
   },
+  "adminCharts": {
+    "userGrowth": "User growth",
+    "totalUsers": "Total users",
+    "newRegistrations": "New registrations (14 days)",
+    "users": "Users",
+    "pages": "Pages",
+    "blocks": "Blocks",
+    "eventsTitle": "Events (14 days)",
+    "userDistribution": "User distribution",
+    "eventTypes": "Event types",
+    "count": "Count",
+    "socialActivity": "Social activity",
+    "socialActivity14Days": "Social activity (14 days)",
+    "contentCreation14Days": "Content creation (14 days)",
+    "popularBlockTypes": "Popular block types",
+    "total": "Total",
+    "accepted": "Accepted",
+    "events": {
+      "views": "Views",
+      "clicks": "Clicks",
+      "shares": "Shares"
+    },
+    "social": {
+      "friendships": "Friendships",
+      "collaborations": "Collaborations",
+      "teams": "Teams"
+    }
+  },
+  "adminTokens": {
+    "title": "Token economy",
+    "stats": {
+      "inCirculation": "In circulation",
+      "inCirculationDesc": "All user tokens",
+      "totalEarned": "Total earned",
+      "totalSpent": "Total spent",
+      "platformFee": "Platform fee",
+      "platformFeeDesc": "4% of sales",
+      "premiumPurchases": "Premium purchases",
+      "templatePurchases": "Template purchases",
+      "productPurchases": "Product purchases",
+      "activeUsers": "Active users",
+      "pendingWithdrawals": "Pending withdrawals",
+      "paidOut": "Paid out"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "transactions": "Transactions",
+      "withdrawals": "Withdrawals"
+    },
+    "distributionTitle": "Distribution by transaction type",
+    "historyTitle": "Transaction history",
+    "withdrawalsTitle": "Withdrawal requests",
+    "noData": "No data",
+    "noTransactions": "No transactions",
+    "noWithdrawals": "No withdrawals",
+    "platformFeeLabel": "Fee",
+    "notProvided": "Not provided",
+    "filter": {
+      "allTypes": "All types",
+      "premium": "Premium",
+      "templates": "Templates",
+      "products": "Products",
+      "paidBlocks": "Paid blocks"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "completed": "Completed",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "markPaid": "Mark as paid"
+    }
+  },
+  "achievements": {
+    "title": "Achievements",
+    "progress": "{{unlocked}} of {{total}} unlocked",
+    "newAchievement": "New achievement!",
+    "rewardDescription": "Achievement reward: {{title}}",
+    "emptyTitle": "No achievements",
+    "emptyDescription": "There are no achievements in this category yet",
+    "sections": {
+      "unlocked": "Unlocked ({{count}})",
+      "locked": "Locked ({{count}})"
+    },
+    "categories": {
+      "all": "All",
+      "blocks": "Blocks",
+      "features": "Features",
+      "milestones": "Milestones",
+      "social": "Social"
+    },
+    "rarity": {
+      "common": "Common",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    },
+    "items": {
+      "firstLink": {
+        "title": "First link",
+        "description": "Add your first link"
+      },
+      "socialButterfly": {
+        "title": "Social butterfly",
+        "description": "Add a social block"
+      },
+      "merchant": {
+        "title": "Merchant",
+        "description": "Add your first product"
+      },
+      "contentCreator": {
+        "title": "Content creator",
+        "description": "Add a video block"
+      },
+      "galleryMaster": {
+        "title": "Gallery master",
+        "description": "Create an image carousel"
+      },
+      "developer": {
+        "title": "Developer",
+        "description": "Use the custom code block"
+      },
+      "communicator": {
+        "title": "Communicator",
+        "description": "Add a contact form"
+      },
+      "searchGuru": {
+        "title": "Search guru",
+        "description": "Add an AI Search block"
+      },
+      "aiPowered": {
+        "title": "AI assistant",
+        "description": "Use AI to generate content"
+      },
+      "templateUser": {
+        "title": "Quick start",
+        "description": "Use a ready-made template"
+      },
+      "chatbotExpert": {
+        "title": "Chatbot expert",
+        "description": "Set up an AI chatbot"
+      },
+      "collector": {
+        "title": "Collector",
+        "description": "Add 5 different block types"
+      },
+      "masterBuilder": {
+        "title": "Master builder",
+        "description": "Add 10 blocks to the page"
+      },
+      "completionist": {
+        "title": "Completionist",
+        "description": "Use all block types"
+      },
+      "publisher": {
+        "title": "Publisher",
+        "description": "Publish your first page"
+      },
+      "popular": {
+        "title": "Popular",
+        "description": "Get 100 views"
+      },
+      "influencer": {
+        "title": "Influencer",
+        "description": "Get 1000 views"
+      },
+      "firstFriend": {
+        "title": "First friend",
+        "description": "Add your first friend"
+      },
+      "socialCircle": {
+        "title": "Social circle",
+        "description": "Add 5 friends"
+      },
+      "networkingPro": {
+        "title": "Networking pro",
+        "description": "Add 10 friends"
+      },
+      "communityLeader": {
+        "title": "Community leader",
+        "description": "Add 25 friends"
+      }
+    }
+  },
   "templates": {
     "title": "Templates",
     "save": "Save as template",
     "apply": "Apply template",
     "myTemplates": "My Templates",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "categories": {
+      "all": "All",
+      "creators": "Creators",
+      "business": "Business",
+      "service": "Service",
+      "realEstate": "Real estate",
+      "wedding": "Wedding",
+      "personal": "Personal",
+      "experts": "Experts",
+      "premium": "Premium",
+      "other": "Other"
+    }
+  },
+  "alternatives": {
+    "seo": {
+      "title": "LinkMAX vs Linktree vs Taplink — 2026 Comparison | Best Alternative",
+      "description": "Detailed comparison of LinkMAX, Linktree and Taplink. Discover why LinkMAX is the best free alternative with AI generation, CRM and 0% commission. Feature and pricing comparison table.",
+      "keywords": "linktree vs taplink, taplink alternative, linktree alternative free, best link in bio, linktree taplink comparison, free taplink alternative, linktree replacement, beacons vs linktree, lnk.bio alternative, shorby alternative",
+      "schemaName": "Link in Bio Platforms Comparison",
+      "schemaDescription": "AI-powered link-in-bio builder with CRM and 0% commission",
+      "defaultTitle": "LinkMAX - AI-Powered Link-in-Bio Platform"
+    },
+    "header": {
+      "cta": "Get Started"
+    },
+    "hero": {
+      "badge": "2026 Comparison",
+      "title": "LinkMAX vs Linktree vs Taplink",
+      "description": "Discover why thousands of users are switching from Linktree and Taplink to LinkMAX. Detailed comparison of features, pricing and capabilities.",
+      "ctaPrimary": "Try for Free",
+      "ctaSecondary": "View Pricing"
+    },
+    "winner": {
+      "title": "LinkMAX — Best Choice in 2026",
+      "description": "AI generation, built-in CRM, Telegram notifications and 40-50% lower price than competitors. All this makes LinkMAX the best Linktree and Taplink alternative."
+    },
+    "advantages": {
+      "title": "Why is LinkMAX Better?",
+      "aiGeneration": {
+        "title": "AI Generation in 2 Minutes",
+        "description": "Choose your niche — AI creates a page with the right blocks in 30 seconds. Free: 1/mo, Premium: 5/mo."
+      },
+      "miniCrm": {
+        "title": "Built-in Mini-CRM",
+        "description": "Manage leads right in LinkMAX. Statuses, history, Telegram notifications — all in one place."
+      },
+      "telegram": {
+        "title": "Telegram Notifications",
+        "description": "Instant notifications about new leads in Telegram. Never miss a client."
+      },
+      "pricing": {
+        "title": "Affordable Pricing",
+        "description": "From $5.10/month with annual subscription. Payment via RoboKassa. 14-day refund policy."
+      },
+      "localization": {
+        "title": "RU/EN/KZ Localization",
+        "description": "Full Russian, English and Kazakh language support."
+      },
+      "analytics": {
+        "title": "Analytics & Gamification",
+        "description": "Click stats, Linkkon tokens, achievements, streaks. Grow your page like a game."
+      }
+    },
+    "comparison": {
+      "title": "Free vs Premium",
+      "featureLabel": "Feature",
+      "freeLabel": "Free",
+      "premiumLabel": "Premium",
+      "rows": {
+        "freePlan": {
+          "label": "Free Plan",
+          "freeNote": "10 blocks",
+          "premiumNote": "25+ blocks"
+        },
+        "aiGeneration": {
+          "label": "AI Page Generation",
+          "freeNote": "1/month",
+          "premiumNote": "5/month"
+        },
+        "blockTypes": {
+          "label": "Number of Block Types",
+          "freeValue": "10+",
+          "premiumValue": "25+"
+        },
+        "miniCrm": {
+          "label": "Mini-CRM System"
+        },
+        "clickAnalytics": {
+          "label": "Click Analytics",
+          "freeValue": "Basic",
+          "premiumValue": "Advanced"
+        },
+        "telegramNotifications": {
+          "label": "Telegram Notifications"
+        },
+        "leadForms": {
+          "label": "Lead Capture Forms"
+        },
+        "blockScheduler": {
+          "label": "Block Scheduler"
+        },
+        "mobileEditor": {
+          "label": "Mobile Editor (PWA)"
+        },
+        "premiumThemes": {
+          "label": "Premium Themes & Animations"
+        },
+        "priceLists": {
+          "label": "Price Lists & Catalogs"
+        },
+        "localization": {
+          "label": "RU/EN/KZ Support"
+        },
+        "gamification": {
+          "label": "Tokens & Gamification"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Premium Pricing",
+      "badges": {
+        "best": "Best",
+        "popular": "Popular"
+      },
+      "perMonth": "/month",
+      "note": "* Payment via RoboKassa. Monthly price when paying for the specified period.",
+      "periods": {
+        "three": "3 months",
+        "six": "6 months",
+        "twelve": "12 months"
+      }
+    },
+    "migration": {
+      "title": "Easy Migration from Linktree or Taplink",
+      "description": "AI automatically creates a page based on your description. Just describe your business — and get a ready page in 2 minutes!",
+      "cta": "Switch to LinkMAX"
+    },
+    "finalCta": {
+      "title": "Ready to Try?",
+      "description": "Create a free page right now and see for yourself why LinkMAX is the best choice.",
+      "primary": "Start for Free",
+      "secondary": "View Examples"
+    },
+    "footer": {
+      "pricing": "Pricing",
+      "gallery": "Gallery",
+      "signIn": "Sign In",
+      "company": "IP BEEGIN • BIN: 971207300019",
+      "address": "Almaty, Sholokhov St., 20/7"
+    }
+  },
+  "blockPreview": {
+    "title": "Block preview",
+    "unavailable": "Preview unavailable",
+    "linkTitle": "My link",
+    "buttonTitle": "Click me",
+    "textContent": "This is a text block",
+    "imageAlt": "Sample image",
+    "socialsTitle": "My socials",
+    "productName": "Product",
+    "productDescription": "Product description",
+    "videoTitle": "Video",
+    "carouselImage1": "Image 1",
+    "carouselImage2": "Image 2",
+    "customCodeHtml": "<div style=\"padding: 20px; text-align: center;\">Custom HTML</div>",
+    "formTitle": "Contact form",
+    "formButton": "Send",
+    "newsletterTitle": "Subscribe to the newsletter",
+    "newsletterDescription": "Get news first",
+    "newsletterButton": "Subscribe",
+    "testimonialName": "John Doe",
+    "testimonialText": "Great service!",
+    "messengerTitle": "Contact me",
+    "downloadTitle": "Download file",
+    "downloadDescription": "File description",
+    "scratchTitle": "Scratch and win",
+    "scratchReveal": "20% off!"
+  },
+  "animationSettings": {
+    "title": "Entrance animation",
+    "type": "Animation type",
+    "none": "No animation",
+    "fadeIn": "Fade in",
+    "slideUp": "Slide up",
+    "scaleIn": "Scale in",
+    "bounce": "Bounce",
+    "speed": "Animation speed",
+    "speedSlow": "Slow (0.8s)",
+    "speedNormal": "Normal (0.5s)",
+    "speedFast": "Fast (0.3s)",
+    "delay": "Delay: {{value}}ms",
+    "delayHint": "Time before animation starts (0-2000ms)"
   },
   "tokens": {
     "balance": "Token balance",
     "earn": "Earn",
     "spend": "Spend",
-    "history": "History"
+    "history": "History",
+    "dailyVisit": "daily login",
+    "addBlock": "adding a block",
+    "useAi": "using AI",
+    "toastEarned": "+{{count}} Linkkon for {{action}}!",
+    "insufficientForPremium": "Not enough Linkkon. {{count}} tokens required.",
+    "premiumGranted": "🎉 You received 1 day of Premium!",
+    "insufficientTokens": "Not enough tokens",
+    "convertError": "Conversion error",
+    "insufficientForPurchase": "Not enough Linkkon. {{count}} tokens required.",
+    "purchaseSuccess": "✨ Purchase successful!",
+    "purchaseError": "Purchase error",
+    "withdrawalCreated": "Withdrawal request created!",
+    "withdrawalPremiumRequired": "Withdrawals are available only for Premium users",
+    "withdrawalError": "Withdrawal request error"
+  },
+  "quests": {
+    "dailyVisit": {
+      "title": "Daily visit",
+      "description": "Open the app"
+    },
+    "addBlock": {
+      "title": "Add a block",
+      "description": "Add a new block to your page"
+    },
+    "editProfile": {
+      "title": "Update profile",
+      "description": "Change your name or bio"
+    },
+    "sharePage": {
+      "title": "Share your page",
+      "description": "Copy the link to your page"
+    },
+    "useAi": {
+      "title": "Use AI",
+      "description": "Generate content with AI"
+    },
+    "toastDailyVisit": "👋 +{{count}} Linkkon for a daily visit!",
+    "toastCompleted": "{{icon}} +{{count}} Linkkon for \"{{title}}\"!",
+    "panelTitle": "Daily quests",
+    "allCompleted": "🎉 All quests completed!",
+    "tokensEarned": "+{{count}} Linkkon earned"
   },
   "referral": {
     "title": "Referral Program",
     "yourCode": "Your code",
     "invited": "Invited",
-    "earned": "Earned"
+    "earned": "Earned",
+    "toastSuccess": "🎉 +{{count}} days of Premium for you and your friend!",
+    "codeCopied": "Code copied!",
+    "linkCopied": "Link copied!",
+    "errors": {
+      "invalidCode": "Invalid invite code",
+      "alreadyReferred": "You already used a referral code",
+      "selfReferral": "You can't use your own code",
+      "applyFailed": "Failed to apply code"
+    }
+  },
+  "social": {
+    "weeklyChallenge": "Weekly challenge",
+    "challenge": "Challenge",
+    "activity": {
+      "pagePublished": "published a page",
+      "newBlock": "added a new block",
+      "achievement": "earned an achievement",
+      "streakMilestone": "reached a streak milestone",
+      "challengeCompleted": "completed a challenge",
+      "giftSent": "sent a gift",
+      "giftReceived": "received a gift",
+      "pageBoosted": "boosted a page",
+      "newFriend": "added a friend",
+      "pageLiked": "liked a page"
+    },
+    "feed": {
+      "emptyTitle": "No activity yet",
+      "emptyDescription": "Add friends to see their activity",
+      "title": "Friends feed",
+      "events_one": "{{count}} event",
+      "events_few": "{{count}} events",
+      "events_many": "{{count}} events",
+      "events_other": "{{count}} events"
+    },
+    "metadata": {
+      "achievement": "🏆 {{title}}",
+      "achievementFallback": "New achievement",
+      "streak": "🔥 {{count}} days in a row",
+      "challenge": "✅ {{title}}",
+      "challengeFallback": "Challenge completed",
+      "gift": "💝 +{{count}} Premium days",
+      "boost": "🚀 {{type}} boost",
+      "boostFallback": "standard"
+    },
+    "pendingGifts": {
+      "title": "Gifts for you!",
+      "count_one": "{{count}} gift",
+      "count_few": "{{count}} gifts",
+      "count_many": "{{count}} gifts",
+      "count_other": "{{count}} gifts",
+      "days_one": "+{{count}} day",
+      "days_few": "+{{count}} days",
+      "days_many": "+{{count}} days",
+      "days_other": "+{{count}} days",
+      "activate": "Activate"
+    },
+    "weeklyChallenges": {
+      "title": "Weekly challenges",
+      "completed": "{{completed}}/{{total}} completed",
+      "refreshesOnMonday": "Refresh every Monday",
+      "daysLeftShort": "{{count}} days",
+      "rewardHoursShort": "+{{count}}h",
+      "stats": {
+        "completed": "Completed",
+        "rewards": "Rewards",
+        "toClaim": "To claim"
+      },
+      "claim": "Claim",
+      "claimed": "Claimed"
+    }
   },
   "premium": {
     "upgrade": "Upgrade to Pro",
@@ -757,6 +1266,14 @@
   },
   "teams": {
     "title": "Teams",
+    "myTeams": "My teams",
+    "noTeams": "You're not in any team yet",
+    "createTeam": "Create team",
+    "teamNamePlaceholder": "Team name",
+    "teamSlugPlaceholder": "Team URL (slug)",
+    "teamDescriptionPlaceholder": "Team description",
+    "createTeamButton": "Create team",
+    "leave": "Leave",
     "notFoundTitle": "Team not found",
     "notFoundDesc": "This team does not exist or is private.",
     "membersTitle": "Team members",
@@ -822,7 +1339,23 @@
     "likeRemoved": "Like removed",
     "pageLiked": "Page liked!",
     "pageNotPublished": "Page not published",
-    "giftPremium": "Gift Premium"
+    "giftPremium": "Gift Premium",
+    "requestSent": "Friend request sent",
+    "requestAccepted": "Request accepted!",
+    "requestRejected": "Request rejected",
+    "friendRemoved": "Friend removed",
+    "addLike": "Add like",
+    "removeLike": "Remove like",
+    "viewPage": "View page",
+    "errors": {
+      "cannotAddSelf": "You can't add yourself",
+      "friendshipExists": "You're already friends or a request exists",
+      "notAuthenticated": "Please sign in",
+      "sendRequest": "Failed to send request",
+      "acceptRequest": "Failed to accept request",
+      "rejectRequest": "Failed to reject request",
+      "removeFriend": "Failed to remove friend"
+    }
   },
   "gift": {
     "title": "Gift Premium",
@@ -956,6 +1489,10 @@
   "paidContent": {
     "title": "Paid Content",
     "description": "Unlock this content with Linkkon tokens",
+    "settingsDescription": "Restrict access to the block content. Visitors can unlock it with Linkkon tokens (1 token = 1 ₸).",
+    "priceLabel": "Price (in Linkkon tokens)",
+    "pricePlaceholder": "100",
+    "priceHint": "Minimum: 1 token. Recommended: 50-500 tokens.",
     "unlock": "Unlock",
     "unlocking": "Unlocking...",
     "yourBalance": "Your balance",
@@ -1010,17 +1547,58 @@
     "noBlocks": "No blocks",
     "initiator": "Initiator",
     "partner": "Partner",
+    "userSearchPlaceholder": "Search by name...",
+    "myShoutouts": "My recommendations",
+    "noShoutouts": "You haven't recommended anyone yet",
+    "addShoutout": "Add shoutout",
+    "shoutoutRecommendTitle": "Recommend {{name}}",
+    "shoutoutReasonPlaceholder": "Write why you're recommending this person...",
     "title": "Collaboration",
     "notFoundTitle": "Collaboration not found",
     "notFoundDesc": "This page does not exist or the collaboration has not been accepted yet.",
     "pageNoBlocks": "No blocks have been added yet"
+  },
+  "collaboration": {
+    "tabs": {
+      "collabs": "Collabs",
+      "promo": "Cross-promo",
+      "shoutouts": "Shoutouts",
+      "teams": "Teams"
+    },
+    "incomingRequests": "Incoming requests",
+    "activeCollabs": "Active collaborations",
+    "noActiveCollabs": "No active collaborations",
+    "manageBlocks": "Manage blocks",
+    "sharedPage": "Shared page",
+    "findPartner": "Find a partner",
+    "promoTitle": "Cross-promo by niche",
+    "nicheUsers": "Users in \"{{niche}}\" niche",
+    "offer": "Offer",
+    "noMembers": "No members",
+    "members": "Members",
+    "user": "User",
+    "owner": "Owner"
+  },
+  "shoutout": {
+    "selectedUser": "Selected user",
+    "selectUser": "Choose a user to recommend",
+    "searchPlaceholder": "Search by name or @username...",
+    "searchMinChars": "Enter at least 2 characters",
+    "searchError": "Search error. Try again later.",
+    "noResults": "No users found. Try another query.",
+    "reasonLabel": "Why do you recommend?",
+    "reasonPlaceholder": "Great specialist, highly recommend!",
+    "blockDescription": "Recommend other users to your audience"
   },
   "dashboard": {
     "loadError": "Load Error",
     "loadErrorDesc": "Failed to load page data",
     "tryAgain": "Try Again",
     "settings": "Settings",
-    "collabs": "Collabs"
+    "collabs": "Collabs",
+    "aiBlocksCreated": "✨ Created {{count}} blocks with AI",
+    "blocksAdded": "Added {{count}} blocks",
+    "onboardingComplete": "Welcome! Start building your page."
   },
   "blockEditor": {
     "advancedSettings": "Advanced settings",
@@ -1034,7 +1612,29 @@
     "appearDate": "Appear",
     "disappearDate": "Disappear",
     "selectDate": "Select date",
-    "scheduleHint": "Block will be visible only during the specified period"
+    "scheduleHint": "Block will be visible only during the specified period",
+    "premiumFeature": "This is a Premium feature."
+  },
+  "currency": {
+    "names": {
+      "KZT": "Tenge (Kazakhstan)",
+      "RUB": "Ruble (Russia)",
+      "BYN": "Ruble (Belarus)",
+      "AMD": "Dram (Armenia)",
+      "AZN": "Manat (Azerbaijan)",
+      "KGS": "Som (Kyrgyzstan)",
+      "TJS": "Somoni (Tajikistan)",
+      "TMT": "Manat (Turkmenistan)",
+      "UZS": "Som (Uzbekistan)",
+      "USD": "US Dollar",
+      "EUR": "Euro",
+      "GBP": "Pound Sterling",
+      "CNY": "Yuan",
+      "JPY": "Yen",
+      "CHF": "Swiss Franc",
+      "CAD": "Canadian Dollar",
+      "AUD": "Australian Dollar"
+    }
   },
   "separatorBlock": {
     "lineStyle": "Line style",

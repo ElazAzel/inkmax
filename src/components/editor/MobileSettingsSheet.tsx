@@ -569,7 +569,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                   {/* Email */}
                   <div className="flex items-center justify-between p-3 rounded-xl bg-background/30 border border-border/20">
                     <div className="space-y-0.5">
-                      <Label className="text-sm font-medium">Email</Label>
+                      <Label className="text-sm font-medium">{t('settings.emailLabel', 'Email')}</Label>
                       <p className="text-xs text-muted-foreground">{t('settings.emailDesc', 'New leads via email')}</p>
                     </div>
                     <Switch
@@ -584,7 +584,7 @@ export const MobileSettingsSheet = memo(function MobileSettingsSheet({
                       <div className="flex items-center gap-2">
                         <Send className="h-4 w-4 text-blue-500" />
                         <div>
-                          <Label className="text-sm font-medium">Telegram</Label>
+                          <Label className="text-sm font-medium">{t('settings.telegramLabel', 'Telegram')}</Label>
                           <p className="text-xs text-muted-foreground">{t('settings.telegramDesc', 'Instant notifications')}</p>
                         </div>
                       </div>

@@ -30,6 +30,7 @@ import {
 import type { Block } from '@/types/page';
 import { TemplatePreviewCard } from './TemplatePreviewCard';
 import { EditTemplateDialog } from './EditTemplateDialog';
+import { getTemplateCategoryLabel } from '@/lib/templateCategories';
 
 interface UserTemplate {
   id: string;
@@ -234,7 +235,7 @@ export const MyTemplatesPanel = memo(function MyTemplatesPanel({
         <div className="flex items-start justify-between gap-2">
           <div>
             <h4 className="font-medium text-sm line-clamp-1">{template.name}</h4>
-            <p className="text-xs text-muted-foreground">{template.category}</p>
+            <p className="text-xs text-muted-foreground">{getTemplateCategoryLabel(t, template.category)}</p>
           </div>
           {template.is_public ? (
             <Globe className="h-4 w-4 text-green-500 shrink-0" />

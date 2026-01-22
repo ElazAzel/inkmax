@@ -507,9 +507,9 @@ export type BlockSizePreset =
   | 'full'        // Full width block
   | 'half';       // Half width block (2 per row)
 
-export const BLOCK_SIZE_DIMENSIONS: Record<BlockSizePreset, { gridCols: 1 | 2; label: string }> = {
-  'full': { gridCols: 1, label: 'Во всю ширину' },
-  'half': { gridCols: 2, label: 'Половина ширины' },
+export const BLOCK_SIZE_DIMENSIONS: Record<BlockSizePreset, { gridCols: 1 | 2 }> = {
+  'full': { gridCols: 1 },
+  'half': { gridCols: 2 },
 };
 
 // Base block type with optional grid layout

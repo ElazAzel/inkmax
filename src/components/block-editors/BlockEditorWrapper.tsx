@@ -15,7 +15,6 @@ import { cn } from '@/lib/utils';
 import { AnimationSettings } from '@/components/editor/AnimationSettings';
 import { PaidContentSettings } from './PaidContentSettings';
 import type { BlockStyle, BlockSizePreset } from '@/types/page';
-import { BLOCK_SIZE_DIMENSIONS } from '@/types/page';
 
 export interface BaseBlockEditorProps {
   formData: any;
@@ -39,6 +38,8 @@ export function BlockEditorWrapper({
   description,
   hint,
 }: BlockEditorWrapperProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-4">
       {isPremium && (
@@ -50,7 +51,7 @@ export function BlockEditorWrapper({
                 <Crown className="h-3 w-3" />
                 Premium
               </Badge>
-              <span>{description || 'This is a Premium feature.'}</span>
+              <span>{description || t('blockEditor.premiumFeature', 'This is a Premium feature.')}</span>
             </div>
           </AlertDescription>
         </Alert>

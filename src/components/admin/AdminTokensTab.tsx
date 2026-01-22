@@ -142,13 +142,13 @@ export function AdminTokensTab() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500"><Clock className="h-3 w-3 mr-1" /> Ожидает</Badge>;
+        return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500"><Clock className="h-3 w-3 mr-1" /> {t('adminTokens.status.pending', 'Ожидает')}</Badge>;
       case 'approved':
-        return <Badge variant="outline" className="bg-blue-500/10 text-blue-500"><CheckCircle className="h-3 w-3 mr-1" /> Одобрено</Badge>;
+        return <Badge variant="outline" className="bg-blue-500/10 text-blue-500"><CheckCircle className="h-3 w-3 mr-1" /> {t('adminTokens.status.approved', 'Одобрено')}</Badge>;
       case 'completed':
-        return <Badge variant="outline" className="bg-green-500/10 text-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Выполнено</Badge>;
+        return <Badge variant="outline" className="bg-green-500/10 text-green-500"><CheckCircle className="h-3 w-3 mr-1" /> {t('adminTokens.status.completed', 'Выполнено')}</Badge>;
       case 'rejected':
-        return <Badge variant="outline" className="bg-red-500/10 text-red-500"><XCircle className="h-3 w-3 mr-1" /> Отклонено</Badge>;
+        return <Badge variant="outline" className="bg-red-500/10 text-red-500"><XCircle className="h-3 w-3 mr-1" /> {t('adminTokens.status.rejected', 'Отклонено')}</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -170,7 +170,7 @@ export function AdminTokensTab() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold flex items-center gap-2">
           <Coins className="h-5 w-5 text-yellow-500" />
-          Экономика токенов
+          {t('adminTokens.title', 'Экономика токенов')}
         </h2>
         <div className="flex gap-2">
           <Input
@@ -191,50 +191,50 @@ export function AdminTokensTab() {
       {/* Overview Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
-          title="В обращении"
+          title={t('adminTokens.stats.inCirculation', 'В обращении')}
           value={`${Number(analytics?.total_tokens_in_circulation || 0).toLocaleString()} ₸`}
           icon={Coins}
-          subtitle="Все токены пользователей"
+          subtitle={t('adminTokens.stats.inCirculationDesc', 'Все токены пользователей')}
         />
         <StatCard
-          title="Заработано всего"
+          title={t('adminTokens.stats.totalEarned', 'Заработано всего')}
           value={`${Number(analytics?.total_earned_all_time || 0).toLocaleString()} ₸`}
           icon={TrendingUp}
           trend="up"
         />
         <StatCard
-          title="Потрачено всего"
+          title={t('adminTokens.stats.totalSpent', 'Потрачено всего')}
           value={`${Number(analytics?.total_spent_all_time || 0).toLocaleString()} ₸`}
           icon={TrendingDown}
           trend="down"
         />
         <StatCard
-          title="Комиссия платформы"
+          title={t('adminTokens.stats.platformFee', 'Комиссия платформы')}
           value={`${Number(analytics?.platform_fees_earned || 0).toLocaleString()} ₸`}
           icon={PiggyBank}
-          subtitle="4% от продаж"
+          subtitle={t('adminTokens.stats.platformFeeDesc', '4% от продаж')}
         />
       </div>
 
       {/* Purchase Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
-          title="Покупки Premium"
+          title={t('adminTokens.stats.premiumPurchases', 'Покупки Premium')}
           value={`${Number(analytics?.premium_purchases || 0).toLocaleString()} ₸`}
           icon={Crown}
         />
         <StatCard
-          title="Покупки шаблонов"
+          title={t('adminTokens.stats.templatePurchases', 'Покупки шаблонов')}
           value={`${Number(analytics?.template_purchases || 0).toLocaleString()} ₸`}
           icon={FileText}
         />
         <StatCard
-          title="Покупки товаров"
+          title={t('adminTokens.stats.productPurchases', 'Покупки товаров')}
           value={`${Number(analytics?.product_purchases || 0).toLocaleString()} ₸`}
           icon={ShoppingCart}
         />
         <StatCard
-          title="Активных пользователей"
+          title={t('adminTokens.stats.activeUsers', 'Активных пользователей')}
           value={Number(analytics?.active_token_users || 0)}
           icon={Users}
         />
@@ -243,13 +243,13 @@ export function AdminTokensTab() {
       {/* Withdrawal Stats */}
       <div className="grid grid-cols-2 gap-4">
         <StatCard
-          title="Ожидающие выводы"
+          title={t('adminTokens.stats.pendingWithdrawals', 'Ожидающие выводы')}
           value={`${Number(analytics?.pending_withdrawals || 0).toLocaleString()} ₸`}
           icon={Clock}
           trend="neutral"
         />
         <StatCard
-          title="Выплачено"
+          title={t('adminTokens.stats.paidOut', 'Выплачено')}
           value={`${Number(analytics?.completed_withdrawals || 0).toLocaleString()} ₸`}
           icon={Wallet}
           trend="down"
@@ -261,22 +261,22 @@ export function AdminTokensTab() {
         <TabsList>
           <TabsTrigger value="overview">
             <BarChart3 className="h-4 w-4 mr-2" />
-            Обзор
+            {t('adminTokens.tabs.overview', 'Обзор')}
           </TabsTrigger>
           <TabsTrigger value="transactions">
             <ArrowRightLeft className="h-4 w-4 mr-2" />
-            Транзакции
+            {t('adminTokens.tabs.transactions', 'Транзакции')}
           </TabsTrigger>
           <TabsTrigger value="withdrawals">
             <Wallet className="h-4 w-4 mr-2" />
-            Выводы ({withdrawals.filter(w => w.status === 'pending').length})
+            {t('adminTokens.tabs.withdrawals', 'Выводы')} ({withdrawals.filter(w => w.status === 'pending').length})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Распределение по типам транзакций</CardTitle>
+              <CardTitle className="text-lg">{t('adminTokens.distributionTitle', 'Распределение по типам транзакций')}</CardTitle>
             </CardHeader>
             <CardContent>
               {analytics?.transactions_by_type ? (
@@ -289,7 +289,7 @@ export function AdminTokensTab() {
                   ))}
                 </div>
               ) : (
-                <p className="text-muted-foreground text-center py-4">Нет данных</p>
+                <p className="text-muted-foreground text-center py-4">{t('adminTokens.noData', 'Нет данных')}</p>
               )}
             </CardContent>
           </Card>
@@ -298,17 +298,17 @@ export function AdminTokensTab() {
         <TabsContent value="transactions" className="mt-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">История транзакций</CardTitle>
+              <CardTitle className="text-lg">{t('adminTokens.historyTitle', 'История транзакций')}</CardTitle>
               <Select value={transactionFilter} onValueChange={setTransactionFilter}>
                 <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Все типы" />
+                  <SelectValue placeholder={t('adminTokens.filter.allTypes', 'Все типы')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Все типы</SelectItem>
-                  <SelectItem value="premium">Premium</SelectItem>
-                  <SelectItem value="template">Шаблоны</SelectItem>
-                  <SelectItem value="product">Товары</SelectItem>
-                  <SelectItem value="block_access">Платные блоки</SelectItem>
+                  <SelectItem value="all">{t('adminTokens.filter.allTypes', 'Все типы')}</SelectItem>
+                  <SelectItem value="premium">{t('adminTokens.filter.premium', 'Premium')}</SelectItem>
+                  <SelectItem value="template">{t('adminTokens.filter.templates', 'Шаблоны')}</SelectItem>
+                  <SelectItem value="product">{t('adminTokens.filter.products', 'Товары')}</SelectItem>
+                  <SelectItem value="block_access">{t('adminTokens.filter.paidBlocks', 'Платные блоки')}</SelectItem>
                 </SelectContent>
               </Select>
             </CardHeader>
@@ -344,7 +344,7 @@ export function AdminTokensTab() {
                             </p>
                             {tx.platformFee && (
                               <p className="text-xs text-muted-foreground">
-                                Комиссия: {tx.platformFee} ₸
+                                {t('adminTokens.platformFeeLabel', 'Комиссия')}: {tx.platformFee} ₸
                               </p>
                             )}
                           </div>
@@ -353,7 +353,7 @@ export function AdminTokensTab() {
                     })}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-center py-8">Нет транзакций</p>
+                  <p className="text-muted-foreground text-center py-8">{t('adminTokens.noTransactions', 'Нет транзакций')}</p>
                 )}
               </ScrollArea>
             </CardContent>
@@ -363,7 +363,7 @@ export function AdminTokensTab() {
         <TabsContent value="withdrawals" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Заявки на вывод средств</CardTitle>
+              <CardTitle className="text-lg">{t('adminTokens.withdrawalsTitle', 'Заявки на вывод средств')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[400px]">
@@ -385,7 +385,7 @@ export function AdminTokensTab() {
                           {getStatusBadge(w.status)}
                         </div>
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span>{w.paymentMethod || 'Не указан'}</span>
+                          <span>{w.paymentMethod || t('adminTokens.notProvided', 'Не указан')}</span>
                           <span>{format(new Date(w.createdAt), 'dd.MM.yyyy HH:mm', { locale: getDateLocale() })}</span>
                         </div>
                         {w.status === 'pending' && (
@@ -397,7 +397,7 @@ export function AdminTokensTab() {
                               onClick={() => handleProcessWithdrawal(w.id, 'approved')}
                             >
                               <CheckCircle className="h-4 w-4 mr-1" />
-                              Одобрить
+                              {t('adminTokens.actions.approve', 'Одобрить')}
                             </Button>
                             <Button
                               size="sm"
@@ -406,7 +406,7 @@ export function AdminTokensTab() {
                               onClick={() => handleProcessWithdrawal(w.id, 'rejected')}
                             >
                               <XCircle className="h-4 w-4 mr-1" />
-                              Отклонить
+                              {t('adminTokens.actions.reject', 'Отклонить')}
                             </Button>
                           </div>
                         )}
@@ -417,14 +417,14 @@ export function AdminTokensTab() {
                             onClick={() => handleProcessWithdrawal(w.id, 'completed')}
                           >
                             <Wallet className="h-4 w-4 mr-1" />
-                            Отметить выплаченным
+                            {t('adminTokens.actions.markPaid', 'Отметить выплаченным')}
                           </Button>
                         )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-center py-8">Нет заявок на вывод</p>
+                  <p className="text-muted-foreground text-center py-8">{t('adminTokens.noWithdrawals', 'Нет заявок на вывод')}</p>
                 )}
               </ScrollArea>
             </CardContent>

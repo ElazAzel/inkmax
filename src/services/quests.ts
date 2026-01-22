@@ -2,8 +2,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 export interface Quest {
   key: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   icon: string;
   tokens: number; // Changed from bonusHours to tokens
   checkCompletion?: () => boolean;
@@ -12,36 +12,36 @@ export interface Quest {
 export const DAILY_QUESTS: Quest[] = [
   {
     key: 'daily_visit',
-    title: 'Ежедневный визит',
-    description: 'Зайди в приложение',
+    titleKey: 'quests.dailyVisit.title',
+    descriptionKey: 'quests.dailyVisit.description',
     icon: '👋',
     tokens: 5,
   },
   {
     key: 'add_block',
-    title: 'Добавь блок',
-    description: 'Добавь новый блок на страницу',
+    titleKey: 'quests.addBlock.title',
+    descriptionKey: 'quests.addBlock.description',
     icon: '➕',
     tokens: 10,
   },
   {
     key: 'edit_profile',
-    title: 'Обнови профиль',
-    description: 'Измени имя или био профиля',
+    titleKey: 'quests.editProfile.title',
+    descriptionKey: 'quests.editProfile.description',
     icon: '✏️',
     tokens: 5,
   },
   {
     key: 'share_page',
-    title: 'Поделись страницей',
-    description: 'Скопируй ссылку на свою страницу',
+    titleKey: 'quests.sharePage.title',
+    descriptionKey: 'quests.sharePage.description',
     icon: '🔗',
     tokens: 10,
   },
   {
     key: 'use_ai',
-    title: 'Используй AI',
-    description: 'Сгенерируй контент с помощью AI',
+    titleKey: 'quests.useAi.title',
+    descriptionKey: 'quests.useAi.description',
     icon: '🤖',
     tokens: 15,
   },

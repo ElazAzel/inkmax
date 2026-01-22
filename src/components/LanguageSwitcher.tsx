@@ -75,6 +75,7 @@ export function LanguageSwitcher({
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button
+          data-testid="language-switcher-trigger"
           variant="ghost"
           size="sm"
           className={cn(
@@ -115,6 +116,7 @@ export function LanguageSwitcher({
           <DropdownMenuItem
             key={lang.code}
             onClick={() => handleLanguageChange(lang.code)}
+            data-testid={`language-option-${lang.code}`}
             className={cn(
               "flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer",
               "transition-all duration-200",
