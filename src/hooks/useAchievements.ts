@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { useAuth } from './useAuth';
 import type { Achievement, UnlockedAchievement, UserStats } from '@/types/achievements';
 import { ACHIEVEMENTS } from '@/types/achievements';

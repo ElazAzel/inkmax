@@ -21,11 +21,11 @@ import {
 } from '@/components/ui/select';
 import { Loader2, Save, Share2, DollarSign, Camera, Image } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import type { Block } from '@/types/page';
-import type { Json } from '@/integrations/supabase/types';
+import type { Json } from '@/platform/supabase/types';
 import {
   TEMPLATE_CATEGORY_KEYS,
   type TemplateCategoryKey,

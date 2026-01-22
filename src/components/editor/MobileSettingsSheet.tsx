@@ -47,7 +47,7 @@ import { LeadsPanel } from '@/components/crm/LeadsPanel';
 import { FriendsPanel } from '@/components/friends/FriendsPanel';
 import { NicheSelector } from '@/components/settings/NicheSelector';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 import { PageBackgroundSettings } from './PageBackgroundSettings';
 import type { ProfileBlock, EditorMode, GridConfig, PageBackground } from '@/types/page';

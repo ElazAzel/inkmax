@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Users, ExternalLink, Crown, ArrowLeft } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { getNicheLabel } from '@/lib/niches';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import type { Team, TeamMember } from '@/services/collaboration';

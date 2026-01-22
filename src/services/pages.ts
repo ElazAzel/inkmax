@@ -1,11 +1,11 @@
 /**
  * Page service - handles all page-related API operations
  */
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import type { PageData, Block, ProfileBlock, PageTheme, EditorMode, GridConfig } from '@/types/page';
 import { createDefaultPageData } from '@/lib/constants';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
-import type { Json } from '@/integrations/supabase/types';
+import type { Json } from '@/platform/supabase/types';
 
 // ============= Types (exported for backward compatibility) =============
 export interface DbPage {

@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select';
 import { Loader2, Save, Share2, DollarSign, Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 import type { Block } from '@/types/page';
 import {

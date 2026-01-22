@@ -23,7 +23,7 @@ import { PageBackgroundSettings } from '@/components/editor/PageBackgroundSettin
 import { AutomationsPanel } from '@/components/crm/AutomationsPanel';
 import { VerificationPanel } from '@/components/settings/VerificationPanel';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 import type { Quest } from '@/services/quests';
 import type { Niche } from '@/lib/niches';

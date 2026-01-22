@@ -14,7 +14,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // Mock supabase client
-vi.mock('@/integrations/supabase/client', () => ({
+vi.mock('@/platform/supabase/client', () => ({
   supabase: {
     functions: {
       invoke: vi.fn().mockResolvedValue({ data: null, error: null }),
