@@ -21,6 +21,7 @@ import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import { useTokens } from '@/hooks/useTokens';
 import { redirectToTokenPurchase } from '@/lib/token-purchase-helper';
 import { toast } from 'sonner';
+import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 
 type BillingPeriod = 3 | 6 | 12;
 
@@ -33,6 +34,12 @@ export default function Pricing() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   
   const isKztPrimary = i18n.language === 'ru' || i18n.language === 'kk';
+  const canonical = 'https://lnkmx.my/pricing';
+  const seoTitle = t('pricing.seo.title', 'lnkmx Pricing — Plans for Link in Bio & Mini-Sites');
+  const seoDescription = t(
+    'pricing.seo.description',
+    'Compare lnkmx plans: free link in bio builder, Pro with AI, CRM, analytics, and custom domains. Transparent pricing in minutes.'
+  );
 
   // Pricing in KZT: 3mo = 4350₸/mo, 6mo = 3500₸/mo, 12mo = 2610₸/mo
   const pricingPlans = {
@@ -115,7 +122,20 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-x-hidden pb-safe">
+    <>
+      <StaticSEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonical}
+        currentLanguage={i18n.language}
+        alternates={[
+          { hreflang: 'ru', href: `${canonical}?lang=ru` },
+          { hreflang: 'en', href: `${canonical}?lang=en` },
+          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'x-default', href: canonical },
+        ]}
+      />
+      <div className="min-h-screen bg-background relative overflow-x-hidden pb-safe">
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gradient-to-bl from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[150px] animate-morph" />
@@ -396,6 +416,7 @@ export default function Pricing() {
           </div>
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 }

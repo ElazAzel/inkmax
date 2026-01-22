@@ -51,6 +51,12 @@ const normalizeLanguage = (lng: string): string => {
 const customLanguageDetector = {
   name: 'customDetector',
   lookup() {
+    const params = new URLSearchParams(window.location.search);
+    const urlLang = params.get('lang') || params.get('lng');
+    if (urlLang) {
+      return normalizeLanguage(urlLang);
+    }
+
     // Check if user manually selected language (stored in localStorage)
     let stored = localStorage.getItem('i18nextLng');
     

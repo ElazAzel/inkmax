@@ -45,11 +45,27 @@ function AlternativesSEOHead({ currentLanguage }: { currentLanguage: string }) {
       meta.content = content;
     };
 
+    const setLinkTag = (rel: string, href: string, hreflang?: string) => {
+      const selector = hreflang
+        ? `link[rel="${rel}"][hreflang="${hreflang}"]`
+        : `link[rel="${rel}"]:not([hreflang])`;
+      let link = document.querySelector(selector) as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = rel;
+        if (hreflang) link.hreflang = hreflang;
+        document.head.appendChild(link);
+      }
+      link.href = href;
+    };
+
     const description = t(
       'alternatives.seo.description',
       'Detailed comparison of LinkMAX, Linktree and Taplink. Discover why LinkMAX is the best free alternative with AI generation, CRM and 0% commission. Feature and pricing comparison table.'
     );
     setMetaTag('description', description);
+    setMetaTag('robots', 'index, follow');
+    setMetaTag('googlebot', 'index, follow');
 
     const keywords = t(
       'alternatives.seo.keywords',
@@ -63,11 +79,12 @@ function AlternativesSEOHead({ currentLanguage }: { currentLanguage: string }) {
     setMetaTag('twitter:title', title);
     setMetaTag('twitter:description', description);
 
-    // Canonical for alternatives page
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (canonical) {
-      canonical.href = 'https://lnkmx.my/alternatives';
-    }
+    // Canonical + hreflang for alternatives page
+    setLinkTag('canonical', 'https://lnkmx.my/alternatives');
+    setLinkTag('alternate', 'https://lnkmx.my/alternatives?lang=ru', 'ru');
+    setLinkTag('alternate', 'https://lnkmx.my/alternatives?lang=en', 'en');
+    setLinkTag('alternate', 'https://lnkmx.my/alternatives?lang=kk', 'kk');
+    setLinkTag('alternate', 'https://lnkmx.my/alternatives', 'x-default');
 
     // Schema for comparison page
     const existingSchema = document.querySelector('script.alternatives-schema');
