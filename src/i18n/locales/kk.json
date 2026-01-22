@@ -170,6 +170,11 @@
     "chef": "Аспаз"
   },
   "onboarding": {
+    "goalTitle": "Бұл беттен не алғың келеді?",
+    "goalDescription": "Соған тез жету үшін блоктарды жинаймыз.",
+    "goalClicks": "Клик",
+    "goalLeads": "Өтінім",
+    "goalBookings": "Жазылу",
     "nicheTitle": "Өз саланызды таңдаңыз",
     "nicheDescription": "AI сіздің жеке бетіңізді 1 минутта жасайды",
     "detailsTitle": "Өзіңіз туралы айтыңыз",
