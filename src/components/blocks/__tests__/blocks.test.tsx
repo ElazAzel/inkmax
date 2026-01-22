@@ -19,7 +19,7 @@ import { ScratchBlock } from '../ScratchBlock';
 import { MapBlock } from '../MapBlock';
 import { AvatarBlock } from '../AvatarBlock';
 import { SeparatorBlock } from '../SeparatorBlock';
-import * as fixtures from '@/test/block-fixtures';
+import * as fixtures from '@/testing/block-fixtures';
 
 describe('Block Components', () => {
   describe('ProfileBlock', () => {

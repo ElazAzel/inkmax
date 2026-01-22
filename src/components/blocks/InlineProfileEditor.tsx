@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { compressImage } from '@/lib/image-compression';
 import { toast } from 'sonner';

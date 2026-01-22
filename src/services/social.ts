@@ -1,7 +1,7 @@
 /**
  * Social features service - gifts, boosts, challenges, activities
  */
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import i18n from '@/i18n/config';
 
 // ==================== TYPES ====================

@@ -1,7 +1,7 @@
 /**
  * Token purchase helper - handles token-based purchases and WhatsApp redirect for insufficient balance
  */
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 
 // WhatsApp number for purchasing tokens

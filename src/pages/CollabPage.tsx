@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Users, ArrowLeft, Sparkles } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { BlockRenderer } from '@/components/BlockRenderer';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import type { Block, PageTheme } from '@/types/page';

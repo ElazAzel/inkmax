@@ -1,7 +1,7 @@
 /**
  * User service - handles user profile and authentication-related operations
  */
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import type { DbUserProfile, PremiumStatusResult, ApiResult } from '@/types/api';
 
 // ============= Types =============

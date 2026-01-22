@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Save, Users, Trash2, Link2, Copy, RefreshCw } from 'lucide-react';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 import { NICHES, NICHE_ICONS, type Niche } from '@/lib/niches';
 import { generateTeamInviteCode, resetTeamInviteCode, type Team } from '@/services/collaboration';

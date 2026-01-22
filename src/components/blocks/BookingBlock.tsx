@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Clock, CalendarDays, User, Phone, Mail, Check, Loader2, MessageCircle, CheckCircle2, XCircle, Info } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { getCurrencySymbol } from '@/components/form-fields/CurrencySelect';
 import { toast } from 'sonner';
 import { format, addDays, isBefore, startOfDay, isToday, isTomorrow } from 'date-fns';

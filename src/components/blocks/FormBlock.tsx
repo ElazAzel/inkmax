@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 
 interface FormBlockProps {
   block: FormBlockType;

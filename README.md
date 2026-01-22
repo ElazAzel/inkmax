@@ -55,8 +55,10 @@ src/
 ├── domain/           # Domain entities (Block, Page, User)
 ├── hooks/            # React hooks
 ├── pages/            # Route pages
+├── platform/         # External integrations (Supabase client/types)
 ├── repositories/     # Data access layer (Supabase)
 ├── services/         # Business logic services
+├── testing/          # Test setup & fixtures
 ├── types/            # TypeScript interfaces
 └── use-cases/        # Application use cases
 ```

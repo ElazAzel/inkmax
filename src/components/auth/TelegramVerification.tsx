@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Check, Loader2, MessageCircle, ArrowLeft, AlertCircle, Copy, ExternalLink } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 
 interface TelegramVerificationProps {

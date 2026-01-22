@@ -4,8 +4,8 @@
  */
 
 import { useEffect, useCallback, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import type { Json } from '@/integrations/supabase/types';
+import { supabase } from '@/platform/supabase/client';
+import type { Json } from '@/platform/supabase/types';
 
 // Filter out bots and dev traffic
 function isBot(): boolean {
