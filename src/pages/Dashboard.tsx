@@ -26,6 +26,7 @@ import { TemplateMarketplace } from '@/components/editor/TemplateMarketplace';
 import { SaveTemplateDialog } from '@/components/editor/SaveTemplateDialog';
 import { AIGenerator } from '@/components/AIGenerator';
 // OnboardingWizard removed per v1.2
+import { NicheOnboarding } from '@/components/onboarding/NicheOnboarding';
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
 import { InstallPromptDialog } from '@/components/InstallPromptDialog';
 import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublishDialog';
@@ -282,6 +283,12 @@ export default function Dashboard() {
           onDismiss={dashboard.achievements.dismissAchievementNotification}
         />
       )}
+
+      <NicheOnboarding
+        isOpen={dashboard.onboardingState.showNicheOnboarding}
+        onClose={dashboard.onboardingState.handleNicheOnboardingClose}
+        onComplete={dashboard.onboardingState.handleNicheOnboardingComplete}
+      />
 
       {/* Panels & Dialogs */}
       {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
