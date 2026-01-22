@@ -51,6 +51,7 @@
     "user": "User",
     "friend": "Friend",
     "recipient": "Recipient"
+    "user": "User"
   },
   "form": {
     "fillRequired": "Please fill required fields",
