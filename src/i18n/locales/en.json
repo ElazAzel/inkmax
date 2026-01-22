@@ -194,6 +194,12 @@
     "pleaseWait": "This will take about 30 seconds"
   },
   "landing": {
+    "gallery": {
+      "badge": "Community",
+      "title": "Explore Community Pages",
+      "subtitle": "Get inspired by amazing pages created by our community",
+      "viewAll": "Explore All Pages"
+    },
     "nav": {
       "signIn": "Sign In",
       "getStarted": "Create",
@@ -555,13 +561,18 @@
   "gallery": {
     "title": "Page Gallery",
     "subtitle": "Get inspired by pages from our community",
+    "filter": "Filter",
+    "all": "All",
     "featured": "Featured",
     "latest": "Latest",
     "popular": "Popular",
     "viewPage": "View",
     "like": "Like",
+    "liked": "Page liked!",
+    "alreadyLiked": "You already liked this page",
     "views": "views",
-    "untitled": "Untitled"
+    "untitled": "Untitled",
+    "empty": "No pages found"
   },
   "errors": {
     "general": "An error occurred",
