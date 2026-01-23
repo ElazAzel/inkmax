@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search, Lock, Crown, Type, Video, Link2, File, ListOrdered, Image, ShoppingBag, Code, MessageCircle, Calendar, Star, Gift, Compass, MapPin, Clock, DollarSign, Megaphone, FormInput, Mail, HelpCircle, Layers } from 'lucide-react';
+import { Plus, Search, Lock, Crown, Type, Video, Link2, File, ListOrdered, Image, ShoppingBag, Code, MessageCircle, Calendar, CalendarDays, Star, Gift, Compass, MapPin, Clock, DollarSign, Megaphone, FormInput, Mail, HelpCircle, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -69,6 +69,7 @@ const ALL_BLOCKS: BlockConfig[] = [
   { type: 'form', label: 'blockTypes.form', Icon: FormInput, color: 'bg-purple-500', tier: 'pro' },
   { type: 'newsletter', label: 'blockTypes.newsletter', Icon: Mail, color: 'bg-sky-500', tier: 'pro' },
   { type: 'booking', label: 'blockTypes.booking', Icon: Calendar, color: 'bg-fuchsia-500', tier: 'pro' },
+  { type: 'event', label: 'blockTypes.event', Icon: CalendarDays, color: 'bg-emerald-600', tier: 'free' },
   
   // Interactive (now pro tier)
   { type: 'testimonial', label: 'blockTypes.testimonial', Icon: Star, color: 'bg-yellow-500', tier: 'pro' },
