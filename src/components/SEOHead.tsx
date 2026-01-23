@@ -59,12 +59,36 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
       meta.content = content;
     };
 
+    const removeMetaTag = (name: string, property = false) => {
+      const attr = property ? 'property' : 'name';
+      const meta = document.querySelector(`meta[${attr}="${name}"]`);
+      if (meta) meta.remove();
+    };
+
+    const setLinkTag = (rel: string, href: string, hreflang?: string) => {
+      const selector = hreflang
+        ? `link[rel="${rel}"][hreflang="${hreflang}"]`
+        : `link[rel="${rel}"]:not([hreflang])`;
+      let link = document.querySelector(selector) as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = rel;
+        if (hreflang) link.hreflang = hreflang;
+        document.head.appendChild(link);
+      }
+      link.href = href;
+    };
+
     // Basic meta tags
     const description = pageData.seo.description || profileInfo.bio || `${profileInfo.name || 'This page'} on lnkmx`;
     setMetaTag('description', description);
+    setMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    setMetaTag('googlebot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     
     if (pageData.seo.keywords?.length) {
       setMetaTag('keywords', pageData.seo.keywords.join(', '));
+    } else {
+      removeMetaTag('keywords');
     }
 
     // Open Graph tags - optimized for social sharing
@@ -87,13 +111,13 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
     setMetaTag('twitter:site', '@lnkmx_app');
 
     // Canonical URL
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
-    }
-    canonical.href = pageUrl;
+    setLinkTag('canonical', pageUrl);
+
+    // Hreflang for translated versions
+    setLinkTag('alternate', `${pageUrl}?lang=ru`, 'ru');
+    setLinkTag('alternate', `${pageUrl}?lang=en`, 'en');
+    setLinkTag('alternate', `${pageUrl}?lang=kk`, 'kk');
+    setLinkTag('alternate', pageUrl, 'x-default');
 
     // JSON-LD structured data for Person profile
     let jsonLd = document.querySelector('script[type="application/ld+json"]#page-schema');
@@ -139,7 +163,9 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
         'meta[property="og:url"]',
         'meta[property="og:site_name"]',
         'meta[property="og:image:alt"]',
+        'meta[name="keywords"]',
         'link[rel="canonical"]',
+        'link[rel="alternate"]',
         'script#page-schema'
       ];
       

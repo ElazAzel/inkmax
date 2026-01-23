@@ -17,6 +17,7 @@ import { supabase } from '@/platform/supabase/client';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 import { Checkbox } from '@/components/ui/checkbox';
+import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 
 const authSchema = z.object({
   email: z
@@ -38,7 +39,13 @@ type TelegramResetStep = 'request' | 'verify';
 export default function Auth() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const canonical = 'https://lnkmx.my/auth';
+  const seoTitle = t('auth.seo.title', 'Sign in to lnkmx');
+  const seoDescription = t(
+    'auth.seo.description',
+    'Access your lnkmx dashboard to build and publish your link in bio page.'
+  );
   const { user, signUp, signIn, signInWithGoogle, signInWithApple } = useAuth();
   const { playSuccess, playError } = useSoundEffects();
   const [isLoading, setIsLoading] = useState(false);
@@ -325,7 +332,21 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex items-center justify-center p-4 relative overflow-x-hidden pb-safe">
+    <>
+      <StaticSEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonical}
+        currentLanguage={i18n.language}
+        indexable={false}
+        alternates={[
+          { hreflang: 'ru', href: `${canonical}?lang=ru` },
+          { hreflang: 'en', href: `${canonical}?lang=en` },
+          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'x-default', href: canonical },
+        ]}
+      />
+      <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex items-center justify-center p-4 relative overflow-x-hidden pb-safe">
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gradient-to-bl from-primary/20 via-violet-500/10 to-transparent rounded-full blur-[150px] animate-morph" />
@@ -713,6 +734,7 @@ export default function Auth() {
           </Button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

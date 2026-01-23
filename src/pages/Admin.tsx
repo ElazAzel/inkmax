@@ -6,6 +6,7 @@ import { supabase } from '@/platform/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 import { 
   Shield, LogOut, BarChart3, Users, FileText, Activity, 
   PieChart, TrendingUp, Crown, ShieldCheck, Loader2, Coins, Languages
@@ -37,7 +38,10 @@ function TabLoader() {
 
 export default function Admin() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const canonical = 'https://lnkmx.my/admin';
+  const seoTitle = t('admin.seo.title', 'lnkmx Admin');
+  const seoDescription = t('admin.seo.description', 'Admin tools for managing lnkmx.');
   const { isAdmin, loading, user } = useAdminAuth();
   const [selectedTab, setSelectedTab] = useState('overview');
 
@@ -77,7 +81,21 @@ export default function Admin() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <StaticSEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonical}
+        currentLanguage={i18n.language}
+        indexable={false}
+        alternates={[
+          { hreflang: 'ru', href: `${canonical}?lang=ru` },
+          { hreflang: 'en', href: `${canonical}?lang=en` },
+          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'x-default', href: canonical },
+        ]}
+      />
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-3 md:px-4 py-2 md:py-3 flex items-center justify-between">
@@ -164,6 +182,7 @@ export default function Admin() {
           </Suspense>
         </Tabs>
       </main>
-    </div>
+      </div>
+    </>
   );
 }

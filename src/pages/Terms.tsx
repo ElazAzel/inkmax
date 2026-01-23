@@ -1,19 +1,27 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { COMPANY_DETAILS } from '@/components/legal/TermsOfServiceModal';
+import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 
 const Terms = () => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
-
-  useEffect(() => {
-    const title = lang === 'ru' ? 'Пользовательское соглашение - LinkMAX' : lang === 'kk' ? 'Пайдаланушы келісімі - LinkMAX' : 'Terms of Service - LinkMAX';
-    document.title = title;
-  }, [lang]);
+  const canonical = 'https://lnkmx.my/terms';
+  const seoTitle =
+    lang === 'ru'
+      ? 'Пользовательское соглашение — lnkmx'
+      : lang === 'kk'
+        ? 'Пайдаланушы келісімі — lnkmx'
+        : 'Terms of Service — lnkmx';
+  const seoDescription =
+    lang === 'ru'
+      ? 'Условия использования платформы lnkmx: права, обязанности и порядок работы сервиса.'
+      : lang === 'kk'
+        ? 'lnkmx платформасын пайдалану шарттары: құқықтар, міндеттер және қызмет тәртібі.'
+        : 'Terms of Service for lnkmx: user rights, responsibilities, and service usage rules.';
 
   const getTermsContent = () => {
     if (lang === 'en') {
@@ -197,20 +205,34 @@ const Terms = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container max-w-4xl mx-auto px-4 py-8">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t('common.back')}
-          </Button>
-        </Link>
-        
-        <article className="prose prose-slate dark:prose-invert max-w-none">
-          {getTermsContent()}
-        </article>
+    <>
+      <StaticSEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonical}
+        currentLanguage={lang}
+        alternates={[
+          { hreflang: 'ru', href: `${canonical}?lang=ru` },
+          { hreflang: 'en', href: `${canonical}?lang=en` },
+          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'x-default', href: canonical },
+        ]}
+      />
+      <div className="min-h-screen bg-background">
+        <div className="container max-w-4xl mx-auto px-4 py-8">
+          <Link to="/">
+            <Button variant="ghost" className="mb-6">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {t('common.back')}
+            </Button>
+          </Link>
+          
+          <article className="prose prose-slate dark:prose-invert max-w-none">
+            {getTermsContent()}
+          </article>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

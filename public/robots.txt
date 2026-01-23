@@ -6,6 +6,10 @@ Allow: /
 Disallow: /api/
 Disallow: /admin
 Disallow: /dashboard
+Disallow: /auth
+Disallow: /install
+Disallow: /join/
+Disallow: /team/
 Disallow: /*.json$
 
 # Sitemaps
