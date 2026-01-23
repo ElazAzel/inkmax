@@ -635,6 +635,7 @@ export interface PageData {
     title: string;
     description: string;
     keywords: string[];
+    allowIndexing?: boolean;
   };
   isPremium?: boolean;
   isPublished?: boolean;
