@@ -13,6 +13,7 @@ import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
 import { createMultilingualString } from '@/lib/i18n-helpers';
 import { validateEventBlock } from '@/lib/block-validators';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import type { EventFieldType, EventFormField } from '@/types/page';
 

@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus, CalendarPlus } from 'lucide-react';
+import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru, kk } from 'date-fns/locale';
 import { Card } from '@/components/ui/card';
@@ -216,6 +217,8 @@ export const EventBlock = memo(function EventBlock({
 
     setIsSubmitting(true);
     try {
+      const { data: session } = await supabase.auth.getSession();
+
       const answers = {
         [SYSTEM_EMAIL_FIELD_ID]: email.trim(),
         ...eventFields.reduce<Record<string, FormValue>>((acc, field) => {
@@ -256,11 +259,43 @@ export const EventBlock = memo(function EventBlock({
       }
 
       setTicketCode(data?.ticketCode || null);
+      const { data: registration, error } = await supabase
+        .from('event_registrations')
+        .insert({
+          event_id: block.eventId,
+          block_id: block.id,
+          page_id: pageId,
+          owner_id: pageOwnerId,
+          user_id: session?.session?.user?.id || null,
+          attendee_name: resolveAttendeeName(),
+          attendee_email: email.trim(),
+          attendee_phone: resolveAttendeePhone(),
+          answers_json: answers,
+          status: block.settings?.requireApproval ? 'pending' : 'confirmed',
+          payment_status: 'none',
+        })
+        .select('id')
+        .single();
+
+      if (error) throw error;
+
+      const { data: ticket } = await supabase
+        .from('event_tickets')
+        .select('ticket_code')
+        .eq('registration_id', registration.id)
+        .maybeSingle();
+
+      setTicketCode(ticket?.ticket_code || null);
       toast.success(t('event.registrationSuccess', 'Регистрация подтверждена'));
       localStorage.removeItem(draftKey);
     } catch (error: any) {
       console.error('Event registration error:', error);
       toast.error(t('event.registrationError', 'Не удалось зарегистрироваться'));
+      if (error?.code === '23505') {
+        toast.error(t('event.duplicateRegistration', 'Вы уже зарегистрированы на этот ивент.'));
+      } else {
+        toast.error(t('event.registrationError', 'Не удалось зарегистрироваться'));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -481,6 +516,8 @@ END:VCALENDAR`;
 
           <Button className="w-full rounded-xl" onClick={handleOpen} disabled={registrationClosed}>
             {registrationClosed ? t('event.registrationClosed', 'Регистрация закрыта') : t('event.register', 'Register')}
+          <Button className="w-full rounded-xl" onClick={handleOpen}>
+            {t('event.register', 'Register')}
           </Button>
         </div>
       </Card>
