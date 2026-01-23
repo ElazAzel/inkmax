@@ -60,7 +60,7 @@ async function sendTelegramNotification(
 
     console.log("Telegram collab notification sent successfully");
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Telegram send error:", error);
     return { success: false, error: error.message };
   }
@@ -114,7 +114,7 @@ serve(async (req) => {
       JSON.stringify({ success: result.success, error: result.error }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error sending collab notification:", error);
     return new Response(
       JSON.stringify({ error: error.message }),

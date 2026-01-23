@@ -7,9 +7,9 @@ import { isMultilingualString } from '@/lib/i18n-helpers';
 
 interface LanguageContextType {
   currentLanguage: SupportedLanguage;
-  setCurrentLanguage: (lang: SupportedLanguage) => void;
+  setCurrentLanguage: (lang: SupportedLanguage | 'kz') => void;
   isTranslating: boolean;
-  translateBlocksToLanguage: (blocks: any[], targetLang: SupportedLanguage) => Promise<any[]>;
+  translateBlocksToLanguage: (blocks: Array<Record<string, unknown>>, targetLang: SupportedLanguage) => Promise<Array<Record<string, unknown>>>;
   autoTranslateEnabled: boolean;
   setAutoTranslateEnabled: (enabled: boolean) => void;
 }
@@ -50,9 +50,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, [i18n.language]);
 
-  const setCurrentLanguage = useCallback((lang: SupportedLanguage) => {
+  const setCurrentLanguage = useCallback((lang: SupportedLanguage | 'kz') => {
     // Normalize in case 'kz' is passed
-    const normalizedLang = lang === 'kz' as any ? 'kk' : lang;
+    const normalizedLang = lang === 'kz' ? 'kk' : lang;
     setCurrentLanguageState(normalizedLang);
     i18n.changeLanguage(normalizedLang);
     localStorage.setItem('i18nextLng', normalizedLang);
@@ -90,9 +90,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Recursively translate all multilingual fields in an object
   const translateObject = async (
-    obj: any,
+    obj: unknown,
     targetLang: SupportedLanguage
-  ): Promise<any> => {
+  ): Promise<unknown> => {
     if (!obj || typeof obj !== 'object') return obj;
 
     // If it's a MultilingualString
@@ -124,18 +124,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
 
     // If it's a regular object, recursively translate
-    const result: any = {};
-    for (const key of Object.keys(obj)) {
-      result[key] = await translateObject(obj[key], targetLang);
+    const result: Record<string, unknown> = {};
+    for (const key of Object.keys(obj as Record<string, unknown>)) {
+      const value = (obj as Record<string, unknown>)[key];
+      result[key] = await translateObject(value, targetLang);
     }
     return result;
   };
 
   // Translate all blocks to target language
   const translateBlocksToLanguage = useCallback(async (
-    blocks: any[],
+    blocks: Array<Record<string, unknown>>,
     targetLang: SupportedLanguage
-  ): Promise<any[]> => {
+  ): Promise<Array<Record<string, unknown>>> => {
     if (!blocks?.length || !autoTranslateEnabled) return blocks;
 
     setIsTranslating(true);
@@ -147,7 +148,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
       // Check if any field needs translation
       for (const block of blocks) {
-        const content = block.content;
+        const content = block.content as Record<string, unknown> | undefined;
         if (!content) continue;
 
         for (const field of fieldsToCheck) {
@@ -162,7 +163,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         
         // Check nested items (for FAQ, pricing, etc.)
         if (content.items && Array.isArray(content.items)) {
-          for (const item of content.items) {
+          for (const item of content.items as Array<Record<string, unknown>>) {
             for (const field of fieldsToCheck) {
               if (item[field] && isMultilingualString(item[field])) {
                 const ml = item[field] as MultilingualString;
@@ -226,4 +227,8 @@ export function useLanguage() {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
+}
+
+export function useOptionalLanguage() {
+  return useContext(LanguageContext);
 }

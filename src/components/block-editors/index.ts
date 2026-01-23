@@ -3,7 +3,8 @@
  */
 
 // Core wrapper
-export { BlockEditorWrapper, withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+export { BlockEditorWrapper } from './BlockEditorWrapper';
+export { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 
 // Individual editors
 export { AvatarBlockEditor } from './AvatarBlockEditor';
@@ -33,3 +34,4 @@ export { VideoBlockEditor } from './VideoBlockEditor';
 export { ShoutoutBlockEditor } from './ShoutoutBlockEditor';
 export { BookingBlockEditor } from './BookingBlockEditor';
 export { CommunityBlockEditor } from './CommunityBlockEditor';
+export { EventBlockEditor } from './EventBlockEditor';

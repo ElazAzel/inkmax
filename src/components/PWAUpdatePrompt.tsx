@@ -5,7 +5,7 @@ import { RefreshCw } from 'lucide-react';
 
 declare global {
   interface Window {
-    workbox?: any;
+    workbox?: unknown;
   }
 }
 

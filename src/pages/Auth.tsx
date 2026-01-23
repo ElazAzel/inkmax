@@ -62,6 +62,8 @@ export default function Auth() {
   // Get referral code and mode from URL
   const refCode = searchParams.get('ref');
   const urlMode = searchParams.get('mode');
+  const returnTo = searchParams.get('returnTo');
+  const safeReturnTo = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : null;
 
   // Check for password update mode from URL or hash params (from email link)
   useEffect(() => {
@@ -97,9 +99,21 @@ export default function Auth() {
           }
         });
       }
-      navigate('/dashboard');
+      const linkGuestRegistrations = async () => {
+        const pending = localStorage.getItem('event_guest_link');
+        if (!pending) return;
+        try {
+          await supabase.functions.invoke('attach-event-registrations');
+        } catch (error) {
+          console.error('Failed to attach event registrations', error);
+        } finally {
+          localStorage.removeItem('event_guest_link');
+        }
+      };
+      void linkGuestRegistrations();
+      navigate(safeReturnTo || '/dashboard');
     }
-  }, [user, navigate, refCode, authMode]);
+  }, [user, navigate, refCode, authMode, safeReturnTo, t]);
 
   // Simplified signup - no Telegram required for free users
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {

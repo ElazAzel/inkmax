@@ -2,7 +2,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Code, Palette, Zap, Eye, EyeOff, Sparkles, Gamepad2, Calculator, Timer, Heart, Briefcase, Users } from 'lucide-react';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateCustomCodeBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
@@ -321,7 +321,7 @@ function startGame() {
               title="Preview"
               className="w-full border-0"
               style={{ height: '300px', minHeight: '100px' }}
-              sandbox="allow-scripts allow-same-origin allow-forms"
+              sandbox="allow-scripts allow-forms"
             />
           </div>
         )}

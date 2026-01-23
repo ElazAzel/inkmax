@@ -78,10 +78,11 @@ export function useSavePageMutation(userId: string | undefined) {
         });
       }
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('Error saving page:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
-      toast.error(t('toasts.page.saveError') + `: ${error.message || ''}`);
+      const message = error instanceof Error ? error.message : '';
+      toast.error(t('toasts.page.saveError') + `: ${message}`);
     },
   });
 }

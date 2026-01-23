@@ -11,7 +11,7 @@ import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { Clock, Plus, Trash2, CalendarDays, Wallet, Bell, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BlockEditorWrapper } from './BlockEditorWrapper';
-import type { BookingBlock } from '@/types/page';
+import type { BookingBlock, Currency } from '@/types/page';
 import { createMultilingualString, isMultilingualString, type MultilingualString } from '@/lib/i18n-helpers';
 
 interface BookingBlockEditorProps {
@@ -50,7 +50,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
 
   // Merge updates with formData
   const handleChange = (updates: Partial<BookingBlock>) => {
-    onChange({ ...formData, ...updates } as any);
+    onChange({ ...formData, ...updates });
   };
   const handleAddSlot = () => {
     const newSlot: TimeSlot = {
@@ -365,7 +365,7 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
                   <Label>{t('bookingBlock.currency', 'Валюта')}</Label>
                   <CurrencySelect
                     value={block.prepaymentCurrency || 'KZT'}
-                    onValueChange={v => handleChange({ prepaymentCurrency: v as any })}
+                    onValueChange={(v) => handleChange({ prepaymentCurrency: v as Currency })}
                   />
                 </div>
               </div>

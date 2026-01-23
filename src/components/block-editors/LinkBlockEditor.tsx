@@ -9,7 +9,7 @@ import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { generateMagicTitle } from '@/lib/ai-helpers';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateLinkBlock } from '@/lib/block-validators';
 import { getBestFaviconUrl, extractDomain, getGoogleFaviconUrl } from '@/lib/favicon-utils';
 import { RefreshCw, Link2 } from 'lucide-react';

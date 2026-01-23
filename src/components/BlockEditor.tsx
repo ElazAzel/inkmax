@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,35 +21,36 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { X, Check, ChevronLeft } from 'lucide-react';
 import type { Block } from '@/types/page';
-
-// Lazy load all block editors for code splitting
-const ProfileBlockEditor = lazy(() => import('./block-editors/ProfileBlockEditor').then(m => ({ default: m.ProfileBlockEditor })));
-const TextBlockEditor = lazy(() => import('./block-editors/TextBlockEditor').then(m => ({ default: m.TextBlockEditor })));
-const LinkBlockEditor = lazy(() => import('./block-editors/LinkBlockEditor').then(m => ({ default: m.LinkBlockEditor })));
-const ProductBlockEditor = lazy(() => import('./block-editors/ProductBlockEditor').then(m => ({ default: m.ProductBlockEditor })));
-const VideoBlockEditor = lazy(() => import('./block-editors/VideoBlockEditor').then(m => ({ default: m.VideoBlockEditor })));
-const CarouselBlockEditor = lazy(() => import('./block-editors/CarouselBlockEditor').then(m => ({ default: m.CarouselBlockEditor })));
-const ButtonBlockEditor = lazy(() => import('./block-editors/ButtonBlockEditor').then(m => ({ default: m.ButtonBlockEditor })));
-const SocialsBlockEditor = lazy(() => import('./block-editors/SocialsBlockEditor').then(m => ({ default: m.SocialsBlockEditor })));
-const ImageBlockEditor = lazy(() => import('./block-editors/ImageBlockEditor').then(m => ({ default: m.ImageBlockEditor })));
-const CustomCodeBlockEditor = lazy(() => import('./block-editors/CustomCodeBlockEditor').then(m => ({ default: m.CustomCodeBlockEditor })));
-const MessengerBlockEditor = lazy(() => import('./block-editors/MessengerBlockEditor').then(m => ({ default: m.MessengerBlockEditor })));
-const FormBlockEditor = lazy(() => import('./block-editors/FormBlockEditor').then(m => ({ default: m.FormBlockEditor })));
-const DownloadBlockEditor = lazy(() => import('./block-editors/DownloadBlockEditor').then(m => ({ default: m.DownloadBlockEditor })));
-const NewsletterBlockEditor = lazy(() => import('./block-editors/NewsletterBlockEditor').then(m => ({ default: m.NewsletterBlockEditor })));
-const TestimonialBlockEditor = lazy(() => import('./block-editors/TestimonialBlockEditor').then(m => ({ default: m.TestimonialBlockEditor })));
-const ScratchBlockEditor = lazy(() => import('./block-editors/ScratchBlockEditor').then(m => ({ default: m.ScratchBlockEditor })));
-const MapBlockEditor = lazy(() => import('./block-editors/MapBlockEditor').then(m => ({ default: m.MapBlockEditor })));
-const AvatarBlockEditor = lazy(() => import('./block-editors/AvatarBlockEditor').then(m => ({ default: m.AvatarBlockEditor })));
-const SeparatorBlockEditor = lazy(() => import('./block-editors/SeparatorBlockEditor').then(m => ({ default: m.SeparatorBlockEditor })));
-const CatalogBlockEditor = lazy(() => import('./block-editors/CatalogBlockEditor').then(m => ({ default: m.CatalogBlockEditor })));
-const BeforeAfterBlockEditor = lazy(() => import('./block-editors/BeforeAfterBlockEditor').then(m => ({ default: m.BeforeAfterBlockEditor })));
-const FAQBlockEditor = lazy(() => import('./block-editors/FAQBlockEditor').then(m => ({ default: m.FAQBlockEditor })));
-const CountdownBlockEditor = lazy(() => import('./block-editors/CountdownBlockEditor').then(m => ({ default: m.CountdownBlockEditor })));
-const PricingBlockEditor = lazy(() => import('./block-editors/PricingBlockEditor').then(m => ({ default: m.PricingBlockEditor })));
-const ShoutoutBlockEditor = lazy(() => import('./block-editors/ShoutoutBlockEditor').then(m => ({ default: m.ShoutoutBlockEditor })));
-const BookingBlockEditor = lazy(() => import('./block-editors/BookingBlockEditor').then(m => ({ default: m.BookingBlockEditor })));
-const CommunityBlockEditor = lazy(() => import('./block-editors/CommunityBlockEditor').then(m => ({ default: m.CommunityBlockEditor })));
+import {
+  ProfileBlockEditor,
+  TextBlockEditor,
+  LinkBlockEditor,
+  ProductBlockEditor,
+  VideoBlockEditor,
+  CarouselBlockEditor,
+  ButtonBlockEditor,
+  SocialsBlockEditor,
+  ImageBlockEditor,
+  CustomCodeBlockEditor,
+  MessengerBlockEditor,
+  FormBlockEditor,
+  DownloadBlockEditor,
+  NewsletterBlockEditor,
+  TestimonialBlockEditor,
+  ScratchBlockEditor,
+  MapBlockEditor,
+  AvatarBlockEditor,
+  SeparatorBlockEditor,
+  CatalogBlockEditor,
+  BeforeAfterBlockEditor,
+  FAQBlockEditor,
+  CountdownBlockEditor,
+  PricingBlockEditor,
+  ShoutoutBlockEditor,
+  BookingBlockEditor,
+  CommunityBlockEditor,
+  EventBlockEditor,
+} from './block-editors/lazyBlockEditors';
 
 interface BlockEditorProps {
   block: Block | null;
@@ -61,7 +62,7 @@ interface BlockEditorProps {
 export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
-  const [formData, setFormData] = useState<any>(() => block ? { ...block } : {});
+  const [formData, setFormData] = useState<Partial<Block>>(() => (block ? { ...block } : {}));
 
   // Update formData when block changes
   useEffect(() => {
@@ -279,6 +280,13 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
         return (
           <Suspense fallback={<EditorFallback />}>
             <CommunityBlockEditor {...commonProps} />
+          </Suspense>
+        );
+      
+      case 'event':
+        return (
+          <Suspense fallback={<EditorFallback />}>
+            <EventBlockEditor {...commonProps} />
           </Suspense>
         );
       

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/platform/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,11 +48,7 @@ export function UserTierManager() {
     }
   };
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
       // Load user profiles
@@ -86,7 +82,11 @@ export function UserTierManager() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const openEditDialog = (user: UserTierData) => {
     setEditingUser(user);
@@ -101,7 +101,11 @@ export function UserTierManager() {
     setSaving(true);
     try {
       // Update user profile
-      const updateData: Record<string, any> = {
+      const updateData: {
+        premium_tier: PremiumTier;
+        premium_expires_at: string | null;
+        is_premium: boolean;
+      } = {
         premium_tier: newTier,
         premium_expires_at: expiresAt ? new Date(expiresAt).toISOString() : null,
         is_premium: newTier !== 'free'

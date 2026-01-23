@@ -6,7 +6,7 @@ import { SavePageUseCase } from '@/use-cases/page/SavePageUseCase';
 import { success, failure, isSuccess, isFailure } from '@/domain/value-objects/Result';
 import { DEFAULT_THEME, DEFAULT_SEO } from '@/domain/entities/Page';
 import type { IPageRepository } from '@/repositories/interfaces/IPageRepository';
-import type { PageData } from '@/types/page';
+import type { PageData, ProfileBlock } from '@/types/page';
 
 describe('SavePageUseCase', () => {
   let useCase: SavePageUseCase;
@@ -14,7 +14,7 @@ describe('SavePageUseCase', () => {
 
   const mockPageData: PageData = {
     id: 'page-1',
-    blocks: [{ id: '1', type: 'profile', name: 'Test', bio: 'Bio' } as any],
+    blocks: [{ id: '1', type: 'profile', name: 'Test', bio: 'Bio' } satisfies ProfileBlock],
     theme: DEFAULT_THEME,
     seo: DEFAULT_SEO,
     editorMode: 'grid',
@@ -58,7 +58,7 @@ describe('SavePageUseCase', () => {
 
   it('should fail when pageData is missing', async () => {
     const result = await useCase.execute({
-      pageData: null as any,
+      pageData: null as unknown as PageData,
       userId: 'user-123',
     });
 

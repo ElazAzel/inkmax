@@ -9,6 +9,7 @@ import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FreemiumWatermark } from '@/components/FreemiumWatermark';
 import { SEOHead } from '@/components/SEOHead';
+import { SmartSummary } from '@/components/ugs/SmartSummary';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
@@ -148,11 +149,12 @@ export default function PublicPage() {
     switch (background.type) {
       case 'solid':
         return { backgroundColor: background.value };
-      case 'gradient':
+      case 'gradient': {
         const colors = background.value.split(',').map(c => c.trim());
         return { 
           background: `linear-gradient(${background.gradientAngle || 135}deg, ${colors.join(', ')})` 
         };
+      }
       case 'image':
         return { 
           backgroundImage: `url(${background.value})`,
@@ -183,6 +185,12 @@ export default function PublicPage() {
         </div>
 
         <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+          <SmartSummary
+            pageData={pageData}
+            blocks={displayBlocks}
+            isOwnerPremium={isOwnerPremium}
+            ownerTier={ownerTier}
+          />
           {/* Grid Blocks - Same layout as editor */}
           <GridBlocksRenderer
             blocks={displayBlocks}

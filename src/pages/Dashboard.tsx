@@ -229,7 +229,7 @@ export default function Dashboard() {
             onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
             userId={dashboard.user?.id}
             pageId={dashboard.pageData?.id}
-            niche={dashboard.pageData?.niche as any}
+            niche={dashboard.pageData?.niche}
             onNicheChange={dashboard.updateNiche}
             pageBackground={dashboard.pageData?.theme?.customBackground}
             onPageBackgroundChange={(background) => {

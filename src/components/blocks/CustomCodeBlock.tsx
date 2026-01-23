@@ -32,6 +32,7 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
     const html = block.html || '';
     const css = block.css || '';
     const js = block.javascript || '';
+    const blockId = JSON.stringify(block.id);
     
     // Extract content from full HTML document if provided
     let bodyContent = html;
@@ -78,6 +79,27 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
     }
     
     // Build the complete document
+    const resizeScript = `
+  <script>
+    (function () {
+      const blockId = ${blockId};
+      const sendHeight = () => {
+        const height = Math.max(
+          document.body.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.scrollHeight,
+          document.documentElement.offsetHeight
+        );
+        window.parent?.postMessage({ type: 'custom-code-height', blockId, height }, '*');
+      };
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      const observer = new MutationObserver(sendHeight);
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+      setTimeout(sendHeight, 0);
+    })();
+  </script>`;
+
     return `
 <!DOCTYPE html>
 <html lang="ru">
@@ -101,9 +123,10 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
 <body>
   ${bodyContent}
   ${js ? `<script>${js}</script>` : ''}
+  ${resizeScript}
 </body>
 </html>`;
-  }, [block.html, block.css, block.javascript]);
+  }, [block.html, block.css, block.javascript, block.id]);
 
   // Create blob URL for iframe
   const iframeSrc = useMemo(() => {
@@ -125,30 +148,17 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
       return;
     }
 
-    const iframe = iframeRef.current;
-    if (!iframe) return;
-
-    const handleLoad = () => {
-      try {
-        const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (doc && doc.body) {
-          const height = Math.max(
-            doc.body.scrollHeight,
-            doc.body.offsetHeight,
-            doc.documentElement?.scrollHeight || 0,
-            doc.documentElement?.offsetHeight || 0
-          );
-          setIframeHeight(`${Math.min(Math.max(height, 100), 800)}px`);
-        }
-      } catch {
-        // Cross-origin error, use default height
-        setIframeHeight('400px');
-      }
+    const handleMessage = (event: MessageEvent) => {
+      const data = event.data as { type?: string; blockId?: string; height?: number };
+      if (data?.type !== 'custom-code-height' || data.blockId !== block.id) return;
+      if (typeof data.height !== 'number') return;
+      const clampedHeight = Math.min(Math.max(data.height, 100), 800);
+      setIframeHeight(`${clampedHeight}px`);
     };
 
-    iframe.addEventListener('load', handleLoad);
-    return () => iframe.removeEventListener('load', handleLoad);
-  }, [block.height, iframeSrc]);
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [block.height, block.id]);
 
   const showHeader = title && title.trim() !== '';
   
@@ -200,7 +210,7 @@ export const CustomCodeBlock = memo(function CustomCodeBlockComponent({ block }:
             }}
             sandbox={
               block.enableInteraction !== false
-                ? 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals'
+                ? 'allow-scripts allow-forms allow-popups allow-modals'
                 : 'allow-same-origin'
             }
             loading="lazy"

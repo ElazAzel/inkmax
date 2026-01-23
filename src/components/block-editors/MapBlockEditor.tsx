@@ -1,5 +1,5 @@
 import type { MapBlock } from '@/types/page';
-import { withBlockEditor } from './BlockEditorWrapper';
+import { withBlockEditor } from './BlockEditorHOC';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { type MultilingualString } from '@/lib/i18n-helpers';
 import { MapPin } from 'lucide-react';
