@@ -1,13 +1,12 @@
 // CRITICAL: i18n must be imported FIRST, before any React components
 import "./i18n/config";
 
-import { StrictMode, Suspense, lazy } from "react";
+import { StrictMode, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import { checkCacheVersion } from "./lib/cache-utils";
 import App from "./App";
-import { Skeleton } from "@/components/ui/skeleton";
 
 // Check cache version on app load
 checkCacheVersion();
