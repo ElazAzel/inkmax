@@ -22,6 +22,7 @@ export const FREE_BLOCK_TYPES = [
   'messenger',
   'image',
   'map',
+  'event',
 ] as const;
 
 // Premium blocks requiring Pro subscription

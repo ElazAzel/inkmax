@@ -169,6 +169,23 @@
     "beauty": "Beauty Master",
     "chef": "Chef"
   },
+  "niches": {
+    "beauty": "Beauty",
+    "fitness": "Fitness",
+    "food": "Food",
+    "education": "Education",
+    "art": "Art",
+    "music": "Music",
+    "tech": "Tech",
+    "business": "Business",
+    "health": "Health",
+    "fashion": "Fashion",
+    "travel": "Travel",
+    "realestate": "Real Estate",
+    "events": "Events",
+    "services": "Services",
+    "other": "Other"
+  },
   "onboarding": {
     "goalTitle": "What do you want from this page?",
     "goalDescription": "We’ll build blocks that get you there faster.",
@@ -198,6 +215,8 @@
       "badge": "Community",
       "title": "Explore Community Pages",
       "subtitle": "Get inspired by amazing pages created by our community"
+      "subtitle": "Get inspired by amazing pages created by our community",
+      "viewAll": "View all pages"
     },
     "nav": {
       "signIn": "Sign In",
