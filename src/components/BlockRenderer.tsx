@@ -56,6 +56,7 @@ const PricingBlock = lazy(() => import('./blocks/PricingBlock').then(m => ({ def
 const ShoutoutBlock = lazy(() => import('./blocks/ShoutoutBlock').then(m => ({ default: m.ShoutoutBlock })));
 const BookingBlock = lazy(() => import('./blocks/BookingBlock').then(m => ({ default: m.BookingBlock })));
 const CommunityBlock = lazy(() => import('./blocks/CommunityBlock').then(m => ({ default: m.CommunityBlock })));
+const EventBlock = lazy(() => import('./blocks/EventBlock').then(m => ({ default: m.EventBlock })));
 
 interface BlockRendererProps {
   block: Block;
@@ -339,6 +340,20 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
         <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <CommunityBlock block={block as any} />
+          </Suspense>
+        </TrackableWrapper>
+      );
+    case 'event':
+      return (
+        <TrackableWrapper trackClicks>
+          <Suspense fallback={<BlockSkeleton />}>
+            <EventBlock
+              block={block as any}
+              pageOwnerId={pageOwnerId}
+              pageId={pageId}
+              isOwnerPremium={isOwnerPremium}
+              ownerTier={ownerTier}
+            />
           </Suspense>
         </TrackableWrapper>
       );

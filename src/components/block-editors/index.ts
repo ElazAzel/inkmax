@@ -33,3 +33,4 @@ export { VideoBlockEditor } from './VideoBlockEditor';
 export { ShoutoutBlockEditor } from './ShoutoutBlockEditor';
 export { BookingBlockEditor } from './BookingBlockEditor';
 export { CommunityBlockEditor } from './CommunityBlockEditor';
+export { EventBlockEditor } from './EventBlockEditor';

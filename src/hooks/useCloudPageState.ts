@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from './useAuth';
 import { useUserPage, useSavePageMutation, usePublishPageMutation, pageQueryKeys } from '@/hooks/usePageCache';
 import { updatePageNiche } from '@/services/pages';
+import { deleteEventBlock, syncEventBlock } from '@/services/events';
 import type { PageData, Block, EditorMode } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 import { toast } from 'sonner';
@@ -160,36 +161,54 @@ export function useCloudPageState() {
       blocks: newBlocks,
     };
     setPageData(newPageData);
+
+    if (block.type === 'event') {
+      void syncEventBlock(block, pageData.id, user?.id);
+    }
     
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
-  }, [pageData, chatbotContext, autoSaveAndPublish]);
+  }, [pageData, chatbotContext, autoSaveAndPublish, user]);
 
   const updateBlock = useCallback((id: string, updates: Partial<Block>) => {
     if (!pageData) return;
+    let updatedBlock: Block | null = null;
     const newPageData = {
       ...pageData,
       blocks: pageData.blocks.map(block =>
-        block.id === id ? { ...block, ...updates } as Block : block
+        block.id === id ? (() => {
+          const next = { ...block, ...updates } as Block;
+          updatedBlock = next;
+          return next;
+        })() : block
       ),
     };
     setPageData(newPageData);
+
+    if (updatedBlock?.type === 'event') {
+      void syncEventBlock(updatedBlock, pageData.id, user?.id);
+    }
     
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
-  }, [pageData, chatbotContext, autoSaveAndPublish]);
+  }, [pageData, chatbotContext, autoSaveAndPublish, user]);
 
   const deleteBlock = useCallback((id: string) => {
     if (!pageData) return;
+    const blockToDelete = pageData.blocks.find((block) => block.id === id);
     const newPageData = {
       ...pageData,
       blocks: pageData.blocks.filter(block => block.id !== id),
     };
     setPageData(newPageData);
+
+    if (blockToDelete?.type === 'event') {
+      void deleteEventBlock(blockToDelete.eventId, user?.id);
+    }
     
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
-  }, [pageData, chatbotContext, autoSaveAndPublish]);
+  }, [pageData, chatbotContext, autoSaveAndPublish, user]);
 
   const reorderBlocks = useCallback((blocks: Block[]) => {
     if (!pageData) return;
