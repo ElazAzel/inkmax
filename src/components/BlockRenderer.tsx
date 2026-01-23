@@ -57,6 +57,7 @@ const ShoutoutBlock = lazy(() => import('./blocks/ShoutoutBlock').then(m => ({ d
 const BookingBlock = lazy(() => import('./blocks/BookingBlock').then(m => ({ default: m.BookingBlock })));
 const CommunityBlock = lazy(() => import('./blocks/CommunityBlock').then(m => ({ default: m.CommunityBlock })));
 const EventBlockRenderer = lazy(() => import('./blocks/EventBlockRenderer').then(m => ({ default: m.EventBlockRenderer })));
+const EventBlock = lazy(() => import('./blocks/EventBlock').then(m => ({ default: m.EventBlock })));
 
 interface BlockRendererProps {
   block: Block;
@@ -111,6 +112,24 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
   // In preview mode, always show blocks
   const isVisible = isPreview || isBlockVisible(block);
   if (!isVisible) {
+    return null;
+  }
+
+  const animationClass = getAnimationClass(block.blockStyle);
+  const animationStyle = getAnimationStyle(block.blockStyle);
+
+  
+  // Click handler for tracking - must be before any conditional returns
+  const handleClick = useCallback(() => {
+    if (!isPreview) {
+      const title = getBlockTitle(block, i18n.language as SupportedLanguage);
+      onBlockClick(block.id, block.type, title);
+    }
+  }, [block, isPreview, onBlockClick, i18n.language]);
+  
+  // Check if block should be visible based on schedule
+  // In preview mode, always show blocks
+  if (!isPreview && !isBlockVisible(block)) {
     return null;
   }
 
@@ -366,6 +385,19 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
               pageId={pageId}
               isOwnerPremium={isOwnerPremium}
               ownerTier={ownerTier}
+            />
+          </Suspense>
+        </TrackableWrapper>
+      );
+    case 'event':
+      return (
+        <TrackableWrapper trackClicks>
+          <Suspense fallback={<BlockSkeleton />}>
+            <EventBlock
+              block={block as any}
+              pageOwnerId={pageOwnerId}
+              pageId={pageId}
+              isOwnerPremium={isOwnerPremium}
             />
           </Suspense>
         </TrackableWrapper>

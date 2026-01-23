@@ -168,6 +168,14 @@ export function validateEventBlock(formData: BlockFormData): string | null {
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i] as Record<string, unknown>;
     const nameError = validateRequired(field?.label_i18n, `Field ${i + 1} label`);
+export function validateEventBlock(formData: any): string | null {
+  const titleError = validateRequired(formData.title, 'Event title');
+  if (titleError) return titleError;
+
+  const fields = formData.formFields || [];
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i];
+    const nameError = validateRequired(field.label_i18n, `Field ${i + 1} label`);
     if (nameError) return nameError;
   }
 
@@ -175,6 +183,7 @@ export function validateEventBlock(formData: BlockFormData): string | null {
 }
 
 export function validateDownloadBlock(formData: BlockFormData): string | null {
+export function validateDownloadBlock(formData: any): string | null {
   return (
     validateRequired(formData.title, 'Title') ||
     validateUrl(formData.fileUrl, 'File URL') ||

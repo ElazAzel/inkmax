@@ -1,5 +1,6 @@
 import { supabase } from '@/platform/supabase/client';
 import type { EventBlock } from '@/types/page';
+import type { Json } from '@/integrations/supabase/types';
 
 const mapEventBlockToRecord = (block: EventBlock, pageId: string, ownerId: string) => ({
   id: block.eventId,
@@ -8,6 +9,8 @@ const mapEventBlockToRecord = (block: EventBlock, pageId: string, ownerId: strin
   owner_id: ownerId,
   title_i18n_json: block.title,
   description_i18n_json: block.description || {},
+  title_i18n_json: block.title as Json,
+  description_i18n_json: (block.description || {}) as Json,
   cover_url: block.coverUrl || null,
   start_at: block.startAt || null,
   end_at: block.endAt || null,
@@ -22,12 +25,15 @@ const mapEventBlockToRecord = (block: EventBlock, pageId: string, ownerId: strin
   status: block.status || 'draft',
   form_schema_json: block.formFields || [],
   settings_json: block.settings || {},
+  form_schema_json: (block.formFields || []) as unknown as Json,
+  settings_json: (block.settings || {}) as unknown as Json,
 });
 
 export async function syncEventBlock(block: EventBlock, pageId?: string, ownerId?: string) {
   if (!pageId || !ownerId) return;
   try {
     await supabase.from('events').upsert(mapEventBlockToRecord(block, pageId, ownerId));
+    await supabase.from('events').upsert([mapEventBlockToRecord(block, pageId, ownerId)]);
   } catch (error) {
     console.error('Failed to sync event block', error);
   }

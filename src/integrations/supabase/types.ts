@@ -716,6 +716,204 @@ export type Database = {
         }
         Relationships: []
       }
+      event_registrations: {
+        Row: {
+          answers_json: Json | null
+          attendee_email: string
+          attendee_name: string
+          attendee_phone: string | null
+          block_id: string
+          created_at: string
+          event_id: string
+          id: string
+          owner_id: string
+          page_id: string
+          payment_status: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          answers_json?: Json | null
+          attendee_email: string
+          attendee_name: string
+          attendee_phone?: string | null
+          block_id: string
+          created_at?: string
+          event_id: string
+          id?: string
+          owner_id: string
+          page_id: string
+          payment_status?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          answers_json?: Json | null
+          attendee_email?: string
+          attendee_name?: string
+          attendee_phone?: string | null
+          block_id?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          owner_id?: string
+          page_id?: string
+          payment_status?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_tickets: {
+        Row: {
+          checked_in_at: string | null
+          created_at: string
+          id: string
+          registration_id: string
+          status: string
+          ticket_code: string
+        }
+        Insert: {
+          checked_in_at?: string | null
+          created_at?: string
+          id?: string
+          registration_id: string
+          status?: string
+          ticket_code: string
+        }
+        Update: {
+          checked_in_at?: string | null
+          created_at?: string
+          id?: string
+          registration_id?: string
+          status?: string
+          ticket_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_tickets_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          block_id: string
+          capacity: number | null
+          cover_url: string | null
+          created_at: string
+          currency: string | null
+          description_i18n_json: Json | null
+          end_at: string | null
+          form_schema_json: Json | null
+          id: string
+          is_paid: boolean
+          location_type: string | null
+          location_value: string | null
+          owner_id: string
+          page_id: string
+          price_amount: number | null
+          registration_closes_at: string | null
+          settings_json: Json | null
+          start_at: string | null
+          status: string
+          timezone: string | null
+          title_i18n_json: Json
+          updated_at: string
+        }
+        Insert: {
+          block_id: string
+          capacity?: number | null
+          cover_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description_i18n_json?: Json | null
+          end_at?: string | null
+          form_schema_json?: Json | null
+          id?: string
+          is_paid?: boolean
+          location_type?: string | null
+          location_value?: string | null
+          owner_id: string
+          page_id: string
+          price_amount?: number | null
+          registration_closes_at?: string | null
+          settings_json?: Json | null
+          start_at?: string | null
+          status?: string
+          timezone?: string | null
+          title_i18n_json?: Json
+          updated_at?: string
+        }
+        Update: {
+          block_id?: string
+          capacity?: number | null
+          cover_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description_i18n_json?: Json | null
+          end_at?: string | null
+          form_schema_json?: Json | null
+          id?: string
+          is_paid?: boolean
+          location_type?: string | null
+          location_value?: string | null
+          owner_id?: string
+          page_id?: string
+          price_amount?: number | null
+          registration_closes_at?: string | null
+          settings_json?: Json | null
+          start_at?: string | null
+          status?: string
+          timezone?: string | null
+          title_i18n_json?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       friend_activities: {
         Row: {
           activity_type: string
