@@ -54,8 +54,8 @@ export function createMultilingualString(initialValue = ''): MultilingualString 
 /**
  * Check if value is multilingual
  */
-export function isMultilingualString(value: any): value is MultilingualString {
-  return value && typeof value === 'object' && ('ru' in value || 'en' in value || 'kk' in value);
+export function isMultilingualString(value: unknown): value is MultilingualString {
+  return typeof value === 'object' && value !== null && ('ru' in value || 'en' in value || 'kk' in value);
 }
 
 /**

@@ -1,4 +1,4 @@
-export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout' | 'booking' | 'community';
+export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout' | 'booking' | 'community' | 'event';
 
 // Editor mode is now always 'grid'
 export type EditorMode = 'grid';
@@ -501,6 +501,69 @@ export interface BookingBlock {
   blockStyle?: BlockStyle;
 }
 
+export type EventLocationType = 'online' | 'offline';
+export type EventFieldType =
+  | 'short_text'
+  | 'long_text'
+  | 'email'
+  | 'phone'
+  | 'number'
+  | 'dropdown'
+  | 'single_choice'
+  | 'multiple_choice'
+  | 'date'
+  | 'checkbox'
+  | 'url'
+  | 'media'
+  | 'file';
+
+export interface EventFieldOption {
+  id: string;
+  label_i18n: MultilingualString;
+}
+
+export interface EventFormField {
+  id: string;
+  type: EventFieldType;
+  label_i18n: MultilingualString;
+  placeholder_i18n?: MultilingualString;
+  helpText_i18n?: MultilingualString;
+  required?: boolean;
+  options?: EventFieldOption[];
+  validation?: {
+    minLength?: number;
+    maxLength?: number;
+  };
+}
+
+export interface EventBlock {
+  id: string;
+  type: 'event';
+  eventId: string;
+  title: MultilingualString;
+  description?: MultilingualString;
+  coverUrl?: string;
+  startAt?: string;
+  endAt?: string;
+  timezone?: string;
+  registrationClosesAt?: string;
+  locationType?: EventLocationType;
+  locationValue?: string;
+  capacity?: number;
+  isPaid?: boolean;
+  price?: number;
+  currency?: Currency;
+  status?: 'draft' | 'published' | 'closed';
+  formFields?: EventFormField[];
+  settings?: {
+    requireApproval?: boolean;
+    allowDuplicateEmail?: boolean;
+    note?: string;
+  };
+  schedule?: BlockSchedule;
+  blockStyle?: BlockStyle;
+}
+
 // Block size presets - optimized for mobile-first responsive grid
 // gridCols: 1 = full width, 2 = half width (2 per row max)
 export type BlockSizePreset = 
@@ -519,7 +582,7 @@ interface BlockGridProps {
   createdAt?: string;
 }
 
-export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock | BookingBlock | CommunityBlock) & BlockGridProps;
+export type Block = (ProfileBlock | LinkBlock | ButtonBlock | SocialsBlock | TextBlock | ImageBlock | ProductBlock | VideoBlock | CarouselBlock | CustomCodeBlock | MessengerBlock | FormBlock | DownloadBlock | NewsletterBlock | TestimonialBlock | ScratchBlock | MapBlock | AvatarBlock | SeparatorBlock | CatalogBlock | BeforeAfterBlock | FAQBlock | CountdownBlock | PricingBlock | ShoutoutBlock | BookingBlock | CommunityBlock | EventBlock) & BlockGridProps;
 
 // Page background configuration
 export interface PageBackground {
@@ -572,6 +635,7 @@ export interface PageData {
     title: string;
     description: string;
     keywords: string[];
+    allowIndexing?: boolean;
   };
   isPremium?: boolean;
   isPublished?: boolean;

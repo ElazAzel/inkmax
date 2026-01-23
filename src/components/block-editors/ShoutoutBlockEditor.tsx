@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { searchUsers } from '@/services/collaboration';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import i18n from '@/i18n/config';
 
 interface UserSearchResult {

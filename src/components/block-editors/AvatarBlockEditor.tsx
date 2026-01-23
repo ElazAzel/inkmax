@@ -4,7 +4,7 @@ import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
 import type { AvatarBlock, AvatarFrameStyle } from '@/types/page';
-import { withBlockEditor } from './BlockEditorWrapper';
+import { withBlockEditor } from './BlockEditorHOC';
 import { useTranslation } from 'react-i18next';
 import { FrameGridSelector } from '@/components/editor/FramePreview';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
