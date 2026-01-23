@@ -63,12 +63,14 @@ export const TemplatePersonalization = memo(function TemplatePersonalization({
       if (error) throw error;
 
       if (data?.result) {
-        const personalizedBlocks: Block[] = data.result.blocks.map((blockData: any, index: number) => {
-          const baseBlock = createBaseBlock(blockData.type);
+        const blocksData: Array<Record<string, unknown>> = Array.isArray(data.result.blocks) ? data.result.blocks : [];
+        const personalizedBlocks: Block[] = blocksData.map((blockData, index) => {
+          const type = typeof blockData.type === 'string' ? blockData.type : 'text';
+          const baseBlock = createBaseBlock(type);
           return {
             ...baseBlock,
             ...blockData,
-            id: `${blockData.type}-${Date.now()}-${index}`,
+            id: `${type}-${Date.now()}-${index}`,
           } as Block;
         });
 

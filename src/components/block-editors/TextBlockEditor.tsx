@@ -1,6 +1,6 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';

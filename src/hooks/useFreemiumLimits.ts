@@ -2,7 +2,7 @@ import { usePremiumStatus } from './usePremiumStatus';
 
 // Block tiers based on pricing plans
 export const FREE_BLOCKS = [
-  'profile', 'link', 'text', 'image', 'button', 'socials', 'separator', 'messenger', 'map', 'avatar'
+  'profile', 'link', 'text', 'image', 'button', 'socials', 'separator', 'messenger', 'map', 'avatar', 'event'
 ] as const;
 
 export const PRO_BLOCKS = [

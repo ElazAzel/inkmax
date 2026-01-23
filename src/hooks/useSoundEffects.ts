@@ -1,5 +1,11 @@
 import { useCallback, useRef } from 'react';
 
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
+}
+
 type SoundType = 'achievement' | 'success' | 'click' | 'add' | 'delete' | 'error';
 
 // Sound frequencies and patterns for different effects
@@ -47,7 +53,11 @@ export function useSoundEffects() {
 
   const getAudioContext = useCallback(() => {
     if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextConstructor = window.AudioContext ?? window.webkitAudioContext;
+      if (!AudioContextConstructor) {
+        throw new Error('AudioContext is not supported in this browser.');
+      }
+      audioContextRef.current = new AudioContextConstructor();
     }
     return audioContextRef.current;
   }, []);

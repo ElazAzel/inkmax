@@ -66,6 +66,13 @@ export function BookingsPanel() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   const locale = i18n.language === 'ru' ? ru : i18n.language === 'kk' ? kk : enUS;
+  type StatusFilter = 'all' | 'upcoming' | 'past';
+
+  const handleStatusFilterChange = (value: string) => {
+    if (value === 'all' || value === 'upcoming' || value === 'past') {
+      setStatusFilter(value);
+    }
+  };
 
   const fetchBookings = async () => {
     if (!user) return;
@@ -216,13 +223,16 @@ export function BookingsPanel() {
     const [hours, minutes] = booking.slot_time.split(':').map(Number);
     startDate.setHours(hours, minutes, 0, 0);
     
-    let endDate = new Date(startDate);
-    if (booking.slot_end_time) {
-      const [endHours, endMinutes] = booking.slot_end_time.split(':').map(Number);
-      endDate.setHours(endHours, endMinutes, 0, 0);
-    } else {
-      endDate.setHours(hours + 1, minutes, 0, 0);
-    }
+    const endDate = (() => {
+      const end = new Date(startDate);
+      if (booking.slot_end_time) {
+        const [endHours, endMinutes] = booking.slot_end_time.split(':').map(Number);
+        end.setHours(endHours, endMinutes, 0, 0);
+        return end;
+      }
+      end.setHours(hours + 1, minutes, 0, 0);
+      return end;
+    })();
 
     const formatICSDate = (date: Date) => {
       return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -283,7 +293,7 @@ END:VCALENDAR`;
       </div>
 
       {/* Filter Tabs */}
-      <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)} className="w-full">
+      <Tabs value={statusFilter} onValueChange={handleStatusFilterChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3 mx-0 rounded-none border-b bg-transparent h-10">
           <TabsTrigger value="upcoming" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary text-xs">
             {t('bookings.upcoming', 'Upcoming')}

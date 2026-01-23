@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import type { RefObject } from 'react';
 import { Link, Unlink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -147,14 +148,25 @@ export function RichTextEditor({
         )}
       </div>
 
-      <InputComponent
-        ref={inputRef as any}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onSelect={handleSelect}
-        placeholder={placeholder}
-        className={type === 'textarea' ? `min-h-[100px] ${className || ''}` : className}
-      />
+      {type === 'textarea' ? (
+        <Textarea
+          ref={inputRef as RefObject<HTMLTextAreaElement>}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onSelect={handleSelect}
+          placeholder={placeholder}
+          className={`min-h-[100px] ${className || ''}`}
+        />
+      ) : (
+        <Input
+          ref={inputRef as RefObject<HTMLInputElement>}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onSelect={handleSelect}
+          placeholder={placeholder}
+          className={className}
+        />
+      )}
     </div>
   );
 }

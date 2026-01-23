@@ -102,7 +102,7 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
         
         if (isProfileRow) {
           return (
-            <div key={rowIndex} className="w-full">
+            <div key={rowIndex} id={`block-${row.blocks[0].id}`} className="w-full">
               <BlockRenderer 
                 block={row.blocks[0]} 
                 isPreview={isPreview}
@@ -129,6 +129,7 @@ export const GridBlocksRenderer = memo(function GridBlocksRenderer({
               return (
                 <div 
                   key={block.id} 
+                  id={`block-${block.id}`}
                   className={cn(
                     'rounded-xl overflow-hidden flex',
                     alignmentClass,

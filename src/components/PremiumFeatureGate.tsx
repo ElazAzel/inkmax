@@ -97,17 +97,3 @@ export function PremiumFeatureGate({
     </div>
   );
 }
-
-// Hook for checking feature access
-export function useFeatureAccess(requiredTier: FreeTier): boolean {
-  const { currentTier } = useFreemiumLimits();
-  
-  const tierLevel = (tier: FreeTier): number => {
-    switch (tier) {
-      case 'pro': return 2;
-      default: return 1;
-    }
-  };
-
-  return tierLevel(currentTier) >= tierLevel(requiredTier);
-}

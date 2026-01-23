@@ -61,10 +61,10 @@ export function useAutoTranslate() {
   }, [translateText]);
 
   const translateBlocks = useCallback(async (
-    blocks: any[],
+    blocks: Array<Record<string, unknown>>,
     targetLanguage: SupportedLanguage,
     onProgress?: (progress: number) => void
-  ): Promise<any[]> => {
+  ): Promise<Array<Record<string, unknown>>> => {
     if (!blocks.length) return blocks;
 
     setIsTranslating(true);

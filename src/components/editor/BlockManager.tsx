@@ -112,8 +112,11 @@ export const BlockManager = memo(function BlockManager({
   }, [blocks, onOpenChange]);
 
   const getBlockTitle = useCallback((block: Block): string => {
-    const content = block as any;
-    const rawTitle = content.title || content.name || content.text || content.content;
+    const rawTitle =
+      ('title' in block && block.title) ||
+      ('name' in block && block.name) ||
+      ('text' in block && block.text) ||
+      ('content' in block && block.content);
     
     if (rawTitle && typeof rawTitle === 'object') {
       if ('ru' in rawTitle || 'en' in rawTitle || 'kk' in rawTitle) {

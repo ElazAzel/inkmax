@@ -225,13 +225,15 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
   };
 
   const applyTemplate = (template: UserTemplate) => {
-    const blocksArray = Array.isArray(template.blocks) ? template.blocks : [];
-    const blocks: Block[] = blocksArray.map((blockData: any, index: number) => {
-      const baseBlock = createBaseBlock(blockData.type);
+    const blocksArray: unknown[] = Array.isArray(template.blocks) ? template.blocks : [];
+    const blocks: Block[] = blocksArray.map((blockData, index) => {
+      const data = (blockData && typeof blockData === 'object') ? (blockData as Record<string, unknown>) : {};
+      const type = typeof data.type === 'string' ? data.type : 'text';
+      const baseBlock = createBaseBlock(type);
       return {
         ...baseBlock,
-        ...blockData,
-        id: `${blockData.type}-${Date.now()}-${index}`,
+        ...data,
+        id: `${type}-${Date.now()}-${index}`,
       } as Block;
     });
 
@@ -451,7 +453,7 @@ export const TemplateMarketplace = memo(function TemplateMarketplace({
                         <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2">
                           <Badge variant="secondary" className="text-[8px] sm:text-[10px] px-1 sm:px-1.5 bg-background/80 backdrop-blur-sm">
                             <Layers className="h-2 w-2 sm:h-2.5 sm:w-2.5 mr-0.5" />
-                            {(template.blocks as any[]).length}
+                            {(Array.isArray(template.blocks) ? template.blocks.length : 0)}
                           </Badge>
                         </div>
                       )}

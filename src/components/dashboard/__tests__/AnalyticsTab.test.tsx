@@ -6,6 +6,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AnalyticsTab } from '../AnalyticsTab';
+import type { EditorHistoryType } from '@/hooks/useEditorHistory';
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -14,7 +15,7 @@ const createTestQueryClient = () =>
     },
   });
 
-const mockEditorHistory = {
+const mockEditorHistory: EditorHistoryType = {
   currentBlocks: [],
   history: [],
   currentIndex: 0,
@@ -32,7 +33,7 @@ const mockEditorHistory = {
   recordBlockUpdate: vi.fn(),
   recordBlocksReorder: vi.fn(),
   pushAction: vi.fn(),
-} as any;
+};
 
 const defaultProps = {
   pageId: 'page-123',

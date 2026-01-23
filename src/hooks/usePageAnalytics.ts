@@ -10,7 +10,7 @@ export interface AnalyticsEvent {
   page_id: string;
   block_id: string | null;
   event_type: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   created_at: string;
 }
 
@@ -171,7 +171,7 @@ export function usePageAnalytics() {
       if (blocks) {
         const currentLang = i18n.language as SupportedLanguage;
         blocks.forEach(block => {
-          const content = block.content as any;
+          const content = block.content as Record<string, unknown> | null;
           // Use getTranslatedString to handle MultilingualString objects
           const rawTitle = block.title || content?.title || content?.name || block.type;
           const blockTitle = typeof rawTitle === 'object' 

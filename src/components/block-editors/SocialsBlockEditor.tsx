@@ -1,17 +1,23 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateSocialsBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, type MultilingualString } from '@/lib/i18n-helpers';
 
 function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
-  const platforms = formData.platforms || [];
+  interface SocialPlatformItem {
+    name: MultilingualString | string;
+    url: string;
+    icon: string;
+  }
+
+  const platforms = (formData.platforms as SocialPlatformItem[] | undefined) || [];
 
   const addPlatform = () => {
     onChange({
@@ -23,13 +29,18 @@ function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
   const removePlatform = (index: number) => {
     onChange({
       ...formData,
-      platforms: platforms.filter((_: any, i: number) => i !== index),
+      platforms: platforms.filter((_, i) => i !== index),
     });
   };
 
-  const updatePlatform = (index: number, field: string, value: any) => {
+  const updatePlatform = (
+    index: number,
+    field: keyof SocialPlatformItem,
+    value: SocialPlatformItem[keyof SocialPlatformItem]
+  ) => {
     const updated = [...platforms];
-    updated[index] = { ...updated[index], [field]: value };
+    const current = updated[index] ?? { name: '', url: '', icon: 'globe' };
+    updated[index] = { ...current, [field]: value };
     onChange({ ...formData, platforms: updated });
   };
 
@@ -43,7 +54,7 @@ function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       />
 
       <ArrayFieldList label={t('fields.socialPlatforms', 'Social Platforms')} items={platforms} onAdd={addPlatform}>
-        {platforms.map((platform: any, index: number) => (
+        {platforms.map((platform, index) => (
           <ArrayFieldItem
             key={index}
             index={index}

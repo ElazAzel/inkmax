@@ -1,4 +1,5 @@
 import { memo, useState, useRef, useCallback, TouchEvent } from 'react';
+import type { HTMLAttributes } from 'react';
 import { Pencil, Trash2, GripVertical, ChevronUp, ChevronDown, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BlockRenderer } from '@/components/BlockRenderer';
@@ -16,7 +17,7 @@ interface InlineEditableBlockProps {
   onMoveDown?: (id: string) => void;
   onDuplicate?: (block: Block) => void;
   isDragging?: boolean;
-  dragHandleProps?: any;
+  dragHandleProps?: HTMLAttributes<HTMLButtonElement>;
   isFirst?: boolean;
   isLast?: boolean;
   isOwnerPremium?: boolean;

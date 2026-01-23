@@ -23,7 +23,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import type { PageData } from '@/types/page';
+import type { PageData, ProfileBlock } from '@/types/page';
 import type { User } from '@supabase/supabase-js';
 
 interface ProjectsTabProps {
@@ -53,7 +53,7 @@ export const ProjectsTab = memo(function ProjectsTab({
   const navigate = useNavigate();
 
   const profileBlock = pageData.blocks.find(b => b.type === 'profile');
-  const profileData = profileBlock as any;
+  const profileData: ProfileBlock | undefined = profileBlock?.type === 'profile' ? profileBlock : undefined;
   const rawName = profileData?.name || 'Мой сайт';
   const name = typeof rawName === 'object' ? (rawName.ru || rawName.en || 'Мой сайт') : rawName;
   const avatarUrl = profileData?.avatar || '';

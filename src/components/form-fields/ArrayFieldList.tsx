@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 
 interface ArrayFieldListProps {
   label: string;
-  items: any[];
+  items: unknown[];
   onAdd: () => void;
   children: ReactNode;
 }

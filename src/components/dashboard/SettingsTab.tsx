@@ -37,10 +37,10 @@ import { NicheSelector } from '@/components/settings/NicheSelector';
 import { TelegramVerification } from '@/components/auth/TelegramVerification';
 import { VerificationPanel } from '@/components/settings/VerificationPanel';
 import { cn } from '@/lib/utils';
-import type { ProfileBlock } from '@/types/page';
+import type { PageBackground, ProfileBlock } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
-import { getTranslatedString } from '@/lib/i18n-helpers';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 
 interface SettingsTabProps {
@@ -65,8 +65,8 @@ interface SettingsTabProps {
   pageId?: string;
   niche?: Niche;
   onNicheChange: (niche: Niche) => void;
-  pageBackground?: any;
-  onPageBackgroundChange: (background: any) => void;
+  pageBackground?: PageBackground;
+  onPageBackgroundChange: (background: PageBackground) => void;
   canUseCustomPageBackground: boolean;
   onSignOut: () => void;
   onOpenFriends: () => void;
@@ -135,7 +135,7 @@ export const SettingsTab = memo(function SettingsTab(props: SettingsTabProps) {
   const avatarUrl = props.profileBlock?.avatar;
   const rawName = props.profileBlock?.name;
   const name = rawName 
-    ? getTranslatedString(rawName, i18n.language as any) || t('settings.myPage', 'Моя страница')
+    ? getTranslatedString(rawName, i18n.language as SupportedLanguage) || t('settings.myPage', 'Моя страница')
     : t('settings.myPage', 'Моя страница');
   const displayName = typeof name === 'string' ? name : t('settings.myPage', 'Моя страница');
 

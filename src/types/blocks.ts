@@ -1,7 +1,8 @@
 /**
  * Block-related types for editor operations
  */
-import type { Block, BlockType } from './page';
+import type { MultilingualString } from '@/lib/i18n-helpers';
+import type { Block, BlockType, EventBlock, EventFormField } from './page';
 
 /**
  * Information about a deleted block for undo functionality
@@ -12,6 +13,28 @@ export interface DeletedBlockInfo {
   blockId: string;
   deletedAt: number;
 }
+
+export type I18nText = MultilingualString;
+
+export interface BaseBlock<T extends BlockType = BlockType, D = unknown> {
+  id: string;
+  type: T;
+  data: D;
+}
+
+export type BlockUnion = Block;
+
+export type EventBlockData = EventBlock;
+
+export type EventField = EventFormField;
+
+export interface EventFormSchema {
+  fields: EventFormField[];
+}
+
+export type RegistrationAnswerValue = string | string[] | number | boolean | null;
+
+export type Answers = Record<string, RegistrationAnswerValue>;
 
 /**
  * Standard props contract for all block editors
@@ -75,7 +98,7 @@ export interface BlockRegistryEntry {
 export const BLOCK_CATEGORIES = {
   basic: ['link', 'button', 'text', 'separator', 'avatar'],
   media: ['image', 'video', 'carousel', 'before_after'],
-  interactive: ['form', 'messenger', 'map', 'faq', 'scratch'],
+  interactive: ['form', 'messenger', 'map', 'faq', 'scratch', 'event'],
   commerce: ['product', 'catalog', 'pricing', 'download'],
   advanced: ['custom_code', 'newsletter', 'testimonial', 'countdown', 'socials'],
 } as const;

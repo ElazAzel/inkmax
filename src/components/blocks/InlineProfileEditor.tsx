@@ -26,7 +26,7 @@ import { compressImage } from '@/lib/image-compression';
 import { toast } from 'sonner';
 import { ImageCropper } from '@/components/form-fields/ImageCropper';
 import { RichTextEditor } from '@/components/form-fields/RichTextEditor';
-import type { ProfileBlock as ProfileBlockType } from '@/types/page';
+import type { ProfileBlock as ProfileBlockType, ProfileFrameStyle } from '@/types/page';
 import { cn } from '@/lib/utils';
 
 interface InlineProfileEditorProps {
@@ -528,7 +528,7 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
                   <Label className="text-xs">{t('profile.avatarFrame', 'Frame style')}</Label>
                   <Select
                     value={block.avatarFrame || 'default'}
-                    onValueChange={(value) => onUpdate({ avatarFrame: value as any })}
+                    onValueChange={(value) => onUpdate({ avatarFrame: value as ProfileFrameStyle })}
                   >
                     <SelectTrigger className="h-8">
                       <SelectValue />

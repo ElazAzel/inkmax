@@ -1,16 +1,24 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateTestimonialBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, type MultilingualString } from '@/lib/i18n-helpers';
 
 function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
-  const testimonials = formData.testimonials || [];
+  interface TestimonialItem {
+    name: MultilingualString | string;
+    role?: MultilingualString | string;
+    avatar?: string;
+    text: MultilingualString | string;
+    rating?: number;
+  }
+
+  const testimonials = (formData.testimonials as TestimonialItem[] | undefined) || [];
 
   const addTestimonial = () => {
     onChange({
@@ -28,13 +36,18 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
   const removeTestimonial = (index: number) => {
     onChange({
       ...formData,
-      testimonials: testimonials.filter((_: any, i: number) => i !== index),
+      testimonials: testimonials.filter((_, i) => i !== index),
     });
   };
 
-  const updateTestimonial = (index: number, field: string, value: any) => {
+  const updateTestimonial = (
+    index: number,
+    field: keyof TestimonialItem,
+    value: TestimonialItem[keyof TestimonialItem]
+  ) => {
     const updated = [...testimonials];
-    updated[index] = { ...updated[index], [field]: value };
+    const current = updated[index] ?? { name: '', text: '' };
+    updated[index] = { ...current, [field]: value };
     onChange({ ...formData, testimonials: updated });
   };
 
@@ -48,7 +61,7 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
       />
 
       <ArrayFieldList label={t('fields.testimonials', 'Testimonials')} items={testimonials} onAdd={addTestimonial}>
-        {testimonials.map((testimonial: any, index: number) => (
+        {testimonials.map((testimonial, index) => (
           <ArrayFieldItem
             key={index}
             index={index}

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/platform/supabase/client';
+import { useAdminEventAnalytics } from '@/hooks/useAdminEventAnalytics';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ComposedChart
@@ -14,7 +15,7 @@ import { ru, enUS, kk } from 'date-fns/locale';
 import { 
   Loader2, Eye, MousePointer, Share2, TrendingUp, TrendingDown,
   Users, Clock, Globe, Smartphone, Monitor, Tablet, Activity,
-  BarChart3, Target, Zap, Calendar
+  BarChart3, Target, Zap, Calendar, CheckCheck, Star
 } from 'lucide-react';
 
 interface AnalyticsData {
@@ -85,6 +86,15 @@ export function AdminAnalyticsDashboard() {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'7d' | '14d' | '30d' | '90d'>('30d');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [eventDateRange, setEventDateRange] = useState<{ from: string; to: string } | null>(null);
+  const { data: eventAnalytics } = useAdminEventAnalytics(eventDateRange?.from, eventDateRange?.to);
+  const isRecord = (value: unknown): value is Record<string, unknown> => (
+    typeof value === 'object' && value !== null
+  );
+  const getMetaString = (meta: Record<string, unknown> | null, key: string): string | undefined => {
+    const value = meta?.[key];
+    return typeof value === 'string' ? value : undefined;
+  };
 
   const getDateLocale = () => {
     switch (i18n.language) {
@@ -106,23 +116,37 @@ export function AdminAnalyticsDashboard() {
 
   useEffect(() => {
     loadAnalytics();
-  }, [period]);
+  }, [loadAnalytics]);
 
-  const getPeriodDays = () => {
-    switch (period) {
-      case '7d': return 7;
-      case '14d': return 14;
-      case '30d': return 30;
-      case '90d': return 90;
-    }
-  };
+  useEffect(() => {
+    if (!eventAnalytics || !eventDateRange) return;
+    supabase.from('audit_logs').insert({
+      action: 'view',
+      entity_type: 'event_analytics',
+      metadata_json: eventDateRange,
+    }).catch(() => null);
+  }, [eventAnalytics, eventDateRange]);
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     setLoading(true);
     try {
-      const days = getPeriodDays();
+      const days = (() => {
+        switch (period) {
+          case '7d':
+            return 7;
+          case '14d':
+            return 14;
+          case '30d':
+            return 30;
+          case '90d':
+            return 90;
+          default:
+            return 30;
+        }
+      })();
       const startDate = subDays(new Date(), days);
       const prevStartDate = subDays(startDate, days);
+      setEventDateRange({ from: startDate.toISOString(), to: new Date().toISOString() });
 
       // Load all analytics data
       const [
@@ -162,12 +186,12 @@ export function AdminAnalyticsDashboard() {
       const sessionIds = new Set<string>();
       
       events.forEach(e => {
-        const meta = e.metadata as Record<string, any> | null;
+        const meta = isRecord(e.metadata) ? e.metadata : null;
         // Support both naming conventions: visitorId/sessionId and visitor_id/session_id
-        if (meta?.visitorId) visitorIds.add(meta.visitorId);
-        if (meta?.visitor_id) visitorIds.add(meta.visitor_id);
-        if (meta?.sessionId) sessionIds.add(meta.sessionId);
-        if (meta?.session_id) sessionIds.add(meta.session_id);
+        const visitorId = getMetaString(meta, 'visitorId') ?? getMetaString(meta, 'visitor_id');
+        const sessionId = getMetaString(meta, 'sessionId') ?? getMetaString(meta, 'session_id');
+        if (visitorId) visitorIds.add(visitorId);
+        if (sessionId) sessionIds.add(sessionId);
       });
 
       // Calculate trends
@@ -191,9 +215,11 @@ export function AdminAnalyticsDashboard() {
         const dayVisitors = new Set<string>();
         const daySessions = new Set<string>();
         dayEvents.forEach(e => {
-          const meta = e.metadata as Record<string, any> | null;
-          if (meta?.visitor_id) dayVisitors.add(meta.visitor_id);
-          if (meta?.session_id) daySessions.add(meta.session_id);
+          const meta = isRecord(e.metadata) ? e.metadata : null;
+          const visitorId = getMetaString(meta, 'visitor_id');
+          const sessionId = getMetaString(meta, 'session_id');
+          if (visitorId) dayVisitors.add(visitorId);
+          if (sessionId) daySessions.add(sessionId);
         });
 
         return {
@@ -239,8 +265,8 @@ export function AdminAnalyticsDashboard() {
       // Device breakdown - support both device and device_type
       const deviceCounts: Record<string, number> = { desktop: 0, mobile: 0, tablet: 0, unknown: 0 };
       events.forEach(e => {
-        const meta = e.metadata as Record<string, any> | null;
-        const device = meta?.device || meta?.device_type || 'unknown';
+        const meta = isRecord(e.metadata) ? e.metadata : null;
+        const device = getMetaString(meta, 'device') ?? getMetaString(meta, 'device_type') ?? 'unknown';
         deviceCounts[device] = (deviceCounts[device] || 0) + 1;
       });
 
@@ -254,8 +280,8 @@ export function AdminAnalyticsDashboard() {
       // Source breakdown - support both source and referrer_source
       const sourceCounts: Record<string, number> = {};
       events.forEach(e => {
-        const meta = e.metadata as Record<string, any> | null;
-        const source = meta?.source || meta?.referrer_source || 'direct';
+        const meta = isRecord(e.metadata) ? e.metadata : null;
+        const source = getMetaString(meta, 'source') ?? getMetaString(meta, 'referrer_source') ?? 'direct';
         sourceCounts[source] = (sourceCounts[source] || 0) + 1;
       });
 
@@ -305,9 +331,9 @@ export function AdminAnalyticsDashboard() {
       const blockClickCounts: Record<string, { type: string; clicks: number }> = {};
       events.forEach(e => {
         if (!e.block_id || e.event_type !== 'click') return;
-        const meta = e.metadata as Record<string, any> | null;
+        const meta = isRecord(e.metadata) ? e.metadata : null;
         if (!blockClickCounts[e.block_id]) {
-          blockClickCounts[e.block_id] = { type: meta?.block_type || 'Unknown', clicks: 0 };
+          blockClickCounts[e.block_id] = { type: getMetaString(meta, 'block_type') || 'Unknown', clicks: 0 };
         }
         blockClickCounts[e.block_id].clicks++;
       });
@@ -373,7 +399,7 @@ export function AdminAnalyticsDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [period]);
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -537,6 +563,106 @@ return (
           </div>
         </CardContent>
       </Card>
+
+      {eventAnalytics && (
+        <Card className="bg-card/60 border-border/60">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base md:text-lg">{t('admin.eventAnalytics', 'Event Analytics')}</CardTitle>
+            <CardDescription className="text-xs md:text-sm">
+              {t('admin.eventAnalyticsDescription', 'Event performance overview')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  {t('admin.eventsTotal', 'Total events')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.totalEvents}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Globe className="h-4 w-4 text-purple-500" />
+                  {t('admin.eventsPublished', 'Published')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.publishedEvents}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCheck className="h-4 w-4 text-emerald-500" />
+                  {t('admin.eventsCompleted', 'Completed')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.completedEvents}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Users className="h-4 w-4 text-blue-500" />
+                  {t('admin.eventsParticipants', 'Participants')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.totalParticipants}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <TrendingUp className="h-4 w-4 text-amber-500" />
+                  {t('admin.eventsRevenue', 'Revenue')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.totalRevenue.toLocaleString()}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <TrendingDown className="h-4 w-4 text-red-500" />
+                  {t('admin.eventsRefunds', 'Refunds')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.refundsCount}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <BarChart3 className="h-4 w-4 text-indigo-500" />
+                  {t('admin.eventsPaidSplit', 'Paid vs Free')}
+                </div>
+                <div className="text-lg font-semibold">
+                  {eventAnalytics.summary.paidEvents}/{eventAnalytics.summary.freeEvents}
+                </div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  {t('admin.eventsProAdoption', 'Pro adoption')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.proAdoption}</div>
+              </div>
+            </div>
+
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={eventAnalytics.series}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis dataKey="date" tick={{ fontSize: 9 }} interval="preserveStartEnd" />
+                  <YAxis tick={{ fontSize: 9 }} width={35} />
+                  <Tooltip />
+                  <Legend wrapperStyle={{ fontSize: '11px' }} />
+                  <Bar dataKey="created" fill="#3b82f6" name={t('admin.eventsCreated', 'Created')} />
+                  <Line type="monotone" dataKey="participants" stroke="#10b981" name={t('admin.eventsParticipants', 'Participants')} />
+                  <Line type="monotone" dataKey="revenue" stroke="#f59e0b" name={t('admin.eventsRevenue', 'Revenue')} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold mb-2">{t('admin.eventsTopOwners', 'Top owners')}</h4>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                {eventAnalytics.topOwners.map((owner) => (
+                  <div key={owner.ownerId} className="flex justify-between">
+                    <span>{owner.ownerId}</span>
+                    <span>{owner.events}/{owner.participants}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs defaultValue="timeline" className="space-y-4">
         <TabsList className="w-full flex-wrap h-auto p-1 bg-muted/50">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -49,9 +49,9 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
         clearTimeout(verifyTimeoutRef.current);
       }
     };
-  }, [chatId]);
+  }, [chatId, handleVerify, isVerified, isVerifying]);
 
-  const handleVerify = async (idToVerify?: string) => {
+  const handleVerify = useCallback(async (idToVerify?: string) => {
     const cleanChatId = (idToVerify || chatId).trim().replace(/[^0-9-]/g, '');
     
     if (!cleanChatId || cleanChatId.length < 5) {
@@ -84,13 +84,13 @@ export function TelegramVerification({ onVerified, onBack }: TelegramVerificatio
           setError(t('telegram.invalidChatId', 'Неверный Chat ID'));
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Telegram verification error:', err);
       setError(t('telegram.verificationError', 'Ошибка проверки. Попробуйте снова'));
     } finally {
       setIsVerifying(false);
     }
-  };
+  }, [chatId, onVerified, t]);
 
   const openBot = () => {
     window.open(`https://t.me/${LINKMAX_BOT_USERNAME}`, '_blank');

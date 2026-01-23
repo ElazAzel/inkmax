@@ -1,17 +1,23 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateMessengerBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, type MultilingualString } from '@/lib/i18n-helpers';
 
 function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
-  const messengers = formData.messengers || [];
+  const messengers = (formData.messengers as MessengerItem[] | undefined) || [];
+
+  interface MessengerItem {
+    platform: 'whatsapp' | 'telegram' | 'viber' | 'wechat';
+    username: string;
+    message?: MultilingualString;
+  }
 
   const addMessenger = () => {
     onChange({
@@ -23,13 +29,14 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
   const removeMessenger = (index: number) => {
     onChange({
       ...formData,
-      messengers: messengers.filter((_: any, i: number) => i !== index),
+      messengers: messengers.filter((_, i) => i !== index),
     });
   };
 
-  const updateMessenger = (index: number, field: string, value: any) => {
+  const updateMessenger = (index: number, field: keyof MessengerItem, value: MessengerItem[keyof MessengerItem]) => {
     const updated = [...messengers];
-    updated[index] = { ...updated[index], [field]: value };
+    const current = updated[index] ?? { platform: 'whatsapp', username: '' };
+    updated[index] = { ...current, [field]: value } as MessengerItem;
     onChange({ ...formData, messengers: updated });
   };
 
@@ -43,7 +50,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
       />
 
       <ArrayFieldList label={t('fields.messengers', 'Messengers')} items={messengers} onAdd={addMessenger}>
-        {messengers.map((messenger: any, index: number) => (
+        {messengers.map((messenger, index) => (
           <ArrayFieldItem
             key={index}
             index={index}

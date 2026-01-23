@@ -43,7 +43,7 @@ serve(async (req) => {
     }
 
     let emailsSent = 0;
-    let errors: string[] = [];
+    const errors: string[] = [];
 
     for (const user of users || []) {
       try {
@@ -254,7 +254,7 @@ serve(async (req) => {
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error sending weekly digest:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
