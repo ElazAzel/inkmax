@@ -62,6 +62,8 @@ export default function Auth() {
   // Get referral code and mode from URL
   const refCode = searchParams.get('ref');
   const urlMode = searchParams.get('mode');
+  const returnTo = searchParams.get('returnTo');
+  const safeReturnTo = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : null;
 
   // Check for password update mode from URL or hash params (from email link)
   useEffect(() => {
@@ -97,9 +99,9 @@ export default function Auth() {
           }
         });
       }
-      navigate('/dashboard');
+      navigate(safeReturnTo || '/dashboard');
     }
-  }, [user, navigate, refCode, authMode]);
+  }, [user, navigate, refCode, authMode, safeReturnTo]);
 
   // Simplified signup - no Telegram required for free users
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
