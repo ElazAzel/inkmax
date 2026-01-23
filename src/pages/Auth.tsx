@@ -114,6 +114,9 @@ export default function Auth() {
       navigate(safeReturnTo || '/dashboard');
     }
   }, [user, navigate, refCode, authMode, safeReturnTo, t]);
+      navigate(safeReturnTo || '/dashboard');
+    }
+  }, [user, navigate, refCode, authMode, safeReturnTo]);
 
   // Simplified signup - no Telegram required for free users
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
