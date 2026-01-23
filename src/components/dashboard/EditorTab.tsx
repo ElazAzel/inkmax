@@ -90,7 +90,7 @@ export const EditorTab = memo(function EditorTab({
         onReorderBlocks(translatedBlocks);
       }
     });
-  }, [currentLanguage]); // Only trigger on language change
+  }, [autoTranslateEnabled, blocks, currentLanguage, onReorderBlocks, translateBlocksToLanguage]);
 
   // Handle undo with toast
   const handleUndo = useCallback(() => {
