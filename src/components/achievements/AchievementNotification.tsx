@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,14 @@ export function AchievementNotification({ achievement, onDismiss }: AchievementN
   const { playAchievement } = useSoundEffects();
   const { t } = useTranslation();
 
+  const handleDismiss = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      onDismiss();
+    }, 300);
+  }, [onDismiss]);
+
   useEffect(() => {
     // Play achievement sound
     playAchievement();
@@ -33,15 +41,7 @@ export function AchievementNotification({ achievement, onDismiss }: AchievementN
       clearTimeout(showTimer);
       clearTimeout(dismissTimer);
     };
-  }, [playAchievement]);
-
-  const handleDismiss = () => {
-    setIsExiting(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      onDismiss();
-    }, 300);
-  };
+  }, [handleDismiss, playAchievement]);
 
   const getRarityGradient = () => {
     switch (achievement.rarity) {

@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.2'
+import type { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.49.2'
 import { DEMO_ACCOUNTS } from './demo-data.ts'
 
 const corsHeaders = {
@@ -7,7 +8,7 @@ const corsHeaders = {
 }
 
 // Generate page content using AI Builder
-async function generateAIContent(description: string, niche: string, apiKey: string): Promise<any> {
+async function generateAIContent(description: string, niche: string, apiKey: string): Promise<Record<string, unknown>> {
   console.log(`Generating AI content for: ${description}`)
   
   const systemPrompt = `Ты AI-конструктор профессиональных страниц LinkMAX для Казахстана. 
@@ -68,8 +69,11 @@ Return ONLY valid JSON, no markdown.`
     throw new Error(`AI generation failed: ${response.status}`)
   }
 
-  const data = await response.json()
-  const content = data.choices[0].message.content
+  const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> }
+  const content = data.choices?.[0]?.message?.content
+  if (!content) {
+    throw new Error('AI response missing content')
+  }
   const cleanContent = content.replace(/```json\n?|\n?```/g, '').trim()
   
   try {
@@ -133,7 +137,7 @@ async function generateAvatarImage(description: string, niche: string, apiKey: s
 
 // Upload base64 image to Supabase storage
 async function uploadImageToStorage(
-  supabase: any, 
+  supabase: SupabaseClient, 
   base64Data: string, 
   fileName: string
 ): Promise<string | null> {

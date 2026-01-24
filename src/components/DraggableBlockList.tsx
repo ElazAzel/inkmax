@@ -19,7 +19,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { GripVertical, Trash2, Crown, ChevronUp, ChevronDown, Lock, Eye } from 'lucide-react';
-import type { Block } from '@/types/page';
+import type { Block, ShoutoutBlock } from '@/types/page';
 import { getTranslatedString } from '@/lib/i18n-helpers';
 import { useTranslation } from 'react-i18next';
 import { useFreemiumLimits, getBlockTier } from '@/hooks/useFreemiumLimits';
@@ -80,9 +80,10 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
         return `Соцсети: ${block.title ? getTranslatedString(block.title, currentLang) : 'Социальные сети'}`;
       case 'product':
         return `Товар: ${getTranslatedString(block.name, currentLang)}`;
-      case 'text':
+      case 'text': {
         const content = getTranslatedString(block.content, currentLang);
         return `Текст: ${content.slice(0, 30)}...`;
+      }
       case 'image':
         return `Изображение: ${block.alt ? getTranslatedString(block.alt, currentLang) : 'Без описания'}`;
       case 'video':
@@ -119,8 +120,10 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
         return `Таймер: ${block.title ? getTranslatedString(block.title, currentLang) : 'Обратный отсчёт'}`;
       case 'pricing':
         return `Прайс: ${block.title ? getTranslatedString(block.title, currentLang) : `${block.items?.length || 0} услуг`}`;
-      case 'shoutout':
-        return `Шаут-аут: ${(block as any).displayName || 'Рекомендация'}`;
+      case 'shoutout': {
+        const shoutout = block as ShoutoutBlock;
+        return `Шаут-аут: ${shoutout.displayName || 'Рекомендация'}`;
+      }
       default:
         return 'Неизвестный блок';
     }

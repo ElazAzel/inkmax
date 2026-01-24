@@ -22,6 +22,7 @@ export interface PageSeo {
   title: string;
   description: string;
   keywords: string[];
+  allowIndexing?: boolean;
 }
 
 export interface PageMetrics {
@@ -70,6 +71,7 @@ export const DEFAULT_SEO: PageSeo = {
   title: 'My LinkMAX Page',
   description: 'Check out my links',
   keywords: [],
+  allowIndexing: true,
 };
 
 export const DEFAULT_GRID_CONFIG: GridConfig = {

@@ -139,7 +139,7 @@ serve(async (req: Request): Promise<Response> => {
 
         console.log(`Email sent to ${authUser.email}:`, emailResponse);
         emailsSent.push(authUser.email);
-      } catch (emailError: any) {
+      } catch (emailError: unknown) {
         console.error(`Failed to send email to ${authUser.email}:`, emailError);
         errors.push(`${authUser.email}: ${emailError.message}`);
       }
@@ -154,7 +154,7 @@ serve(async (req: Request): Promise<Response> => {
       }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in send-trial-ending-notification:", error);
     return new Response(
       JSON.stringify({ error: error.message }),

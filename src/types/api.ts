@@ -90,12 +90,12 @@ export interface ApiResult<T> {
 /**
  * Save page operation result
  */
-export interface SavePageResult extends ApiResult<DbPage> {}
+export type SavePageResult = ApiResult<DbPage>;
 
 /**
  * Load page operation result
  */
-export interface LoadPageResult extends ApiResult<PageData> {}
+export type LoadPageResult = ApiResult<PageData>;
 
 /**
  * Load user page result with chatbot context

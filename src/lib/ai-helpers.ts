@@ -28,19 +28,32 @@ export interface AIBuilderInput {
 
 type AIGenerationType = 'magic-title' | 'sales-copy' | 'seo' | 'ai-builder';
 
+interface AIInvokeResponse<TResult> {
+  result: TResult;
+}
+
+export interface SEOResult {
+  title: string;
+  description: string;
+  keywords?: string[];
+}
+
 /**
  * Generic AI content generator
  */
-async function generateAIContent<T>(
+async function generateAIContent<TInput, TResult>(
   type: AIGenerationType,
-  input: T
-): Promise<any> {
+  input: TInput
+): Promise<TResult> {
   try {
-    const { data, error } = await supabase.functions.invoke('ai-content-generator', {
+    const { data, error } = await supabase.functions.invoke<AIInvokeResponse<TResult>>('ai-content-generator', {
       body: { type, input },
     });
 
     if (error) throw error;
+    if (!data) {
+      throw new Error('AI response is empty');
+    }
     return data.result;
   } catch (error) {
     console.error(`AI ${type} generation error:`, error);
@@ -58,7 +71,10 @@ export async function generateMagicTitle(url: string): Promise<string> {
   }
 
   try {
-    const result = await generateAIContent<MagicTitleInput>('magic-title', { url });
+    const result = await generateAIContent<MagicTitleInput, string>('magic-title', { url });
+    if (typeof result !== 'string') {
+      throw new Error('Unexpected AI response');
+    }
     toast.success('Title generated!');
     return result;
   } catch (error) {
@@ -77,11 +93,14 @@ export async function generateSalesCopy(input: SalesCopyInput): Promise<string> 
   }
 
   try {
-    const result = await generateAIContent<SalesCopyInput>('sales-copy', {
+    const result = await generateAIContent<SalesCopyInput, string>('sales-copy', {
       productName: input.productName,
       price: input.price,
       currency: input.currency || 'KZT',
     });
+    if (typeof result !== 'string') {
+      throw new Error('Unexpected AI response');
+    }
     toast.success('Description generated!');
     return result;
   } catch (error) {
@@ -93,9 +112,9 @@ export async function generateSalesCopy(input: SalesCopyInput): Promise<string> 
 /**
  * Generate SEO meta tags
  */
-export async function generateSEO(input: SEOInput): Promise<any> {
+export async function generateSEO(input: SEOInput): Promise<SEOResult> {
   try {
-    const result = await generateAIContent<SEOInput>('seo', input);
+    const result = await generateAIContent<SEOInput, SEOResult>('seo', input);
     toast.success('SEO meta tags generated!');
     return result;
   } catch (error) {
@@ -107,14 +126,14 @@ export async function generateSEO(input: SEOInput): Promise<any> {
 /**
  * Generate complete page layout
  */
-export async function generatePageLayout(description: string): Promise<any> {
+export async function generatePageLayout(description: string): Promise<unknown> {
   if (!description) {
     toast.error('Please describe your page');
     throw new Error('Description is required');
   }
 
   try {
-    const result = await generateAIContent<AIBuilderInput>('ai-builder', { description });
+    const result = await generateAIContent<AIBuilderInput, unknown>('ai-builder', { description });
     toast.success('Page layout generated!');
     return result;
   } catch (error) {

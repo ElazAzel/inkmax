@@ -1,0 +1,31 @@
+import { lazy } from 'react';
+
+// Lazy load all block editors for code splitting
+export const ProfileBlockEditor = lazy(() => import('./ProfileBlockEditor').then(m => ({ default: m.ProfileBlockEditor })));
+export const TextBlockEditor = lazy(() => import('./TextBlockEditor').then(m => ({ default: m.TextBlockEditor })));
+export const LinkBlockEditor = lazy(() => import('./LinkBlockEditor').then(m => ({ default: m.LinkBlockEditor })));
+export const ProductBlockEditor = lazy(() => import('./ProductBlockEditor').then(m => ({ default: m.ProductBlockEditor })));
+export const VideoBlockEditor = lazy(() => import('./VideoBlockEditor').then(m => ({ default: m.VideoBlockEditor })));
+export const CarouselBlockEditor = lazy(() => import('./CarouselBlockEditor').then(m => ({ default: m.CarouselBlockEditor })));
+export const ButtonBlockEditor = lazy(() => import('./ButtonBlockEditor').then(m => ({ default: m.ButtonBlockEditor })));
+export const SocialsBlockEditor = lazy(() => import('./SocialsBlockEditor').then(m => ({ default: m.SocialsBlockEditor })));
+export const ImageBlockEditor = lazy(() => import('./ImageBlockEditor').then(m => ({ default: m.ImageBlockEditor })));
+export const CustomCodeBlockEditor = lazy(() => import('./CustomCodeBlockEditor').then(m => ({ default: m.CustomCodeBlockEditor })));
+export const MessengerBlockEditor = lazy(() => import('./MessengerBlockEditor').then(m => ({ default: m.MessengerBlockEditor })));
+export const FormBlockEditor = lazy(() => import('./FormBlockEditor').then(m => ({ default: m.FormBlockEditor })));
+export const DownloadBlockEditor = lazy(() => import('./DownloadBlockEditor').then(m => ({ default: m.DownloadBlockEditor })));
+export const NewsletterBlockEditor = lazy(() => import('./NewsletterBlockEditor').then(m => ({ default: m.NewsletterBlockEditor })));
+export const TestimonialBlockEditor = lazy(() => import('./TestimonialBlockEditor').then(m => ({ default: m.TestimonialBlockEditor })));
+export const ScratchBlockEditor = lazy(() => import('./ScratchBlockEditor').then(m => ({ default: m.ScratchBlockEditor })));
+export const MapBlockEditor = lazy(() => import('./MapBlockEditor').then(m => ({ default: m.MapBlockEditor })));
+export const AvatarBlockEditor = lazy(() => import('./AvatarBlockEditor').then(m => ({ default: m.AvatarBlockEditor })));
+export const SeparatorBlockEditor = lazy(() => import('./SeparatorBlockEditor').then(m => ({ default: m.SeparatorBlockEditor })));
+export const CatalogBlockEditor = lazy(() => import('./CatalogBlockEditor').then(m => ({ default: m.CatalogBlockEditor })));
+export const BeforeAfterBlockEditor = lazy(() => import('./BeforeAfterBlockEditor').then(m => ({ default: m.BeforeAfterBlockEditor })));
+export const FAQBlockEditor = lazy(() => import('./FAQBlockEditor').then(m => ({ default: m.FAQBlockEditor })));
+export const CountdownBlockEditor = lazy(() => import('./CountdownBlockEditor').then(m => ({ default: m.CountdownBlockEditor })));
+export const PricingBlockEditor = lazy(() => import('./PricingBlockEditor').then(m => ({ default: m.PricingBlockEditor })));
+export const ShoutoutBlockEditor = lazy(() => import('./ShoutoutBlockEditor').then(m => ({ default: m.ShoutoutBlockEditor })));
+export const BookingBlockEditor = lazy(() => import('./BookingBlockEditor').then(m => ({ default: m.BookingBlockEditor })));
+export const CommunityBlockEditor = lazy(() => import('./CommunityBlockEditor').then(m => ({ default: m.CommunityBlockEditor })));
+export const EventBlockEditor = lazy(() => import('./EventBlockEditor').then(m => ({ default: m.EventBlockEditor })));
