@@ -17,10 +17,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const title = t(
       'seo.landing.title',
       isRussian
-        ? 'lnkmx — link in bio и мини-сайт за 2 минуты'
+        ? 'lnkmx - мини-сайт и заявки из одной ссылки'
         : isKazakh
-          ? 'lnkmx — link in bio және мини-сайт 2 минутта'
-          : 'lnkmx — link in bio & mini-site in 2 minutes'
+          ? 'lnkmx - бір сілтемеден мини-сайт пен өтінім'
+          : 'lnkmx - mini-site and leads from one link'
     );
     document.title = title;
 
@@ -55,10 +55,10 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     const description = t(
       'seo.landing.description',
       isRussian
-        ? 'AI-конструктор link in bio и мини-сайтов для экспертов, креаторов и малого бизнеса. Соберите страницу ссылок, прайс и заявки за 2 минуты.'
+        ? 'AI-конструктор мини-сайтов для экспертов, фрилансеров и малого бизнеса. Соберите оффер, прайс и формы заявок за 2 минуты.'
         : isKazakh
-          ? 'AI-құрастырушы link in bio және мини-сайттар үшін. 2 минутта сілтемелер, прайс және өтінімдерді жинаңыз.'
-          : 'AI builder for link in bio pages and mini-sites. Create a link page, pricing, and lead form in 2 minutes.'
+          ? 'Эксперттер мен шағын бизнеске арналған AI мини-сайт құрастырушысы. Оффер, прайс және өтінім формасын 2 минутта жасаңыз.'
+          : 'AI mini-site builder for experts, freelancers, and small businesses. Create offer, pricing, and lead forms in 2 minutes.'
     );
     setMetaTag('description', description);
 

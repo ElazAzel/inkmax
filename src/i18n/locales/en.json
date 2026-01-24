@@ -229,40 +229,41 @@
     },
     "hero": {
       "badge": "AI Mini-Site Builder",
-      "mainTitle": "Build your link in bio and mini-site in 2 minutes",
-      "mainHighlight": "One link → leads and bookings",
-      "valueProposition": "AI builder for creators, experts, and small businesses. Create a link page, pricing, and lead form without designers.",
-      "benefit1": "AI drafts the structure and copy",
-      "benefit2": "Leads flow into CRM and Telegram",
-      "benefit3": "Analytics show what converts",
+      "mainTitle": "A mini-site that brings leads in 2 minutes",
+      "mainHighlight": "One link - a clear path to booking",
+      "valueProposition": "AI builder for experts, freelancers, and small businesses. Create offer, pricing, forms, and contacts without designers or code.",
+      "benefit1": "AI drafts the structure and first screen copy",
+      "benefit2": "Leads land in mini-CRM and Telegram",
+      "benefit3": "Analytics show which blocks drive leads",
       "primaryCta": "Create page for free",
       "secondaryCta": "View examples",
-      "microNote": "Free. Ready builder. In 2 minutes."
+      "microNote": "Free start. Mobile editor. Publish in one click.",
+      "pricingCta": "Compare plans"
     },
     "forWhom": {
       "title": "Who lnkmx is for",
       "expert": {
         "title": "Experts & coaches",
-        "desc": "Services, cases, booking"
+        "desc": "Services, cases, clear offer"
       },
       "freelancer": {
         "title": "Freelancers",
-        "desc": "Portfolio and inquiries"
+        "desc": "Portfolio, brief, inquiries"
       },
       "beauty": {
         "title": "Beauty & services",
-        "desc": "Booking, reviews, location"
+        "desc": "Booking, reviews, map"
       },
       "business": {
         "title": "Small business",
-        "desc": "Catalog, CRM, analytics"
+        "desc": "Catalog, leads, analytics"
       }
     },
     "problem": {
-      "title": "Why leads are lost",
+      "title": "Why leads are lost today",
       "item1": "Bio is chaos: pricing, booking, and cases scattered across posts and links",
-      "item2": "People ask the same questions, you answer manually and forget appointments",
-      "item3": "A generic link-in-bio turns into a list of links without a clear path to conversion",
+      "item2": "People ask the same questions, you answer manually and lose time",
+      "item3": "A page becomes a menu of links, not a path to booking",
       "item4": "No understanding: what actually gets clicked and where attention is lost",
       "solution": "lnkmx creates one clear page where visitors quickly understand who you are, how you help, how much it costs, and where to click to book. And you see leads and analytics in one place."
     },
@@ -271,7 +272,7 @@
       "cta": "Try now",
       "step1": {
         "title": "Tell us about your work",
-        "description": "Niche, services, and links — AI understands the context"
+        "description": "Niche, services, and links - AI understands the context"
       },
       "step2": {
         "title": "AI builds the page",
@@ -283,28 +284,58 @@
       }
     },
     "features": {
-      "title": "What's inside",
+      "title": "What you get in the first version",
       "ai": {
-        "title": "AI Page Building",
-        "item1": "AI creates the first version from ready blocks",
-        "item2": "Texts can be rewritten in one tap",
-        "item3": "Content translation RU/EN/KZ"
+        "title": "A page with a clear offer",
+        "item1": "First screen with a result promise and CTA",
+        "item2": "Pricing or service packages without manual layout",
+        "item3": "Lead form and contacts on one page"
       },
       "crm": {
-        "title": "CRM + Telegram",
+        "title": "Leads and order",
         "item1": "Mini-CRM: leads, statuses, notes",
         "item2": "Lead notifications in Telegram",
-        "item3": "Quick reply templates"
+        "item3": "Quick replies and conversation history"
       },
       "analytics": {
-        "title": "Analytics with tips",
+        "title": "Understand what works",
         "item1": "Views and clicks by block",
         "item2": "Traffic sources, devices",
-        "item3": "Tips on what to improve"
+        "item3": "Hints on what to improve next"
       }
     },
+    "useCases": {
+      "title": "Ready scenarios for your tasks",
+      "subtitle": "Pick a scenario, tweak a few blocks, and publish.",
+      "expert": {
+        "title": "Expert or consulting",
+        "bullet1": "Offer and outcome on the first screen",
+        "bullet2": "Pricing and service packages",
+        "bullet3": "Lead form and messengers"
+      },
+      "service": {
+        "title": "Services and appointments",
+        "bullet1": "Booking and schedule",
+        "bullet2": "Address, map, and reviews",
+        "bullet3": "Contacts and quick replies"
+      },
+      "creator": {
+        "title": "Creator and portfolio",
+        "bullet1": "Top projects and cases",
+        "bullet2": "Socials and subscriptions",
+        "bullet3": "Inquiries and brief"
+      },
+      "shop": {
+        "title": "Shop or catalog",
+        "bullet1": "Products and prices",
+        "bullet2": "FAQ and delivery terms",
+        "bullet3": "Fast contact for orders"
+      },
+      "primaryCta": "Create page",
+      "secondaryCta": "View examples"
+    },
     "comparison": {
-      "title": "Why lnkmx, not just link-in-bio",
+      "title": "Why a mini-site beats a link list",
       "feature": "Feature",
       "others": "Others",
       "ai": "AI page building",
@@ -318,7 +349,7 @@
     },
     "pricing": {
       "title": "Pricing",
-      "subtitle": "Start free, grow with Pro",
+      "subtitle": "Start free and upgrade to Pro when you need more",
       "forever": "Forever",
       "bestValue": "Best value",
       "freeAction": "Start free",
@@ -342,8 +373,8 @@
       }
     },
     "finalCta": {
-      "title": "Build a page that sells in 2 minutes",
-      "description": "Don't lose clients in DMs. Give them a clear path: who you are - how you help - how much - book.",
+      "title": "Build a page that leads to a booking in 2 minutes",
+      "description": "Don't lose clients in chats. Give them a clear path: who you are - how you help - how much - book.",
       "primaryCta": "Create page for free",
       "secondaryCta": "View examples"
     },
@@ -361,11 +392,11 @@
       },
       "q2": {
         "question": "How much does lnkmx cost?",
-        "answer": "The basic plan is free forever. Pro: 3 months — 4,350₸/mo, 6 months — 3,500₸/mo, 12 months — 2,610₸/mo. Online payment and 14‑day refund."
+        "answer": "The basic plan is free forever. Pro: 3 months - 4,350₸/mo, 6 months - 3,500₸/mo, 12 months - 2,610₸/mo. Online payment and 14-day refund."
       },
       "q3": {
         "question": "How does AI page generation work?",
-        "answer": "Pick a niche and share a few details — AI builds the structure, copy, and CTAs in minutes. Free: 1 generation/month, Pro: 5/month."
+        "answer": "Pick a niche and share a few details - AI builds the structure, copy, and CTAs in minutes. Free: 1 generation/month, Pro: 5/month."
       },
       "q4": {
         "question": "What blocks are available?",
@@ -385,7 +416,7 @@
       },
       "q8": {
         "question": "Do you take a commission on sales?",
-        "answer": "No. 0% commission on your sales — you only pay the subscription."
+        "answer": "No. 0% commission on your sales - you only pay the subscription."
       },
       "q9": {
         "question": "How can I pay for Pro?",
@@ -617,7 +648,7 @@
     "comingSoon": "Payments are coming soon. Stay tuned for updates.",
     "currentPlan": "Current plan",
     "seo": {
-      "title": "lnkmx Pricing — plans for link in bio and mini-sites",
+      "title": "lnkmx Pricing - plans for link in bio and mini-sites",
       "description": "Compare free and Pro plans: AI generation, CRM, analytics, and branding for your link in bio page."
     }
   },
@@ -637,7 +668,7 @@
     "untitled": "Untitled",
     "empty": "No pages found",
     "seo": {
-      "title": "lnkmx Gallery — link in bio examples & templates",
+      "title": "lnkmx Gallery - link in bio examples & templates",
       "description": "Real lnkmx pages from creators and businesses. Browse niches, templates, and inspiration."
     }
   },
@@ -963,127 +994,80 @@
       "defaultTitle": "LinkMAX - AI-Powered Link-in-Bio Platform",
       "ogTitle": "LinkMAX vs Linktree vs Taplink — comparison & alternative",
       "ogDescription": "Compare LinkMAX, Linktree, and Taplink by features, pricing, and usability. See why LinkMAX is a strong alternative."
+      "title": "lnkmx alternatives - Linktree, Taplink, Carrd, Beacons comparison",
+      "description": "Compare lnkmx with Linktree, Taplink, Carrd and Beacons. See which tool fits link-in-bio, mini-landing, or lead capture needs.",
+      "keywords": "linktree alternative, taplink alternative, carrd alternative, beacons alternative, link in bio comparison, mini landing comparison",
+      "breadcrumb": "Alternatives",
+      "defaultTitle": "lnkmx - AI link-in-bio builder"
     },
     "header": {
       "cta": "Get Started"
     },
     "hero": {
-      "badge": "2026 Comparison",
-      "title": "LinkMAX vs Linktree vs Taplink",
-      "description": "Discover why thousands of users are switching from Linktree and Taplink to LinkMAX. Detailed comparison of features, pricing and capabilities.",
-      "ctaPrimary": "Try for Free",
-      "ctaSecondary": "View Pricing"
+      "badge": "Comparison guide",
+      "title": "lnkmx vs Linktree, Taplink, Carrd, Beacons",
+      "description": "A neutral comparison: when lnkmx fits your goal, and when another tool is better.",
+      "ctaPrimary": "Create page for free",
+      "ctaSecondary": "View pricing",
+      "ctaTertiary": "View examples"
     },
-    "winner": {
-      "title": "LinkMAX — Best Choice in 2026",
-      "description": "AI generation, built-in CRM, Telegram notifications and 40-50% lower price than competitors. All this makes LinkMAX the best Linktree and Taplink alternative."
-    },
-    "advantages": {
-      "title": "Why is LinkMAX Better?",
-      "aiGeneration": {
-        "title": "AI Generation in 2 Minutes",
-        "description": "Choose your niche — AI creates a page with the right blocks in 30 seconds. Free: 1/mo, Premium: 5/mo."
+    "segments": {
+      "title": "Which job are you trying to do",
+      "cta": "Try lnkmx",
+      "linkInBio": {
+        "title": "Link-in-bio tools",
+        "description": "Need quick links and a minimal profile without complex structure.",
+        "examples": "Examples: Linktree, Beacons"
       },
-      "miniCrm": {
-        "title": "Built-in Mini-CRM",
-        "description": "Manage leads right in LinkMAX. Statuses, history, Telegram notifications — all in one place."
+      "miniLanding": {
+        "title": "Mini-landings",
+        "description": "Need blocks for offer, pricing, and leads without a full website.",
+        "examples": "Examples: Taplink, Carrd"
       },
-      "telegram": {
-        "title": "Telegram Notifications",
-        "description": "Instant notifications about new leads in Telegram. Never miss a client."
-      },
-      "pricing": {
-        "title": "Affordable Pricing",
-        "description": "From $5.10/month with annual subscription. Payment via RoboKassa. 14-day refund policy."
-      },
-      "localization": {
-        "title": "RU/EN/KZ Localization",
-        "description": "Full Russian, English and Kazakh language support."
-      },
-      "analytics": {
-        "title": "Analytics & Gamification",
-        "description": "Click stats, Linkkon tokens, achievements, streaks. Grow your page like a game."
+      "leadCapture": {
+        "title": "Lead capture",
+        "description": "You want to collect leads and reply fast, not only show links.",
+        "examples": "Focus: CRM, forms, notifications"
       }
     },
-    "comparison": {
-      "title": "Free vs Premium",
+    "matrix": {
+      "title": "Comparison by key capabilities",
       "featureLabel": "Feature",
-      "freeLabel": "Free",
-      "premiumLabel": "Premium",
+      "note": "Competitor columns are indicative. Check current plans on their websites.",
+      "depends": "Depends on plan",
+      "cta": "Create page",
       "rows": {
-        "freePlan": {
-          "label": "Free Plan",
-          "freeNote": "10 blocks",
-          "premiumNote": "25+ blocks"
-        },
-        "aiGeneration": {
-          "label": "AI Page Generation",
-          "freeNote": "1/month",
-          "premiumNote": "5/month"
-        },
-        "blockTypes": {
-          "label": "Number of Block Types",
-          "freeValue": "10+",
-          "premiumValue": "25+"
-        },
-        "miniCrm": {
-          "label": "Mini-CRM System"
-        },
-        "clickAnalytics": {
-          "label": "Click Analytics",
-          "freeValue": "Basic",
-          "premiumValue": "Advanced"
-        },
-        "telegramNotifications": {
-          "label": "Telegram Notifications"
-        },
-        "leadForms": {
-          "label": "Lead Capture Forms"
-        },
-        "blockScheduler": {
-          "label": "Block Scheduler"
-        },
-        "mobileEditor": {
-          "label": "Mobile Editor (PWA)"
-        },
-        "premiumThemes": {
-          "label": "Premium Themes & Animations"
-        },
-        "priceLists": {
-          "label": "Price Lists & Catalogs"
-        },
-        "localization": {
-          "label": "RU/EN/KZ Support"
-        },
-        "gamification": {
-          "label": "Tokens & Gamification"
-        }
+        "linkPage": "Basic link page",
+        "miniLanding": "Mini-landing with blocks (pricing, FAQ, forms)",
+        "aiGeneration": "AI-generated page structure",
+        "leadsCrm": "Leads and mini-CRM",
+        "telegram": "Telegram notifications",
+        "localization": "RU/EN/KK localization",
+        "localPricing": "Local pricing in KZT"
       }
     },
-    "pricing": {
-      "title": "Premium Pricing",
-      "badges": {
-        "best": "Best",
-        "popular": "Popular"
-      },
-      "perMonth": "/month",
-      "note": "* Payment via RoboKassa. Monthly price when paying for the specified period.",
-      "periods": {
-        "three": "3 months",
-        "six": "6 months",
-        "twelve": "12 months"
-      }
+    "whenToChoose": {
+      "title": "When to choose lnkmx",
+      "item1": "You need one link that leads to a booking, not a link list.",
+      "item2": "You want to capture leads and manage them in a mini-CRM.",
+      "item3": "You want to launch fast without designers or code.",
+      "item4": "You need analytics by blocks and traffic sources.",
+      "item5": "You work in RU and KK and need localized pricing.",
+      "cta": "Create page"
     },
-    "migration": {
-      "title": "Easy Migration from Linktree or Taplink",
-      "description": "AI automatically creates a page based on your description. Just describe your business — and get a ready page in 2 minutes!",
-      "cta": "Switch to LinkMAX"
+    "whenNotToChoose": {
+      "title": "When lnkmx might not fit",
+      "item1": "You need a complex multi-page website with custom logic.",
+      "item2": "You require full control over HTML and hosting.",
+      "item3": "You only want social links without lead capture.",
+      "ctaPrimary": "Compare plans",
+      "ctaSecondary": "View examples"
     },
     "finalCta": {
       "title": "Ready to Try?",
-      "description": "Create a free page right now and see for yourself why LinkMAX is the best choice.",
-      "primary": "Start for Free",
-      "secondary": "View Examples"
+      "description": "Create a page and see whether lnkmx fits your use case.",
+      "primary": "Create page",
+      "secondary": "View examples"
     },
     "footer": {
       "pricing": "Pricing",
@@ -1742,12 +1726,12 @@
     "dailyReminderDesc": "Get list of today's bookings",
     "reminderTime": "Reminder time",
     "weeklyMotivation": "Weekly motivation",
-    "weeklyMotivationDesc": "Monday at 9:00 AM — personal inspiration"
+    "weeklyMotivationDesc": "Monday at 9:00 AM - personal inspiration"
   },
   "mapBlock": {
     "address": "Address",
     "addressPlaceholder": "New York, 5th Avenue 123",
-    "hint": "Enter address — the map will find the location automatically",
+    "hint": "Enter address - the map will find the location automatically",
     "enterAddress": "Enter address"
   },
   "booking": {
@@ -1786,8 +1770,8 @@
   },
   "seo": {
     "landing": {
-      "title": "lnkmx — link in bio & mini-site in 2 minutes",
-      "description": "AI builder for link in bio pages and mini-sites. Create a link page, pricing, and lead form in 2 minutes.",
+      "title": "lnkmx - mini-site and leads from one link",
+      "description": "AI mini-site builder for experts, freelancers, and small businesses. Create offer, pricing, and lead forms in 2 minutes.",
       "keywords": "link in bio, link page, mini-site, linktree alternative, taplink alternative"
     }
   },
