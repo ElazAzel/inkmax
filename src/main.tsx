@@ -57,6 +57,14 @@ const PaymentTerms = lazy(() => import("./pages/PaymentTerms"));
 // Create router
 const router = createBrowserRouter([
   {
+    routes: createRoutesFromElements(<AppRoutes />),
+    base: import.meta.env.BASE_URL,
+    includedRoutes: (paths) => {
+      const staticRoutes = paths.filter((path) => !path.includes(":"));
+      const landingLangRoutes = ["/?lang=ru", "/?lang=en", "/?lang=kk"];
+      return Array.from(new Set([...staticRoutes, ...landingLangRoutes]));
+    },
+    includedRoutes: (paths) => paths.filter((path) => !path.includes(":")),
     path: "/",
     element: <App />,
     children: [
