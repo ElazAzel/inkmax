@@ -7,10 +7,12 @@ import {
 } from '@/components/ui/accordion';
 import { HelpCircle } from 'lucide-react';
 import { useScrollAnimation } from './hooks/useScrollAnimation';
+import { useMarketingAnalytics } from '@/hooks/useMarketingAnalytics';
 
 export function FAQSection() {
   const { t } = useTranslation();
   const sectionAnimation = useScrollAnimation();
+  const { trackMarketingEvent } = useMarketingAnalytics();
 
   const faqItems = [
     {
@@ -101,7 +103,18 @@ export function FAQSection() {
           className={`opacity-0 ${sectionAnimation.isVisible ? 'animate-fade-in-up' : ''}`}
           style={{ animationDelay: '400ms' }}
         >
-          <Accordion type="single" collapsible className="w-full space-y-3 sm:space-y-4">
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full space-y-3 sm:space-y-4"
+            onValueChange={(value) => {
+              if (!value) return;
+              trackMarketingEvent({
+                eventType: 'faq_expand',
+                metadata: { item: value },
+              });
+            }}
+          >
             {faqItems.map((item, index) => (
               <AccordionItem 
                 key={index} 
