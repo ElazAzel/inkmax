@@ -184,7 +184,16 @@ export default function Alternatives() {
     },
   ];
 
-  const comparisonRows = [
+  type MatrixValue = 'yes' | 'no' | 'depends';
+  
+  const comparisonRows: Array<{
+    feature: string;
+    lnkmx: MatrixValue;
+    linktree: MatrixValue;
+    taplink: MatrixValue;
+    carrd: MatrixValue;
+    beacons: MatrixValue;
+  }> = [
     {
       feature: t('alternatives.matrix.rows.linkPage', 'Базовая страница ссылок'),
       lnkmx: 'yes',
