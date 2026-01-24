@@ -291,232 +291,6 @@ export type Database = {
           },
         ]
       }
-      event_registrations: {
-        Row: {
-          answers_json: Json
-          attendee_email: string
-          attendee_name: string
-          attendee_phone: string | null
-          block_id: string
-          created_at: string
-          currency: string | null
-          event_id: string
-          id: string
-          owner_id: string
-          page_id: string
-          paid_amount: number | null
-          payment_status: string
-          provider: string | null
-          provider_payment_id: string | null
-          status: string
-          updated_at: string
-          user_id: string | null
-          utm_json: Json
-        }
-        Insert: {
-          answers_json?: Json
-          attendee_email: string
-          attendee_name: string
-          attendee_phone?: string | null
-          block_id: string
-          created_at?: string
-          currency?: string | null
-          event_id: string
-          id?: string
-          owner_id: string
-          page_id: string
-          paid_amount?: number | null
-          payment_status?: string
-          provider?: string | null
-          provider_payment_id?: string | null
-          status?: string
-          updated_at?: string
-          user_id?: string | null
-          utm_json?: Json
-        }
-        Update: {
-          answers_json?: Json
-          attendee_email?: string
-          attendee_name?: string
-          attendee_phone?: string | null
-          block_id?: string
-          created_at?: string
-          currency?: string | null
-          event_id?: string
-          id?: string
-          owner_id?: string
-          page_id?: string
-          paid_amount?: number | null
-          payment_status?: string
-          provider?: string | null
-          provider_payment_id?: string | null
-          status?: string
-          updated_at?: string
-          user_id?: string | null
-          utm_json?: Json
-        }
-        Relationships: [
-          {
-            foreignKeyName: "event_registrations_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_registrations_page_id_fkey"
-            columns: ["page_id"]
-            isOneToOne: false
-            referencedRelation: "pages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_registrations_page_id_fkey"
-            columns: ["page_id"]
-            isOneToOne: false
-            referencedRelation: "public_pages"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      event_tickets: {
-        Row: {
-          created_at: string
-          event_id: string
-          id: string
-          qr_payload: string | null
-          registration_id: string
-          status: string
-          ticket_code: string
-          used_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          event_id: string
-          id?: string
-          qr_payload?: string | null
-          registration_id: string
-          status?: string
-          ticket_code: string
-          used_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          event_id?: string
-          id?: string
-          qr_payload?: string | null
-          registration_id?: string
-          status?: string
-          ticket_code?: string
-          used_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "event_tickets_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_tickets_registration_id_fkey"
-            columns: ["registration_id"]
-            isOneToOne: false
-            referencedRelation: "event_registrations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      events: {
-        Row: {
-          block_id: string
-          capacity: number | null
-          cover_url: string | null
-          created_at: string
-          currency: string | null
-          description_i18n_json: Json
-          end_at: string | null
-          form_schema_json: Json
-          id: string
-          is_paid: boolean
-          location_type: string | null
-          location_value: string | null
-          owner_id: string
-          page_id: string
-          price_amount: number | null
-          registration_closes_at: string | null
-          settings_json: Json
-          start_at: string | null
-          status: string
-          timezone: string | null
-          title_i18n_json: Json
-          updated_at: string
-        }
-        Insert: {
-          block_id: string
-          capacity?: number | null
-          cover_url?: string | null
-          created_at?: string
-          currency?: string | null
-          description_i18n_json?: Json
-          end_at?: string | null
-          form_schema_json?: Json
-          id?: string
-          is_paid?: boolean
-          location_type?: string | null
-          location_value?: string | null
-          owner_id: string
-          page_id: string
-          price_amount?: number | null
-          registration_closes_at?: string | null
-          settings_json?: Json
-          start_at?: string | null
-          status?: string
-          timezone?: string | null
-          title_i18n_json?: Json
-          updated_at?: string
-        }
-        Update: {
-          block_id?: string
-          capacity?: number | null
-          cover_url?: string | null
-          created_at?: string
-          currency?: string | null
-          description_i18n_json?: Json
-          end_at?: string | null
-          form_schema_json?: Json
-          id?: string
-          is_paid?: boolean
-          location_type?: string | null
-          location_value?: string | null
-          owner_id?: string
-          page_id?: string
-          price_amount?: number | null
-          registration_closes_at?: string | null
-          settings_json?: Json
-          start_at?: string | null
-          status?: string
-          timezone?: string | null
-          title_i18n_json?: Json
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "events_page_id_fkey"
-            columns: ["page_id"]
-            isOneToOne: false
-            referencedRelation: "pages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "events_page_id_fkey"
-            columns: ["page_id"]
-            isOneToOne: false
-            referencedRelation: "public_pages"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       challenge_progress: {
         Row: {
           challenge_id: string
@@ -715,6 +489,204 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      event_registrations: {
+        Row: {
+          answers_json: Json | null
+          attendee_email: string
+          attendee_name: string
+          attendee_phone: string | null
+          block_id: string
+          created_at: string
+          event_id: string
+          id: string
+          owner_id: string
+          page_id: string
+          payment_status: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          answers_json?: Json | null
+          attendee_email: string
+          attendee_name: string
+          attendee_phone?: string | null
+          block_id: string
+          created_at?: string
+          event_id: string
+          id?: string
+          owner_id: string
+          page_id: string
+          payment_status?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          answers_json?: Json | null
+          attendee_email?: string
+          attendee_name?: string
+          attendee_phone?: string | null
+          block_id?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          owner_id?: string
+          page_id?: string
+          payment_status?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_tickets: {
+        Row: {
+          checked_in_at: string | null
+          created_at: string
+          id: string
+          registration_id: string
+          status: string
+          ticket_code: string
+        }
+        Insert: {
+          checked_in_at?: string | null
+          created_at?: string
+          id?: string
+          registration_id: string
+          status?: string
+          ticket_code: string
+        }
+        Update: {
+          checked_in_at?: string | null
+          created_at?: string
+          id?: string
+          registration_id?: string
+          status?: string
+          ticket_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_tickets_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          block_id: string
+          capacity: number | null
+          cover_url: string | null
+          created_at: string
+          currency: string | null
+          description_i18n_json: Json | null
+          end_at: string | null
+          form_schema_json: Json | null
+          id: string
+          is_paid: boolean
+          location_type: string | null
+          location_value: string | null
+          owner_id: string
+          page_id: string
+          price_amount: number | null
+          registration_closes_at: string | null
+          settings_json: Json | null
+          start_at: string | null
+          status: string
+          timezone: string | null
+          title_i18n_json: Json
+          updated_at: string
+        }
+        Insert: {
+          block_id: string
+          capacity?: number | null
+          cover_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description_i18n_json?: Json | null
+          end_at?: string | null
+          form_schema_json?: Json | null
+          id?: string
+          is_paid?: boolean
+          location_type?: string | null
+          location_value?: string | null
+          owner_id: string
+          page_id: string
+          price_amount?: number | null
+          registration_closes_at?: string | null
+          settings_json?: Json | null
+          start_at?: string | null
+          status?: string
+          timezone?: string | null
+          title_i18n_json?: Json
+          updated_at?: string
+        }
+        Update: {
+          block_id?: string
+          capacity?: number | null
+          cover_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description_i18n_json?: Json | null
+          end_at?: string | null
+          form_schema_json?: Json | null
+          id?: string
+          is_paid?: boolean
+          location_type?: string | null
+          location_value?: string | null
+          owner_id?: string
+          page_id?: string
+          price_amount?: number | null
+          registration_closes_at?: string | null
+          settings_json?: Json | null
+          start_at?: string | null
+          status?: string
+          timezone?: string | null
+          title_i18n_json?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       friend_activities: {
         Row: {
@@ -937,6 +909,57 @@ export type Database = {
           },
         ]
       }
+      page_snapshots: {
+        Row: {
+          blocks_json: Json
+          content_hash: string
+          created_at: string
+          id: string
+          page_id: string
+          published_at: string
+          seo_json: Json | null
+          theme_json: Json | null
+          version_id: string
+        }
+        Insert: {
+          blocks_json: Json
+          content_hash: string
+          created_at?: string
+          id?: string
+          page_id: string
+          published_at?: string
+          seo_json?: Json | null
+          theme_json?: Json | null
+          version_id: string
+        }
+        Update: {
+          blocks_json?: Json
+          content_hash?: string
+          created_at?: string
+          id?: string
+          page_id?: string
+          published_at?: string
+          seo_json?: Json | null
+          theme_json?: Json | null
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_snapshots_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_snapshots_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pages: {
         Row: {
           avatar_style: Json | null
@@ -949,9 +972,12 @@ export type Database = {
           grid_config: Json | null
           id: string
           is_in_gallery: boolean | null
+          is_indexable: boolean | null
           is_published: boolean | null
+          last_snapshot_at: string | null
           niche: string | null
           preview_url: string | null
+          quality_score: number | null
           seo_meta: Json | null
           slug: string
           theme_settings: Json | null
@@ -971,9 +997,12 @@ export type Database = {
           grid_config?: Json | null
           id?: string
           is_in_gallery?: boolean | null
+          is_indexable?: boolean | null
           is_published?: boolean | null
+          last_snapshot_at?: string | null
           niche?: string | null
           preview_url?: string | null
+          quality_score?: number | null
           seo_meta?: Json | null
           slug: string
           theme_settings?: Json | null
@@ -993,9 +1022,12 @@ export type Database = {
           grid_config?: Json | null
           id?: string
           is_in_gallery?: boolean | null
+          is_indexable?: boolean | null
           is_published?: boolean | null
+          last_snapshot_at?: string | null
           niche?: string | null
           preview_url?: string | null
+          quality_score?: number | null
           seo_meta?: Json | null
           slug?: string
           theme_settings?: Json | null
@@ -1873,6 +1905,18 @@ export type Database = {
       convert_tokens_to_premium: { Args: { p_user_id: string }; Returns: Json }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
+      get_page_version: {
+        Args: { p_slug: string; p_version_id?: string }
+        Returns: {
+          blocks_json: Json
+          page_id: string
+          published_at: string
+          seo_json: Json
+          slug: string
+          theme_json: Json
+          version_id: string
+        }[]
+      }
       get_token_analytics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json

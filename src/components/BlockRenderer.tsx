@@ -87,6 +87,14 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
   const { onBlockClick } = useAnalytics();
   const { i18n } = useTranslation();
   
+  // Click handler for tracking - must be before any conditional returns
+  const handleClick = useCallback(() => {
+    if (!isPreview) {
+      const title = getBlockTitle(block, i18n.language as SupportedLanguage);
+      onBlockClick(block.id, block.type, title);
+    }
+  }, [block, isPreview, onBlockClick, i18n.language]);
+  
   // Check if block should be visible based on schedule
   // In preview mode, always show blocks
   if (!isPreview && !isBlockVisible(block)) {
@@ -95,14 +103,6 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
 
   const animationClass = getAnimationClass(block.blockStyle);
   const animationStyle = getAnimationStyle(block.blockStyle);
-
-  // Click handler for tracking
-  const handleClick = useCallback(() => {
-    if (!isPreview) {
-      const title = getBlockTitle(block, i18n.language as SupportedLanguage);
-      onBlockClick(block.id, block.type, title);
-    }
-  }, [block, isPreview, onBlockClick, i18n.language]);
 
   // Wrapper component for all blocks - tracks clicks for interactive ones
   const TrackableWrapper = ({ children, trackClicks = false }: { children: React.ReactNode; trackClicks?: boolean }) => (
@@ -352,7 +352,6 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
               pageOwnerId={pageOwnerId}
               pageId={pageId}
               isOwnerPremium={isOwnerPremium}
-              ownerTier={ownerTier}
             />
           </Suspense>
         </TrackableWrapper>
