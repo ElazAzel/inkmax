@@ -59,6 +59,12 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
       meta.content = content;
     };
 
+    const removeMetaTag = (name: string, property = false) => {
+      const attr = property ? 'property' : 'name';
+      const meta = document.querySelector(`meta[${attr}="${name}"]`);
+      if (meta) meta.remove();
+    };
+
     const setLinkTag = (rel: string, href: string, hreflang?: string) => {
       const selector = hreflang
         ? `link[rel="${rel}"][hreflang="${hreflang}"]`
@@ -81,6 +87,8 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
     
     if (pageData.seo.keywords?.length) {
       setMetaTag('keywords', pageData.seo.keywords.join(', '));
+    } else {
+      removeMetaTag('keywords');
     }
 
     // Open Graph tags - optimized for social sharing
@@ -155,6 +163,7 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
         'meta[property="og:url"]',
         'meta[property="og:site_name"]',
         'meta[property="og:image:alt"]',
+        'meta[name="keywords"]',
         'link[rel="canonical"]',
         'link[rel="alternate"]',
         'script#page-schema'

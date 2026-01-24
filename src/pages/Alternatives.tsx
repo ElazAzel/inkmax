@@ -59,6 +59,8 @@ function AlternativesSEOHead({ currentLanguage }: { currentLanguage: string }) {
       'alternatives.seo.description',
       'Compare lnkmx with Linktree, Taplink, Carrd and Beacons. See which tool fits link-in-bio, mini-landing or lead collection needs.'
     );
+    const ogTitle = t('alternatives.seo.ogTitle', title);
+    const ogDescription = t('alternatives.seo.ogDescription', description);
     setMetaTag('description', description);
     setMetaTag('robots', 'index, follow');
     setMetaTag('googlebot', 'index, follow');
@@ -69,11 +71,11 @@ function AlternativesSEOHead({ currentLanguage }: { currentLanguage: string }) {
     );
     setMetaTag('keywords', keywords);
 
-    setMetaTag('og:title', title, true);
-    setMetaTag('og:description', description, true);
+    setMetaTag('og:title', ogTitle, true);
+    setMetaTag('og:description', ogDescription, true);
     setMetaTag('og:url', 'https://lnkmx.my/alternatives', true);
-    setMetaTag('twitter:title', title);
-    setMetaTag('twitter:description', description);
+    setMetaTag('twitter:title', ogTitle);
+    setMetaTag('twitter:description', ogDescription);
 
     // Canonical + hreflang for alternatives page
     setLinkTag('canonical', 'https://lnkmx.my/alternatives');
