@@ -1,193 +1,66 @@
 # lnkmx Features
 
-## Overview
-lnkmx is an AI-powered link-in-bio platform for creators, freelancers, and small businesses. Create personalized mini-websites in 1 minute with AI-generated content.
+## Status legend
+- Implemented: shipped and usable in production.
+- In progress: partially shipped or under active development.
+- Planned: on roadmap, not shipped yet.
 
-## Block Types
+## Core blocks (Free)
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| Profile, text, buttons, links | Implemented | Basic identity and CTA blocks. | UI |
+| Images, separators, socials | Implemented | Visual structure and social links. | UI |
+| Lead form (basic) | Implemented | Collect inquiries into leads. | UI, API, DB |
+| Messenger shortcuts | Implemented | Quick contact blocks. | UI |
+| Map block | Implemented | Location display. | UI |
 
-### Basic Blocks (Free)
-- **Profile** - Avatar, name, bio with inline editing
-- **Link** - Customizable link buttons with icons
-- **Button** - CTA buttons with various styles
-- **Text** - Headers, paragraphs, quotes with rich text
-- **Separator** - Visual dividers
-- **Avatar** - Standalone avatar display
+## Pro blocks
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| Pricing and catalog blocks | Implemented | Service packages and product listings. | UI |
+| Video and carousel blocks | Implemented | Rich media blocks. | UI |
+| Testimonials and FAQ | Implemented | Social proof and objections. | UI |
+| Booking block | In progress | Depends on schedule data and notifications. | UI, API, DB |
+| Custom code block | Implemented | Embed widgets and custom HTML. | UI |
 
-### Media Blocks
-- **Image** - Photo display with captions
-- **Video** - YouTube/Vimeo embeds (Premium)
-- **Carousel** - Image slideshows (Premium)
-- **Before/After** - Comparison slider
+## AI
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| AI page draft generation | Implemented | Drafts structure and copy. | UI, API |
+| AI copy refinements | In progress | Short copy tweaks and rephrasing. | UI, API |
+| Auto-translation | Implemented | RU/EN/KK content variants. | UI, API |
 
-### Interactive Blocks
-- **Form** - Contact forms with CRM integration (Premium)
-- **Messenger** - WhatsApp/Telegram quick links
-- **Map** - Location display
-- **FAQ** - Accordion Q&A
-- **Scratch** - Gamified scratch cards (Premium)
-- **Search** - Content search (Premium)
+## CRM and leads
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| Lead capture | Implemented | Create lead records from forms. | UI, API, DB |
+| Lead status tracking | Implemented | Pipeline stages and notes. | UI, DB |
+| Telegram notifications | Implemented | Lead alerts via Telegram. | API |
+| Quick replies | In progress | Templates for faster responses. | UI, DB |
 
-### Commerce Blocks
-- **Product** - Product cards with prices
-- **Catalog** - Product grid display (Premium)
-- **Pricing** - Service pricing tables (Premium)
-- **Download** - Digital file downloads
-- **Booking** - Appointment scheduling (Premium)
+## Analytics
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| Page views and clicks | Implemented | Core events stored in analytics. | API, DB |
+| Block level analytics | Implemented | Clicks per block. | UI, DB |
+| Funnel analytics | Planned | Signup to publish to Pro. | UI, API, DB |
 
-### Advanced Blocks
-- **Custom Code** - HTML/CSS/JS widgets (Premium)
-- **Newsletter** - Email subscription (Premium)
-- **Testimonial** - Customer reviews (Premium)
-- **Countdown** - Timer blocks (Premium)
-- **Socials** - Social media icons
+## Payments and subscriptions
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| RoboKassa checkout | In progress | Subscription purchase flow. | UI, API |
+| Subscription status sync | Implemented | Access control based on plan. | API, DB |
+| Local pricing in KZT | Implemented | Pricing display by locale. | UI |
 
-### Social Blocks
-- **Shoutout** - Feature other creators
-- **Community** - Community links (Business tier)
-
-## AI Features
-
-### AI Page Builder
-- Generates 8-15 blocks based on account description
-- Localized content (RU/EN/KK)
-- Powered by Gemini 2.5 Flash
-- Free: 1 generation/month, Pro: 5 generations/month
-
-### AI Content Generation
-- Magic Title - Generate headlines from URLs
-- Sales Copy - Create product descriptions
-- Auto-translate - Block content localization
-
-### AI Chatbot Widget
-- Answer visitor questions
-- Customizable context
-- Available on Premium pages
-
-## Editor Features
-
-### Grid Layout
-- Drag-and-drop block reordering
-- Full/half width block sizing
-- Mobile-first responsive design
-- Real-time preview
-
-### Theme Customization
-- 15+ preset themes
-- Custom colors (Pro)
-- Gradient backgrounds (Pro)
-- Glassmorphism effects (Pro)
-- Dark/light mode per page
-
-### Block Styling
-- Padding/margin controls
-- Border radius options
-- Shadow effects including glow
-- Hover animations
-- Entry animations with delays
-
-## Premium Features (Pro Tier)
-
-### Mini-CRM
-- Automatic lead capture from forms
-- Lead status tracking
-- Interaction history
-- Notes and tags
-- Telegram notifications
-
-### Analytics
-- Page view tracking
-- Block click analytics
-- Traffic source breakdown
-- Device/browser stats
-- Geographic distribution
-
-### Automations
-- Follow-up message templates
-- Scheduled notifications
-- Lead nurturing workflows
-
-### Booking System
-- Available time slots configuration
-- Client booking management
-- WhatsApp prepayment integration
-- Booking reminders
-
-## Social Features
-
-### Collaborations
-- Request page collaborations
-- Combined collaborative pages
-- Mutual promotion
-
-### Teams
-- Shared team pages
-- Invite codes for members
-- Role-based access
-
-### Referral System
-- Unique referral codes
-- Trial bonus rewards
-- Top Referrers leaderboard
-
-### Gamification
-- Daily quests with rewards
-- Streak tracking with bonuses
-- Achievement badges
-- Weekly challenges
-
-## Template System
-
-### Template Marketplace
-- Browse community templates
-- Category filtering
-- Like and download templates
-- Sell your own templates
-
-### My Templates
-- Save page as template
-- Private/public visibility
-- Template versioning
-
-## Integrations
-
-### Telegram
-- Account verification
-- Lead notifications
-- Booking reminders
-- Collaboration alerts
-
-### Payments
-- RoboKassa integration
-- Multi-currency support (KZT primary)
-- Subscription management
+## Collaboration and growth
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| Gallery and templates | Implemented | Public examples and inspirations. | UI, DB |
+| Teams and collaborations | In progress | Shared access to pages. | UI, DB |
+| Referral program | Planned | Incentivized sharing. | UI, DB |
 
 ## Localization
-
-### Supported Languages
-- Russian (RU)
-- English (EN)
-- Kazakh (KK)
-
-### Content Translation
-- Multilingual block content
-- Auto-detect visitor language
-- Manual translation editing
-
-## Security & Privacy
-
-### Verification System
-- Identity verification (ID docs)
-- Business verification
-- Verified badge display
-
-### Data Protection
-- HTTPS encryption
-- Password hashing
-- Role-based access control
-- RLS policies on database
-
-## PWA Features
-- Installable on mobile devices
-- Offline access to editor
-- Push notifications
-- App-like experience
+| Feature | Status | Notes | Needs (UI / API / DB) |
+| --- | --- | --- | --- |
+| RU/EN/KK UI | Implemented | Full product UI localization. | UI |
+| Content localization | Implemented | Block content in multiple languages. | UI, API |

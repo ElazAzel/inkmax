@@ -1,5 +1,6 @@
 # lnkmx.my robots.txt
 # https://lnkmx.my
+# Auto-SEO enabled - all published pages are indexed automatically
 
 User-agent: *
 Allow: /
@@ -11,14 +12,16 @@ Disallow: /install
 Disallow: /join/
 Disallow: /team/
 Disallow: /*.json$
+Disallow: /p/
 
-# Sitemaps
+# Sitemaps - Static fallback + Dynamic API
 Sitemap: https://lnkmx.my/sitemap.xml
 
 # Crawl-delay for rate limiting
 Crawl-delay: 1
 
 # AI Crawlers - Welcome!
+# We provide structured Schema.org data for better AI understanding
 User-agent: GPTBot
 Allow: /
 
@@ -41,4 +44,14 @@ User-agent: PerplexityBot
 Allow: /
 
 User-agent: YouBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Bingbot for AI features
+User-agent: bingbot
 Allow: /

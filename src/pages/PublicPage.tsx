@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,8 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FreemiumWatermark } from '@/components/FreemiumWatermark';
 import { SEOHead } from '@/components/SEOHead';
 import { SmartSummary } from '@/components/ugs/SmartSummary';
+import { EnhancedSEOHead } from '@/components/seo/EnhancedSEOHead';
+import { CrawlerFriendlyContent } from '@/components/seo/CrawlerFriendlyContent';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
@@ -171,8 +173,21 @@ export default function PublicPage() {
 
   return (
     <>
-      {/* Dynamic SEO meta tags */}
-      <SEOHead pageData={pageData} pageUrl={canonicalUrl} />
+      {/* Enhanced Auto-SEO with Schema.org and Quality Gate */}
+      <EnhancedSEOHead 
+        pageData={pageData} 
+        pageUrl={canonicalUrl}
+        updatedAt={new Date().toISOString()}
+        isNewAccount={false}
+      />
+      
+      {/* Crawler-friendly content for no-JS fallback */}
+      <CrawlerFriendlyContent 
+        blocks={displayBlocks}
+        slug={slug || ''}
+        updatedAt={new Date().toISOString()}
+      />
+      
     <AnalyticsProvider pageId={pageData?.id} enabled={!!slug}>
       <div 
         className="min-h-screen bg-background"
