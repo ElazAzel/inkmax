@@ -1,14 +1,17 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateFormBlock } from '@/lib/block-validators';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import type { FormBlock } from '@/types/page';
 
-function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+type FormBlockFormData = FormBlock;
+
+function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps<FormBlockFormData>) {
   const { t } = useTranslation();
   const fields = formData.fields || [];
 
@@ -28,13 +31,18 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
   const removeField = (index: number) => {
     onChange({
       ...formData,
-      fields: fields.filter((_: any, i: number) => i !== index),
+      fields: fields.filter((_, i) => i !== index),
     });
   };
 
-  const updateField = (index: number, field: string, value: any) => {
+  const updateField = <K extends keyof FormBlock['fields'][number]>(
+    index: number,
+    field: K,
+    value: FormBlock['fields'][number][K]
+  ) => {
     const updated = [...fields];
-    updated[index] = { ...updated[index], [field]: value };
+    const current = updated[index];
+    updated[index] = { ...current, [field]: value };
     onChange({ ...formData, fields: updated });
   };
 
@@ -55,7 +63,7 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
       />
 
       <ArrayFieldList label={t('fields.formFields', 'Form Fields')} items={fields} onAdd={addField}>
-        {fields.map((field: any, index: number) => (
+        {fields.map((field, index) => (
           <ArrayFieldItem
             key={index}
             index={index}

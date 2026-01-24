@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import type { SeparatorBlock } from '@/types/page';
-import { withBlockEditor } from './BlockEditorWrapper';
+import { withBlockEditor } from './BlockEditorHOC';
 
 interface SeparatorBlockEditorProps {
   formData: SeparatorBlock;

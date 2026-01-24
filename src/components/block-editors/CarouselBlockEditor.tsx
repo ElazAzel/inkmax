@@ -2,14 +2,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateCarouselBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
 import { Trash2 } from 'lucide-react';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import type { CarouselBlock } from '@/types/page';
 
-function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+type CarouselFormData = CarouselBlock;
+
+function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps<CarouselFormData>) {
   const { t } = useTranslation();
   const images = formData.images || [];
 
@@ -23,13 +26,18 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
   const removeImage = (index: number) => {
     onChange({
       ...formData,
-      images: images.filter((_: any, i: number) => i !== index),
+      images: images.filter((_, i) => i !== index),
     });
   };
 
-  const updateImage = (index: number, field: string, value: any) => {
+  const updateImage = <K extends keyof CarouselBlock['images'][number]>(
+    index: number,
+    field: K,
+    value: CarouselBlock['images'][number][K]
+  ) => {
     const updated = [...images];
-    updated[index] = { ...updated[index], [field]: value };
+    const current = updated[index];
+    updated[index] = { ...current, [field]: value };
     onChange({ ...formData, images: updated });
   };
 
@@ -50,7 +58,7 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
           </Button>
         </div>
 
-        {images.map((image: any, index: number) => (
+        {images.map((image, index) => (
           <div key={index} className="border border-border rounded-lg p-3 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t('fields.image', 'Image')} {index + 1}</span>

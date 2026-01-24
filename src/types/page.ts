@@ -1,5 +1,36 @@
 export type BlockType = 'profile' | 'link' | 'button' | 'socials' | 'text' | 'image' | 'product' | 'video' | 'carousel' | 'custom_code' | 'messenger' | 'form' | 'download' | 'newsletter' | 'testimonial' | 'scratch' | 'map' | 'avatar' | 'separator' | 'catalog' | 'before_after' | 'faq' | 'countdown' | 'pricing' | 'shoutout' | 'booking' | 'community' | 'event';
 
+export const BLOCK_TYPES: BlockType[] = [
+  'profile',
+  'link',
+  'button',
+  'socials',
+  'text',
+  'image',
+  'product',
+  'video',
+  'carousel',
+  'custom_code',
+  'messenger',
+  'form',
+  'download',
+  'newsletter',
+  'testimonial',
+  'scratch',
+  'map',
+  'avatar',
+  'separator',
+  'catalog',
+  'before_after',
+  'faq',
+  'countdown',
+  'pricing',
+  'shoutout',
+  'booking',
+  'community',
+  'event',
+];
+
 // Editor mode is now always 'grid'
 export type EditorMode = 'grid';
 
@@ -635,6 +666,7 @@ export interface PageData {
     title: string;
     description: string;
     keywords: string[];
+    allowIndexing?: boolean;
   };
   isPremium?: boolean;
   isPublished?: boolean;

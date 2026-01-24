@@ -16,8 +16,27 @@ interface AIGeneratorProps {
   type: 'magic-title' | 'sales-copy' | 'seo' | 'ai-builder';
   isOpen: boolean;
   onClose: () => void;
-  onResult: (result: any) => void;
-  currentData?: any;
+  onResult: (result: unknown) => void;
+  currentData?: {
+    name?: string;
+    bio?: string;
+    links?: string[];
+  };
+}
+
+type AIRequestInput =
+  | { url: string }
+  | { productName: string; price: string; currency: string }
+  | { name: string; bio: string; links: string[] }
+  | { description: string };
+
+interface AIRequestBody {
+  type: AIGeneratorProps['type'];
+  input?: AIRequestInput;
+}
+
+interface AIInvokeResponse {
+  result: unknown;
 }
 
 export function AIGenerator({ type, isOpen, onClose, onResult, currentData }: AIGeneratorProps) {
@@ -48,7 +67,7 @@ export function AIGenerator({ type, isOpen, onClose, onResult, currentData }: AI
 
     setLoading(true);
     try {
-      let requestBody: any = { type };
+      const requestBody: AIRequestBody = { type };
 
       switch (type) {
         case 'magic-title':
@@ -91,7 +110,7 @@ export function AIGenerator({ type, isOpen, onClose, onResult, currentData }: AI
           break;
       }
 
-      const { data, error } = await supabase.functions.invoke('ai-content-generator', {
+      const { data, error } = await supabase.functions.invoke<AIInvokeResponse>('ai-content-generator', {
         body: requestBody,
       });
 
@@ -107,7 +126,7 @@ export function AIGenerator({ type, isOpen, onClose, onResult, currentData }: AI
       }
 
       toast.success(t('toasts.ai.generated'));
-      onResult(data.result);
+      onResult(data?.result);
       onClose();
     } catch (error) {
       console.error('AI generation error:', error);

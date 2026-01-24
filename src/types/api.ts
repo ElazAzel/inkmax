@@ -1,7 +1,7 @@
 /**
  * API-related types for Supabase operations
  */
-import type { PageData, Block, PageTheme } from './page';
+import type { PageData, Block, BlockType, PageTheme } from './page';
 
 // ============= Database Types =============
 
@@ -90,12 +90,12 @@ export interface ApiResult<T> {
 /**
  * Save page operation result
  */
-export interface SavePageResult extends ApiResult<DbPage> {}
+export type SavePageResult = ApiResult<DbPage>;
 
 /**
  * Load page operation result
  */
-export interface LoadPageResult extends ApiResult<PageData> {}
+export type LoadPageResult = ApiResult<PageData>;
 
 /**
  * Load user page result with chatbot context
@@ -146,7 +146,7 @@ export interface UpsertUserPageInput {
 export interface SavePageBlocksInput {
   p_page_id: string;
   p_blocks: Array<{
-    type: string;
+    type: BlockType;
     position: number;
     title: string | null;
     content: Block;

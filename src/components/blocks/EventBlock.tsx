@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus, CalendarPlus } from 'lucide-react';
 import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru, kk } from 'date-fns/locale';
@@ -29,6 +30,7 @@ interface EventBlockProps {
 
 const SYSTEM_EMAIL_FIELD_ID = 'system_email';
 const DRAFT_TTL_MS = 2 * 60 * 60 * 1000;
+const LINK_GUEST_KEY = 'event_guest_link';
 
 type FormValue = string | string[] | boolean;
 
@@ -65,6 +67,17 @@ export const EventBlock = memo(function EventBlock({
   const emailLabel = t('event.emailLabel', 'Email');
   const emailPlaceholder = t('event.emailPlaceholder', 'your@email.com');
   const emailHelp = t('event.emailHelp', 'Билет и подтверждение придут на эту почту.');
+  const utmPayload = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      utm_source: params.get('utm_source'),
+      utm_medium: params.get('utm_medium'),
+      utm_campaign: params.get('utm_campaign'),
+      utm_content: params.get('utm_content'),
+      utm_term: params.get('utm_term'),
+      referrer: document.referrer || null,
+    };
+  }, []);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -111,6 +124,10 @@ export const EventBlock = memo(function EventBlock({
 
   const handlePromptSignup = () => {
     saveDraft();
+    localStorage.setItem(
+      LINK_GUEST_KEY,
+      JSON.stringify({ eventId: block.eventId, updatedAt: Date.now() })
+    );
     const returnTo = `${window.location.pathname}?event=${block.eventId}`;
     window.location.href = `/auth?mode=signup&returnTo=${encodeURIComponent(returnTo)}`;
   };
@@ -210,6 +227,38 @@ export const EventBlock = memo(function EventBlock({
         }, {}),
       };
 
+      const { data, error } = await supabase.functions.invoke('register-event', {
+        body: {
+          eventId: block.eventId,
+          blockId: block.id,
+          pageId,
+          ownerId: pageOwnerId,
+          attendeeEmail: email.trim(),
+          attendeeName: resolveAttendeeName(),
+          attendeePhone: resolveAttendeePhone(),
+          answers,
+          utm: isOwnerPremium ? utmPayload : {},
+        },
+      });
+
+      if (error || !data?.success) {
+        const code = data?.code || error?.message;
+        if (code === 'duplicate') {
+          toast.error(t('event.duplicateRegistration', 'Вы уже зарегистрированы на этот ивент.'));
+          return;
+        }
+        if (data?.error === 'Capacity reached') {
+          toast.error(t('event.capacityReached', 'Мест больше нет.'));
+          return;
+        }
+        if (data?.error === 'Payment required') {
+          toast.error(t('event.paymentRequired', 'Оплата доступна только в Pro.'));
+          return;
+        }
+        throw error;
+      }
+
+      setTicketCode(data?.ticketCode || null);
       const { data: registration, error } = await supabase
         .from('event_registrations')
         .insert({
@@ -241,6 +290,7 @@ export const EventBlock = memo(function EventBlock({
       localStorage.removeItem(draftKey);
     } catch (error: any) {
       console.error('Event registration error:', error);
+      toast.error(t('event.registrationError', 'Не удалось зарегистрироваться'));
       if (error?.code === '23505') {
         toast.error(t('event.duplicateRegistration', 'Вы уже зарегистрированы на этот ивент.'));
       } else {
@@ -249,6 +299,32 @@ export const EventBlock = memo(function EventBlock({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleDownloadICS = () => {
+    if (!block.startAt) return;
+    const startDate = new Date(block.startAt);
+    const endDate = block.endAt ? new Date(block.endAt) : new Date(startDate.getTime() + 60 * 60 * 1000);
+    const formatICSDate = (date: Date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LinkMAX//Event//EN
+BEGIN:VEVENT
+UID:${block.eventId}@linkmax
+DTSTAMP:${formatICSDate(new Date())}
+DTSTART:${formatICSDate(startDate)}
+DTEND:${formatICSDate(endDate)}
+SUMMARY:${title}
+DESCRIPTION:${description || ''}
+LOCATION:${block.locationValue || ''}
+END:VEVENT
+END:VCALENDAR`;
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${title || 'event'}.ics`;
+    link.click();
+    URL.revokeObjectURL(link.href);
   };
 
   const renderField = (field: EventFormField) => {
@@ -438,6 +514,8 @@ export const EventBlock = memo(function EventBlock({
             )}
           </div>
 
+          <Button className="w-full rounded-xl" onClick={handleOpen} disabled={registrationClosed}>
+            {registrationClosed ? t('event.registrationClosed', 'Регистрация закрыта') : t('event.register', 'Register')}
           <Button className="w-full rounded-xl" onClick={handleOpen}>
             {t('event.register', 'Register')}
           </Button>
@@ -485,6 +563,10 @@ export const EventBlock = memo(function EventBlock({
                     </div>
                   </div>
                 )}
+                <Button variant="outline" onClick={handleDownloadICS}>
+                  <CalendarPlus className="h-4 w-4 mr-2" />
+                  {t('event.addToCalendar', 'Добавить в календарь')}
+                </Button>
               </div>
             ) : (
               <div className="space-y-6 py-2">

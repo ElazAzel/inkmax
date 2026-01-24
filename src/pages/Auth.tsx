@@ -99,6 +99,21 @@ export default function Auth() {
           }
         });
       }
+      const linkGuestRegistrations = async () => {
+        const pending = localStorage.getItem('event_guest_link');
+        if (!pending) return;
+        try {
+          await supabase.functions.invoke('attach-event-registrations');
+        } catch (error) {
+          console.error('Failed to attach event registrations', error);
+        } finally {
+          localStorage.removeItem('event_guest_link');
+        }
+      };
+      void linkGuestRegistrations();
+      navigate(safeReturnTo || '/dashboard');
+    }
+  }, [user, navigate, refCode, authMode, safeReturnTo, t]);
       navigate(safeReturnTo || '/dashboard');
     }
   }, [user, navigate, refCode, authMode, safeReturnTo]);
