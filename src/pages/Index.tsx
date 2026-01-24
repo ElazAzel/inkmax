@@ -11,7 +11,6 @@ import {
   Zap,
   Crown,
   BarChart3,
-  MessageCircle,
   ArrowRight,
   Check,
   Bot,
@@ -36,6 +35,8 @@ import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 import { SEOLandingHead } from '@/components/landing/SEOLandingHead';
 import { cn } from '@/lib/utils';
+import { useLandingAnalytics, useSectionObserver } from '@/hooks/useLandingAnalytics';
+import { useMarketingAnalytics } from '@/hooks/useMarketingAnalytics';
 
 // Dynamic grid background with subtle animation
 function AnimatedGridBackground() {
@@ -92,6 +93,8 @@ export default function Index() {
   const { t, i18n } = useTranslation();
   const [showFloatingCta, setShowFloatingCta] = useState(false);
   const isMobile = useIsMobile();
+  const { trackSectionView, trackCtaClick } = useLandingAnalytics();
+  const { trackMarketingEvent, trackOnce } = useMarketingAnalytics();
 
   // Scroll animations for sections
   const heroAnim = useScrollAnimation(0.1);
@@ -99,9 +102,26 @@ export default function Index() {
   const howItWorksAnim = useScrollAnimation(0.1);
   const forWhomAnim = useScrollAnimation(0.1);
   const featuresAnim = useScrollAnimation(0.1);
+  const useCasesAnim = useScrollAnimation(0.1);
   const comparisonAnim = useScrollAnimation(0.1);
   const pricingAnim = useScrollAnimation(0.1);
   const finalCtaAnim = useScrollAnimation(0.1);
+
+  const trackMarketingSection = useCallback(
+    (sectionId: string) => {
+      trackSectionView(sectionId);
+      if (sectionId === 'how_it_works') {
+        trackOnce({ eventType: 'how_it_works_view' });
+      }
+      if (sectionId === 'pricing') {
+        trackOnce({ eventType: 'pricing_view' });
+      }
+    },
+    [trackOnce, trackSectionView]
+  );
+
+  const howItWorksSectionRef = useSectionObserver('how_it_works', trackMarketingSection);
+  const pricingSectionRef = useSectionObserver('pricing', trackMarketingSection);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -113,13 +133,36 @@ export default function Index() {
 
   const isKZ = i18n.language === 'ru' || i18n.language === 'kk';
 
-  const handleCreatePage = useCallback(() => {
-    navigate('/auth');
-  }, [navigate]);
+  const handleCreatePage = useCallback(
+    (location: string, eventType?: 'hero_primary_cta_click' | 'signup_from_landing') => {
+      trackCtaClick('create', location);
+      trackMarketingEvent({ eventType: 'signup_from_landing', metadata: { location } });
+      if (eventType) {
+        trackMarketingEvent({ eventType, metadata: { location } });
+      }
+      navigate('/auth');
+    },
+    [navigate, trackCtaClick, trackMarketingEvent]
+  );
 
-  const handleViewExamples = useCallback(() => {
-    navigate('/gallery');
-  }, [navigate]);
+  const handleViewExamples = useCallback(
+    (location: string, eventType?: 'hero_secondary_cta_click') => {
+      trackCtaClick('gallery', location);
+      if (eventType) {
+        trackMarketingEvent({ eventType, metadata: { location } });
+      }
+      navigate('/gallery');
+    },
+    [navigate, trackCtaClick, trackMarketingEvent]
+  );
+
+  const handleViewPricing = useCallback(
+    (location: string) => {
+      trackCtaClick('pricing', location);
+      navigate('/pricing');
+    },
+    [navigate, trackCtaClick]
+  );
 
   return (
     <>
@@ -145,7 +188,7 @@ export default function Index() {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    onClick={handleViewExamples}
+                    onClick={() => handleViewExamples('nav')}
                     data-testid="landing-nav-examples"
                     className="hidden sm:flex rounded-xl hover:scale-105 transition-transform"
                   >
@@ -153,7 +196,7 @@ export default function Index() {
                     {t('landing.nav.examples', 'Примеры')}
                   </Button>
                   <Button 
-                    onClick={handleCreatePage}
+                    onClick={() => handleCreatePage('nav')}
                     data-testid="landing-nav-create"
                     className="rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
                     size="sm"
@@ -189,10 +232,10 @@ export default function Index() {
               data-testid="landing-hero-title"
               className="text-3xl sm:text-4xl font-black tracking-tight mb-4 leading-[1.15]"
             >
-              {t('landing.hero.mainTitle', 'Соберите продающий мини-сайт за ~2 минуты')}
+              {t('landing.hero.mainTitle', 'Мини-сайт, который приводит заявки, за 2 минуты')}
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-violet-500">
-                {t('landing.hero.mainHighlight', 'Из одной ссылки - в заявки')}
+                {t('landing.hero.mainHighlight', 'Одна ссылка - понятный путь к записи')}
               </span>
             </h1>
 
@@ -201,14 +244,17 @@ export default function Index() {
               data-testid="landing-hero-description"
               className="text-base text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed"
             >
-              {t('landing.hero.valueProposition', 'AI-конструктор сайтов для экспертов, фрилансеров и бизнеса. Создавайте страницу, принимайте заявки и наводите порядок без дизайнеров и программистов.')}
+              {t(
+                'landing.hero.valueProposition',
+                'AI-конструктор для экспертов, фрилансеров и малого бизнеса. Соберите страницу, прайс, формы и контакты без дизайнера и кода.'
+              )}
             </p>
 
             {/* 3 Key Benefits */}
             <div className="flex flex-col gap-2 mb-8 max-w-sm mx-auto">
               <BenefitItem 
                 icon={<Bot className="h-4 w-4" />}
-                text={t('landing.hero.benefit1', 'AI сам собирает страницу и тексты')}
+                text={t('landing.hero.benefit1', 'AI собирает структуру и тексты первого экрана')}
                 delay={100}
               />
               <BenefitItem 
@@ -218,7 +264,7 @@ export default function Index() {
               />
               <BenefitItem 
                 icon={<BarChart3 className="h-4 w-4" />}
-                text={t('landing.hero.benefit3', 'Аналитика показывает, что реально работает')}
+                text={t('landing.hero.benefit3', 'Аналитика показывает, какие блоки дают лиды')}
                 delay={300}
               />
             </div>
@@ -227,7 +273,7 @@ export default function Index() {
             <div className="flex flex-col gap-3 max-w-xs mx-auto">
               <Button 
                 size="lg"
-                onClick={handleCreatePage}
+                onClick={() => handleCreatePage('hero', 'hero_primary_cta_click')}
                 data-testid="landing-hero-primary-cta"
                 className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
@@ -237,7 +283,7 @@ export default function Index() {
               <Button 
                 variant="outline"
                 size="lg"
-                onClick={handleViewExamples}
+                onClick={() => handleViewExamples('hero', 'hero_secondary_cta_click')}
                 data-testid="landing-hero-secondary-cta"
                 className="h-14 rounded-2xl text-base font-bold hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
@@ -245,8 +291,16 @@ export default function Index() {
                 {t('landing.hero.secondaryCta', 'Посмотреть примеры')}
               </Button>
               <p className="text-xs text-muted-foreground mt-1">
-                {t('landing.hero.microNote', 'Бесплатно. Готовый конструктор. За 2 минуты.')}
+                {t('landing.hero.microNote', 'Бесплатный старт. Редактор на телефоне. Публикация в один клик.')}
               </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleViewPricing('hero')}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                {t('landing.hero.pricingCta', 'Сравнить тарифы')}
+              </Button>
             </div>
           </div>
         </section>
@@ -261,7 +315,7 @@ export default function Index() {
             forWhomAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
             <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.forWhom.title', 'Для кого lnkmx')}
+              {t('landing.forWhom.title', 'Кому подходит lnkmx')}
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
@@ -269,28 +323,28 @@ export default function Index() {
                 icon={<Briefcase className="h-5 w-5" />}
                 iconBg="bg-violet-500"
                 title={t('landing.forWhom.expert.title', 'Эксперты')}
-                description={t('landing.forWhom.expert.desc', 'Запись, кейсы, прайс')}
+                description={t('landing.forWhom.expert.desc', 'Запись, кейсы, понятный оффер')}
                 delay={0}
               />
               <AudienceCard
                 icon={<Target className="h-5 w-5" />}
                 iconBg="bg-blue-500"
                 title={t('landing.forWhom.freelancer.title', 'Фрилансеры')}
-                description={t('landing.forWhom.freelancer.desc', 'Портфолио, заявки')}
+                description={t('landing.forWhom.freelancer.desc', 'Портфолио, бриф, заявки')}
                 delay={100}
               />
               <AudienceCard
                 icon={<Scissors className="h-5 w-5" />}
                 iconBg="bg-pink-500"
                 title={t('landing.forWhom.beauty.title', 'Бьюти')}
-                description={t('landing.forWhom.beauty.desc', 'Запись, отзывы, гео')}
+                description={t('landing.forWhom.beauty.desc', 'Запись, отзывы, карта')}
                 delay={200}
               />
               <AudienceCard
                 icon={<Camera className="h-5 w-5" />}
                 iconBg="bg-amber-500"
                 title={t('landing.forWhom.business.title', 'Бизнес')}
-                description={t('landing.forWhom.business.desc', 'Каталог, CRM, аналитика')}
+                description={t('landing.forWhom.business.desc', 'Каталог, лиды, аналитика')}
                 delay={300}
               />
             </div>
@@ -307,7 +361,7 @@ export default function Index() {
             problemAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
             <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.problem.title', 'Почему заявки теряются')}
+              {t('landing.problem.title', 'Почему заявки теряются сегодня')}
             </h2>
 
             <div className="space-y-3">
@@ -316,11 +370,11 @@ export default function Index() {
                 delay={0}
               />
               <ProblemCard 
-                text={t('landing.problem.item2', 'Люди задают одни вопросы, а вы отвечаете вручную и забываете про встречи')}
+                text={t('landing.problem.item2', 'Люди задают одни вопросы, а вы отвечаете вручную и теряете время')}
                 delay={100}
               />
               <ProblemCard 
-                text={t('landing.problem.item3', 'Taplink превращается в «меню ссылок», а не путь к записи')}
+                text={t('landing.problem.item3', 'Страница превращается в меню ссылок, а не путь к записи')}
                 delay={200}
               />
               <ProblemCard 
@@ -340,7 +394,7 @@ export default function Index() {
 
         {/* HOW IT WORKS - 3 Steps */}
         <section 
-          ref={howItWorksAnim.ref}
+          ref={mergeRefs(howItWorksAnim.ref, howItWorksSectionRef)}
           className="py-12 px-5 bg-muted/30"
         >
           <div className={cn(
@@ -355,19 +409,19 @@ export default function Index() {
               <StepCard
                 number="1"
                 title={t('landing.howItWorks.step1.title', 'Выберите нишу')}
-                description={t('landing.howItWorks.step1.description', 'Укажите кто вы и напишите пару предложений о себе')}
+                description={t('landing.howItWorks.step1.description', 'Укажите кто вы и что продаете')}
                 delay={0}
               />
               <StepCard
                 number="2"
-                title={t('landing.howItWorks.step2.title', 'AI соберёт страницу')}
+                title={t('landing.howItWorks.step2.title', 'AI соберет страницу')}
                 description={t('landing.howItWorks.step2.description', 'AI собирает структуру, тексты, CTA и базовый прайс')}
                 delay={100}
               />
               <StepCard
                 number="3"
                 title={t('landing.howItWorks.step3.title', 'Получайте заявки')}
-                description={t('landing.howItWorks.step3.description', 'Публикуете и получаете заявки в мини-CRM + Telegram')}
+                description={t('landing.howItWorks.step3.description', 'Публикуете и получаете заявки в мини-CRM и Telegram')}
                 delay={200}
               />
             </div>
@@ -375,7 +429,7 @@ export default function Index() {
             <div className="mt-8 text-center">
               <Button 
                 size="lg"
-                onClick={handleCreatePage}
+                onClick={() => handleCreatePage('how_it_works')}
                 className="h-14 px-8 rounded-2xl text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] transition-transform"
               >
                 {t('landing.howItWorks.cta', 'Попробовать сейчас')}
@@ -395,18 +449,18 @@ export default function Index() {
             featuresAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
             <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.features.title', 'Что внутри')}
+              {t('landing.features.title', 'Что вы получите в первой версии')}
             </h2>
 
             <div className="space-y-4">
               <FeatureSection
                 icon={<Bot className="h-5 w-5" />}
                 iconBg="bg-violet-500"
-                title={t('landing.features.ai.title', 'AI-сборка страницы')}
+                title={t('landing.features.ai.title', 'Страница с понятным оффером')}
                 items={[
-                  t('landing.features.ai.item1', 'AI делает первую версию из готовых блоков'),
-                  t('landing.features.ai.item2', 'Тексты можно переписать в один тап'),
-                  t('landing.features.ai.item3', 'Перевод контента RU/EN/KZ'),
+                  t('landing.features.ai.item1', 'Первый экран с обещанием результата и CTA'),
+                  t('landing.features.ai.item2', 'Прайс или пакеты услуг без ручной верстки'),
+                  t('landing.features.ai.item3', 'Форма заявки и контакты на одной странице'),
                 ]}
                 delay={0}
               />
@@ -414,11 +468,11 @@ export default function Index() {
               <FeatureSection
                 icon={<Send className="h-5 w-5" />}
                 iconBg="bg-blue-500"
-                title={t('landing.features.crm.title', 'CRM + Telegram')}
+                title={t('landing.features.crm.title', 'Лиды и порядок')}
                 items={[
                   t('landing.features.crm.item1', 'Мини-CRM: лиды, статусы, заметки'),
                   t('landing.features.crm.item2', 'Уведомления о заявках в Telegram'),
-                  t('landing.features.crm.item3', 'Шаблоны быстрых ответов'),
+                  t('landing.features.crm.item3', 'Быстрые ответы и история общения'),
                 ]}
                 delay={100}
               />
@@ -426,14 +480,89 @@ export default function Index() {
               <FeatureSection
                 icon={<BarChart3 className="h-5 w-5" />}
                 iconBg="bg-amber-500"
-                title={t('landing.features.analytics.title', 'Аналитика с подсказками')}
+                title={t('landing.features.analytics.title', 'Понимание, что работает')}
                 items={[
                   t('landing.features.analytics.item1', 'Просмотры и клики по блокам'),
                   t('landing.features.analytics.item2', 'Источники трафика, устройства'),
-                  t('landing.features.analytics.item3', 'Подсказки что улучшить'),
+                  t('landing.features.analytics.item3', 'Подсказки, что улучшить дальше'),
                 ]}
                 delay={200}
               />
+            </div>
+          </div>
+        </section>
+
+        {/* USE CASES */}
+        <section
+          ref={useCasesAnim.ref}
+          className="py-12 px-5 bg-muted/30"
+        >
+          <div className={cn(
+            "max-w-lg mx-auto transition-all duration-700",
+            useCasesAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}>
+            <h2 className="text-2xl font-black text-center mb-3">
+              {t('landing.useCases.title', 'Готовые сценарии под ваши задачи')}
+            </h2>
+            <p className="text-center text-muted-foreground mb-8">
+              {t('landing.useCases.subtitle', 'Выберите сценарий, поправьте пару блоков и публикуйте.')}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <UseCaseCard
+                icon={<Briefcase className="h-5 w-5" />}
+                title={t('landing.useCases.expert.title', 'Эксперт или консультации')}
+                bullets={[
+                  t('landing.useCases.expert.bullet1', 'Оффер и результат на первом экране'),
+                  t('landing.useCases.expert.bullet2', 'Прайс и пакеты услуг'),
+                  t('landing.useCases.expert.bullet3', 'Форма заявки и мессенджеры'),
+                ]}
+              />
+              <UseCaseCard
+                icon={<Scissors className="h-5 w-5" />}
+                title={t('landing.useCases.service.title', 'Услуги и сервис')}
+                bullets={[
+                  t('landing.useCases.service.bullet1', 'Запись и расписание'),
+                  t('landing.useCases.service.bullet2', 'Адрес, карта и отзывы'),
+                  t('landing.useCases.service.bullet3', 'Контакты и быстрые ответы'),
+                ]}
+              />
+              <UseCaseCard
+                icon={<Camera className="h-5 w-5" />}
+                title={t('landing.useCases.creator.title', 'Креатор и портфолио')}
+                bullets={[
+                  t('landing.useCases.creator.bullet1', 'Лучшие проекты и кейсы'),
+                  t('landing.useCases.creator.bullet2', 'Соцсети и подписки'),
+                  t('landing.useCases.creator.bullet3', 'Прием заявок и бриф'),
+                ]}
+              />
+              <UseCaseCard
+                icon={<TrendingUp className="h-5 w-5" />}
+                title={t('landing.useCases.shop.title', 'Магазин или каталог')}
+                bullets={[
+                  t('landing.useCases.shop.bullet1', 'Товары и цены'),
+                  t('landing.useCases.shop.bullet2', 'FAQ и условия доставки'),
+                  t('landing.useCases.shop.bullet3', 'Быстрый контакт для заказа'),
+                ]}
+              />
+            </div>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                size="lg"
+                onClick={() => handleCreatePage('use_cases')}
+                className="h-12 rounded-2xl font-bold"
+              >
+                {t('landing.useCases.primaryCta', 'Создать страницу')}
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => handleViewExamples('use_cases')}
+                className="h-12 rounded-2xl font-bold"
+              >
+                {t('landing.useCases.secondaryCta', 'Посмотреть примеры')}
+              </Button>
             </div>
           </div>
         </section>
@@ -448,7 +577,7 @@ export default function Index() {
             comparisonAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
             <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.comparison.title', 'Почему lnkmx, а не просто link-in-bio')}
+              {t('landing.comparison.title', 'Почему мини-сайт лучше меню ссылок')}
             </h2>
 
             <Card className="overflow-hidden">
@@ -506,7 +635,7 @@ export default function Index() {
 
         {/* PRICING */}
         <section 
-          ref={pricingAnim.ref}
+          ref={mergeRefs(pricingAnim.ref, pricingSectionRef)}
           className="py-12 px-5 bg-muted/30"
         >
           <div className={cn(
@@ -517,7 +646,7 @@ export default function Index() {
               {t('landing.pricing.title', 'Тарифы')}
             </h2>
             <p className="text-center text-muted-foreground mb-8">
-              {t('landing.pricing.subtitle', 'Начните бесплатно, растите с Pro')}
+              {t('landing.pricing.subtitle', 'Начните бесплатно и подключите Pro, когда понадобится больше')}
             </p>
 
             <div className="grid grid-cols-1 gap-4">
@@ -540,7 +669,7 @@ export default function Index() {
                 <Button 
                   variant="outline"
                   className="w-full h-12 rounded-xl font-bold mt-4 hover:scale-[1.02] transition-transform"
-                  onClick={handleCreatePage}
+                  onClick={() => handleCreatePage('pricing_free')}
                 >
                   {t('landing.pricing.freeAction', 'Начать бесплатно')}
                 </Button>
@@ -576,7 +705,7 @@ export default function Index() {
                 </ul>
                 <Button 
                   className="w-full h-12 rounded-xl font-bold hover:scale-[1.02] transition-transform"
-                  onClick={() => navigate('/pricing')}
+                  onClick={() => handleViewPricing('pricing_pro')}
                 >
                   {t('landing.pricing.viewPlans', 'Выбрать Pro')}
                 </Button>
@@ -611,15 +740,15 @@ export default function Index() {
             finalCtaAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
             <h2 className="text-2xl sm:text-3xl font-black mb-4">
-              {t('landing.finalCta.title', 'Соберите страницу, которая продаёт, за 2 минуты')}
+              {t('landing.finalCta.title', 'Соберите страницу, которая ведет к заявке, за 2 минуты')}
             </h2>
             <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-              {t('landing.finalCta.description', 'Не теряйте клиентов в личке. Дайте им понятный путь: кто вы - чем помогаете - сколько стоит - записаться.')}
+              {t('landing.finalCta.description', 'Не теряйте клиентов в переписке. Дайте им понятный путь: кто вы - чем помогаете - сколько стоит - записаться.')}
             </p>
             <div className="flex flex-col gap-3 max-w-xs mx-auto">
               <Button 
                 size="lg"
-                onClick={handleCreatePage}
+                onClick={() => handleCreatePage('final_cta')}
                 className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] transition-transform"
               >
                 <Zap className="h-5 w-5 mr-2" />
@@ -628,7 +757,7 @@ export default function Index() {
               <Button 
                 variant="outline"
                 size="lg"
-                onClick={handleViewExamples}
+                onClick={() => handleViewExamples('final_cta')}
                 className="h-14 rounded-2xl text-base font-bold"
               >
                 {t('landing.finalCta.secondaryCta', 'Посмотреть примеры')}
@@ -694,7 +823,7 @@ export default function Index() {
           >
             <div className="flex gap-2">
               <Button 
-                onClick={handleCreatePage}
+                onClick={() => handleCreatePage('floating_cta')}
                 className="flex-1 h-14 rounded-2xl font-bold text-base shadow-2xl shadow-primary/40 hover:scale-[1.02] transition-transform"
               >
                 <Sparkles className="h-5 w-5 mr-2" />
@@ -702,7 +831,7 @@ export default function Index() {
               </Button>
               <Button 
                 variant="outline"
-                onClick={handleViewExamples}
+                onClick={() => handleViewExamples('floating_cta')}
                 className="h-14 px-4 rounded-2xl font-bold bg-background/95 backdrop-blur"
               >
                 <Users className="h-5 w-5" />
@@ -713,6 +842,19 @@ export default function Index() {
       </div>
     </>
   );
+}
+
+function mergeRefs<T>(...refs: Array<React.Ref<T> | undefined>) {
+  return (value: T | null) => {
+    refs.forEach((ref) => {
+      if (!ref) return;
+      if (typeof ref === 'function') {
+        ref(value);
+      } else {
+        (ref as React.MutableRefObject<T | null>).current = value;
+      }
+    });
+  };
 }
 
 // Benefit Item Component
@@ -843,6 +985,36 @@ function FeatureSection({
           <li key={index} className="flex items-start gap-2">
             <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
             <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
+// Use Case Card Component
+function UseCaseCard({
+  icon,
+  title,
+  bullets,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  bullets: string[];
+}) {
+  return (
+    <Card className="p-4 bg-card/50 backdrop-blur border-border/30">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          {icon}
+        </div>
+        <h3 className="font-bold text-sm">{title}</h3>
+      </div>
+      <ul className="space-y-2 text-sm text-muted-foreground">
+        {bullets.map((bullet, index) => (
+          <li key={index} className="flex items-start gap-2">
+            <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+            <span>{bullet}</span>
           </li>
         ))}
       </ul>

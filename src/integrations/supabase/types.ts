@@ -1135,6 +1135,57 @@ export type Database = {
           },
         ]
       }
+      page_snapshots: {
+        Row: {
+          blocks_json: Json
+          content_hash: string
+          created_at: string
+          id: string
+          page_id: string
+          published_at: string
+          seo_json: Json | null
+          theme_json: Json | null
+          version_id: string
+        }
+        Insert: {
+          blocks_json: Json
+          content_hash: string
+          created_at?: string
+          id?: string
+          page_id: string
+          published_at?: string
+          seo_json?: Json | null
+          theme_json?: Json | null
+          version_id: string
+        }
+        Update: {
+          blocks_json?: Json
+          content_hash?: string
+          created_at?: string
+          id?: string
+          page_id?: string
+          published_at?: string
+          seo_json?: Json | null
+          theme_json?: Json | null
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_snapshots_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_snapshots_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pages: {
         Row: {
           avatar_style: Json | null
@@ -1147,9 +1198,12 @@ export type Database = {
           grid_config: Json | null
           id: string
           is_in_gallery: boolean | null
+          is_indexable: boolean | null
           is_published: boolean | null
+          last_snapshot_at: string | null
           niche: string | null
           preview_url: string | null
+          quality_score: number | null
           seo_meta: Json | null
           slug: string
           theme_settings: Json | null
@@ -1169,9 +1223,12 @@ export type Database = {
           grid_config?: Json | null
           id?: string
           is_in_gallery?: boolean | null
+          is_indexable?: boolean | null
           is_published?: boolean | null
+          last_snapshot_at?: string | null
           niche?: string | null
           preview_url?: string | null
+          quality_score?: number | null
           seo_meta?: Json | null
           slug: string
           theme_settings?: Json | null
@@ -1191,9 +1248,12 @@ export type Database = {
           grid_config?: Json | null
           id?: string
           is_in_gallery?: boolean | null
+          is_indexable?: boolean | null
           is_published?: boolean | null
+          last_snapshot_at?: string | null
           niche?: string | null
           preview_url?: string | null
+          quality_score?: number | null
           seo_meta?: Json | null
           slug?: string
           theme_settings?: Json | null
@@ -2071,6 +2131,18 @@ export type Database = {
       convert_tokens_to_premium: { Args: { p_user_id: string }; Returns: Json }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
+      get_page_version: {
+        Args: { p_slug: string; p_version_id?: string }
+        Returns: {
+          blocks_json: Json
+          page_id: string
+          published_at: string
+          seo_json: Json
+          slug: string
+          theme_json: Json
+          version_id: string
+        }[]
+      }
       get_token_analytics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json
