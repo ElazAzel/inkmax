@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +21,36 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { X, Check, ChevronLeft } from 'lucide-react';
 import type { Block } from '@/types/page';
+import {
+  ProfileBlockEditor,
+  TextBlockEditor,
+  LinkBlockEditor,
+  ProductBlockEditor,
+  VideoBlockEditor,
+  CarouselBlockEditor,
+  ButtonBlockEditor,
+  SocialsBlockEditor,
+  ImageBlockEditor,
+  CustomCodeBlockEditor,
+  MessengerBlockEditor,
+  FormBlockEditor,
+  DownloadBlockEditor,
+  NewsletterBlockEditor,
+  TestimonialBlockEditor,
+  ScratchBlockEditor,
+  MapBlockEditor,
+  AvatarBlockEditor,
+  SeparatorBlockEditor,
+  CatalogBlockEditor,
+  BeforeAfterBlockEditor,
+  FAQBlockEditor,
+  CountdownBlockEditor,
+  PricingBlockEditor,
+  ShoutoutBlockEditor,
+  BookingBlockEditor,
+  CommunityBlockEditor,
+  EventBlockEditor,
+} from './block-editors/lazyBlockEditors';
 
 // Lazy load all block editors for code splitting
 const ProfileBlockEditor = lazy(() => import('./block-editors/ProfileBlockEditor').then(m => ({ default: m.ProfileBlockEditor })));
@@ -62,7 +92,7 @@ interface BlockEditorProps {
 export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
-  const [formData, setFormData] = useState<any>(() => block ? { ...block } : {});
+  const [formData, setFormData] = useState<Partial<Block>>(() => (block ? { ...block } : {}));
 
   // Update formData when block changes
   useEffect(() => {

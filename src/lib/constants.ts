@@ -30,6 +30,7 @@ export const DEFAULT_SEO = {
   title: 'My LinkMAX Page',
   description: 'Check out my links',
   keywords: [] as string[],
+  allowIndexing: true,
 };
 
 // Create default page data

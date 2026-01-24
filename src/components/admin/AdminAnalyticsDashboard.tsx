@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/platform/supabase/client';
+import { useAdminEventAnalytics } from '@/hooks/useAdminEventAnalytics';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ComposedChart
@@ -14,7 +15,7 @@ import { ru, enUS, kk } from 'date-fns/locale';
 import { 
   Loader2, Eye, MousePointer, Share2, TrendingUp, TrendingDown,
   Users, Clock, Globe, Smartphone, Monitor, Tablet, Activity,
-  BarChart3, Target, Zap, Calendar
+  BarChart3, Target, Zap, Calendar, CheckCheck, Star
 } from 'lucide-react';
 
 interface AnalyticsData {
@@ -85,6 +86,8 @@ export function AdminAnalyticsDashboard() {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'7d' | '14d' | '30d' | '90d'>('30d');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [eventDateRange, setEventDateRange] = useState<{ from: string; to: string } | null>(null);
+  const { data: eventAnalytics } = useAdminEventAnalytics(eventDateRange?.from, eventDateRange?.to);
 
   const getDateLocale = () => {
     switch (i18n.language) {
@@ -108,6 +111,15 @@ export function AdminAnalyticsDashboard() {
     loadAnalytics();
   }, [period]);
 
+  useEffect(() => {
+    if (!eventAnalytics || !eventDateRange) return;
+    supabase.from('audit_logs').insert({
+      action: 'view',
+      entity_type: 'event_analytics',
+      metadata_json: eventDateRange,
+    }).catch(() => null);
+  }, [eventAnalytics, eventDateRange]);
+
   const getPeriodDays = () => {
     switch (period) {
       case '7d': return 7;
@@ -123,6 +135,7 @@ export function AdminAnalyticsDashboard() {
       const days = getPeriodDays();
       const startDate = subDays(new Date(), days);
       const prevStartDate = subDays(startDate, days);
+      setEventDateRange({ from: startDate.toISOString(), to: new Date().toISOString() });
 
       // Load all analytics data
       const [
@@ -537,6 +550,106 @@ return (
           </div>
         </CardContent>
       </Card>
+
+      {eventAnalytics && (
+        <Card className="bg-card/60 border-border/60">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base md:text-lg">{t('admin.eventAnalytics', 'Event Analytics')}</CardTitle>
+            <CardDescription className="text-xs md:text-sm">
+              {t('admin.eventAnalyticsDescription', 'Event performance overview')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  {t('admin.eventsTotal', 'Total events')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.totalEvents}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Globe className="h-4 w-4 text-purple-500" />
+                  {t('admin.eventsPublished', 'Published')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.publishedEvents}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCheck className="h-4 w-4 text-emerald-500" />
+                  {t('admin.eventsCompleted', 'Completed')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.completedEvents}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Users className="h-4 w-4 text-blue-500" />
+                  {t('admin.eventsParticipants', 'Participants')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.totalParticipants}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <TrendingUp className="h-4 w-4 text-amber-500" />
+                  {t('admin.eventsRevenue', 'Revenue')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.totalRevenue.toLocaleString()}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <TrendingDown className="h-4 w-4 text-red-500" />
+                  {t('admin.eventsRefunds', 'Refunds')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.refundsCount}</div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <BarChart3 className="h-4 w-4 text-indigo-500" />
+                  {t('admin.eventsPaidSplit', 'Paid vs Free')}
+                </div>
+                <div className="text-lg font-semibold">
+                  {eventAnalytics.summary.paidEvents}/{eventAnalytics.summary.freeEvents}
+                </div>
+              </div>
+              <div className="rounded-xl border border-border/50 p-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  {t('admin.eventsProAdoption', 'Pro adoption')}
+                </div>
+                <div className="text-lg font-semibold">{eventAnalytics.summary.proAdoption}</div>
+              </div>
+            </div>
+
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={eventAnalytics.series}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis dataKey="date" tick={{ fontSize: 9 }} interval="preserveStartEnd" />
+                  <YAxis tick={{ fontSize: 9 }} width={35} />
+                  <Tooltip />
+                  <Legend wrapperStyle={{ fontSize: '11px' }} />
+                  <Bar dataKey="created" fill="#3b82f6" name={t('admin.eventsCreated', 'Created')} />
+                  <Line type="monotone" dataKey="participants" stroke="#10b981" name={t('admin.eventsParticipants', 'Participants')} />
+                  <Line type="monotone" dataKey="revenue" stroke="#f59e0b" name={t('admin.eventsRevenue', 'Revenue')} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold mb-2">{t('admin.eventsTopOwners', 'Top owners')}</h4>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                {eventAnalytics.topOwners.map((owner) => (
+                  <div key={owner.ownerId} className="flex justify-between">
+                    <span>{owner.ownerId}</span>
+                    <span>{owner.events}/{owner.participants}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs defaultValue="timeline" className="space-y-4">
         <TabsList className="w-full flex-wrap h-auto p-1 bg-muted/50">
