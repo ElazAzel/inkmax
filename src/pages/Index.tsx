@@ -1,6 +1,6 @@
 /**
- * Landing Page v3.0 - New Positioning
- * "Мини-сайт за 2 минуты" - not a link-in-bio, but a mini-site builder
+ * Landing Page v4.0 - Human Copywriting + Conversion Optimized
+ * Focus: Clear value prop in 10 seconds, human tone, mobile-first
  */
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -23,8 +23,13 @@ import {
   X,
   Users,
   Sparkles,
-  Phone,
-  Mail,
+  MessageSquare,
+  Clock,
+  Star,
+  Shield,
+  Gift,
+  Play,
+  ChevronRight,
 } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useEffect, useState, Suspense, useRef, useCallback } from 'react';
@@ -38,10 +43,10 @@ import { cn } from '@/lib/utils';
 import { useLandingAnalytics, useSectionObserver } from '@/hooks/useLandingAnalytics';
 import { useMarketingAnalytics } from '@/hooks/useMarketingAnalytics';
 
-// Dynamic grid background with subtle animation
+// Subtle grid background
 function AnimatedGridBackground() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-[0.02]">
       <div 
         className="absolute inset-0"
         style={{
@@ -49,16 +54,9 @@ function AnimatedGridBackground() {
             linear-gradient(to right, currentColor 1px, transparent 1px),
             linear-gradient(to bottom, currentColor 1px, transparent 1px)
           `,
-          backgroundSize: '60px 60px',
-          animation: 'gridPulse 8s ease-in-out infinite',
+          backgroundSize: '48px 48px',
         }}
       />
-      <style>{`
-        @keyframes gridPulse {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(1.02); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -88,6 +86,19 @@ function useScrollAnimation(threshold = 0.1) {
   return { ref, isVisible };
 }
 
+// Merge refs utility
+function mergeRefs<T>(...refs: (React.Ref<T> | undefined)[]) {
+  return (node: T) => {
+    refs.forEach((ref) => {
+      if (typeof ref === 'function') {
+        ref(node);
+      } else if (ref && 'current' in ref) {
+        (ref as React.MutableRefObject<T>).current = node;
+      }
+    });
+  };
+}
+
 export default function Index() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -96,14 +107,14 @@ export default function Index() {
   const { trackSectionView, trackCtaClick } = useLandingAnalytics();
   const { trackMarketingEvent, trackOnce } = useMarketingAnalytics();
 
-  // Scroll animations for sections
+  // Scroll animations
   const heroAnim = useScrollAnimation(0.1);
   const problemAnim = useScrollAnimation(0.1);
   const howItWorksAnim = useScrollAnimation(0.1);
-  const forWhomAnim = useScrollAnimation(0.1);
-  const featuresAnim = useScrollAnimation(0.1);
+  const benefitsAnim = useScrollAnimation(0.1);
+  const blocksAnim = useScrollAnimation(0.1);
   const useCasesAnim = useScrollAnimation(0.1);
-  const comparisonAnim = useScrollAnimation(0.1);
+  const proofAnim = useScrollAnimation(0.1);
   const pricingAnim = useScrollAnimation(0.1);
   const finalCtaAnim = useScrollAnimation(0.1);
 
@@ -125,7 +136,7 @@ export default function Index() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowFloatingCta(window.scrollY > 500);
+      setShowFloatingCta(window.scrollY > 600);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -170,10 +181,10 @@ export default function Index() {
       <div className="min-h-screen bg-background overflow-x-hidden">
         <AnimatedGridBackground />
 
-        {/* Navigation - Clean and minimal */}
-        <nav className="fixed left-0 right-0 z-50 px-4 top-0 pt-4">
-          <div className="max-w-lg mx-auto">
-            <div className="bg-card/80 backdrop-blur-2xl border border-border/30 rounded-2xl shadow-xl shadow-black/5">
+        {/* Navigation */}
+        <nav className="fixed left-0 right-0 z-50 px-4 top-0 pt-3">
+          <div className="max-w-xl mx-auto">
+            <div className="bg-card/90 backdrop-blur-xl border border-border/40 rounded-2xl shadow-lg">
               <div className="px-4 h-14 flex items-center justify-between">
                 <button 
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -189,16 +200,13 @@ export default function Index() {
                     variant="ghost" 
                     size="sm"
                     onClick={() => handleViewExamples('nav')}
-                    data-testid="landing-nav-examples"
-                    className="hidden sm:flex rounded-xl hover:scale-105 transition-transform"
+                    className="hidden sm:flex rounded-xl"
                   >
-                    <Users className="h-4 w-4 mr-1.5" />
                     {t('landing.nav.examples', 'Примеры')}
                   </Button>
                   <Button 
                     onClick={() => handleCreatePage('nav')}
-                    data-testid="landing-nav-create"
-                    className="rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+                    className="rounded-xl font-semibold shadow-md shadow-primary/20"
                     size="sm"
                   >
                     {t('landing.nav.getStarted', 'Создать')}
@@ -209,220 +217,156 @@ export default function Index() {
           </div>
         </nav>
 
-        {/* HERO SECTION - New positioning */}
-        <section 
-          ref={heroAnim.ref}
-          className="pt-24 pb-12 px-5"
-        >
+        {/* ========== HERO SECTION ========== */}
+        <section ref={heroAnim.ref} className="pt-24 pb-8 sm:pb-12 px-5">
           <div className={cn(
-            "max-w-lg mx-auto text-center transition-all duration-700",
+            "max-w-xl mx-auto text-center transition-all duration-700",
             heroAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            {/* Badge */}
-            <Badge
-              data-testid="landing-hero-badge"
-              className="mb-6 h-8 px-4 text-sm font-bold bg-primary/10 text-primary border-primary/20 rounded-full"
-            >
-              <Bot className="h-4 w-4 mr-2" />
-              {t('landing.hero.badge', 'AI-конструктор мини-сайтов')}
+            {/* Trust badge */}
+            <Badge className="mb-5 h-7 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
+              <Zap className="h-3.5 w-3.5 mr-1.5" />
+              {t('landing.v4.hero.badge', 'Бесплатно. Без кода. За 2 минуты.')}
             </Badge>
 
-            {/* Main Headline - Clear and result-focused */}
-            <h1
-              data-testid="landing-hero-title"
-              className="text-3xl sm:text-4xl font-black tracking-tight mb-4 leading-[1.15]"
-            >
-              {t('landing.hero.mainTitle', 'Мини-сайт, который приводит заявки, за 2 минуты')}
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-violet-500">
-                {t('landing.hero.mainHighlight', 'Одна ссылка - понятный путь к записи')}
-              </span>
+            {/* H1 - Clear value prop */}
+            <h1 className="text-[1.75rem] sm:text-4xl font-black tracking-tight mb-4 leading-[1.15]">
+              {t('landing.v4.hero.title', 'Собери страницу, которая приводит клиентов')}
             </h1>
 
-            {/* Subhead - What it is and for whom */}
-            <p
-              data-testid="landing-hero-description"
-              className="text-base text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed"
-            >
-              {t(
-                'landing.hero.valueProposition',
-                'AI-конструктор для экспертов, фрилансеров и малого бизнеса. Соберите страницу, прайс, формы и контакты без дизайнера и кода.'
-              )}
+            {/* Subtitle - specific benefits */}
+            <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
+              {t('landing.v4.hero.subtitle', 'AI сделает структуру и тексты. Заявки придут в Telegram. Ты увидишь, что работает.')}
             </p>
 
-            {/* 3 Key Benefits */}
-            <div className="flex flex-col gap-2 mb-8 max-w-sm mx-auto">
-              <BenefitItem 
-                icon={<Bot className="h-4 w-4" />}
-                text={t('landing.hero.benefit1', 'AI собирает структуру и тексты первого экрана')}
-                delay={100}
-              />
-              <BenefitItem 
-                icon={<Send className="h-4 w-4" />}
-                text={t('landing.hero.benefit2', 'Заявки приходят в mini-CRM и Telegram')}
-                delay={200}
-              />
-              <BenefitItem 
-                icon={<BarChart3 className="h-4 w-4" />}
-                text={t('landing.hero.benefit3', 'Аналитика показывает, какие блоки дают лиды')}
-                delay={300}
-              />
-            </div>
-
-            {/* CTA Buttons - Two buttons */}
-            <div className="flex flex-col gap-3 max-w-xs mx-auto">
+            {/* Primary CTA */}
+            <div className="flex flex-col gap-3 max-w-xs mx-auto mb-6">
               <Button 
                 size="lg"
                 onClick={() => handleCreatePage('hero', 'hero_primary_cta_click')}
-                data-testid="landing-hero-primary-cta"
-                className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
-                <Zap className="h-5 w-5 mr-2" />
-                {t('landing.hero.primaryCta', 'Создать страницу бесплатно')}
+                <Sparkles className="h-5 w-5 mr-2" />
+                {t('landing.v4.hero.cta', 'Создать страницу')}
               </Button>
               <Button 
-                variant="outline"
-                size="lg"
-                onClick={() => handleViewExamples('hero', 'hero_secondary_cta_click')}
-                data-testid="landing-hero-secondary-cta"
-                className="h-14 rounded-2xl text-base font-bold hover:scale-[1.02] active:scale-[0.98] transition-all"
-              >
-                <Users className="h-5 w-5 mr-2" />
-                {t('landing.hero.secondaryCta', 'Посмотреть примеры')}
-              </Button>
-              <p className="text-xs text-muted-foreground mt-1">
-                {t('landing.hero.microNote', 'Бесплатный старт. Редактор на телефоне. Публикация в один клик.')}
-              </p>
-              <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleViewPricing('hero')}
-                className="text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => handleViewExamples('hero', 'hero_secondary_cta_click')}
+                className="text-muted-foreground hover:text-foreground"
               >
-                {t('landing.hero.pricingCta', 'Сравнить тарифы')}
+                <Users className="h-4 w-4 mr-2" />
+                {t('landing.v4.hero.secondary', 'Посмотреть примеры')}
+                <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
-          </div>
-        </section>
 
-        {/* FOR WHOM - Target audiences */}
-        <section 
-          ref={forWhomAnim.ref}
-          className="py-12 px-5 bg-muted/30"
-        >
-          <div className={cn(
-            "max-w-lg mx-auto transition-all duration-700",
-            forWhomAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          )}>
-            <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.forWhom.title', 'Кому подходит lnkmx')}
-            </h2>
-
-            <div className="grid grid-cols-2 gap-3">
-              <AudienceCard
-                icon={<Briefcase className="h-5 w-5" />}
-                iconBg="bg-violet-500"
-                title={t('landing.forWhom.expert.title', 'Эксперты')}
-                description={t('landing.forWhom.expert.desc', 'Запись, кейсы, понятный оффер')}
-                delay={0}
-              />
-              <AudienceCard
-                icon={<Target className="h-5 w-5" />}
-                iconBg="bg-blue-500"
-                title={t('landing.forWhom.freelancer.title', 'Фрилансеры')}
-                description={t('landing.forWhom.freelancer.desc', 'Портфолио, бриф, заявки')}
-                delay={100}
-              />
-              <AudienceCard
-                icon={<Scissors className="h-5 w-5" />}
-                iconBg="bg-pink-500"
-                title={t('landing.forWhom.beauty.title', 'Бьюти')}
-                description={t('landing.forWhom.beauty.desc', 'Запись, отзывы, карта')}
-                delay={200}
-              />
-              <AudienceCard
-                icon={<Camera className="h-5 w-5" />}
-                iconBg="bg-amber-500"
-                title={t('landing.forWhom.business.title', 'Бизнес')}
-                description={t('landing.forWhom.business.desc', 'Каталог, лиды, аналитика')}
-                delay={300}
-              />
+            {/* Trust indicators */}
+            <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-primary" />
+                {t('landing.v4.hero.trust1', 'Без карты')}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-primary" />
+                {t('landing.v4.hero.trust2', 'Редактор на телефоне')}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-primary" />
+                {t('landing.v4.hero.trust3', 'Публикация за клик')}
+              </span>
             </div>
           </div>
         </section>
 
-        {/* PROBLEM - Why leads are lost */}
-        <section 
-          ref={problemAnim.ref}
-          className="py-12 px-5"
-        >
+        {/* ========== FOR WHOM ========== */}
+        <section className="py-8 px-5 bg-muted/30">
+          <div className="max-w-xl mx-auto">
+            <p className="text-center text-sm font-medium text-muted-foreground mb-5">
+              {t('landing.v4.forWhom.label', 'Для тех, кто продаёт через соцсети:')}
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {[
+                { icon: Briefcase, label: t('landing.v4.forWhom.expert', 'Эксперты') },
+                { icon: Scissors, label: t('landing.v4.forWhom.beauty', 'Бьюти') },
+                { icon: Camera, label: t('landing.v4.forWhom.creator', 'Креаторы') },
+                { icon: TrendingUp, label: t('landing.v4.forWhom.business', 'Бизнес') },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-card border border-border/50 text-sm font-medium">
+                  <item.icon className="h-4 w-4 text-primary" />
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========== PROBLEM SECTION ========== */}
+        <section ref={problemAnim.ref} className="py-10 px-5">
           <div className={cn(
-            "max-w-lg mx-auto transition-all duration-700",
+            "max-w-xl mx-auto transition-all duration-700",
             problemAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.problem.title', 'Почему заявки теряются сегодня')}
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-6">
+              {t('landing.v4.problem.title', 'Знакомо?')}
             </h2>
 
             <div className="space-y-3">
-              <ProblemCard 
-                text={t('landing.problem.item1', 'В bio хаос: прайс, запись и кейсы разбросаны по постам и ссылкам')}
-                delay={0}
-              />
-              <ProblemCard 
-                text={t('landing.problem.item2', 'Люди задают одни вопросы, а вы отвечаете вручную и теряете время')}
-                delay={100}
-              />
-              <ProblemCard 
-                text={t('landing.problem.item3', 'Страница превращается в меню ссылок, а не путь к записи')}
-                delay={200}
-              />
-              <ProblemCard 
-                text={t('landing.problem.item4', 'Нет понимания: что реально кликают и где теряется внимание')}
-                delay={300}
-              />
+              {[
+                t('landing.v4.problem.item1', 'В bio ссылка на WhatsApp, и клиенты спрашивают одно и то же'),
+                t('landing.v4.problem.item2', 'Нет понятного прайса - теряешь тех, кто не хочет писать'),
+                t('landing.v4.problem.item3', 'Непонятно, какие посты и сторис реально приводят заявки'),
+              ].map((text, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/10">
+                  <X className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                  <span className="text-sm">{text}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Solution teaser */}
-            <Card className="mt-6 p-4 bg-primary/5 border-primary/20">
+            <Card className="mt-5 p-4 bg-primary/5 border-primary/20">
               <p className="text-sm leading-relaxed">
-                {t('landing.problem.solution', 'lnkmx делает одну понятную страницу, где посетитель быстро понимает, кто вы, чем полезны, сколько стоит, и куда нажать для заявки. А вы видите лиды и аналитику в одном месте.')}
+                <span className="font-semibold">lnkmx</span> {t('landing.v4.problem.solution', '- одна страница, где всё понятно: кто ты, чем помогаешь, сколько стоит и куда нажать.')}
               </p>
             </Card>
           </div>
         </section>
 
-        {/* HOW IT WORKS - 3 Steps */}
+        {/* ========== HOW IT WORKS ========== */}
         <section 
           ref={mergeRefs(howItWorksAnim.ref, howItWorksSectionRef)}
-          className="py-12 px-5 bg-muted/30"
+          className="py-10 px-5 bg-muted/30"
         >
           <div className={cn(
-            "max-w-lg mx-auto transition-all duration-700",
+            "max-w-xl mx-auto transition-all duration-700",
             howItWorksAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.howItWorks.title', 'Как это работает')}
+            <Badge className="mb-4 mx-auto flex w-fit h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
+              <Clock className="h-3.5 w-3.5 mr-1.5" />
+              {t('landing.v4.howItWorks.badge', '2 минуты до результата')}
+            </Badge>
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-8">
+              {t('landing.v4.howItWorks.title', 'Как это работает')}
             </h2>
 
             <div className="space-y-4">
               <StepCard
                 number="1"
-                title={t('landing.howItWorks.step1.title', 'Выберите нишу')}
-                description={t('landing.howItWorks.step1.description', 'Укажите кто вы и что продаете')}
-                delay={0}
+                icon={<Target className="h-5 w-5" />}
+                title={t('landing.v4.howItWorks.step1.title', 'Расскажи, чем занимаешься')}
+                description={t('landing.v4.howItWorks.step1.desc', 'Выбери нишу и добавь пару фактов о себе')}
               />
               <StepCard
                 number="2"
-                title={t('landing.howItWorks.step2.title', 'AI соберет страницу')}
-                description={t('landing.howItWorks.step2.description', 'AI собирает структуру, тексты, CTA и базовый прайс')}
-                delay={100}
+                icon={<Bot className="h-5 w-5" />}
+                title={t('landing.v4.howItWorks.step2.title', 'AI соберёт страницу')}
+                description={t('landing.v4.howItWorks.step2.desc', 'Структура, тексты, кнопки - редактируй как хочешь')}
               />
               <StepCard
                 number="3"
-                title={t('landing.howItWorks.step3.title', 'Получайте заявки')}
-                description={t('landing.howItWorks.step3.description', 'Публикуете и получаете заявки в мини-CRM и Telegram')}
-                delay={200}
+                icon={<Send className="h-5 w-5" />}
+                title={t('landing.v4.howItWorks.step3.title', 'Получай заявки')}
+                description={t('landing.v4.howItWorks.step3.desc', 'Ссылка для соцсетей готова, лиды идут в Telegram')}
               />
             </div>
 
@@ -430,358 +374,350 @@ export default function Index() {
               <Button 
                 size="lg"
                 onClick={() => handleCreatePage('how_it_works')}
-                className="h-14 px-8 rounded-2xl text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] transition-transform"
+                className="h-12 px-6 rounded-xl font-semibold shadow-lg shadow-primary/20"
               >
-                {t('landing.howItWorks.cta', 'Попробовать сейчас')}
-                <ArrowRight className="h-5 w-5 ml-2" />
+                {t('landing.v4.howItWorks.cta', 'Попробовать')}
+                <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </div>
           </div>
         </section>
 
-        {/* FEATURES - What's inside */}
-        <section 
-          ref={featuresAnim.ref}
-          className="py-12 px-5"
-        >
+        {/* ========== BENEFITS / WHAT YOU GET ========== */}
+        <section ref={benefitsAnim.ref} className="py-10 px-5">
           <div className={cn(
-            "max-w-lg mx-auto transition-all duration-700",
-            featuresAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            "max-w-xl mx-auto transition-all duration-700",
+            benefitsAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.features.title', 'Что вы получите в первой версии')}
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-8">
+              {t('landing.v4.benefits.title', 'Что получишь')}
             </h2>
 
-            <div className="space-y-4">
-              <FeatureSection
-                icon={<Bot className="h-5 w-5" />}
-                iconBg="bg-violet-500"
-                title={t('landing.features.ai.title', 'Страница с понятным оффером')}
-                items={[
-                  t('landing.features.ai.item1', 'Первый экран с обещанием результата и CTA'),
-                  t('landing.features.ai.item2', 'Прайс или пакеты услуг без ручной верстки'),
-                  t('landing.features.ai.item3', 'Форма заявки и контакты на одной странице'),
-                ]}
-                delay={0}
-              />
-
-              <FeatureSection
-                icon={<Send className="h-5 w-5" />}
+            <div className="grid gap-3">
+              <BenefitCard
+                icon={<MessageSquare className="h-5 w-5" />}
                 iconBg="bg-blue-500"
-                title={t('landing.features.crm.title', 'Лиды и порядок')}
-                items={[
-                  t('landing.features.crm.item1', 'Мини-CRM: лиды, статусы, заметки'),
-                  t('landing.features.crm.item2', 'Уведомления о заявках в Telegram'),
-                  t('landing.features.crm.item3', 'Быстрые ответы и история общения'),
-                ]}
-                delay={100}
+                title={t('landing.v4.benefits.crm.title', 'Мини-CRM + Telegram')}
+                description={t('landing.v4.benefits.crm.desc', 'Все заявки в одном месте. Мгновенные уведомления в телефон.')}
               />
-
-              <FeatureSection
+              <BenefitCard
                 icon={<BarChart3 className="h-5 w-5" />}
                 iconBg="bg-amber-500"
-                title={t('landing.features.analytics.title', 'Понимание, что работает')}
-                items={[
-                  t('landing.features.analytics.item1', 'Просмотры и клики по блокам'),
-                  t('landing.features.analytics.item2', 'Источники трафика, устройства'),
-                  t('landing.features.analytics.item3', 'Подсказки, что улучшить дальше'),
-                ]}
-                delay={200}
+                title={t('landing.v4.benefits.analytics.title', 'Аналитика кликов')}
+                description={t('landing.v4.benefits.analytics.desc', 'Видишь, какие блоки работают. Понимаешь, что улучшить.')}
+              />
+              <BenefitCard
+                icon={<Bot className="h-5 w-5" />}
+                iconBg="bg-violet-500"
+                title={t('landing.v4.benefits.ai.title', 'AI-помощник')}
+                description={t('landing.v4.benefits.ai.desc', 'Генерирует тексты, структуру и идеи. Экономит часы работы.')}
+              />
+              <BenefitCard
+                icon={<Zap className="h-5 w-5" />}
+                iconBg="bg-emerald-500"
+                title={t('landing.v4.benefits.mobile.title', 'Мобильный редактор')}
+                description={t('landing.v4.benefits.mobile.desc', 'Редактируй с телефона. Публикуй за секунду.')}
               />
             </div>
           </div>
         </section>
 
-        {/* USE CASES */}
-        <section
-          ref={useCasesAnim.ref}
-          className="py-12 px-5 bg-muted/30"
-        >
+        {/* ========== BLOCKS SHOWCASE ========== */}
+        <section ref={blocksAnim.ref} className="py-10 px-5 bg-muted/30">
           <div className={cn(
-            "max-w-lg mx-auto transition-all duration-700",
-            useCasesAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            "max-w-xl mx-auto transition-all duration-700",
+            blocksAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            <h2 className="text-2xl font-black text-center mb-3">
-              {t('landing.useCases.title', 'Готовые сценарии под ваши задачи')}
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-2">
+              {t('landing.v4.blocks.title', '25+ готовых блоков')}
             </h2>
-            <p className="text-center text-muted-foreground mb-8">
-              {t('landing.useCases.subtitle', 'Выберите сценарий, поправьте пару блоков и публикуйте.')}
+            <p className="text-center text-sm text-muted-foreground mb-6">
+              {t('landing.v4.blocks.subtitle', 'Drag & drop. Работает на любом устройстве.')}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Horizontal scroll on mobile */}
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-hide">
+              {[
+                { name: t('blockTypes.profile', 'Профиль'), emoji: '👤' },
+                { name: t('blockTypes.link', 'Ссылки'), emoji: '🔗' },
+                { name: t('blockTypes.pricing', 'Прайс'), emoji: '💰' },
+                { name: t('blockTypes.form', 'Форма'), emoji: '📝' },
+                { name: t('blockTypes.booking', 'Запись'), emoji: '📅' },
+                { name: t('blockTypes.faq', 'FAQ'), emoji: '❓' },
+                { name: t('blockTypes.testimonial', 'Отзывы'), emoji: '⭐' },
+                { name: t('blockTypes.map', 'Карта'), emoji: '📍' },
+                { name: t('blockTypes.product', 'Товары'), emoji: '🛍️' },
+                { name: t('blockTypes.video', 'Видео'), emoji: '🎬' },
+              ].map((block, i) => (
+                <div 
+                  key={i} 
+                  className="flex-shrink-0 flex items-center gap-2 py-2 px-3 rounded-xl bg-card border border-border/50 text-sm font-medium"
+                >
+                  <span>{block.emoji}</span>
+                  {block.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========== USE CASES ========== */}
+        <section ref={useCasesAnim.ref} className="py-10 px-5">
+          <div className={cn(
+            "max-w-xl mx-auto transition-all duration-700",
+            useCasesAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          )}>
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-2">
+              {t('landing.v4.useCases.title', 'Готовые сценарии')}
+            </h2>
+            <p className="text-center text-sm text-muted-foreground mb-6">
+              {t('landing.v4.useCases.subtitle', 'Выбери шаблон - AI адаптирует под тебя')}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <UseCaseCard
                 icon={<Briefcase className="h-5 w-5" />}
-                title={t('landing.useCases.expert.title', 'Эксперт или консультации')}
-                bullets={[
-                  t('landing.useCases.expert.bullet1', 'Оффер и результат на первом экране'),
-                  t('landing.useCases.expert.bullet2', 'Прайс и пакеты услуг'),
-                  t('landing.useCases.expert.bullet3', 'Форма заявки и мессенджеры'),
+                title={t('landing.v4.useCases.expert.title', 'Эксперт / Консультант')}
+                items={[
+                  t('landing.v4.useCases.expert.item1', 'Оффер на первом экране'),
+                  t('landing.v4.useCases.expert.item2', 'Пакеты услуг и цены'),
+                  t('landing.v4.useCases.expert.item3', 'Форма заявки'),
                 ]}
               />
               <UseCaseCard
                 icon={<Scissors className="h-5 w-5" />}
-                title={t('landing.useCases.service.title', 'Услуги и сервис')}
-                bullets={[
-                  t('landing.useCases.service.bullet1', 'Запись и расписание'),
-                  t('landing.useCases.service.bullet2', 'Адрес, карта и отзывы'),
-                  t('landing.useCases.service.bullet3', 'Контакты и быстрые ответы'),
+                title={t('landing.v4.useCases.beauty.title', 'Бьюти / Услуги')}
+                items={[
+                  t('landing.v4.useCases.beauty.item1', 'Онлайн-запись'),
+                  t('landing.v4.useCases.beauty.item2', 'Отзывы и до/после'),
+                  t('landing.v4.useCases.beauty.item3', 'Карта и контакты'),
                 ]}
               />
               <UseCaseCard
                 icon={<Camera className="h-5 w-5" />}
-                title={t('landing.useCases.creator.title', 'Креатор и портфолио')}
-                bullets={[
-                  t('landing.useCases.creator.bullet1', 'Лучшие проекты и кейсы'),
-                  t('landing.useCases.creator.bullet2', 'Соцсети и подписки'),
-                  t('landing.useCases.creator.bullet3', 'Прием заявок и бриф'),
+                title={t('landing.v4.useCases.creator.title', 'Креатор / Портфолио')}
+                items={[
+                  t('landing.v4.useCases.creator.item1', 'Лучшие работы'),
+                  t('landing.v4.useCases.creator.item2', 'Соцсети и подписки'),
+                  t('landing.v4.useCases.creator.item3', 'Бриф для заказа'),
                 ]}
               />
               <UseCaseCard
                 icon={<TrendingUp className="h-5 w-5" />}
-                title={t('landing.useCases.shop.title', 'Магазин или каталог')}
-                bullets={[
-                  t('landing.useCases.shop.bullet1', 'Товары и цены'),
-                  t('landing.useCases.shop.bullet2', 'FAQ и условия доставки'),
-                  t('landing.useCases.shop.bullet3', 'Быстрый контакт для заказа'),
+                title={t('landing.v4.useCases.shop.title', 'Магазин / Каталог')}
+                items={[
+                  t('landing.v4.useCases.shop.item1', 'Товары с ценами'),
+                  t('landing.v4.useCases.shop.item2', 'FAQ и доставка'),
+                  t('landing.v4.useCases.shop.item3', 'Быстрый заказ'),
                 ]}
               />
             </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 size="lg"
                 onClick={() => handleCreatePage('use_cases')}
-                className="h-12 rounded-2xl font-bold"
+                className="h-12 rounded-xl font-semibold"
               >
-                {t('landing.useCases.primaryCta', 'Создать страницу')}
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => handleViewExamples('use_cases')}
-                className="h-12 rounded-2xl font-bold"
-              >
-                {t('landing.useCases.secondaryCta', 'Посмотреть примеры')}
+                {t('landing.v4.useCases.cta', 'Выбрать сценарий')}
               </Button>
             </div>
           </div>
         </section>
 
-        {/* COMPARISON - Why LinkMAX vs link-in-bio */}
-        <section 
-          ref={comparisonAnim.ref}
-          className="py-12 px-5 bg-muted/30"
-        >
+        {/* ========== SOCIAL PROOF / GALLERY ========== */}
+        <section ref={proofAnim.ref} className="py-10 px-5 bg-muted/30">
           <div className={cn(
-            "max-w-lg mx-auto transition-all duration-700",
-            comparisonAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            "max-w-xl mx-auto transition-all duration-700",
+            proofAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            <h2 className="text-2xl font-black text-center mb-8">
-              {t('landing.comparison.title', 'Почему мини-сайт лучше меню ссылок')}
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-2">
+              {t('landing.v4.proof.title', 'Примеры страниц')}
             </h2>
-
-            <Card className="overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="text-left p-3 font-bold">{t('landing.comparison.feature', 'Функция')}</th>
-                    <th className="p-3 font-bold text-primary">lnkmx</th>
-                    <th className="p-3 font-bold text-muted-foreground">{t('landing.comparison.others', 'Другие')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <ComparisonRow 
-                    feature={t('landing.comparison.ai', 'AI-сборка страницы')} 
-                    lnkmx={true} 
-                    others={false} 
-                  />
-                  <ComparisonRow 
-                    feature={t('landing.comparison.crm', 'Мини-CRM для заявок')} 
-                    lnkmx={true} 
-                    others={false} 
-                  />
-                  <ComparisonRow 
-                    feature={t('landing.comparison.telegram', 'Telegram-уведомления')} 
-                    lnkmx={true} 
-                    others={false} 
-                  />
-                  <ComparisonRow 
-                    feature={t('landing.comparison.mobile', 'Mobile-редактор')} 
-                    lnkmx={true} 
-                    others="partial" 
-                  />
-                  <ComparisonRow 
-                    feature={t('landing.comparison.blockAnalytics', 'Аналитика по блокам')} 
-                    lnkmx={true} 
-                    others="partial" 
-                  />
-                </tbody>
-              </table>
-            </Card>
-          </div>
-        </section>
-
-        {/* SOCIAL PROOF - Gallery */}
-        <section className="py-12 px-5">
-          <div className="max-w-lg mx-auto">
-            <h2 className="text-xl font-bold text-center mb-6 text-muted-foreground">
-              {t('landing.socialProof.title', 'Примеры страниц')}
-            </h2>
+            <p className="text-center text-sm text-muted-foreground mb-6">
+              {t('landing.v4.proof.subtitle', 'Посмотри, как другие используют lnkmx')}
+            </p>
             <Suspense fallback={null}>
               <LandingGallerySection />
             </Suspense>
+            <div className="mt-4 text-center">
+              <Button
+                variant="ghost"
+                onClick={() => handleViewExamples('proof')}
+                className="text-sm"
+              >
+                {t('landing.gallery.viewAll', 'Смотреть все')}
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
           </div>
         </section>
 
-        {/* PRICING */}
+        {/* ========== PRICING ========== */}
         <section 
           ref={mergeRefs(pricingAnim.ref, pricingSectionRef)}
-          className="py-12 px-5 bg-muted/30"
+          className="py-10 px-5"
         >
           <div className={cn(
-            "max-w-lg mx-auto transition-all duration-700",
+            "max-w-xl mx-auto transition-all duration-700",
             pricingAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            <h2 className="text-2xl font-black text-center mb-3">
-              {t('landing.pricing.title', 'Тарифы')}
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-2">
+              {t('landing.v4.pricing.title', 'Простые тарифы')}
             </h2>
-            <p className="text-center text-muted-foreground mb-8">
-              {t('landing.pricing.subtitle', 'Начните бесплатно и подключите Pro, когда понадобится больше')}
+            <p className="text-center text-sm text-muted-foreground mb-6">
+              {t('landing.v4.pricing.subtitle', 'Начни бесплатно. Подключи Pro, когда нужно больше.')}
             </p>
 
-            <div className="grid grid-cols-1 gap-4">
-              {/* Free tier */}
-              <Card className="p-5 border-2 border-border/50 hover:border-border transition-colors">
+            <div className="grid gap-4">
+              {/* Free */}
+              <Card className="p-5 border border-border/50">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-bold">Free</h3>
-                    <p className="text-2xl font-black">0 {isKZ ? '₸' : '$'}</p>
+                    <p className="text-2xl font-black">{isKZ ? '0 ₸' : '$0'}</p>
                   </div>
-                  <Badge variant="secondary" className="text-sm font-bold">
-                    {t('landing.pricing.forever', 'Навсегда')}
-                  </Badge>
+                  <Badge variant="secondary">{t('landing.v4.pricing.forever', 'Навсегда')}</Badge>
                 </div>
-                <ul className="space-y-2 text-sm">
-                  <PriceFeature text={t('landing.pricing.free.item1', '6 базовых блоков')} />
-                  <PriceFeature text={t('landing.pricing.free.item2', '1 AI генерация/месяц')} />
-                  <PriceFeature text={t('landing.pricing.free.item3', 'Базовая аналитика')} />
+                <ul className="space-y-2 text-sm mb-4">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.free.f1', 'Базовые блоки')}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.free.f2', '1 AI-генерация/месяц')}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.free.f3', 'Базовая статистика')}
+                  </li>
                 </ul>
                 <Button 
-                  variant="outline"
-                  className="w-full h-12 rounded-xl font-bold mt-4 hover:scale-[1.02] transition-transform"
+                  variant="outline" 
+                  className="w-full h-11 rounded-xl font-semibold"
                   onClick={() => handleCreatePage('pricing_free')}
                 >
-                  {t('landing.pricing.freeAction', 'Начать бесплатно')}
+                  {t('landing.v4.pricing.freeCta', 'Начать бесплатно')}
                 </Button>
               </Card>
 
-              {/* Pro tier - 12 months best value */}
-              <Card className="p-5 border-2 border-primary bg-primary/5 relative overflow-hidden hover:bg-primary/10 transition-colors">
-                <div className="absolute top-0 right-0 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-bl-xl">
-                  {t('landing.pricing.bestValue', 'Лучшая цена')}
+              {/* Pro */}
+              <Card className="p-5 border-2 border-primary bg-primary/5 relative">
+                <div className="absolute -top-2.5 left-4 px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded-full">
+                  {t('landing.v4.pricing.recommended', 'Рекомендуем')}
                 </div>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-bold flex items-center gap-2">
-                      Pro
-                      <Crown className="h-4 w-4 text-amber-500" />
+                      Pro <Crown className="h-4 w-4 text-amber-500" />
                     </h3>
                     <p className="text-2xl font-black">
-                      {isKZ ? '2 610 ₸' : '$5'}<span className="text-base font-normal text-muted-foreground">/{t('pricing.month', 'мес')}</span>
+                      {isKZ ? '2 610 ₸' : '$5'}
+                      <span className="text-sm font-normal text-muted-foreground">/{t('landing.v4.pricing.month', 'мес')}</span>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {isKZ
-                        ? t('landing.pricing.annualPriceKzt', '31 320 ₸ за 12 месяцев')
-                        : t('landing.pricing.annualPriceUsd', '$60/year')}
+                      {isKZ ? '31 320 ₸ за год' : '$60/year'} · {t('landing.v4.pricing.save', 'экономия 40%')}
                     </p>
                   </div>
                 </div>
                 <ul className="space-y-2 text-sm mb-4">
-                  <PriceFeature text={t('landing.pricing.pro.item1', 'Безлимит блоков и шаблонов')} isPro />
-                  <PriceFeature text={t('landing.pricing.pro.item2', '5 AI генераций/месяц')} isPro />
-                  <PriceFeature text={t('landing.pricing.pro.item3', 'CRM + Telegram уведомления')} isPro />
-                  <PriceFeature text={t('landing.pricing.pro.item4', 'Расширенная аналитика')} isPro />
-                  <PriceFeature text={t('landing.pricing.pro.item5', 'Без watermark')} isPro />
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.pro.f1', 'Все 25+ блоков')}
+                  </li>
+                  <li className="flex items-center gap-2 font-medium">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.pro.f2', 'Mini-CRM + Telegram-уведомления')}
+                  </li>
+                  <li className="flex items-center gap-2 font-medium">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.pro.f3', '5 AI-генераций/месяц')}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.pro.f4', 'Расширенная аналитика')}
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    {t('landing.v4.pricing.pro.f5', 'Без watermark')}
+                  </li>
                 </ul>
                 <Button 
-                  className="w-full h-12 rounded-xl font-bold hover:scale-[1.02] transition-transform"
+                  className="w-full h-11 rounded-xl font-semibold shadow-md shadow-primary/20"
                   onClick={() => handleViewPricing('pricing_pro')}
                 >
-                  {t('landing.pricing.viewPlans', 'Выбрать Pro')}
+                  <Crown className="h-4 w-4 mr-2" />
+                  {t('landing.v4.pricing.proCta', 'Выбрать Pro')}
                 </Button>
-                
-                {/* Other Pro pricing options */}
-                <div className="mt-4 pt-4 border-t border-border/30">
-                  <p className="text-xs text-muted-foreground text-center mb-2">
-                    {t('landing.pricing.otherPlans', 'Другие варианты:')}
-                  </p>
-                  <div className="flex justify-center gap-4 text-xs">
-                    <span className="text-muted-foreground">{t('landing.pricing.otherPlansSix', '6 мес: 3 500 ₸/мес')}</span>
-                    <span className="text-muted-foreground">{t('landing.pricing.otherPlansThree', '3 мес: 4 350 ₸/мес')}</span>
-                  </div>
-                </div>
               </Card>
             </div>
+
+            <p className="text-center text-xs text-muted-foreground mt-4">
+              <Shield className="inline h-3.5 w-3.5 mr-1" />
+              {t('landing.v4.pricing.guarantee', '0% комиссии с продаж. Возврат 14 дней.')}
+            </p>
           </div>
         </section>
 
-        {/* FAQ */}
+        {/* ========== FAQ ========== */}
         <Suspense fallback={null}>
           <FAQSection />
         </Suspense>
 
-        {/* FINAL CTA */}
-        <section 
-          ref={finalCtaAnim.ref}
-          className="py-16 px-5 bg-gradient-to-b from-background to-primary/5"
-        >
+        {/* ========== FINAL CTA ========== */}
+        <section ref={finalCtaAnim.ref} className="py-14 px-5 bg-gradient-to-b from-muted/30 to-primary/5">
           <div className={cn(
-            "max-w-lg mx-auto text-center transition-all duration-700",
+            "max-w-xl mx-auto text-center transition-all duration-700",
             finalCtaAnim.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}>
-            <h2 className="text-2xl sm:text-3xl font-black mb-4">
-              {t('landing.finalCta.title', 'Соберите страницу, которая ведет к заявке, за 2 минуты')}
+            <h2 className="text-xl sm:text-2xl font-bold mb-3">
+              {t('landing.v4.finalCta.title', 'Готов собрать страницу?')}
             </h2>
-            <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-              {t('landing.finalCta.description', 'Не теряйте клиентов в переписке. Дайте им понятный путь: кто вы - чем помогаете - сколько стоит - записаться.')}
+            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+              {t('landing.v4.finalCta.subtitle', 'Бесплатно. Без кода. Результат за 2 минуты.')}
             </p>
             <div className="flex flex-col gap-3 max-w-xs mx-auto">
               <Button 
                 size="lg"
                 onClick={() => handleCreatePage('final_cta')}
-                className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] transition-transform"
+                className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/25"
               >
-                <Zap className="h-5 w-5 mr-2" />
-                {t('landing.finalCta.primaryCta', 'Создать страницу бесплатно')}
+                <Sparkles className="h-5 w-5 mr-2" />
+                {t('landing.v4.finalCta.cta', 'Создать страницу')}
               </Button>
               <Button 
-                variant="outline"
-                size="lg"
+                variant="ghost"
+                size="sm"
                 onClick={() => handleViewExamples('final_cta')}
-                className="h-14 rounded-2xl text-base font-bold"
+                className="text-muted-foreground"
               >
-                {t('landing.finalCta.secondaryCta', 'Посмотреть примеры')}
+                {t('landing.v4.finalCta.secondary', 'Или посмотри примеры')}
               </Button>
             </div>
           </div>
         </section>
 
-        {/* Footer */}
+        {/* ========== FOOTER ========== */}
         <footer className="border-t border-border/30 py-8 px-5 bg-muted/20">
-          <div className="max-w-lg mx-auto">
-            <div className="flex items-center justify-center mb-6">
+          <div className="max-w-xl mx-auto">
+            <div className="flex items-center justify-center mb-4">
               <span className="text-lg font-black">
                 lnk<span className="text-primary">mx</span>
               </span>
             </div>
             
-            <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground mb-6">
+            <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground mb-4">
               <button onClick={() => navigate('/alternatives')} className="hover:text-foreground transition-colors">
                 {t('landing.footer.alternatives', 'Сравнение')}
               </button>
               <span>·</span>
               <button onClick={() => navigate('/pricing')} className="hover:text-foreground transition-colors">
                 {t('pricing.title', 'Тарифы')}
+              </button>
+              <span>·</span>
+              <button onClick={() => navigate('/gallery')} className="hover:text-foreground transition-colors">
+                {t('landing.nav.gallery', 'Галерея')}
               </button>
               <span>·</span>
               <TermsLink className="hover:text-foreground transition-colors">
@@ -793,50 +729,23 @@ export default function Index() {
               </PrivacyLink>
             </div>
 
-            <div className="text-center text-xs text-muted-foreground space-y-1">
-              <p>{t('pricing.companyDetails.nameLine', 'ИП BEEGIN • БИН: 971207300019')}</p>
-              <p>{t('pricing.companyDetails.addressLine', 'г. Алматы, ул. Шолохова, д. 20/7')}</p>
-              <div className="flex items-center justify-center gap-4 pt-2">
-                <a href="mailto:admin@lnkmx.my" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                  <Mail className="h-3 w-3" />
-                  admin@lnkmx.my
-                </a>
-                <a href="tel:+77051097664" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                  <Phone className="h-3 w-3" />
-                  +7 705 109 7664
-                </a>
-              </div>
-              <p className="pt-2">{t('landing.footer.copyright', '© 2025 lnkmx')}</p>
-            </div>
+            <p className="text-center text-xs text-muted-foreground">
+              © {new Date().getFullYear()} lnkmx
+            </p>
           </div>
         </footer>
 
         {/* Floating CTA */}
-        {isMobile && (
-          <div 
-            className={cn(
-              "fixed bottom-6 left-4 right-4 z-50 transition-all duration-300",
-              showFloatingCta 
-                ? "opacity-100 translate-y-0" 
-                : "opacity-0 translate-y-10 pointer-events-none"
-            )}
-          >
-            <div className="flex gap-2">
-              <Button 
-                onClick={() => handleCreatePage('floating_cta')}
-                className="flex-1 h-14 rounded-2xl font-bold text-base shadow-2xl shadow-primary/40 hover:scale-[1.02] transition-transform"
-              >
-                <Sparkles className="h-5 w-5 mr-2" />
-                {t('landing.floatingCta.create', 'Создать')}
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => handleViewExamples('floating_cta')}
-                className="h-14 px-4 rounded-2xl font-bold bg-background/95 backdrop-blur"
-              >
-                <Users className="h-5 w-5" />
-              </Button>
-            </div>
+        {showFloatingCta && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in fade-in slide-in-from-bottom-4">
+            <Button 
+              size="lg"
+              onClick={() => handleCreatePage('floating')}
+              className="h-12 px-6 rounded-full font-bold shadow-2xl shadow-primary/30"
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              {t('landing.floatingCta.create', 'Создать')}
+            </Button>
           </div>
         )}
       </div>
@@ -844,215 +753,81 @@ export default function Index() {
   );
 }
 
-function mergeRefs<T>(...refs: Array<React.Ref<T> | undefined>) {
-  return (value: T | null) => {
-    refs.forEach((ref) => {
-      if (!ref) return;
-      if (typeof ref === 'function') {
-        ref(value);
-      } else {
-        (ref as React.MutableRefObject<T | null>).current = value;
-      }
-    });
-  };
-}
+// ========== COMPONENTS ==========
 
-// Benefit Item Component
-function BenefitItem({ 
+function StepCard({ 
+  number, 
   icon, 
-  text,
-  delay = 0,
+  title, 
+  description 
 }: { 
+  number: string; 
   icon: React.ReactNode; 
-  text: string;
-  delay?: number;
+  title: string; 
+  description: string;
 }) {
   return (
-    <div 
-      className="flex items-center gap-3 p-2.5 rounded-xl bg-card/50 border border-border/30 animate-in fade-in slide-in-from-bottom-2 duration-500"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-        {icon}
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border/50">
+      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+        {number}
       </div>
-      <span className="text-sm text-left">{text}</span>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-semibold mb-1">{title}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
     </div>
   );
 }
 
-// Problem Card Component
-function ProblemCard({ text, delay = 0 }: { text: string; delay?: number }) {
-  return (
-    <Card 
-      className="p-4 flex items-start gap-3 bg-destructive/5 border-destructive/20 animate-in fade-in slide-in-from-left-2 duration-500"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <X className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-      <p className="text-sm">{text}</p>
-    </Card>
-  );
-}
-
-// Step Card Component
-function StepCard({ 
-  number, 
+function BenefitCard({ 
+  icon, 
+  iconBg, 
   title, 
-  description,
-  delay = 0,
+  description 
 }: { 
-  number: string; 
+  icon: React.ReactNode; 
+  iconBg: string; 
   title: string; 
   description: string;
-  delay?: number;
 }) {
   return (
-    <Card 
-      className="p-4 flex items-start gap-4 bg-card/50 backdrop-blur border-border/30 hover:bg-card/80 transition-all hover:scale-[1.01] animate-in fade-in slide-in-from-bottom-2 duration-500"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <div className="h-10 w-10 rounded-xl bg-primary text-primary-foreground font-black text-lg flex items-center justify-center flex-shrink-0">
-        {number}
-      </div>
-      <div>
-        <h3 className="font-bold mb-1">{title}</h3>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
-    </Card>
-  );
-}
-
-// Audience Card Component
-function AudienceCard({ 
-  icon, 
-  iconBg, 
-  title, 
-  description,
-  delay = 0,
-}: { 
-  icon: React.ReactNode; 
-  iconBg: string; 
-  title: string; 
-  description: string; 
-  delay?: number;
-}) {
-  return (
-    <Card 
-      className="p-4 bg-card/50 backdrop-blur border-border/30 hover:bg-card/80 hover:scale-[1.02] transition-all animate-in fade-in zoom-in-95 duration-500"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <div className={cn(
-        "h-10 w-10 rounded-xl flex items-center justify-center text-white mb-3",
-        iconBg
-      )}>
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border/50">
+      <div className={cn("flex-shrink-0 h-10 w-10 rounded-xl flex items-center justify-center text-white", iconBg)}>
         {icon}
       </div>
-      <h3 className="font-bold mb-1 text-sm">{title}</h3>
-      <p className="text-xs text-muted-foreground">{description}</p>
-    </Card>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-semibold mb-1">{title}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
+    </div>
   );
 }
 
-// Feature Section Component
-function FeatureSection({ 
+function UseCaseCard({ 
   icon, 
-  iconBg, 
   title, 
-  items,
-  delay = 0,
+  items 
 }: { 
   icon: React.ReactNode; 
-  iconBg: string; 
   title: string; 
   items: string[];
-  delay?: number;
 }) {
   return (
-    <Card 
-      className="p-5 bg-card/50 backdrop-blur border-border/30 hover:bg-card/80 transition-colors animate-in fade-in slide-in-from-bottom-2 duration-500"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <div className="flex items-center gap-3 mb-4">
-        <div className={cn(
-          "h-10 w-10 rounded-xl flex items-center justify-center text-white flex-shrink-0",
-          iconBg
-        )}>
-          {icon}
-        </div>
-        <h3 className="font-bold">{title}</h3>
-      </div>
-      <ul className="space-y-2 text-sm">
-        {items.map((item, index) => (
-          <li key={index} className="flex items-start gap-2">
-            <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </Card>
-  );
-}
-
-// Use Case Card Component
-function UseCaseCard({
-  icon,
-  title,
-  bullets,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  bullets: string[];
-}) {
-  return (
-    <Card className="p-4 bg-card/50 backdrop-blur border-border/30">
+    <Card className="p-4">
       <div className="flex items-center gap-3 mb-3">
-        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+        <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
           {icon}
         </div>
-        <h3 className="font-bold text-sm">{title}</h3>
+        <h3 className="font-semibold text-sm">{title}</h3>
       </div>
-      <ul className="space-y-2 text-sm text-muted-foreground">
-        {bullets.map((bullet, index) => (
-          <li key={index} className="flex items-start gap-2">
-            <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-            <span>{bullet}</span>
+      <ul className="space-y-1.5">
+        {items.map((item, i) => (
+          <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Check className="h-3 w-3 text-primary flex-shrink-0" />
+            {item}
           </li>
         ))}
       </ul>
     </Card>
-  );
-}
-
-// Price Feature Component
-function PriceFeature({ text, isPro = false }: { text: string; isPro?: boolean }) {
-  return (
-    <li className="flex items-center gap-2">
-      <Check className={cn("h-4 w-4", isPro ? "text-primary" : "text-emerald-500")} />
-      {text}
-    </li>
-  );
-}
-
-// Comparison Row Component
-function ComparisonRow({ 
-  feature, 
-  lnkmx, 
-  others 
-}: { 
-  feature: string; 
-  lnkmx: boolean; 
-  others: boolean | 'partial'; 
-}) {
-  return (
-    <tr className="border-b last:border-0">
-      <td className="p-3">{feature}</td>
-      <td className="p-3 text-center">
-        {lnkmx && <Check className="h-5 w-5 text-primary mx-auto" />}
-      </td>
-      <td className="p-3 text-center">
-        {others === true && <Check className="h-5 w-5 text-muted-foreground mx-auto" />}
-        {others === 'partial' && <span className="text-xs text-muted-foreground">~</span>}
-        {others === false && <X className="h-5 w-5 text-muted-foreground/50 mx-auto" />}
-      </td>
-    </tr>
   );
 }
