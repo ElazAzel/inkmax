@@ -215,7 +215,135 @@
       "badge": "Community",
       "title": "Explore Community Pages",
       "subtitle": "Get inspired by amazing pages created by our community",
-      "viewAll": "View all pages"
+      "viewAll": "View all"
+    },
+    "v4": {
+      "hero": {
+        "badge": "Free. No code. In 2 minutes.",
+        "title": "Build a page that brings clients",
+        "subtitle": "AI writes the copy. Leads go to Telegram. You see what works.",
+        "cta": "Create page",
+        "secondary": "See examples",
+        "trust1": "No card required",
+        "trust2": "Mobile editor",
+        "trust3": "Publish in one click"
+      },
+      "forWhom": {
+        "label": "For those who sell via socials:",
+        "expert": "Experts",
+        "beauty": "Beauty",
+        "creator": "Creators",
+        "business": "Business"
+      },
+      "problem": {
+        "title": "Sound familiar?",
+        "item1": "Your bio links to WhatsApp, and clients ask the same questions",
+        "item2": "No clear pricing - you lose those who don't want to message",
+        "item3": "You don't know which posts actually bring leads",
+        "solution": "- one page where everything is clear: who you are, how you help, pricing, and where to click."
+      },
+      "howItWorks": {
+        "badge": "2 minutes to results",
+        "title": "How it works",
+        "step1": {
+          "title": "Tell us what you do",
+          "desc": "Pick a niche and add a few facts about yourself"
+        },
+        "step2": {
+          "title": "AI builds your page",
+          "desc": "Structure, copy, buttons - edit as you like"
+        },
+        "step3": {
+          "title": "Get leads",
+          "desc": "Your link is ready for socials, leads go to Telegram"
+        },
+        "cta": "Try it"
+      },
+      "benefits": {
+        "title": "What you get",
+        "crm": {
+          "title": "Mini-CRM + Telegram",
+          "desc": "All leads in one place. Instant notifications to your phone."
+        },
+        "analytics": {
+          "title": "Click analytics",
+          "desc": "See which blocks work. Know what to improve."
+        },
+        "ai": {
+          "title": "AI assistant",
+          "desc": "Generates copy, structure, and ideas. Saves hours of work."
+        },
+        "mobile": {
+          "title": "Mobile editor",
+          "desc": "Edit from your phone. Publish in a second."
+        }
+      },
+      "blocks": {
+        "title": "25+ ready blocks",
+        "subtitle": "Drag & drop. Works on any device."
+      },
+      "useCases": {
+        "title": "Ready scenarios",
+        "subtitle": "Pick a template - AI adapts it for you",
+        "expert": {
+          "title": "Expert / Consultant",
+          "item1": "Offer on the first screen",
+          "item2": "Service packages and prices",
+          "item3": "Lead form"
+        },
+        "beauty": {
+          "title": "Beauty / Services",
+          "item1": "Online booking",
+          "item2": "Reviews and before/after",
+          "item3": "Map and contacts"
+        },
+        "creator": {
+          "title": "Creator / Portfolio",
+          "item1": "Best works",
+          "item2": "Socials and subscriptions",
+          "item3": "Brief for orders"
+        },
+        "shop": {
+          "title": "Shop / Catalog",
+          "item1": "Products with prices",
+          "item2": "FAQ and delivery",
+          "item3": "Quick order"
+        },
+        "cta": "Choose scenario"
+      },
+      "proof": {
+        "title": "Example pages",
+        "subtitle": "See how others use lnkmx"
+      },
+      "pricing": {
+        "title": "Simple pricing",
+        "subtitle": "Start free. Upgrade to Pro when you need more.",
+        "forever": "Forever",
+        "month": "mo",
+        "save": "save 40%",
+        "recommended": "Recommended",
+        "guarantee": "0% commission on sales. 14-day refund.",
+        "free": {
+          "f1": "Basic blocks",
+          "f2": "1 AI generation/month",
+          "f3": "Basic stats"
+        },
+        "freeCta": "Start free",
+        "pro": {
+          "f1": "All 25+ blocks",
+          "f2": "Mini-CRM + Telegram notifications",
+          "f3": "5 AI generations/month",
+          "f4": "Advanced analytics",
+          "f5": "No watermark"
+        },
+        "proCta": "Choose Pro"
+      },
+      "finalCta": {
+        "title": "Ready to build your page?",
+        "subtitle": "Free. No code. Results in 2 minutes.",
+        "cta": "Create page",
+        "secondary": "Or see examples"
+      }
     },
     "nav": {
       "signIn": "Sign In",
