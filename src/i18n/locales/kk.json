@@ -214,7 +214,6 @@
     "gallery": {
       "badge": "Қауымдастық",
       "title": "Қауымдастық беттерін зерттеңіз",
-      "subtitle": "Қауымдастық жасаған керемет беттерден шабыт алыңыз"
       "subtitle": "Қауымдастық жасаған керемет беттерден шабыт алыңыз",
       "viewAll": "Барлық беттерді көру"
     },
@@ -986,19 +985,15 @@
   },
   "alternatives": {
     "seo": {
-      "title": "LinkMAX vs Linktree vs Taplink — 2026 салыстыру | Ең жақсы балама",
-      "description": "LinkMAX, Linktree және Taplink толық салыстыруы. AI генерациясы, CRM және 0% комиссиясы бар ең жақсы тегін балама екенін біліңіз. Функциялар мен баға салыстыру кестесі.",
-      "keywords": "linktree vs taplink, taplink баламасы, linktree тегін баламасы, ең жақсы link in bio, linktree taplink салыстыру, taplink тегін баламасы, linktree алмастыру, hipolink баламасы, beacons vs linktree, lnk.bio баламасы, shorby баламасы",
-      "schemaName": "Link in Bio платформаларын салыстыру",
-      "schemaDescription": "CRM және 0% комиссиясы бар AI link-in-bio конструкторы",
-      "defaultTitle": "LinkMAX - AI Link-in-Bio платформасы",
-      "ogTitle": "LinkMAX vs Linktree vs Taplink — салыстыру және балама",
-      "ogDescription": "LinkMAX, Linktree және Taplink мүмкіндіктерін, бағаларын және ыңғайлылығын салыстырыңыз. Неге LinkMAX жақсы балама екенін біліңіз."
       "title": "lnkmx баламалары - Linktree, Taplink, Carrd, Beacons салыстыру",
       "description": "lnkmx-ті Linktree, Taplink, Carrd және Beacons-пен салыстырыңыз. Link-in-bio, мини-лендинг және өтінім жинауға қандай құрал керек екенін қараңыз.",
       "keywords": "linktree баламасы, taplink баламасы, carrd баламасы, beacons баламасы, link in bio салыстыру, мини-лендинг салыстыру",
-      "breadcrumb": "Баламалар",
-      "defaultTitle": "lnkmx - AI link-in-bio құрастырушысы"
+      "schemaName": "Link in Bio платформаларын салыстыру",
+      "schemaDescription": "CRM және 0% комиссиясы бар AI link-in-bio конструкторы",
+      "defaultTitle": "lnkmx - AI link-in-bio құрастырушысы",
+      "ogTitle": "lnkmx vs Linktree vs Taplink — салыстыру және балама",
+      "ogDescription": "lnkmx, Linktree және Taplink мүмкіндіктерін, бағаларын және ыңғайлылығын салыстырыңыз. Неге lnkmx жақсы балама екенін біліңіз.",
+      "breadcrumb": "Баламалар"
     },
     "header": {
       "cta": "Бастау"

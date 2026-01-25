@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +9,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PWAUpdatePrompt } from "@/components/PWAUpdatePrompt";
+import { useWebVitals } from "@/hooks/useWebVitals";
 
 const queryClient = new QueryClient();
 
@@ -24,22 +25,27 @@ const PageLoader = () => (
   </div>
 );
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Suspense fallback={<PageLoader />}>
-            <Outlet />
-          </Suspense>
-          <PWAInstallPrompt />
-          <PWAUpdatePrompt />
-        </TooltipProvider>
-      </LanguageProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  // Initialize Web Vitals monitoring in development
+  useWebVitals();
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <Suspense fallback={<PageLoader />}>
+              <Outlet />
+            </Suspense>
+            <PWAInstallPrompt />
+            <PWAUpdatePrompt />
+          </TooltipProvider>
+        </LanguageProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

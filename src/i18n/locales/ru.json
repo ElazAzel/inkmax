@@ -214,7 +214,6 @@
     "gallery": {
       "badge": "Сообщество",
       "title": "Изучайте страницы сообщества",
-      "subtitle": "Вдохновляйтесь потрясающими страницами, созданными нашим сообществом"
       "subtitle": "Вдохновляйтесь потрясающими страницами, созданными нашим сообществом",
       "viewAll": "Смотреть все страницы"
     },
@@ -986,19 +985,15 @@
   },
   "alternatives": {
     "seo": {
-      "title": "LinkMAX vs Linktree vs Taplink — Сравнение 2026 | Лучшая альтернатива",
-      "description": "Подробное сравнение LinkMAX, Linktree и Taplink. Узнайте, почему LinkMAX — лучшая бесплатная альтернатива с AI-генерацией, CRM и 0% комиссии. Таблица сравнения функций и цен.",
-      "keywords": "linktree vs taplink, taplink альтернатива, linktree альтернатива бесплатно, лучший link in bio, сравнение linktree taplink, бесплатный аналог taplink, замена linktree, hipolink альтернатива, beacons vs linktree, lnk.bio альтернатива",
-      "schemaName": "Сравнение Link in Bio платформ",
-      "schemaDescription": "AI-конструктор link-in-bio с CRM и 0% комиссии",
-      "defaultTitle": "LinkMAX - AI-конструктор Link-in-Bio",
-      "ogTitle": "LinkMAX vs Linktree vs Taplink — сравнение и альтернатива",
-      "ogDescription": "Сравнение LinkMAX, Linktree и Taplink по функциям, цене и удобству. Почему LinkMAX — выгодная альтернатива."
       "title": "lnkmx альтернативы - сравнение Linktree, Taplink, Carrd, Beacons",
       "description": "Сравните lnkmx с Linktree, Taplink, Carrd и Beacons. Посмотрите, какой инструмент подходит для link-in-bio, мини-лендинга и сбора заявок.",
       "keywords": "linktree альтернатива, taplink альтернатива, carrd альтернатива, beacons альтернатива, link in bio сравнение, мини-лендинг сравнение",
-      "breadcrumb": "Альтернативы",
-      "defaultTitle": "lnkmx - AI-конструктор link-in-bio"
+      "schemaName": "Сравнение Link in Bio платформ",
+      "schemaDescription": "AI-конструктор link-in-bio с CRM и 0% комиссии",
+      "defaultTitle": "lnkmx - AI-конструктор link-in-bio",
+      "ogTitle": "lnkmx vs Linktree vs Taplink — сравнение и альтернатива",
+      "ogDescription": "Сравнение lnkmx, Linktree и Taplink по функциям, цене и удобству. Почему lnkmx — выгодная альтернатива.",
+      "breadcrumb": "Альтернативы"
     },
     "header": {
       "cta": "Начать"
