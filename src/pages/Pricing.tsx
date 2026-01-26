@@ -271,7 +271,7 @@ export default function Pricing() {
                   <div className="mt-4">
                     {key === 'basic' ? (
                       <div className="text-3xl font-bold">
-                        {t('pricing.free', 'Бесплатно')}
+                        {t('pricing.free.title', 'Бесплатно')}
                       </div>
                     ) : isKztPrimary ? (
                       <>
