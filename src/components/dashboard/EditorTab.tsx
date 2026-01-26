@@ -40,6 +40,7 @@ interface EditorTabProps {
   saving: boolean;
   saveStatus: SaveStatus;
   editorHistory: EditorHistoryType;
+  pageNiche?: string;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
@@ -61,6 +62,7 @@ export const EditorTab = memo(function EditorTab({
   saving,
   saveStatus,
   editorHistory,
+  pageNiche,
   onInsertBlock,
   onEditBlock,
   onDeleteBlock,
@@ -338,6 +340,8 @@ export const EditorTab = memo(function EditorTab({
         isPremium={isPremium}
         currentTier={currentTier}
         currentBlockCount={blocks.length}
+        pageNiche={pageNiche}
+        existingBlocks={blocks.map(b => b.type)}
         isOpen={showAddBlock}
         onOpenChange={setShowAddBlock}
         hideTrigger

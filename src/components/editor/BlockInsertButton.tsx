@@ -1,6 +1,6 @@
-import { memo, useState } from 'react';
+import { memo, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search, Lock, Crown, Type, Video, Link2, File, ListOrdered, Image, ShoppingBag, Code, MessageCircle, Calendar, CalendarDays, Star, Gift, Compass, MapPin, Clock, DollarSign, Megaphone, FormInput, Mail, HelpCircle, Layers } from 'lucide-react';
+import { Plus, Search, Lock, Crown, Type, Video, Link2, File, ListOrdered, Image, ShoppingBag, Code, MessageCircle, Calendar, CalendarDays, Star, Gift, Compass, MapPin, Clock, DollarSign, Megaphone, FormInput, Mail, HelpCircle, Layers, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -11,11 +11,20 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { FREE_LIMITS, type FreeTier } from '@/hooks/useFreemiumLimits';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { getRecommendedBlocks, type BlockRecommendation } from '@/lib/block-recommendations';
+import type { Niche } from '@/lib/niches';
+import type { BlockType } from '@/types/page';
 
 interface BlockInsertButtonProps {
   onInsert: (blockType: string) => void;
@@ -23,6 +32,10 @@ interface BlockInsertButtonProps {
   currentBlockCount?: number;
   className?: string;
   currentTier?: FreeTier;
+  /** Page niche for recommendations */
+  pageNiche?: Niche | string;
+  /** Existing blocks on page */
+  existingBlocks?: BlockType[];
   /** Control sheet externally (for inline mode) */
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -92,6 +105,8 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   currentBlockCount = 0,
   className,
   currentTier = 'free',
+  pageNiche,
+  existingBlocks = [],
   isOpen: externalIsOpen,
   onOpenChange,
   hideTrigger = false
@@ -109,6 +124,16 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   const isAtBlockLimit = !isPremium && currentBlockCount >= FREE_LIMITS.maxBlocks;
   const remainingBlocks = isPremium ? Infinity : FREE_LIMITS.maxBlocks - currentBlockCount;
 
+  // Get niche-based recommendations
+  const recommendations = useMemo(() => {
+    return getRecommendedBlocks(pageNiche, existingBlocks);
+  }, [pageNiche, existingBlocks]);
+
+  // Create a set for quick lookup
+  const recommendedBlockTypes = useMemo(() => {
+    return new Set(recommendations.filter(r => r.isRelevant).map(r => r.block));
+  }, [recommendations]);
+
   const tierLevel = (tier: FreeTier | BlockTier): number => {
     switch (tier) {
       case 'pro': return 2;
@@ -121,8 +146,36 @@ export const BlockInsertButton = memo(function BlockInsertButton({
   };
 
   const filteredBlocks = ALL_BLOCKS.filter(block => 
-    block.label.toLowerCase().includes(searchQuery.toLowerCase())
+    t(block.label, block.type).toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Split blocks into recommended and others
+  const { recommendedBlocks, otherBlocks } = useMemo(() => {
+    if (searchQuery) {
+      // If searching, don't split
+      return { recommendedBlocks: [], otherBlocks: filteredBlocks };
+    }
+    
+    const recommended: BlockConfig[] = [];
+    const others: BlockConfig[] = [];
+    
+    filteredBlocks.forEach(block => {
+      if (recommendedBlockTypes.has(block.type as BlockType)) {
+        recommended.push(block);
+      } else {
+        others.push(block);
+      }
+    });
+    
+    // Sort recommended by score (use order from recommendations)
+    recommended.sort((a, b) => {
+      const scoreA = recommendations.find(r => r.block === a.type)?.score || 0;
+      const scoreB = recommendations.find(r => r.block === b.type)?.score || 0;
+      return scoreB - scoreA;
+    });
+    
+    return { recommendedBlocks: recommended.slice(0, 6), otherBlocks: others };
+  }, [filteredBlocks, recommendedBlockTypes, recommendations, searchQuery]);
 
   const handleInsert = (blockType: string, blockTier: BlockTier) => {
     if (!canUseBlock(blockTier)) {
@@ -144,6 +197,90 @@ export const BlockInsertButton = memo(function BlockInsertButton({
     setIsOpen(false);
     setSearchQuery('');
   };
+
+  // Get reason tooltip for a block
+  const getReasonTooltip = (blockType: string): string | null => {
+    const rec = recommendations.find(r => r.block === blockType);
+    return rec ? t(rec.reason, '') : null;
+  };
+
+  // Render block item
+  const renderBlockItem = (block: BlockConfig, showRelevantBadge: boolean = false) => {
+    const isLocked = !canUseBlock(block.tier);
+    const IconComponent = block.Icon;
+    const reasonTooltip = showRelevantBadge ? getReasonTooltip(block.type) : null;
+    
+    const blockButton = (
+      <button
+        key={block.type}
+        onClick={() => handleInsert(block.type, block.tier)}
+        disabled={isLocked}
+        className={cn(
+          "relative flex flex-col items-center gap-3 p-4 rounded-3xl transition-all",
+          isLocked
+            ? "opacity-40 cursor-not-allowed"
+            : "hover:bg-muted/50 active:scale-95"
+        )}
+      >
+        {/* Colorful icon square - LARGER */}
+        <div className={cn(
+          "w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg",
+          block.color
+        )}>
+          <IconComponent className="h-7 w-7" />
+        </div>
+        
+        {/* Label */}
+        <span className="text-sm font-bold text-center leading-tight">
+          {t(block.label, block.type)}
+        </span>
+        
+        {/* Relevant badge */}
+        {showRelevantBadge && !isLocked && (
+          <div className="absolute -top-1 -left-1">
+            <Badge 
+              variant="default" 
+              className="text-[9px] px-1.5 py-0.5 bg-emerald-500 hover:bg-emerald-500 border-0"
+            >
+              <Sparkles className="h-2.5 w-2.5 mr-0.5" />
+              {t('recommendations.relevant', 'Актуально')}
+            </Badge>
+          </div>
+        )}
+        
+        {/* Lock/Crown badge */}
+        {isLocked && (
+          <div className="absolute top-2 right-2">
+            <Lock className="h-4 w-4 text-muted-foreground" />
+          </div>
+        )}
+        {block.tier === 'pro' && !isLocked && (
+          <div className="absolute top-2 right-2">
+            <Crown className="h-4 w-4 text-amber-500" />
+          </div>
+        )}
+      </button>
+    );
+
+    // Wrap with tooltip on desktop if we have a reason
+    if (reasonTooltip && !isMobile) {
+      return (
+        <TooltipProvider key={block.type}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              {blockButton}
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-[200px]">
+              <p className="text-xs">{reasonTooltip}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return blockButton;
+  };
+
 
   // Mobile & Desktop - Premium app-like sheet
   return (
@@ -206,53 +343,38 @@ export const BlockInsertButton = memo(function BlockInsertButton({
             </div>
           </div>
           
-          {/* Grid of blocks - 3 columns on mobile for bigger touch targets */}
+          {/* Blocks with Recommendations */}
           <div className="overflow-y-auto px-5 py-5" style={{ height: 'calc(100% - 180px)' }}>
-            <div className="grid grid-cols-3 gap-4">
-              {filteredBlocks.map((block) => {
-                const isLocked = !canUseBlock(block.tier);
-                const IconComponent = block.Icon;
-                
-                return (
-                  <button
-                    key={block.type}
-                    onClick={() => handleInsert(block.type, block.tier)}
-                    disabled={isLocked}
-                    className={cn(
-                      "relative flex flex-col items-center gap-3 p-4 rounded-3xl transition-all",
-                      isLocked
-                        ? "opacity-40 cursor-not-allowed"
-                        : "hover:bg-muted/50 active:scale-95"
-                    )}
-                  >
-                    {/* Colorful icon square - LARGER */}
-                    <div className={cn(
-                      "w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg",
-                      block.color
-                    )}>
-                      <IconComponent className="h-7 w-7" />
-                    </div>
-                    
-                    {/* Label */}
-                    <span className="text-sm font-bold text-center leading-tight">
-                      {t(block.label, block.type)}
-                    </span>
-                    
-                    {/* Lock/Crown badge */}
-                    {isLocked && (
-                      <div className="absolute top-2 right-2">
-                        <Lock className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                    )}
-                    {block.tier === 'pro' && !isLocked && (
-                      <div className="absolute top-2 right-2">
-                        <Crown className="h-4 w-4 text-amber-500" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            {/* Recommended Section - Only show when not searching */}
+            {recommendedBlocks.length > 0 && !searchQuery && (
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-4 px-1">
+                  <Sparkles className="h-4 w-4 text-emerald-500" />
+                  <h3 className="text-sm font-bold text-foreground">
+                    {t('recommendations.title', 'Рекомендовано для вас')}
+                  </h3>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  {recommendedBlocks.map((block) => renderBlockItem(block, true))}
+                </div>
+              </div>
+            )}
+
+            {/* All Blocks Section */}
+            {otherBlocks.length > 0 && (
+              <div>
+                {recommendedBlocks.length > 0 && !searchQuery && (
+                  <div className="flex items-center gap-2 mb-4 px-1 pt-2 border-t border-border/10">
+                    <h3 className="text-sm font-bold text-muted-foreground">
+                      {t('recommendations.allBlocks', 'Все блоки')}
+                    </h3>
+                  </div>
+                )}
+                <div className="grid grid-cols-3 gap-4">
+                  {otherBlocks.map((block) => renderBlockItem(block, false))}
+                </div>
+              </div>
+            )}
             
             {filteredBlocks.length === 0 && (
               <div className="text-center py-16">
