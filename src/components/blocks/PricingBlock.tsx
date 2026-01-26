@@ -78,7 +78,7 @@ export const PricingBlock = React.memo(function PricingBlock({ block }: PricingB
             <div 
               key={item.id} 
               className={cn(
-                'flex items-center justify-between gap-3 p-3 rounded-xl',
+                'flex items-center justify-between gap-3 p-4 rounded-xl',
                 'bg-card border border-border shadow-sm',
                 'transition-all active:scale-[0.99]',
                 item.featured && 'ring-2 ring-primary bg-primary/5'

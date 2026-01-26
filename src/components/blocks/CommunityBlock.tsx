@@ -58,7 +58,7 @@ export const CommunityBlock = React.memo(function CommunityBlock({ block }: Comm
 
   return (
     <Card className={cn('w-full transition-all shadow-sm hover:shadow-md', styles.card)}>
-      <CardContent className="p-5">
+      <CardContent className="p-5 sm:p-6">
         <div className="flex items-start gap-4">
           {/* Icon */}
           <div className={cn(

@@ -59,7 +59,7 @@ export const TestimonialBlock = memo(function TestimonialBlock({ block }: Testim
               key={index} 
               className={cn(
                 "flex-shrink-0 w-[85%] min-w-[260px] max-w-[320px]",
-                "p-4 rounded-xl",
+                "p-5 rounded-xl",
                 "bg-card border border-border",
                 "shadow-sm snap-start"
               )}
