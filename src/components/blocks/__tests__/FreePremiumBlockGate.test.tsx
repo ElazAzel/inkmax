@@ -12,7 +12,11 @@ describe('FreePremiumBlockGate', () => {
     expect(FREE_BLOCK_TYPES).toContain('image');
     expect(FREE_BLOCK_TYPES).toContain('socials');
     expect(FREE_BLOCK_TYPES).toContain('separator');
-    expect(FREE_BLOCK_TYPES).toContain('event');
+    expect(FREE_BLOCK_TYPES).toContain('faq');
+  });
+
+  it('defines premium block types including event', () => {
+    expect(PREMIUM_BLOCK_TYPES).toContain('event');
   });
 
   it('defines premium block types', () => {

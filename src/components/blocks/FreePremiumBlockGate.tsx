@@ -9,54 +9,21 @@ import { Crown, Lock, Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { 
+  FREE_BLOCK_TYPES, 
+  PREMIUM_BLOCK_TYPES, 
+  isFreeBlock, 
+  isPremiumBlock,
+  type FreeBlockType,
+  type PremiumBlockType 
+} from '@/lib/block-registry';
 
-// Free blocks available to all users
-export const FREE_BLOCK_TYPES = [
-  'profile',
-  'link',
-  'button',
-  'text',
-  'separator',
-  'avatar',
-  'socials',
-  'messenger',
-  'image',
-  'map',
-  'event',
-] as const;
+// Re-export from registry for backward compatibility
+export { FREE_BLOCK_TYPES, PREMIUM_BLOCK_TYPES, isFreeBlock, isPremiumBlock };
+export type { FreeBlockType, PremiumBlockType };
 
-// Premium blocks requiring Pro subscription
-export const PREMIUM_BLOCK_TYPES = [
-  'form',
-  'booking',
-  'pricing',
-  'catalog',
-  'video',
-  'carousel',
-  'custom_code',
-  'newsletter',
-  'testimonial',
-  'scratch',
-  'countdown',
-  'search',
-  'before_after',
-  'download',
-  'product',
-  'faq',
-  'shoutout',
-  'community',
-] as const;
-
-export type FreeBlockType = typeof FREE_BLOCK_TYPES[number];
-export type PremiumBlockType = typeof PREMIUM_BLOCK_TYPES[number];
-
-export function isFreeSlock(type: string): boolean {
-  return (FREE_BLOCK_TYPES as readonly string[]).includes(type);
-}
-
-export function isPremiumBlock(type: string): boolean {
-  return (PREMIUM_BLOCK_TYPES as readonly string[]).includes(type);
-}
+// Backward compatibility alias
+export const isFreeSlock = isFreeBlock;
 
 interface PremiumBlockOverlayProps {
   blockType: string;
