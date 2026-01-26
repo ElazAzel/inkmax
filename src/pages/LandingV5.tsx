@@ -180,7 +180,7 @@ export default function LandingV5() {
               onClick={() => handleCreatePage('floating')}
               className="h-12 px-6 rounded-full font-bold shadow-2xl shadow-primary/30"
             >
-              {t('landingV5.floatingCta', 'Создать страницу')}
+              {t('landingV5.floatingCta')}
             </Button>
           </div>
         )}

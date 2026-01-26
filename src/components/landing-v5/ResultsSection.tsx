@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Briefcase, Scissors, Camera, TrendingUp, GraduationCap, Calendar,
+  Users, Briefcase, Store, GraduationCap, Calendar, Heart,
   ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -18,46 +18,46 @@ export default function ResultsSection({ onCreatePage }: ResultsSectionProps) {
 
   const useCases = [
     {
-      icon: Briefcase,
-      title: t('landingV5.results.expert.title', 'Эксперты и консультанты'),
-      pain: t('landingV5.results.expert.pain', 'Клиенты не понимают, чем вы помогаете'),
-      result: t('landingV5.results.expert.result', 'Оффер на первом экране + форма заявки'),
-      color: 'from-blue-500 to-indigo-500',
-    },
-    {
-      icon: Scissors,
-      title: t('landingV5.results.beauty.title', 'Бьюти и услуги'),
-      pain: t('landingV5.results.beauty.pain', 'Запись через переписку - долго'),
-      result: t('landingV5.results.beauty.result', 'Онлайн-запись + прайс + отзывы'),
-      color: 'from-pink-500 to-rose-500',
-    },
-    {
-      icon: Camera,
-      title: t('landingV5.results.creator.title', 'Креаторы и фрилансеры'),
-      pain: t('landingV5.results.creator.pain', 'Портфолио разбросано по соцсетям'),
-      result: t('landingV5.results.creator.result', 'Лучшие работы + бриф + контакты'),
+      icon: Users,
+      title: t('landingV5.results.creators.title'),
+      problem: t('landingV5.results.creators.problem'),
+      solution: t('landingV5.results.creators.solution'),
       color: 'from-purple-500 to-violet-500',
     },
     {
-      icon: TrendingUp,
-      title: t('landingV5.results.business.title', 'Малый бизнес'),
-      pain: t('landingV5.results.business.pain', 'Сайт дорого, а соцсети не конвертят'),
-      result: t('landingV5.results.business.result', 'Каталог + FAQ + быстрый заказ'),
+      icon: Briefcase,
+      title: t('landingV5.results.freelancers.title'),
+      problem: t('landingV5.results.freelancers.problem'),
+      solution: t('landingV5.results.freelancers.solution'),
+      color: 'from-blue-500 to-indigo-500',
+    },
+    {
+      icon: Store,
+      title: t('landingV5.results.business.title'),
+      problem: t('landingV5.results.business.problem'),
+      solution: t('landingV5.results.business.solution'),
       color: 'from-emerald-500 to-teal-500',
     },
     {
       icon: GraduationCap,
-      title: t('landingV5.results.education.title', 'Образование'),
-      pain: t('landingV5.results.education.pain', 'Сложно объяснить программу'),
-      result: t('landingV5.results.education.result', 'Программа + расписание + запись'),
+      title: t('landingV5.results.education.title'),
+      problem: t('landingV5.results.education.problem'),
+      solution: t('landingV5.results.education.solution'),
       color: 'from-amber-500 to-orange-500',
     },
     {
       icon: Calendar,
-      title: t('landingV5.results.events.title', 'Мероприятия'),
-      pain: t('landingV5.results.events.pain', 'Регистрация через гугл-формы'),
-      result: t('landingV5.results.events.result', 'Страница ивента + форма + билеты'),
+      title: t('landingV5.results.events.title'),
+      problem: t('landingV5.results.events.problem'),
+      solution: t('landingV5.results.events.solution'),
       color: 'from-cyan-500 to-blue-500',
+    },
+    {
+      icon: Heart,
+      title: t('landingV5.results.health.title'),
+      problem: t('landingV5.results.health.problem'),
+      solution: t('landingV5.results.health.solution'),
+      color: 'from-pink-500 to-rose-500',
     },
   ];
 
@@ -69,11 +69,14 @@ export default function ResultsSection({ onCreatePage }: ResultsSectionProps) {
       )}>
         <div className="text-center mb-8">
           <Badge className="mb-3 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
-            {t('landingV5.results.badge', 'Для кого')}
+            {t('landingV5.results.badge')}
           </Badge>
-          <h2 className="text-xl sm:text-2xl font-bold">
-            {t('landingV5.results.title', 'Кому помогает lnkmx')}
+          <h2 className="text-xl sm:text-2xl font-bold mb-2">
+            {t('landingV5.results.title')}
           </h2>
+          <p className="text-sm text-muted-foreground">
+            {t('landingV5.results.subtitle')}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -96,26 +99,22 @@ export default function ResultsSection({ onCreatePage }: ResultsSectionProps) {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-sm mb-1">{useCase.title}</h3>
                   <p className="text-xs text-muted-foreground line-clamp-1 mb-1">
-                    <span className="text-destructive/70">✗</span> {useCase.pain}
+                    <span className="text-destructive/70">✗</span> {useCase.problem}
                   </p>
                   <p className="text-xs text-primary font-medium line-clamp-1">
-                    <span className="text-primary">✓</span> {useCase.result}
+                    <span className="text-primary">✓</span> {useCase.solution}
                   </p>
                 </div>
               </div>
+              
+              <div className="mt-3 flex justify-end">
+                <span className="text-xs text-primary font-medium group-hover:underline flex items-center gap-1">
+                  {t('landingV5.results.creators.cta')}
+                  <ArrowRight className="h-3 w-3" />
+                </span>
+              </div>
             </div>
           ))}
-        </div>
-
-        <div className="mt-8 text-center">
-          <Button 
-            size="lg"
-            onClick={onCreatePage}
-            className="h-12 rounded-xl font-semibold"
-          >
-            {t('landingV5.results.cta', 'Выбрать сценарий')}
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
         </div>
       </div>
     </section>

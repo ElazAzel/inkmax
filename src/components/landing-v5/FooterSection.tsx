@@ -11,42 +11,38 @@ export default function FooterSection() {
   return (
     <footer className="border-t border-border/30 py-8 px-5 bg-muted/20">
       <div className="max-w-xl mx-auto">
-        {/* Logo */}
-        <div className="flex items-center justify-center mb-4">
+        {/* Logo and description */}
+        <div className="text-center mb-6">
           <span className="text-lg font-black">
             lnk<span className="text-primary">mx</span>
           </span>
+          <p className="text-xs text-muted-foreground mt-2 max-w-xs mx-auto">
+            {t('landingV5.footer.description')}
+          </p>
         </div>
         
         {/* Navigation links */}
         <nav className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground mb-4">
           <button 
-            onClick={() => navigate('/pricing')} 
-            className="hover:text-foreground transition-colors"
-          >
-            {t('landingV5.footer.pricing', 'Тарифы')}
-          </button>
-          <span>·</span>
-          <button 
             onClick={() => navigate('/gallery')} 
             className="hover:text-foreground transition-colors"
           >
-            {t('landingV5.footer.examples', 'Примеры')}
+            {t('landingV5.footer.examples')}
           </button>
           <span>·</span>
           <button 
-            onClick={() => navigate('/alternatives')} 
+            onClick={() => navigate('/pricing')} 
             className="hover:text-foreground transition-colors"
           >
-            {t('landingV5.footer.alternatives', 'Сравнение')}
+            {t('landingV5.footer.pricing')}
           </button>
           <span>·</span>
           <TermsLink className="hover:text-foreground transition-colors">
-            {t('landingV5.footer.terms', 'Условия')}
+            {t('landingV5.footer.terms')}
           </TermsLink>
           <span>·</span>
           <PrivacyLink className="hover:text-foreground transition-colors">
-            {t('landingV5.footer.privacy', 'Политика')}
+            {t('landingV5.footer.privacy')}
           </PrivacyLink>
         </nav>
 
@@ -57,7 +53,7 @@ export default function FooterSection() {
 
         {/* Copyright */}
         <p className="text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} lnkmx
+          {t('landingV5.footer.copyright', { year: new Date().getFullYear() })}
         </p>
       </div>
     </footer>
