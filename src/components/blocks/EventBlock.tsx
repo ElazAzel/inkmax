@@ -1,6 +1,6 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus } from 'lucide-react';
+import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus, Users, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru, kk } from 'date-fns/locale';
 import { Card } from '@/components/ui/card';
@@ -13,11 +13,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/platform/supabase/client';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { getCurrencySymbol } from '@/components/form-fields/CurrencySelect';
+import { getEventRegistrationCount, isEmailRegistered } from '@/services/events';
 import type { EventBlock as EventBlockType, EventFormField } from '@/types/page';
 
 interface EventBlockProps {
@@ -45,17 +47,26 @@ export const EventBlock = memo(function EventBlock({
   const [formValues, setFormValues] = useState<Record<string, FormValue>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [ticketCode, setTicketCode] = useState<string | null>(null);
+  const [registrationCount, setRegistrationCount] = useState<number>(0);
+  const [eventError, setEventError] = useState<string | null>(null);
 
   const language = i18n.language as SupportedLanguage;
   const locale = i18n.language === 'ru' ? ru : i18n.language === 'kk' ? kk : undefined;
   const title = getTranslatedString(block.title, language);
   const description = getTranslatedString(block.description, language);
 
+  // Check capacity
+  const isFull = useMemo(() => {
+    if (!block.capacity) return false;
+    return registrationCount >= block.capacity;
+  }, [block.capacity, registrationCount]);
+
   const registrationClosed = useMemo(() => {
     if (block.status && block.status !== 'published') return true;
+    if (isFull) return true;
     if (!block.registrationClosesAt) return false;
     return new Date(block.registrationClosesAt) <= new Date();
-  }, [block.registrationClosesAt, block.status]);
+  }, [block.registrationClosesAt, block.status, isFull]);
 
   const eventFields = useMemo(() => {
     const fields = block.formFields || [];
@@ -66,15 +77,24 @@ export const EventBlock = memo(function EventBlock({
   const emailPlaceholder = t('event.emailPlaceholder', 'your@email.com');
   const emailHelp = t('event.emailHelp', 'Билет и подтверждение придут на эту почту.');
 
-  const handleOpen = () => {
+  // Load registration count
+  useEffect(() => {
+    if (block.eventId) {
+      getEventRegistrationCount(block.eventId).then(setRegistrationCount);
+    }
+  }, [block.eventId]);
+
+  const handleOpen = useCallback(() => {
     setIsOpen(true);
     setShowPrompt(!user);
-  };
+    setEventError(null);
+  }, [user]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpen(false);
     setTicketCode(null);
-  };
+    setEventError(null);
+  }, []);
 
   const draftKey = `draft_event_${block.eventId}`;
 
@@ -102,12 +122,12 @@ export const EventBlock = memo(function EventBlock({
     }
   }, [block.eventId, user]);
 
-  const saveDraft = () => {
+  const saveDraft = useCallback(() => {
     localStorage.setItem(
       draftKey,
       JSON.stringify({ updatedAt: Date.now(), data: formValues })
     );
-  };
+  }, [draftKey, formValues]);
 
   const handlePromptSignup = () => {
     saveDraft();
@@ -185,17 +205,35 @@ export const EventBlock = memo(function EventBlock({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEventError(null);
+    
     if (registrationClosed) {
       toast.error(t('event.registrationClosed', 'Регистрация закрыта'));
       return;
     }
-    if (!pageOwnerId || !pageId) return;
+    if (!pageOwnerId || !pageId) {
+      setEventError(t('event.configError', 'Ошибка конфигурации события'));
+      return;
+    }
+    if (!block.eventId) {
+      setEventError(t('event.eventNotFound', 'Событие не найдено'));
+      return;
+    }
     if (!validateForm()) return;
 
     const email = formValues[SYSTEM_EMAIL_FIELD_ID];
     if (typeof email !== 'string' || !email.trim()) {
       toast.error(t('event.emailRequired', 'Email обязателен'));
       return;
+    }
+
+    // Check for duplicate email if not allowed
+    if (!block.settings?.allowDuplicateEmail) {
+      const isDuplicate = await isEmailRegistered(block.eventId, email.trim());
+      if (isDuplicate) {
+        setEventError(t('event.duplicateRegistration', 'Вы уже зарегистрированы на этот ивент.'));
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -228,7 +266,20 @@ export const EventBlock = memo(function EventBlock({
         .select('id')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Registration error:', error);
+        if (error.code === '23505') {
+          setEventError(t('event.duplicateRegistration', 'Вы уже зарегистрированы на этот ивент.'));
+        } else if (error.code === '23503') {
+          setEventError(t('event.eventNotFound', 'Событие не найдено. Попробуйте обновить страницу.'));
+        } else {
+          setEventError(t('event.registrationError', 'Не удалось зарегистрироваться') + `: ${error.message}`);
+        }
+        return;
+      }
+
+      // Wait a moment for the trigger to create the ticket
+      await new Promise(r => setTimeout(r, 500));
 
       const { data: ticket } = await supabase
         .from('event_tickets')
@@ -237,15 +288,16 @@ export const EventBlock = memo(function EventBlock({
         .maybeSingle();
 
       setTicketCode(ticket?.ticket_code || null);
-      toast.success(t('event.registrationSuccess', 'Регистрация подтверждена'));
+      setRegistrationCount(prev => prev + 1);
+      toast.success(
+        block.settings?.requireApproval
+          ? t('event.registrationPending', 'Заявка отправлена на рассмотрение')
+          : t('event.registrationSuccess', 'Регистрация подтверждена')
+      );
       localStorage.removeItem(draftKey);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Event registration error:', error);
-      if (error?.code === '23505') {
-        toast.error(t('event.duplicateRegistration', 'Вы уже зарегистрированы на этот ивент.'));
-      } else {
-        toast.error(t('event.registrationError', 'Не удалось зарегистрироваться'));
-      }
+      setEventError(t('event.registrationError', 'Не удалось зарегистрироваться'));
     } finally {
       setIsSubmitting(false);
     }
@@ -436,10 +488,29 @@ export const EventBlock = memo(function EventBlock({
                 <span>{block.locationValue}</span>
               </div>
             )}
+            {block.capacity && (
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span>
+                  {registrationCount} / {block.capacity} {t('event.spots', 'мест')}
+                  {isFull && <span className="ml-1 text-destructive">({t('event.full', 'мест нет')})</span>}
+                </span>
+              </div>
+            )}
           </div>
 
-          <Button className="w-full rounded-xl" onClick={handleOpen}>
-            {t('event.register', 'Register')}
+          <Button 
+            className="w-full rounded-xl" 
+            onClick={handleOpen}
+            disabled={registrationClosed}
+            variant={registrationClosed ? 'secondary' : 'default'}
+          >
+            {isFull 
+              ? t('event.noSpots', 'Мест нет')
+              : registrationClosed 
+                ? t('event.registrationClosed', 'Регистрация закрыта')
+                : t('event.register', 'Зарегистрироваться')
+            }
           </Button>
         </div>
       </Card>
@@ -453,7 +524,7 @@ export const EventBlock = memo(function EventBlock({
           <ScrollArea className="h-[70vh] pr-4">
             {ticketCode ? (
               <div className="space-y-4 py-4">
-                <div className="flex items-center gap-2 text-emerald-600">
+                <div className="flex items-center gap-2 text-primary">
                   <CheckCircle2 className="h-5 w-5" />
                   <span className="font-semibold">
                     {t('event.successTitle', 'Регистрация подтверждена')}
@@ -556,10 +627,22 @@ export const EventBlock = memo(function EventBlock({
                     );
                   })}
 
-                  {registrationClosed && (
-                    <div className="rounded-xl border border-border/60 p-3 text-sm text-muted-foreground">
-                      {t('event.registrationClosed', 'Регистрация закрыта')}
-                    </div>
+                  {eventError && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{eventError}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {registrationClosed && !eventError && (
+                    <Alert>
+                      <AlertDescription>
+                        {isFull 
+                          ? t('event.noSpotsMessage', 'К сожалению, все места заняты.')
+                          : t('event.registrationClosedMessage', 'Регистрация на это событие закрыта.')
+                        }
+                      </AlertDescription>
+                    </Alert>
                   )}
 
                   <Button

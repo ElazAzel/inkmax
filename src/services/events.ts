@@ -26,9 +26,19 @@ const mapEventBlockToRecord = (block: EventBlock, pageId: string, ownerId: strin
 });
 
 export async function syncEventBlock(block: EventBlock, pageId?: string, ownerId?: string) {
-  if (!pageId || !ownerId) return;
+  if (!pageId || !ownerId || !block.eventId) {
+    console.warn('syncEventBlock: missing pageId, ownerId, or eventId');
+    return;
+  }
   try {
-    await supabase.from('events').upsert([mapEventBlockToRecord(block, pageId, ownerId)]);
+    const record = mapEventBlockToRecord(block, pageId, ownerId);
+    const { error } = await supabase.from('events').upsert([record], { 
+      onConflict: 'id',
+      ignoreDuplicates: false 
+    });
+    if (error) {
+      console.error('Failed to sync event block:', error);
+    }
   } catch (error) {
     console.error('Failed to sync event block', error);
   }
@@ -37,8 +47,64 @@ export async function syncEventBlock(block: EventBlock, pageId?: string, ownerId
 export async function deleteEventBlock(eventId?: string, ownerId?: string) {
   if (!eventId || !ownerId) return;
   try {
-    await supabase.from('events').delete().eq('id', eventId).eq('owner_id', ownerId);
+    const { error } = await supabase.from('events').delete().eq('id', eventId).eq('owner_id', ownerId);
+    if (error) {
+      console.error('Failed to delete event block:', error);
+    }
   } catch (error) {
     console.error('Failed to delete event block', error);
   }
+}
+
+/**
+ * Fetch event by ID for public display
+ */
+export async function getPublicEvent(eventId: string) {
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('id', eventId)
+    .eq('status', 'published')
+    .maybeSingle();
+  
+  if (error) {
+    console.error('Failed to fetch public event:', error);
+    return null;
+  }
+  return data;
+}
+
+/**
+ * Get registration count for an event
+ */
+export async function getEventRegistrationCount(eventId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from('event_registrations')
+    .select('*', { count: 'exact', head: true })
+    .eq('event_id', eventId)
+    .in('status', ['confirmed', 'pending']);
+  
+  if (error) {
+    console.error('Failed to get registration count:', error);
+    return 0;
+  }
+  return count || 0;
+}
+
+/**
+ * Check if email is already registered for event
+ */
+export async function isEmailRegistered(eventId: string, email: string): Promise<boolean> {
+  const { count, error } = await supabase
+    .from('event_registrations')
+    .select('*', { count: 'exact', head: true })
+    .eq('event_id', eventId)
+    .eq('attendee_email', email)
+    .not('status', 'eq', 'cancelled');
+  
+  if (error) {
+    console.error('Failed to check email registration:', error);
+    return false;
+  }
+  return (count || 0) > 0;
 }
