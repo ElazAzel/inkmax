@@ -36,6 +36,8 @@ import { useEffect, useState, Suspense, useRef, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LandingGallerySection } from '@/components/landing/LandingGallerySection';
 import { FAQSection } from '@/components/landing/FAQSection';
+import { NichesDetailSection } from '@/components/landing/NichesDetailSection';
+import { LinkInBioSection } from '@/components/landing/LinkInBioSection';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 import { SEOLandingHead } from '@/components/landing/SEOLandingHead';
@@ -524,6 +526,16 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* ========== NICHES DETAIL ========== */}
+        <Suspense fallback={null}>
+          <NichesDetailSection />
+        </Suspense>
+
+        {/* ========== LINK IN BIO SEO ========== */}
+        <Suspense fallback={null}>
+          <LinkInBioSection />
+        </Suspense>
 
         {/* ========== SOCIAL PROOF / GALLERY ========== */}
         <section ref={proofAnim.ref} className="py-10 px-5 bg-muted/30">
