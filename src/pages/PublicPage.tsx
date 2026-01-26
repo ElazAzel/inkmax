@@ -1,15 +1,17 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Share2, QrCode } from 'lucide-react';
+import { Share2, QrCode, ExternalLink, Copy } from 'lucide-react';
 import { GridBlocksRenderer } from '@/components/blocks/GridBlocksRenderer';
 import { ChatbotWidget } from '@/components/ChatbotWidget';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FreemiumWatermark } from '@/components/FreemiumWatermark';
 import { EnhancedSEOHead } from '@/components/seo/EnhancedSEOHead';
 import { CrawlerFriendlyContent } from '@/components/seo/CrawlerFriendlyContent';
+import { PublicPageSkeleton } from '@/components/public/PublicPageSkeleton';
+import { PublicPageError } from '@/components/public/PublicPageError';
 import { decompressPageData } from '@/lib/compression';
 import { usePublicPage } from '@/hooks/usePageCache';
 import { AnalyticsProvider } from '@/hooks/useAnalyticsTracking';
@@ -18,6 +20,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { trackShare } from '@/services/analytics';
 import { checkPremiumStatus } from '@/services/user';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import type { PageData, PageBackground, Block } from '@/types/page';
 import {
   Dialog,
@@ -118,28 +121,14 @@ export default function PublicPage() {
     }
   };
 
+  // Show skeleton while loading
   if (loading || isTranslating) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">
-            {isTranslating ? t('language.translating', 'Перевод...') : t('common.loading', 'Загрузка...')}
-          </p>
-        </div>
-      </div>
-    );
+    return <PublicPageSkeleton />;
   }
 
+  // Show error state if no page data
   if (!pageData) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">{t('errors.pageNotFound', 'Страница не найдена')}</h1>
-          <p className="text-muted-foreground">{t('errors.invalidLink', 'Неверная или повреждённая ссылка')}</p>
-        </div>
-      </div>
-    );
+    return <PublicPageError type="not-found" />;
   }
 
   // Get background style from theme

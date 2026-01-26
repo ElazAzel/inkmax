@@ -27,7 +27,7 @@ import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { TemplateMarketplace } from '@/components/editor/TemplateMarketplace';
 import { SaveTemplateDialog } from '@/components/editor/SaveTemplateDialog';
 import { AIGenerator } from '@/components/AIGenerator';
-// OnboardingWizard removed per v1.2
+import { QuickStartFlow } from '@/components/onboarding/QuickStartFlow';
 import { NicheOnboarding } from '@/components/onboarding/NicheOnboarding';
 import { AchievementNotification } from '@/components/achievements/AchievementNotification';
 import { InstallPromptDialog } from '@/components/InstallPromptDialog';
@@ -77,9 +77,16 @@ export default function Dashboard() {
   const [showMyTemplates, setShowMyTemplates] = useState(false);
   const [showTokens, setShowTokens] = useState(false);
   const [showMarketplace, setShowMarketplace] = useState(false);
+  const [showQuickStart, setShowQuickStart] = useState(false);
 
-  // Onboarding disabled per v1.2 spec
-  // Users go directly to editor without wizard
+  // Check if new user needs quick start
+  useEffect(() => {
+    const completed = localStorage.getItem('linkmax_onboarding_completed');
+    if (!completed && dashboard.pageData?.blocks.length === 1) {
+      // Only profile block exists - show quick start
+      setShowQuickStart(true);
+    }
+  }, [dashboard.pageData?.blocks.length]);
 
   // Handle tab change
   const handleTabChange = useCallback((tabId: string) => {
@@ -303,6 +310,16 @@ export default function Dashboard() {
           onDismiss={dashboard.achievements.dismissAchievementNotification}
         />
       )}
+
+      {/* Quick Start Flow for new users */}
+      <QuickStartFlow
+        open={showQuickStart}
+        onClose={() => setShowQuickStart(false)}
+        onComplete={(data) => {
+          dashboard.onboardingState.handleNicheOnboardingComplete(data.profile, data.blocks, data.niche);
+          setShowQuickStart(false);
+        }}
+      />
 
       <NicheOnboarding
         isOpen={dashboard.onboardingState.showNicheOnboarding}

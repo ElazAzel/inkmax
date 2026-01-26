@@ -1,8 +1,9 @@
 /**
  * AppTabBar - Main mobile navigation component (iOS-style)
  * Fixed bottom tab bar with: Projects, Editor, CRM, Analytics, Gallery, Settings
+ * Enhanced with haptic feedback and smooth animations
  */
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -14,6 +15,7 @@ import {
   Settings 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useHapticFeedback } from '@/hooks/useHapticFeedback';
 
 interface TabItem {
   id: string;
@@ -37,6 +39,7 @@ export const AppTabBar = memo(function AppTabBar({
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const haptic = useHapticFeedback();
 
   const tabs: TabItem[] = [
     {
@@ -88,13 +91,16 @@ export const AppTabBar = memo(function AppTabBar({
     return 'projects';
   })();
 
-  const handleTabClick = (tab: TabItem) => {
+  const handleTabClick = useCallback((tab: TabItem) => {
+    // Haptic feedback on tab change
+    haptic.lightTap();
+    
     if (onTabChange) {
       onTabChange(tab.id);
     } else {
       navigate(tab.path);
     }
-  };
+  }, [onTabChange, navigate, haptic]);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom md:hidden">
