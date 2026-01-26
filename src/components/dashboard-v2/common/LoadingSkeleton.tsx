@@ -7,14 +7,32 @@ import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface LoadingSkeletonProps {
-  variant?: 'page' | 'card' | 'list' | 'stats';
+  variant?: 'page' | 'card' | 'list' | 'stats' | 'cards';
+  count?: number;
   className?: string;
 }
 
 export const LoadingSkeleton = memo(function LoadingSkeleton({
   variant = 'page',
+  count = 3,
   className,
 }: LoadingSkeletonProps) {
+  if (variant === 'cards') {
+    return (
+      <div className={cn("space-y-3", className)}>
+        {Array.from({ length: count }).map((_, i) => (
+          <Card key={i} className="p-4 flex items-center gap-4 rounded-2xl">
+            <Skeleton className="h-16 w-16 rounded-xl" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+            <Skeleton className="h-6 w-16 rounded-full" />
+          </Card>
+        ))}
+      </div>
+    );
+  }
   if (variant === 'card') {
     return (
       <Card className={cn("p-5 space-y-4", className)}>

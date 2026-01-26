@@ -27,7 +27,14 @@ export function AppRoutes() {
     <Route element={<App />}>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      {/* Dashboard with v2 tab support */}
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard/home" element={<Dashboard />} />
+      <Route path="/dashboard/pages" element={<Dashboard />} />
+      <Route path="/dashboard/activity" element={<Dashboard />} />
+      <Route path="/dashboard/insights" element={<Dashboard />} />
+      <Route path="/dashboard/monetize" element={<Dashboard />} />
+      <Route path="/dashboard/settings" element={<Dashboard />} />
       <Route path="/install" element={<Install />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/pricing" element={<Pricing />} />
