@@ -6,6 +6,7 @@ import App from "./App";
 const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DashboardV2 = lazy(() => import("./pages/DashboardV2"));
 const PublicPage = lazy(() => import("./pages/PublicPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Install = lazy(() => import("./pages/Install"));
@@ -27,14 +28,16 @@ export function AppRoutes() {
     <Route element={<App />}>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
-      {/* Dashboard with v2 tab support */}
+      {/* Dashboard v1 (legacy) */}
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/dashboard/home" element={<Dashboard />} />
-      <Route path="/dashboard/pages" element={<Dashboard />} />
-      <Route path="/dashboard/activity" element={<Dashboard />} />
-      <Route path="/dashboard/insights" element={<Dashboard />} />
-      <Route path="/dashboard/monetize" element={<Dashboard />} />
-      <Route path="/dashboard/settings" element={<Dashboard />} />
+      {/* Dashboard v2 (new multi-page) */}
+      <Route path="/dashboard/v2" element={<DashboardV2 />} />
+      <Route path="/dashboard/home" element={<DashboardV2 />} />
+      <Route path="/dashboard/pages" element={<DashboardV2 />} />
+      <Route path="/dashboard/activity" element={<DashboardV2 />} />
+      <Route path="/dashboard/insights" element={<DashboardV2 />} />
+      <Route path="/dashboard/monetize" element={<DashboardV2 />} />
+      <Route path="/dashboard/settings" element={<DashboardV2 />} />
       <Route path="/install" element={<Install />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/pricing" element={<Pricing />} />
