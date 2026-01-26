@@ -1,11 +1,32 @@
 /**
- * AnalyticsTab Tests - v1.2
+ * AnalyticsTab Tests - v1.3
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AnalyticsTab } from '../AnalyticsTab';
+
+// Mock useAuth hook
+vi.mock('@/hooks/useAuth', () => ({
+  useAuth: () => ({
+    user: { id: 'test-user' },
+    session: null,
+    loading: false,
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
+// Mock usePageAnalytics hook
+vi.mock('@/hooks/usePageAnalytics', () => ({
+  usePageAnalytics: () => ({
+    analytics: null,
+    loading: false,
+    error: null,
+    period: '7d',
+    setPeriod: vi.fn(),
+  }),
+}));
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -32,7 +53,7 @@ const mockEditorHistory = {
   recordBlockUpdate: vi.fn(),
   recordBlocksReorder: vi.fn(),
   pushAction: vi.fn(),
-} as any;
+};
 
 const defaultProps = {
   pageId: 'page-123',
@@ -72,19 +93,16 @@ describe('AnalyticsTab', () => {
 
   it('displays analytics metrics', () => {
     renderAnalyticsTab();
-    // Metrics should be displayed
     expect(document.body).toBeTruthy();
   });
 
   it('shows AI insights section', () => {
     renderAnalyticsTab();
-    // AI insights should be available
     expect(document.body).toBeTruthy();
   });
 
   it('shows premium gate for advanced analytics', () => {
     renderAnalyticsTab({ isPremium: false });
-    // Should show some indicator about premium features
     expect(document.body).toBeTruthy();
   });
 
