@@ -67,7 +67,7 @@ export function useCloudPageState() {
             });
             break;
           } catch (err) {
-            lastError = err;
+            lastError = err as Error;
             retries--;
             if (retries > 0) {
               await new Promise(r => setTimeout(r, 500));
@@ -77,6 +77,14 @@ export function useCloudPageState() {
         
         if (retries === 0 && lastError) {
           throw lastError;
+        }
+        
+        // Sync event blocks after page is saved (now we have pageId)
+        const eventBlocks = data.blocks.filter((b) => b.type === 'event');
+        for (const block of eventBlocks) {
+          if (block.type === 'event' && data.id) {
+            void syncEventBlock(block, data.id, user?.id);
+          }
         }
         
         // Then auto-publish
