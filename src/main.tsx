@@ -14,7 +14,8 @@ checkCacheVersion();
 // Lazy load page components for route-based code splitting
 const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Dashboard = lazy(() => import("./pages/DashboardV2"));
+const DashboardLegacy = lazy(() => import("./pages/Dashboard"));
 const PublicPage = lazy(() => import("./pages/PublicPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Install = lazy(() => import("./pages/Install"));
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { index: true, element: <Index /> },
       { path: "auth", element: <Auth /> },
       { path: "dashboard", element: <Dashboard /> },
+      { path: "dashboard/legacy", element: <DashboardLegacy /> },
       { path: "install", element: <Install /> },
       { path: "gallery", element: <Gallery /> },
       { path: "pricing", element: <Pricing /> },
