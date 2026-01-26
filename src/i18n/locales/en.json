@@ -2532,5 +2532,285 @@
       "settings": "Settings",
       "more": "More"
     }
+  },
+  "landingV5": {
+    "nav": {
+      "examples": "Examples",
+      "pricing": "Pricing",
+      "login": "Log in",
+      "create": "Create"
+    },
+    "hero": {
+      "badge": "Free. 2 minutes. No code.",
+      "title1": "One link -",
+      "title2": "a clear path to leads",
+      "subtitle": "Build a mini-site with your offer, pricing, and contact form. Visitors get it instantly and leave their info.",
+      "cta": "Create your page",
+      "secondary": "See examples",
+      "trust1": "No card needed",
+      "trust2": "Works on mobile",
+      "trust3": "0% commission",
+      "previewCta": "Book a consultation"
+    },
+    "problem": {
+      "badge": "The problem",
+      "title": "Links in bio don't explain who you are",
+      "description": "A visitor clicks and sees 10 random buttons. No clue what you actually do. They leave.",
+      "item1": "Scattered links",
+      "item1desc": "Visitors get lost between your socials",
+      "item2": "No clear offer",
+      "item2desc": "Hard to tell what makes you different",
+      "item3": "No contact form",
+      "item3desc": "People want to reach out but can't"
+    },
+    "solution": {
+      "badge": "The solution",
+      "title": "A mini-site that sells you",
+      "description": "One page: who you are, what you offer, how much it costs, how to get in touch. Visitors understand in 30 seconds.",
+      "item1": "Everything on one page",
+      "item1desc": "Profile, services, pricing, contacts",
+      "item2": "Leads go to Telegram",
+      "item2desc": "Instant notifications when someone reaches out",
+      "item3": "Edit from your phone",
+      "item3desc": "No computer or designer needed"
+    },
+    "howItWorks": {
+      "badge": "How it works",
+      "title": "From idea to page in 3 steps",
+      "subtitle": "No code. No designer. Just answer a few questions - AI builds your page.",
+      "step1": {
+        "title": "Pick your niche",
+        "description": "Freelancer, business, creator - AI will choose the right blocks for you"
+      },
+      "step2": {
+        "title": "Describe yourself",
+        "description": "Tell us what you do. AI writes the copy and arranges the blocks"
+      },
+      "step3": {
+        "title": "Publish",
+        "description": "Get your short link lnkmx.my/your-name. Add it to your bio"
+      },
+      "cta": "Try it now",
+      "note": "2 minutes to create"
+    },
+    "results": {
+      "badge": "Who it's for",
+      "title": "One page solves different problems",
+      "subtitle": "Whatever your niche - lnkmx helps you get leads",
+      "creators": {
+        "title": "Creators & influencers",
+        "problem": "Followers don't know where to buy your stuff",
+        "solution": "A page with courses, merch, and links to your content",
+        "cta": "Create page"
+      },
+      "freelancers": {
+        "title": "Freelancers",
+        "problem": "Clients keep asking \"how much?\" in every message",
+        "solution": "Price list and inquiry form - they see prices upfront",
+        "cta": "Create page"
+      },
+      "business": {
+        "title": "Small businesses",
+        "problem": "A full website is expensive, socials don't show the full picture",
+        "solution": "Mini-site with catalog, map, and online booking",
+        "cta": "Create page"
+      },
+      "education": {
+        "title": "Tutors & coaches",
+        "problem": "Parents want to see the program before signing up",
+        "solution": "Schedule, pricing, and student reviews on one page",
+        "cta": "Create page"
+      },
+      "events": {
+        "title": "Event organizers",
+        "problem": "Info is scattered, people don't finish registration",
+        "solution": "Date, venue, program, and signup form in one place",
+        "cta": "Create page"
+      },
+      "health": {
+        "title": "Salons & specialists",
+        "problem": "Clients call to ask prices and book appointments",
+        "solution": "Online booking and price list - fewer calls, more bookings",
+        "cta": "Create page"
+      }
+    },
+    "blocks": {
+      "badge": "25+ blocks",
+      "title": "Build your page like a puzzle",
+      "subtitle": "Drag blocks, change the order. Zero code.",
+      "profile": "Profile",
+      "links": "Links",
+      "products": "Products",
+      "pricing": "Pricing",
+      "form": "Contact form",
+      "booking": "Online booking",
+      "testimonials": "Reviews",
+      "faq": "FAQ",
+      "map": "Map",
+      "messenger": "Messengers",
+      "video": "Video",
+      "gallery": "Gallery",
+      "countdown": "Countdown",
+      "event": "Event",
+      "proLabel": "Pro"
+    },
+    "examples": {
+      "badge": "Examples",
+      "title": "Pages that are already working",
+      "subtitle": "Real examples from lnkmx users",
+      "viewAll": "View all examples",
+      "useTemplate": "Use this template",
+      "creator": "Creator",
+      "business": "Business",
+      "expert": "Expert"
+    },
+    "trust": {
+      "badge": "Why lnkmx",
+      "title": "Built for people who value their time",
+      "subtitle": "We don't add fluff. Only what helps you get leads.",
+      "speed": {
+        "title": "Fast on mobile",
+        "description": "Pages load instantly. Visitors won't leave while waiting"
+      },
+      "mobile": {
+        "title": "Editor in your pocket",
+        "description": "Update text and prices right from your phone. No laptop needed"
+      },
+      "telegram": {
+        "title": "Leads to Telegram",
+        "description": "New lead - instant notification. Never miss a client"
+      },
+      "noCommission": {
+        "title": "0% commission",
+        "description": "Sell products or services - it's all yours. We don't take a cut"
+      }
+    },
+    "pricing": {
+      "badge": "Pricing",
+      "title": "Start free, grow with Pro",
+      "subtitle": "Basic features are free forever. Pro when you need more",
+      "free": {
+        "title": "Free",
+        "price": "$0",
+        "period": "forever",
+        "description": "To start and test things out",
+        "features": {
+          "1": "1 page",
+          "2": "Basic blocks",
+          "3": "3 AI generations",
+          "4": "lnkmx watermark"
+        },
+        "cta": "Start free"
+      },
+      "pro": {
+        "title": "Pro",
+        "period": "/month",
+        "description": "For serious work",
+        "features": {
+          "1": "6 pages (1 paid + 5 free)",
+          "2": "All 25+ blocks",
+          "3": "Mini-CRM + Telegram notifications",
+          "4": "No watermark",
+          "5": "Custom domain",
+          "6": "Advanced analytics"
+        },
+        "cta": "Try Pro",
+        "popular": "Popular"
+      },
+      "guarantee": "14-day money-back guarantee",
+      "year": "year",
+      "halfYear": "6 months",
+      "quarter": "quarter",
+      "perMonth": "/mo",
+      "bestValue": "Best value"
+    },
+    "seo": {
+      "badge": "What is lnkmx",
+      "title": "A mini-site for your link in bio",
+      "items": {
+        "1": "A modern link-in-bio alternative",
+        "2": "Mini landing page with contact form",
+        "3": "Digital business card for experts",
+        "4": "No-code page builder",
+        "5": "AI assistant for content creation"
+      }
+    },
+    "faq": {
+      "badge": "FAQ",
+      "title": "Common questions",
+      "subtitle": "Can't find your answer? Reach out to support",
+      "q1": {
+        "question": "What is lnkmx and what's it for?",
+        "answer": "lnkmx is a mini-site builder. You create one page with info about yourself, services, and prices. Visitors click your Instagram or TikTok link and immediately understand what you offer."
+      },
+      "q2": {
+        "question": "How much does lnkmx cost?",
+        "answer": "The basic plan is free forever. Pro starts at $5/month when paid yearly. There's a 14-day money-back guarantee."
+      },
+      "q3": {
+        "question": "How does AI generation work?",
+        "answer": "Pick your niche, describe yourself in 2-3 sentences. AI picks the structure, writes the copy, and arranges the blocks. Then edit however you like."
+      },
+      "q4": {
+        "question": "What blocks are available?",
+        "answer": "25+ blocks: profile, links, products, pricing, contact form, online booking, reviews, FAQ, map, messengers, video, gallery, and more."
+      },
+      "q5": {
+        "question": "Is there a CRM for leads?",
+        "answer": "Yes. On Pro, all leads are collected in one place. You can change statuses, add notes. Plus instant Telegram notifications."
+      },
+      "q6": {
+        "question": "Can I edit from my phone?",
+        "answer": "Yes. The editor works on phone just like on desktop. Change text, add blocks, publish - all from mobile."
+      },
+      "q7": {
+        "question": "Do you take commission on sales?",
+        "answer": "No. 0% commission. Sell through your page - it's all yours."
+      },
+      "q8": {
+        "question": "How is lnkmx better than Linktree or Taplink?",
+        "answer": "AI builds your page for you. Built-in CRM for leads. Telegram notifications. Local pricing. Interface in Russian and Kazakh."
+      },
+      "q9": {
+        "question": "Is it good for a store or services?",
+        "answer": "Yes. There are product catalog blocks, price lists, online booking. Visitors see your offer and prices, then leave an inquiry."
+      },
+      "q10": {
+        "question": "Can I connect my own domain?",
+        "answer": "Yes, on Pro. Instead of lnkmx.my/name you get yoursite.com."
+      },
+      "q11": {
+        "question": "How do I pay for Pro?",
+        "answer": "By Visa, Mastercard, or local payment methods. Pricing is in your local currency."
+      },
+      "q12": {
+        "question": "What's the refund policy?",
+        "answer": "14 days from payment. If it doesn't work for you - we refund, no questions asked."
+      }
+    },
+    "finalCta": {
+      "badge": "Ready to start?",
+      "title": "Create your page in 2 minutes",
+      "subtitle": "Free. No card. No code.",
+      "cta": "Create your page",
+      "secondary": "See examples"
+    },
+    "footer": {
+      "description": "A mini-site for your link in bio. Create a page with services, pricing, and contact form in 2 minutes.",
+      "product": "Product",
+      "examples": "Examples",
+      "pricing": "Pricing",
+      "templates": "Templates",
+      "company": "Company",
+      "about": "About",
+      "blog": "Blog",
+      "contacts": "Contact",
+      "legal": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "language": "Language",
+      "copyright": "© {{year}} lnkmx. Made in Kazakhstan."
+    },
+    "floatingCta": "Create your page"
   }
 }

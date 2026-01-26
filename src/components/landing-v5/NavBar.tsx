@@ -31,14 +31,14 @@ export default function NavBar({ onCreatePage, onViewExamples }: NavBarProps) {
                 onClick={onViewExamples}
                 className="hidden sm:flex rounded-xl"
               >
-                {t('landingV5.nav.examples', 'Примеры')}
+                {t('landingV5.nav.examples')}
               </Button>
               <Button 
                 onClick={onCreatePage}
                 className="rounded-xl font-semibold shadow-md shadow-primary/20"
                 size="sm"
               >
-                {t('landingV5.nav.create', 'Создать')}
+                {t('landingV5.nav.create')}
               </Button>
             </div>
           </div>

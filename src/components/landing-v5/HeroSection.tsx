@@ -23,18 +23,18 @@ export default function HeroSection({ onCreatePage, onViewExamples }: HeroSectio
         {/* Trust badge */}
         <Badge className="mb-5 h-7 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
           <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-          {t('landingV5.hero.badge', 'Бесплатно. За 2 минуты. Без кода.')}
+          {t('landingV5.hero.badge')}
         </Badge>
 
         {/* H1 - Clear value prop with specific outcome */}
         <h1 className="text-[1.75rem] sm:text-4xl lg:text-5xl font-black tracking-tight mb-4 leading-[1.1]">
-          <span className="block">{t('landingV5.hero.title1', 'Одна ссылка -')}</span>
-          <span className="text-primary">{t('landingV5.hero.title2', 'понятный путь к заявке')}</span>
+          <span className="block">{t('landingV5.hero.title1')}</span>
+          <span className="text-primary">{t('landingV5.hero.title2')}</span>
         </h1>
 
         {/* Subtitle - specific, not generic */}
         <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-md mx-auto leading-relaxed">
-          {t('landingV5.hero.subtitle', 'AI соберёт мини-сайт с вашим оффером, прайсом и формой заявки. Вы получите лиды в Telegram.')}
+          {t('landingV5.hero.subtitle')}
         </p>
 
         {/* Primary CTA - prominent */}
@@ -54,7 +54,7 @@ export default function HeroSection({ onCreatePage, onViewExamples }: HeroSectio
             className="text-muted-foreground hover:text-foreground"
           >
             <Play className="h-4 w-4 mr-2" />
-            {t('landingV5.hero.secondary', 'Посмотреть примеры')}
+            {t('landingV5.hero.secondary')}
             <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
         </div>
@@ -63,15 +63,15 @@ export default function HeroSection({ onCreatePage, onViewExamples }: HeroSectio
         <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Check className="h-3.5 w-3.5 text-primary" />
-            {t('landingV5.hero.trust1', 'Без карты')}
+            {t('landingV5.hero.trust1')}
           </span>
           <span className="flex items-center gap-1.5">
             <Check className="h-3.5 w-3.5 text-primary" />
-            {t('landingV5.hero.trust2', 'Редактор на телефоне')}
+            {t('landingV5.hero.trust2')}
           </span>
           <span className="flex items-center gap-1.5">
             <Check className="h-3.5 w-3.5 text-primary" />
-            {t('landingV5.hero.trust3', '0% комиссии')}
+            {t('landingV5.hero.trust3')}
           </span>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function HeroSection({ onCreatePage, onViewExamples }: HeroSectio
               </div>
               <div className="h-10 bg-primary/80 rounded-xl flex items-center justify-center">
                 <span className="text-xs text-primary-foreground font-medium">
-                  {t('landingV5.hero.previewCta', 'Записаться на консультацию')}
+                  {t('landingV5.hero.previewCta')}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2">

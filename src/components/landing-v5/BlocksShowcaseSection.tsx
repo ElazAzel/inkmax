@@ -9,20 +9,20 @@ export default function BlocksShowcaseSection() {
   const { ref, isVisible } = useScrollAnimation(0.1);
 
   const blocks = [
-    { name: t('landingV5.blocks.profile', 'Профиль'), emoji: '👤', pro: false },
-    { name: t('landingV5.blocks.links', 'Ссылки'), emoji: '🔗', pro: false },
-    { name: t('landingV5.blocks.pricing', 'Прайс'), emoji: '💰', pro: false },
-    { name: t('landingV5.blocks.form', 'Форма'), emoji: '📝', pro: false },
-    { name: t('landingV5.blocks.booking', 'Запись'), emoji: '📅', pro: true },
-    { name: t('landingV5.blocks.faq', 'FAQ'), emoji: '❓', pro: false },
-    { name: t('landingV5.blocks.testimonials', 'Отзывы'), emoji: '⭐', pro: true },
-    { name: t('landingV5.blocks.map', 'Карта'), emoji: '📍', pro: true },
-    { name: t('landingV5.blocks.products', 'Товары'), emoji: '🛍️', pro: true },
-    { name: t('landingV5.blocks.video', 'Видео'), emoji: '🎬', pro: false },
-    { name: t('landingV5.blocks.gallery', 'Галерея'), emoji: '🖼️', pro: false },
-    { name: t('landingV5.blocks.socials', 'Соцсети'), emoji: '📱', pro: false },
-    { name: t('landingV5.blocks.messenger', 'Мессенджеры'), emoji: '💬', pro: false },
-    { name: t('landingV5.blocks.countdown', 'Таймер'), emoji: '⏰', pro: true },
+    { name: t('landingV5.blocks.profile'), emoji: '👤', pro: false },
+    { name: t('landingV5.blocks.links'), emoji: '🔗', pro: false },
+    { name: t('landingV5.blocks.pricing'), emoji: '💰', pro: false },
+    { name: t('landingV5.blocks.form'), emoji: '📝', pro: false },
+    { name: t('landingV5.blocks.booking'), emoji: '📅', pro: true },
+    { name: t('landingV5.blocks.faq'), emoji: '❓', pro: false },
+    { name: t('landingV5.blocks.testimonials'), emoji: '⭐', pro: true },
+    { name: t('landingV5.blocks.map'), emoji: '📍', pro: true },
+    { name: t('landingV5.blocks.products'), emoji: '🛍️', pro: true },
+    { name: t('landingV5.blocks.video'), emoji: '🎬', pro: false },
+    { name: t('landingV5.blocks.gallery'), emoji: '🖼️', pro: false },
+    { name: t('landingV5.blocks.messenger'), emoji: '💬', pro: false },
+    { name: t('landingV5.blocks.countdown'), emoji: '⏰', pro: true },
+    { name: t('landingV5.blocks.event'), emoji: '🎉', pro: true },
   ];
 
   return (
@@ -34,13 +34,13 @@ export default function BlocksShowcaseSection() {
         <div className="text-center mb-6">
           <Badge className="mb-3 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
             <Layers className="h-3.5 w-3.5 mr-1.5" />
-            {t('landingV5.blocks.badge', '25+ блоков')}
+            {t('landingV5.blocks.badge')}
           </Badge>
           <h2 className="text-xl sm:text-2xl font-bold mb-2">
-            {t('landingV5.blocks.title', 'Готовые блоки')}
+            {t('landingV5.blocks.title')}
           </h2>
           <p className="text-sm text-muted-foreground">
-            {t('landingV5.blocks.subtitle', 'Drag & drop. Работает на любом устройстве.')}
+            {t('landingV5.blocks.subtitle')}
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function BlocksShowcaseSection() {
               {block.name}
               {block.pro && (
                 <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
-                  Pro
+                  {t('landingV5.blocks.proLabel')}
                 </span>
               )}
             </div>

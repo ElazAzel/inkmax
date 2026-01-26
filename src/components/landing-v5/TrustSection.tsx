@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Smartphone, Zap, MessageSquare, BarChart3, Globe } from 'lucide-react';
+import { Zap, Smartphone, Send, Percent } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useScrollAnimation } from './hooks/useScrollAnimation';
 
@@ -10,34 +10,24 @@ export default function TrustSection() {
 
   const trustItems = [
     {
-      icon: Smartphone,
-      title: t('landingV5.trust.mobile.title', 'Mobile-first'),
-      description: t('landingV5.trust.mobile.desc', 'Редактируй и публикуй прямо с телефона'),
-    },
-    {
       icon: Zap,
-      title: t('landingV5.trust.fast.title', 'Быстрая загрузка'),
-      description: t('landingV5.trust.fast.desc', 'Страницы грузятся менее чем за 2 секунды'),
+      title: t('landingV5.trust.speed.title'),
+      description: t('landingV5.trust.speed.description'),
     },
     {
-      icon: Shield,
-      title: t('landingV5.trust.commission.title', '0% комиссии'),
-      description: t('landingV5.trust.commission.desc', 'Все деньги от продаж - ваши'),
+      icon: Smartphone,
+      title: t('landingV5.trust.mobile.title'),
+      description: t('landingV5.trust.mobile.description'),
     },
     {
-      icon: MessageSquare,
-      title: t('landingV5.trust.telegram.title', 'Telegram-уведомления'),
-      description: t('landingV5.trust.telegram.desc', 'Мгновенные уведомления о новых заявках'),
+      icon: Send,
+      title: t('landingV5.trust.telegram.title'),
+      description: t('landingV5.trust.telegram.description'),
     },
     {
-      icon: BarChart3,
-      title: t('landingV5.trust.analytics.title', 'Аналитика'),
-      description: t('landingV5.trust.analytics.desc', 'Видите, что кликают и откуда приходят'),
-    },
-    {
-      icon: Globe,
-      title: t('landingV5.trust.languages.title', '3 языка'),
-      description: t('landingV5.trust.languages.desc', 'Русский, English, Қазақша'),
+      icon: Percent,
+      title: t('landingV5.trust.noCommission.title'),
+      description: t('landingV5.trust.noCommission.description'),
     },
   ];
 
@@ -48,12 +38,18 @@ export default function TrustSection() {
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       )}>
         <div className="text-center mb-8">
+          <Badge className="mb-3 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
+            {t('landingV5.trust.badge')}
+          </Badge>
           <h2 className="text-xl sm:text-2xl font-bold mb-2">
-            {t('landingV5.trust.title', 'Почему выбирают lnkmx')}
+            {t('landingV5.trust.title')}
           </h2>
+          <p className="text-sm text-muted-foreground">
+            {t('landingV5.trust.subtitle')}
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {trustItems.map((item, i) => (
             <div
               key={i}

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { X, ArrowRight, Check } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { AlertTriangle, Check, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useScrollAnimation } from './hooks/useScrollAnimation';
 
@@ -7,62 +8,92 @@ export default function ProblemSolutionSection() {
   const { t } = useTranslation();
   const { ref, isVisible } = useScrollAnimation(0.1);
 
-  const problems = [
-    t('landingV5.problem.p1', 'Ссылка на WhatsApp, и клиенты повторяют одни вопросы'),
-    t('landingV5.problem.p2', 'Нет прайса - теряете тех, кто не хочет писать'),
-    t('landingV5.problem.p3', 'Непонятно, что реально приводит заявки'),
-  ];
-
-  const solutions = [
-    t('landingV5.solution.s1', 'Один экран с оффером, прайсом и кнопкой записи'),
-    t('landingV5.solution.s2', 'Заявки падают в mini-CRM и Telegram'),
-    t('landingV5.solution.s3', 'Видите, какие блоки кликают'),
-  ];
-
   return (
     <section ref={ref} className="py-12 px-5 bg-muted/20">
       <div className={cn(
         "max-w-xl mx-auto transition-all duration-700",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       )}>
-        {/* Problems */}
+        {/* Problem */}
         <div className="mb-6">
-          <p className="text-sm font-medium text-muted-foreground mb-3">
-            {t('landingV5.problem.label', 'Знакомо?')}
+          <Badge className="mb-4 h-6 px-3 text-xs font-medium bg-destructive/10 text-destructive border-destructive/20 rounded-full">
+            <AlertTriangle className="h-3.5 w-3.5 mr-1.5" />
+            {t('landingV5.problem.badge')}
+          </Badge>
+          
+          <h2 className="text-lg sm:text-xl font-bold mb-2">
+            {t('landingV5.problem.title')}
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t('landingV5.problem.description')}
           </p>
+          
           <div className="space-y-2">
-            {problems.map((problem, i) => (
-              <div 
-                key={i}
-                className="flex items-start gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/10"
-              >
-                <X className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
-                <span className="text-sm">{problem}</span>
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/10">
+              <span className="text-destructive mt-0.5">✗</span>
+              <div>
+                <p className="text-sm font-medium">{t('landingV5.problem.item1')}</p>
+                <p className="text-xs text-muted-foreground">{t('landingV5.problem.item1desc')}</p>
               </div>
-            ))}
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/10">
+              <span className="text-destructive mt-0.5">✗</span>
+              <div>
+                <p className="text-sm font-medium">{t('landingV5.problem.item2')}</p>
+                <p className="text-xs text-muted-foreground">{t('landingV5.problem.item2desc')}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/10">
+              <span className="text-destructive mt-0.5">✗</span>
+              <div>
+                <p className="text-sm font-medium">{t('landingV5.problem.item3')}</p>
+                <p className="text-xs text-muted-foreground">{t('landingV5.problem.item3desc')}</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Arrow transition */}
+        {/* Arrow */}
         <div className="flex justify-center my-4">
-          <ArrowRight className="h-6 w-6 text-primary rotate-90" />
+          <ArrowDown className="h-6 w-6 text-primary" />
         </div>
 
-        {/* Solutions */}
+        {/* Solution */}
         <div>
-          <p className="text-sm font-medium text-primary mb-3">
-            {t('landingV5.solution.label', 'С lnkmx:')}
+          <Badge className="mb-4 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
+            <Check className="h-3.5 w-3.5 mr-1.5" />
+            {t('landingV5.solution.badge')}
+          </Badge>
+          
+          <h2 className="text-lg sm:text-xl font-bold mb-2">
+            {t('landingV5.solution.title')}
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t('landingV5.solution.description')}
           </p>
+          
           <div className="space-y-2">
-            {solutions.map((solution, i) => (
-              <div 
-                key={i}
-                className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20"
-              >
-                <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm font-medium">{solution}</span>
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
+              <Check className="h-4 w-4 text-primary mt-0.5" />
+              <div>
+                <p className="text-sm font-medium">{t('landingV5.solution.item1')}</p>
+                <p className="text-xs text-muted-foreground">{t('landingV5.solution.item1desc')}</p>
               </div>
-            ))}
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
+              <Check className="h-4 w-4 text-primary mt-0.5" />
+              <div>
+                <p className="text-sm font-medium">{t('landingV5.solution.item2')}</p>
+                <p className="text-xs text-muted-foreground">{t('landingV5.solution.item2desc')}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
+              <Check className="h-4 w-4 text-primary mt-0.5" />
+              <div>
+                <p className="text-sm font-medium">{t('landingV5.solution.item3')}</p>
+                <p className="text-xs text-muted-foreground">{t('landingV5.solution.item3desc')}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

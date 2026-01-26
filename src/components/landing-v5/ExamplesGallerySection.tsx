@@ -28,13 +28,13 @@ export default function ExamplesGallerySection({ onViewAll }: ExamplesGallerySec
         <div className="text-center mb-8">
           <Badge className="mb-3 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
             <Users className="h-3.5 w-3.5 mr-1.5" />
-            {t('landingV5.examples.badge', 'Реальные страницы')}
+            {t('landingV5.examples.badge')}
           </Badge>
           <h2 className="text-xl sm:text-2xl font-bold mb-2">
-            {t('landingV5.examples.title', 'Примеры страниц')}
+            {t('landingV5.examples.title')}
           </h2>
           <p className="text-sm text-muted-foreground">
-            {t('landingV5.examples.subtitle', 'Посмотрите, как другие используют lnkmx')}
+            {t('landingV5.examples.subtitle')}
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default function ExamplesGallerySection({ onViewAll }: ExamplesGallerySec
             onClick={onViewAll}
             className="rounded-xl"
           >
-            {t('landingV5.examples.viewAll', 'Смотреть все')}
+            {t('landingV5.examples.viewAll')}
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
