@@ -59,7 +59,8 @@ export const BLOCK_CATEGORIES = {
 
 export const PREMIUM_BLOCK_TYPES: readonly BlockType[] = [
   'video', 'carousel', 'custom_code', 'form', 'newsletter', 
-  'testimonial', 'scratch', 'search', 'catalog', 'countdown', 'booking',
+  'testimonial', 'scratch', 'catalog', 'countdown', 'booking',
+  'before_after', 'download', 'product', 'pricing', 'shoutout', 'community', 'event',
 ];
 
 // ============= Base Block Interface =============
