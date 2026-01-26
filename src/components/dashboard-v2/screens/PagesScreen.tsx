@@ -1,18 +1,21 @@
 /**
  * PagesScreen - Manage all user pages
  * Mobile-first with search, filters, and quick actions
+ * Shows page type badges (Free/Paid/Paid Add-on) and limits
  */
 import { memo, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search, MoreVertical, Eye, Share2, Copy, Settings, ExternalLink } from 'lucide-react';
+import { Plus, Search, MoreVertical, Eye, Share2, Copy, Settings, ExternalLink, Crown, Sparkles, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -21,38 +24,58 @@ import { StatusBadge } from '../common/StatusBadge';
 import { EmptyState } from '../common/EmptyState';
 import { LoadingSkeleton } from '../common/LoadingSkeleton';
 import { cn } from '@/lib/utils';
-import type { Page } from '@/domain/entities/Page';
 
 interface PageItem {
   id: string;
   title: string;
   slug: string;
   isPublished: boolean;
+  isPaid?: boolean;
+  isPrimaryPaid?: boolean;
   updatedAt: string;
   viewCount?: number;
   coverUrl?: string;
 }
 
+interface PageLimits {
+  tier: 'free' | 'pro';
+  currentPages: number;
+  maxPages: number;
+  paidPages: number;
+  freePages: number;
+  canCreate: boolean;
+}
+
 interface PagesScreenProps {
   pages: PageItem[];
+  limits?: PageLimits;
   loading?: boolean;
+  isPremium?: boolean;
   onCreatePage?: () => void;
   onEditPage?: (pageId: string) => void;
   onPreviewPage?: (pageId: string) => void;
   onSharePage?: (pageId: string) => void;
   onDuplicatePage?: (pageId: string) => void;
   onPageSettings?: (pageId: string) => void;
+  onDeletePage?: (pageId: string) => void;
+  onUpgradePage?: (pageId: string) => void;
+  onUpgradePlan?: () => void;
 }
 
 export const PagesScreen = memo(function PagesScreen({
   pages,
+  limits,
   loading,
+  isPremium,
   onCreatePage,
   onEditPage,
   onPreviewPage,
   onSharePage,
   onDuplicatePage,
   onPageSettings,
+  onDeletePage,
+  onUpgradePage,
+  onUpgradePlan,
 }: PagesScreenProps) {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
@@ -88,6 +111,30 @@ export const PagesScreen = memo(function PagesScreen({
     });
   };
 
+  const getPageTypeBadge = (page: PageItem) => {
+    if (page.isPrimaryPaid) {
+      return (
+        <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
+          <Crown className="w-3 h-3 mr-1" />
+          {t('dashboard.pages.primaryPaid', 'Paid')}
+        </Badge>
+      );
+    }
+    if (page.isPaid) {
+      return (
+        <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30 text-xs">
+          <Sparkles className="w-3 h-3 mr-1" />
+          {t('dashboard.pages.paidAddon', 'Add-on')}
+        </Badge>
+      );
+    }
+    return (
+      <Badge variant="secondary" className="text-xs">
+        {t('dashboard.pages.free', 'Free')}
+      </Badge>
+    );
+  };
+
   if (loading) {
     return (
       <div className="p-4 space-y-4">
@@ -114,6 +161,37 @@ export const PagesScreen = memo(function PagesScreen({
       />
 
       <div className="p-4 space-y-4">
+        {/* Limits Counter */}
+        {limits && (
+          <Card className="p-4 rounded-2xl">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">
+                {t('dashboard.pages.pagesUsed', 'Pages Used')}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {limits.currentPages} / {limits.maxPages}
+              </span>
+            </div>
+            <Progress 
+              value={(limits.currentPages / limits.maxPages) * 100} 
+              className="h-2 mb-2"
+            />
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>
+                {limits.tier === 'pro' 
+                  ? t('dashboard.pages.proLimits', '1 paid included + {{free}} free', { free: limits.freePages })
+                  : t('dashboard.pages.freeLimits', 'Upgrade to Pro for more pages')
+                }
+              </span>
+              {!limits.canCreate && onUpgradePlan && (
+                <Button variant="link" size="sm" className="h-auto p-0 text-primary" onClick={onUpgradePlan}>
+                  {t('dashboard.pages.upgrade', 'Upgrade')}
+                </Button>
+              )}
+            </div>
+          </Card>
+        )}
+
         {/* Search & Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -186,9 +264,12 @@ export const PagesScreen = memo(function PagesScreen({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <h3 className="font-semibold truncate">
-                            {page.title || t('dashboard.pages.untitled', 'Untitled')}
-                          </h3>
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <h3 className="font-semibold truncate">
+                              {page.title || t('dashboard.pages.untitled', 'Untitled')}
+                            </h3>
+                            {getPageTypeBadge(page)}
+                          </div>
                           <p className="text-sm text-muted-foreground truncate">
                             lnkmx.my/{page.slug}
                           </p>
@@ -246,6 +327,27 @@ export const PagesScreen = memo(function PagesScreen({
                                 <Settings className="w-4 h-4 mr-2" />
                                 {t('dashboard.pages.settings', 'Settings')}
                               </DropdownMenuItem>
+                              {!page.isPaid && isPremium && onUpgradePage && (
+                                <>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem onClick={() => onUpgradePage(page.id)}>
+                                    <Sparkles className="w-4 h-4 mr-2 text-amber-500" />
+                                    {t('dashboard.pages.upgradeToPaid', 'Upgrade to Paid')}
+                                  </DropdownMenuItem>
+                                </>
+                              )}
+                              {pages.length > 1 && onDeletePage && (
+                                <>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem 
+                                    onClick={() => onDeletePage(page.id)}
+                                    className="text-destructive focus:text-destructive"
+                                  >
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    {t('dashboard.pages.delete', 'Delete')}
+                                  </DropdownMenuItem>
+                                </>
+                              )}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
