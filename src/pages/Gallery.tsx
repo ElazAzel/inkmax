@@ -1,8 +1,8 @@
 /**
- * Gallery v1.2 - Mobile-first community gallery
- * iOS-style design with filters and one-tap copy
+ * Gallery v1.3 - Mobile-first community gallery with performance optimizations
+ * iOS-style design with filters, skeleton loading, and one-tap copy
  */
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -25,6 +25,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { SkeletonCard, SkeletonGalleryGrid, SkeletonStats } from '@/components/ui/skeleton-card';
 import { CommunityGallery } from '@/components/gallery/CommunityGallery';
 import { Leaderboard } from '@/components/gallery/Leaderboard';
 import { TopReferrers } from '@/components/gallery/TopReferrers';
@@ -50,26 +51,28 @@ export default function Gallery() {
     'Explore real lnkmx link in bio pages by creators and businesses. Find templates, niches, and inspiration for your mini-site.'
   );
 
-  // Quick stats
-  const totalLikes = pages.reduce((sum, p) => sum + (p.gallery_likes || 0), 0);
-  const totalViews = pages.reduce((sum, p) => sum + (p.view_count || 0), 0);
+  // Quick stats - memoized for performance
+  const totalLikes = useMemo(() => 
+    pages.reduce((sum, p) => sum + (p.gallery_likes || 0), 0), [pages]);
+  const totalViews = useMemo(() => 
+    pages.reduce((sum, p) => sum + (p.view_count || 0), 0), [pages]);
 
-  // Filter pages
-  const filteredPages = pages.filter(page => {
+  // Filter pages - memoized
+  const filteredPages = useMemo(() => pages.filter(page => {
     const matchesSearch = !searchQuery || 
       page.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       page.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesNiche = !selectedNiche || page.niche === selectedNiche;
     return matchesSearch && matchesNiche;
-  });
+  }), [pages, searchQuery, selectedNiche]);
 
-  // Featured pages (top 5 by likes)
-  const featuredPages = [...pages]
+  // Featured pages (top 5 by likes) - memoized
+  const featuredPages = useMemo(() => [...pages]
     .sort((a, b) => (b.gallery_likes || 0) - (a.gallery_likes || 0))
-    .slice(0, 5);
+    .slice(0, 5), [pages]);
 
-  const handleCopyTemplate = (pageSlug: string) => {
-    // In a real app, this would copy the template
+  // Handlers - memoized
+  const handleCopyTemplate = useCallback((pageSlug: string) => {
     toast.success(t('gallery.templateCopied', 'Шаблон скопирован!'), {
       description: t('gallery.goToEditor', 'Откройте редактор чтобы настроить'),
       action: {
@@ -77,7 +80,7 @@ export default function Gallery() {
         onClick: () => navigate('/dashboard?tab=editor'),
       },
     });
-  };
+  }, [t, navigate]);
 
   return (
     <>
@@ -123,24 +126,28 @@ export default function Gallery() {
             </Button>
           </div>
 
-          {/* Stats row */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <div className="p-3 rounded-xl bg-muted/50 text-center">
-              <Sparkles className="h-4 w-4 mx-auto text-primary mb-1" />
-              <p className="text-lg font-black">{pages.length}</p>
-              <p className="text-xs text-muted-foreground">{t('gallery.statsPages', 'Страниц')}</p>
+          {/* Stats row - with skeleton loading */}
+          {loading ? (
+            <SkeletonStats />
+          ) : (
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="p-3 rounded-xl bg-muted/50 text-center">
+                <Sparkles className="h-4 w-4 mx-auto text-primary mb-1" />
+                <p className="text-lg font-black">{pages.length}</p>
+                <p className="text-xs text-muted-foreground">{t('gallery.statsPages', 'Страниц')}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-muted/50 text-center">
+                <Heart className="h-4 w-4 mx-auto text-red-500 mb-1" />
+                <p className="text-lg font-black">{totalLikes}</p>
+                <p className="text-xs text-muted-foreground">{t('gallery.statsLikes', 'Лайков')}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-muted/50 text-center">
+                <Eye className="h-4 w-4 mx-auto text-emerald-500 mb-1" />
+                <p className="text-lg font-black">{totalViews}</p>
+                <p className="text-xs text-muted-foreground">{t('gallery.statsViews', 'Просмотров')}</p>
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-muted/50 text-center">
-              <Heart className="h-4 w-4 mx-auto text-red-500 mb-1" />
-              <p className="text-lg font-black">{totalLikes}</p>
-              <p className="text-xs text-muted-foreground">{t('gallery.statsLikes', 'Лайков')}</p>
-            </div>
-            <div className="p-3 rounded-xl bg-muted/50 text-center">
-              <Eye className="h-4 w-4 mx-auto text-emerald-500 mb-1" />
-              <p className="text-lg font-black">{totalViews}</p>
-              <p className="text-xs text-muted-foreground">{t('gallery.statsViews', 'Просмотров')}</p>
-            </div>
-          </div>
+          )}
 
           {/* Tabs */}
           <div className="bg-muted/50 rounded-xl p-1 flex gap-1">
@@ -248,7 +255,9 @@ export default function Gallery() {
               <span className="ml-2 text-xs font-normal">({filteredPages.length})</span>
             </h2>
             
-            {filteredPages.length === 0 ? (
+            {loading ? (
+              <SkeletonGalleryGrid />
+            ) : filteredPages.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="font-bold mb-2">{t('gallery.noPages', 'Страниц не найдено')}</h3>

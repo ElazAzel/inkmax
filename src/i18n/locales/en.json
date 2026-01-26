@@ -50,7 +50,39 @@
     "and": "and",
     "user": "User",
     "friend": "Friend",
-    "recipient": "Recipient"
+    "recipient": "Recipient",
+    "skip": "Skip",
+    "retry": "Try again",
+    "goHome": "Go home",
+    "signUp": "Sign up",
+    "pleaseWait": "Please wait..."
+  },
+  "quickStart": {
+    "welcomeTitle": "Create your page in 60 seconds",
+    "welcomeDescription": "AI will generate a personalized page based on your niche and description",
+    "startWithAI": "Create with AI",
+    "skipToEditor": "Skip and create manually",
+    "nicheTitle": "Choose your niche",
+    "nicheDescription": "AI will pick the design and blocks",
+    "detailsTitle": "Tell us about yourself",
+    "detailsDescription": "AI will personalize your page",
+    "yourName": "Your name",
+    "namePlaceholder": "What's your name?",
+    "additionalDetails": "Description (optional)",
+    "detailsPlaceholder": "What do you do? What services do you offer?",
+    "detailsHint": "The more detail - the better the result",
+    "generate": "Create",
+    "generatingTitle": "AI is creating your page",
+    "generatingDescription": "Selecting blocks and content just for you",
+    "completeTitle": "Done! 🎉",
+    "completeDescription": "Your page is ready for editing"
+  },
+  "errors": {
+    "pageNotFound": "Page not found",
+    "invalidLink": "Check the link or the page may have been deleted",
+    "loadError": "Loading error",
+    "tryAgain": "Try refreshing the page",
+    "createYourPage": "Want to create your own page?"
   },
   "form": {
     "fillRequired": "Please fill required fields",
