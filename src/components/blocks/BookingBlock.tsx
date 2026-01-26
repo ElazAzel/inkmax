@@ -281,7 +281,7 @@ export const BookingBlock = memo(function BookingBlockComponent({
   return (
     <div className="w-full rounded-xl overflow-hidden bg-card border border-border shadow-sm">
       {/* Header */}
-      <div className="p-4 pb-2">
+      <div className="p-4 sm:p-5 pb-2">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-5 w-5 text-primary" />
           <h3 className="font-semibold text-base">
@@ -298,7 +298,7 @@ export const BookingBlock = memo(function BookingBlockComponent({
         </div>
       </div>
 
-      <div className="p-4 pt-2 space-y-4">
+      <div className="p-4 sm:p-5 pt-2 space-y-4">
         {/* Step indicator - compact */}
         <div className="flex items-center gap-2 text-xs">
           <div className={`flex items-center justify-center w-5 h-5 rounded-full font-medium ${

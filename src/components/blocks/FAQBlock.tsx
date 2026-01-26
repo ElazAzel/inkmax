@@ -47,7 +47,7 @@ export const FAQBlock = React.memo(function FAQBlock({ block }: FAQBlockProps) {
             <AccordionItem 
               key={item.id} 
               value={item.id}
-              className="bg-card border border-border rounded-xl px-3 shadow-sm data-[state=open]:bg-muted/30"
+              className="bg-card border border-border rounded-xl px-4 shadow-sm data-[state=open]:bg-muted/30"
             >
               <AccordionTrigger className="text-left text-sm font-medium hover:no-underline py-3 gap-2">
                 {question}

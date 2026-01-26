@@ -62,7 +62,23 @@ interface BlockProps<T extends Block> {
 }
 ```
 
-### 4. Premium Gating
+### 4. Spacing Standards (NEW)
+Стандарт отступов для предотвращения обрезки текста закруглениями:
+
+```
+Правило: внутренний padding >= border-radius
+
+rounded-xl (12px)  → минимум p-4 (16px)
+rounded-2xl (16px) → минимум p-5 (20px)
+rounded-3xl (24px) → минимум p-6 (24px)
+```
+
+Утилиты в `src/lib/block-spacing.ts`:
+- `BLOCK_CONTAINER_CLASSES` - готовые классы контейнеров
+- `BLOCK_INNER_CLASSES` - классы для вложенных элементов
+- `getMinPaddingForRadius()` - получение минимального padding
+
+### 5. Premium Gating
 - Определено в `src/lib/block-registry.ts`
 - UI gating через `FreePremiumBlockGate`
 - Backend enforcement через RLS policies

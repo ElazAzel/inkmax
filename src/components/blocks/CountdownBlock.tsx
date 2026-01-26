@@ -61,8 +61,8 @@ export const CountdownBlock = React.memo(function CountdownBlock({ block }: Coun
 
   if (!block.targetDate) {
     return (
-      <Card className="w-full bg-card border-border shadow-sm rounded-xl">
-        <CardContent className="p-4 sm:p-6 text-center text-muted-foreground text-sm">
+      <Card className="w-full bg-card border-border shadow-sm rounded-xl p-4 sm:p-5">
+        <CardContent className="p-0 text-center text-muted-foreground text-sm">
           {t('blocks.countdown.noDate', 'Укажите дату')}
         </CardContent>
       </Card>

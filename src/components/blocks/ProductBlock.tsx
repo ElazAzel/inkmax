@@ -195,7 +195,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
       }}
       onClick={() => setIsDetailOpen(true)}
     >
-      <div className="flex gap-3 p-3">
+      <div className="flex gap-3 p-4">
         {/* Compact image */}
         {block.image && (
           <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-muted">
