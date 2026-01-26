@@ -183,10 +183,13 @@ TELEGRAM_BOT_TOKEN=xxx (Edge Functions only)
 ### Testing
 
 ```bash
-npm run lint        # Lint
+npm run lint        # ESLint
+npx tsc --noEmit    # TypeScript check
+npm test            # Unit tests (Vitest)
 npm run lint:i18n   # i18n lint for JSX literals
 npm run i18n:check  # Validate locale alignment and placeholders
 npm run e2e         # Playwright E2E
+npm run e2e:ci      # E2E in CI mode
 ```
 
 ### Localization workflow

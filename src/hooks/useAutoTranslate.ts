@@ -5,6 +5,12 @@ import { useTranslation } from 'react-i18next';
 import type { SupportedLanguage, MultilingualString } from '@/lib/i18n-helpers';
 import { isMultilingualString } from '@/lib/i18n-helpers';
 
+// DB block structure (different from domain Block)
+interface DbBlockWithContent {
+  content: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
 interface TranslateOptions {
   sourceLanguage: SupportedLanguage;
   targetLanguages: SupportedLanguage[];
@@ -61,10 +67,10 @@ export function useAutoTranslate() {
   }, [translateText]);
 
   const translateBlocks = useCallback(async (
-    blocks: any[],
+    blocks: DbBlockWithContent[],
     targetLanguage: SupportedLanguage,
     onProgress?: (progress: number) => void
-  ): Promise<any[]> => {
+  ): Promise<DbBlockWithContent[]> => {
     if (!blocks.length) return blocks;
 
     setIsTranslating(true);
