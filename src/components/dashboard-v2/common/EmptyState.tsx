@@ -1,25 +1,25 @@
 /**
  * EmptyState - Consistent empty state component with optional CTA
  */
-import { memo } from 'react';
+import { memo, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface EmptyStateProps {
-  icon: LucideIcon;
+  icon: LucideIcon | ReactNode;
   title: string;
   description?: string;
   action?: {
     label: string;
-    onClick: () => void;
+    onClick?: () => void;
   };
   className?: string;
 }
 
 export const EmptyState = memo(function EmptyState({
-  icon: Icon,
+  icon,
   title,
   description,
   action,
@@ -27,10 +27,19 @@ export const EmptyState = memo(function EmptyState({
 }: EmptyStateProps) {
   const { t } = useTranslation();
 
+  // Check if icon is a React element or a LucideIcon component
+  const renderIcon = () => {
+    if (typeof icon === 'function') {
+      const IconComponent = icon as LucideIcon;
+      return <IconComponent className="h-10 w-10 text-muted-foreground/50" />;
+    }
+    return icon;
+  };
+
   return (
     <div className={cn("text-center py-16 px-6", className)}>
       <div className="h-20 w-20 rounded-[28px] bg-muted/50 flex items-center justify-center mx-auto mb-5">
-        <Icon className="h-10 w-10 text-muted-foreground/50" />
+        {renderIcon()}
       </div>
       <h3 className="font-bold text-lg mb-2">{title}</h3>
       {description && (

@@ -2250,5 +2250,142 @@
     "url": "Ссылка (URL)",
     "media": "Медиа-секция (Pro)",
     "file": "Файл (Pro)"
+  },
+  "dashboard": {
+    "seo": {
+      "title": "Панель управления - lnkmx",
+      "description": "Управляйте своими страницами, лидами и аналитикой"
+    },
+    "home": {
+      "title": "Главная",
+      "subtitle": "Обзор",
+      "yourPage": "Ваша страница",
+      "noPage": "Нет страницы",
+      "createFirst": "Создайте первую страницу",
+      "edit": "Редактировать",
+      "preview": "Просмотр",
+      "publish": "Опубликовать",
+      "unpublish": "Снять с публикации",
+      "quickActions": "Быстрые действия",
+      "addBlock": "Добавить блок",
+      "shareLink": "Поделиться",
+      "upgrade": "Улучшить план",
+      "weekStats": "За неделю",
+      "views": "Просмотры",
+      "leads": "Заявки",
+      "conversions": "Конверсии",
+      "recommendations": "Рекомендации",
+      "improveYourPage": "Улучшите страницу"
+    },
+    "pages": {
+      "title": "Страницы",
+      "subtitle": "Управляйте страницами",
+      "create": "Создать",
+      "searchPlaceholder": "Поиск страниц...",
+      "all": "Все",
+      "published": "Опубликованные",
+      "draft": "Черновики",
+      "emptyTitle": "Нет страниц",
+      "emptyDescription": "Создайте первую страницу",
+      "noResults": "Ничего не найдено",
+      "noResultsDescription": "Попробуйте изменить поиск или фильтры",
+      "createFirst": "Создать страницу",
+      "untitled": "Без названия",
+      "duplicate": "Дублировать",
+      "settings": "Настройки"
+    },
+    "activity": {
+      "title": "Активность",
+      "subtitle": "Входящие заявки",
+      "tabs": {
+        "leads": "Заявки",
+        "bookings": "Записи",
+        "events": "Регистрации",
+        "messages": "Сообщения"
+      },
+      "emptyTitle": "Нет активности",
+      "emptyDescription": "Здесь появятся заявки и записи с ваших страниц",
+      "markDone": "Готово",
+      "export": "Экспорт",
+      "filter": "Фильтр"
+    },
+    "insights": {
+      "title": "Аналитика",
+      "subtitle": "Метрики и показатели",
+      "period": "Период",
+      "last7days": "7 дней",
+      "last30days": "30 дней",
+      "last90days": "90 дней",
+      "views": "Просмотры",
+      "clicks": "Клики",
+      "leads": "Заявки",
+      "ctr": "CTR",
+      "topBlocks": "Топ блоки",
+      "trafficSources": "Источники трафика",
+      "aiSuggestions": "AI рекомендации"
+    },
+    "monetize": {
+      "title": "Монетизация",
+      "subtitle": "План и оплата",
+      "proPlan": "Про план",
+      "freePlan": "Бесплатный план",
+      "trial": "Пробный период",
+      "trialEnds": "Пробный период до {{date}}",
+      "manageBilling": "Оплата",
+      "usage": "Использование",
+      "pages": "Страницы",
+      "blocks": "Блоки",
+      "aiGenerations": "AI генерации",
+      "upgradeTitle": "Перейти на Pro",
+      "unlockAll": "Разблокируйте все функции",
+      "upgradeDescription": "Больше страниц, блоков, AI генераций и премиум функций.",
+      "upgradeCta": "Улучшить сейчас",
+      "guarantee": "14-дневная гарантия возврата",
+      "proIncludes": "Ваши Pro преимущества",
+      "secure": "Безопасная оплата",
+      "noCommission": "0% комиссии",
+      "free": {
+        "feature1": "Базовые блоки",
+        "feature2": "1 страница",
+        "feature3": "3 AI генерации",
+        "feature4": "Базовая аналитика"
+      },
+      "pro": {
+        "feature1": "Все 25+ блоков",
+        "feature2": "10 страниц",
+        "feature3": "20 AI генераций/месяц",
+        "feature4": "Мини-CRM + Telegram",
+        "feature5": "Расширенная аналитика",
+        "feature6": "Без водяного знака",
+        "feature7": "Приоритетная поддержка"
+      }
+    },
+    "settings": {
+      "title": "Настройки",
+      "subtitle": "Аккаунт и настройки",
+      "profile": "Профиль",
+      "branding": "Брендинг",
+      "notifications": "Уведомления",
+      "language": "Язык",
+      "security": "Безопасность",
+      "signOut": "Выйти"
+    },
+    "common": {
+      "loading": "Загрузка...",
+      "error": "Ошибка",
+      "retry": "Повторить",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "more": "Ещё"
+    },
+    "nav": {
+      "home": "Главная",
+      "pages": "Страницы",
+      "activity": "Активность",
+      "insights": "Аналитика",
+      "monetize": "Монетизация",
+      "settings": "Настройки",
+      "more": "Ещё"
+    }
   }
 }
