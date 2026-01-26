@@ -58,13 +58,16 @@ export function useCloudPageState() {
         // Save first with retry logic
         let retries = 2;
         let lastError: Error | null = null;
+        let savedPageId: string | undefined;
         
         while (retries > 0) {
           try {
-            await savePageMutation.mutateAsync({ 
+            const result = await savePageMutation.mutateAsync({ 
               pageData: data, 
               chatbotContext: context 
             });
+            // Get pageId from the saved result
+            savedPageId = result.dbPage?.id;
             break;
           } catch (err) {
             lastError = err as Error;
@@ -79,11 +82,16 @@ export function useCloudPageState() {
           throw lastError;
         }
         
+        // Use saved pageId or fallback to data.id
+        const pageIdToUse = savedPageId || data.id;
+        
         // Sync event blocks after page is saved (now we have pageId)
-        const eventBlocks = data.blocks.filter((b) => b.type === 'event');
-        for (const block of eventBlocks) {
-          if (block.type === 'event' && data.id) {
-            void syncEventBlock(block, data.id, user?.id);
+        if (pageIdToUse && user?.id) {
+          const eventBlocks = data.blocks.filter((b) => b.type === 'event');
+          for (const block of eventBlocks) {
+            if (block.type === 'event') {
+              void syncEventBlock(block, pageIdToUse, user.id);
+            }
           }
         }
         
