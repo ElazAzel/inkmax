@@ -6,6 +6,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ProjectsTab } from '../ProjectsTab';
+import type { PageData } from '@/types/page';
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -14,30 +15,28 @@ const createTestQueryClient = () =>
     },
   });
 
-const mockUser = {
-  id: 'user-123',
-  email: 'test@example.com',
-} as any;
-
-const defaultProps = {
-  pageData: {
+const defaultPageData: PageData = {
     id: 'page-123',
     userId: 'user-123',
     blocks: [],
     theme: {
       backgroundColor: '#ffffff',
       textColor: '#000000',
-      buttonStyle: 'solid',
-      fontFamily: 'Inter',
+      buttonStyle: 'rounded',
+      fontFamily: 'sans',
     },
     seo: {
       title: 'Test Page',
       description: 'Test description',
       keywords: [],
+      allowIndexing: true,
     },
     isPremium: false,
-  } as any,
-  user: mockUser,
+};
+
+const defaultProps = {
+  pageData: defaultPageData,
+  user: null,
   isPremium: false,
   onOpenEditor: vi.fn(),
   onOpenSettings: vi.fn(),

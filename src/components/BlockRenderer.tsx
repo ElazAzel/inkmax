@@ -4,7 +4,7 @@ import type { PremiumTier } from '@/hooks/usePremiumStatus';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 import { useAnalytics } from '@/hooks/useAnalyticsTracking';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getTranslatedString, type SupportedLanguage, type MultilingualString } from '@/lib/i18n-helpers';
 import { useTranslation } from 'react-i18next';
 import { PaidBlockWrapper } from '@/components/blocks/PaidBlockWrapper';
 
@@ -56,6 +56,7 @@ const PricingBlock = lazy(() => import('./blocks/PricingBlock').then(m => ({ def
 const ShoutoutBlock = lazy(() => import('./blocks/ShoutoutBlock').then(m => ({ default: m.ShoutoutBlock })));
 const BookingBlock = lazy(() => import('./blocks/BookingBlock').then(m => ({ default: m.BookingBlock })));
 const CommunityBlock = lazy(() => import('./blocks/CommunityBlock').then(m => ({ default: m.CommunityBlock })));
+const EventBlockRenderer = lazy(() => import('./blocks/EventBlockRenderer').then(m => ({ default: m.EventBlockRenderer })));
 const EventBlock = lazy(() => import('./blocks/EventBlock').then(m => ({ default: m.EventBlock })));
 
 interface BlockRendererProps {
@@ -74,18 +75,49 @@ const BlockSkeleton = () => (
   </div>
 );
 
-/**
- * Get block title for analytics
- */
+function getBlockTitleCandidate(block: Block): string | MultilingualString | undefined {
+  if ('title' in block && block.title) return block.title;
+  if ('name' in block && block.name) return block.name;
+  if ('content' in block && block.content) return block.content;
+  if ('question' in block && block.question) return block.question;
+  return undefined;
+}
+
 function getBlockTitle(block: Block, lang: SupportedLanguage): string {
-  const content = block as any;
-  const rawTitle = content.title || content.name || content.content?.title || content.content?.name || block.type;
-  return typeof rawTitle === 'object' ? getTranslatedString(rawTitle, lang) : String(rawTitle || block.type);
+  const candidate = getBlockTitleCandidate(block);
+
+  if (!candidate) return block.type;
+  if (typeof candidate === 'string') return candidate;
+
+  return getTranslatedString(candidate, lang);
+}
+
+function assertNever(value: never): never {
+  throw new Error(`Unhandled block type: ${String(value)}`);
 }
 
 export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPremium, ownerTier }: BlockRendererProps) {
   const { onBlockClick } = useAnalytics();
   const { i18n } = useTranslation();
+
+  // Click handler for tracking
+  const handleClick = useCallback(() => {
+    if (!isPreview) {
+      const title = getBlockTitle(block, i18n.language as SupportedLanguage);
+      onBlockClick(block.id, block.type, title);
+    }
+  }, [block, isPreview, onBlockClick, i18n.language]);
+
+  // Check if block should be visible based on schedule
+  // In preview mode, always show blocks
+  const isVisible = isPreview || isBlockVisible(block);
+  if (!isVisible) {
+    return null;
+  }
+
+  const animationClass = getAnimationClass(block.blockStyle);
+  const animationStyle = getAnimationStyle(block.blockStyle);
+
   
   // Click handler for tracking - must be before any conditional returns
   const handleClick = useCallback(() => {
@@ -312,13 +344,13 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
           </Suspense>
         </TrackableWrapper>
       );
-      case 'shoutout':
+    case 'shoutout':
       return (
         <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
-            <ShoutoutBlock 
-              userId={(block as any).userId} 
-              message={(block as any).message}
+            <ShoutoutBlock
+              userId={block.userId}
+              message={block.message}
             />
           </Suspense>
         </TrackableWrapper>
@@ -328,7 +360,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
         <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
             <BookingBlock 
-              block={block as any}
+              block={block}
               pageOwnerId={pageOwnerId}
               pageId={pageId}
             />
@@ -339,7 +371,21 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       return (
         <TrackableWrapper trackClicks>
           <Suspense fallback={<BlockSkeleton />}>
-            <CommunityBlock block={block as any} />
+            <CommunityBlock block={block} />
+          </Suspense>
+        </TrackableWrapper>
+      );
+    case 'event':
+      return (
+        <TrackableWrapper trackClicks>
+          <Suspense fallback={<BlockSkeleton />}>
+            <EventBlockRenderer
+              block={block}
+              pageOwnerId={pageOwnerId}
+              pageId={pageId}
+              isOwnerPremium={isOwnerPremium}
+              ownerTier={ownerTier}
+            />
           </Suspense>
         </TrackableWrapper>
       );
@@ -357,6 +403,6 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
         </TrackableWrapper>
       );
     default:
-      return null;
+      return assertNever(block);
   }
 }

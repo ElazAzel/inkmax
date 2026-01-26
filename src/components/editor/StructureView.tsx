@@ -100,9 +100,11 @@ export const StructureView = memo(function StructureView({
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
 
   const getBlockTitle = (block: Block): string => {
-    const content = block as any;
-    // Handle multilingual strings properly - check all possible title fields
-    const rawTitle = content.title || content.name || content.text || content.content;
+    const rawTitle =
+      ('title' in block && block.title) ||
+      ('name' in block && block.name) ||
+      ('text' in block && block.text) ||
+      ('content' in block && block.content);
     
     // If it's a multilingual object, extract the correct language string
     if (rawTitle && typeof rawTitle === 'object') {

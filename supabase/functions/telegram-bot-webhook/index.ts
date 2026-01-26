@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -99,7 +100,7 @@ interface TelegramUpdate {
   };
 }
 
-async function getUserLanguage(supabase: any, chatId: string): Promise<Language> {
+async function getUserLanguage(supabase: SupabaseClient, chatId: string): Promise<Language> {
   try {
     const { data, error } = await supabase
       .from('user_profiles')
@@ -123,7 +124,7 @@ async function getUserLanguage(supabase: any, chatId: string): Promise<Language>
   }
 }
 
-async function setUserLanguage(supabase: any, chatId: string, language: Language): Promise<void> {
+async function setUserLanguage(supabase: SupabaseClient, chatId: string, language: Language): Promise<void> {
   try {
     // First try to update in database
     const { data: existingUser } = await supabase

@@ -62,7 +62,7 @@ export function validateNumber(
   return null;
 }
 
-export function validateArrayNotEmpty(arr: any[] | undefined, fieldName: string): string | null {
+export function validateArrayNotEmpty(arr: unknown[] | undefined, fieldName: string): string | null {
   if (!arr || arr.length === 0) {
     return `${fieldName} must have at least one item`;
   }
@@ -70,90 +70,104 @@ export function validateArrayNotEmpty(arr: any[] | undefined, fieldName: string)
 }
 
 // Block-specific validators
-export function validateLinkBlock(formData: any): string | null {
+type BlockFormData = Record<string, unknown>;
+
+export function validateLinkBlock(formData: BlockFormData): string | null {
   return validateRequired(formData.title, 'Title') || validateUrl(formData.url);
 }
 
-export function validateButtonBlock(formData: any): string | null {
+export function validateButtonBlock(formData: BlockFormData): string | null {
   return validateRequired(formData.title, 'Title') || validateUrl(formData.url);
 }
 
-export function validateProductBlock(formData: any): string | null {
+export function validateProductBlock(formData: BlockFormData): string | null {
   return (
     validateRequired(formData.name, 'Product name') ||
-    validateNumber(formData.price, 'Price', { min: 0 })
+    validateNumber(formData.price as number | undefined, 'Price', { min: 0 })
   );
 }
 
-export function validateVideoBlock(formData: any): string | null {
+export function validateVideoBlock(formData: BlockFormData): string | null {
   return validateUrl(formData.url, 'Video URL');
 }
 
-export function validateImageBlock(formData: any): string | null {
+export function validateImageBlock(formData: BlockFormData): string | null {
   return validateUrl(formData.url, 'Image URL') || validateRequired(formData.alt, 'Alt text');
 }
 
-export function validateCarouselBlock(formData: any): string | null {
-  const arrayError = validateArrayNotEmpty(formData.images, 'Images');
+export function validateCarouselBlock(formData: BlockFormData): string | null {
+  const images = Array.isArray(formData.images) ? formData.images : undefined;
+  const arrayError = validateArrayNotEmpty(images, 'Images');
   if (arrayError) return arrayError;
   
   // Validate each image
-  for (let i = 0; i < formData.images.length; i++) {
-    const image = formData.images[i];
-    const urlError = validateUrl(image.url, `Image ${i + 1} URL`);
+  for (let i = 0; i < (images?.length || 0); i++) {
+    const image = images?.[i] as Record<string, unknown> | undefined;
+    const urlError = validateUrl(image?.url, `Image ${i + 1} URL`);
     if (urlError) return urlError;
   }
   
   return null;
 }
 
-export function validateSocialsBlock(formData: any): string | null {
-  const arrayError = validateArrayNotEmpty(formData.platforms, 'Platforms');
+export function validateSocialsBlock(formData: BlockFormData): string | null {
+  const platforms = Array.isArray(formData.platforms) ? formData.platforms : undefined;
+  const arrayError = validateArrayNotEmpty(platforms, 'Platforms');
   if (arrayError) return arrayError;
   
   // Validate each platform
-  for (let i = 0; i < formData.platforms.length; i++) {
-    const platform = formData.platforms[i];
-    const urlError = validateUrl(platform.url, `Platform ${i + 1} URL`);
+  for (let i = 0; i < (platforms?.length || 0); i++) {
+    const platform = platforms?.[i] as Record<string, unknown> | undefined;
+    const urlError = validateUrl(platform?.url, `Platform ${i + 1} URL`);
     if (urlError) return urlError;
   }
   
   return null;
 }
 
-export function validateCustomCodeBlock(formData: any): string | null {
+export function validateCustomCodeBlock(formData: BlockFormData): string | null {
   return validateRequired(formData.html, 'HTML code');
 }
 
-export function validateMessengerBlock(formData: any): string | null {
-  const arrayError = validateArrayNotEmpty(formData.messengers, 'Messengers');
+export function validateMessengerBlock(formData: BlockFormData): string | null {
+  const messengers = Array.isArray(formData.messengers) ? formData.messengers : undefined;
+  const arrayError = validateArrayNotEmpty(messengers, 'Messengers');
   if (arrayError) return arrayError;
   
-  for (let i = 0; i < formData.messengers.length; i++) {
-    const messenger = formData.messengers[i];
-    const usernameError = validateRequired(messenger.username, `Messenger ${i + 1} username`);
+  for (let i = 0; i < (messengers?.length || 0); i++) {
+    const messenger = messengers?.[i] as Record<string, unknown> | undefined;
+    const usernameError = validateRequired(messenger?.username, `Messenger ${i + 1} username`);
     if (usernameError) return usernameError;
   }
   
   return null;
 }
 
-export function validateFormBlock(formData: any): string | null {
+export function validateFormBlock(formData: BlockFormData): string | null {
   const titleError = validateRequired(formData.title, 'Form title');
   if (titleError) return titleError;
   
-  const arrayError = validateArrayNotEmpty(formData.fields, 'Form fields');
+  const fields = Array.isArray(formData.fields) ? formData.fields : undefined;
+  const arrayError = validateArrayNotEmpty(fields, 'Form fields');
   if (arrayError) return arrayError;
   
-  for (let i = 0; i < formData.fields.length; i++) {
-    const field = formData.fields[i];
-    const nameError = validateRequired(field.name, `Field ${i + 1} name`);
+  for (let i = 0; i < (fields?.length || 0); i++) {
+    const field = fields?.[i] as Record<string, unknown> | undefined;
+    const nameError = validateRequired(field?.name, `Field ${i + 1} name`);
     if (nameError) return nameError;
   }
   
   return null;
 }
 
+export function validateEventBlock(formData: BlockFormData): string | null {
+  const titleError = validateRequired(formData.title, 'Event title');
+  if (titleError) return titleError;
+
+  const fields = Array.isArray(formData.formFields) ? formData.formFields : [];
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i] as Record<string, unknown>;
+    const nameError = validateRequired(field?.label_i18n, `Field ${i + 1} label`);
 export function validateEventBlock(formData: any): string | null {
   const titleError = validateRequired(formData.title, 'Event title');
   if (titleError) return titleError;
@@ -168,6 +182,7 @@ export function validateEventBlock(formData: any): string | null {
   return null;
 }
 
+export function validateDownloadBlock(formData: BlockFormData): string | null {
 export function validateDownloadBlock(formData: any): string | null {
   return (
     validateRequired(formData.title, 'Title') ||
@@ -176,41 +191,42 @@ export function validateDownloadBlock(formData: any): string | null {
   );
 }
 
-export function validateNewsletterBlock(formData: any): string | null {
+export function validateNewsletterBlock(formData: BlockFormData): string | null {
   return validateRequired(formData.title, 'Title');
 }
 
-export function validateTestimonialBlock(formData: any): string | null {
-  const arrayError = validateArrayNotEmpty(formData.testimonials, 'Testimonials');
+export function validateTestimonialBlock(formData: BlockFormData): string | null {
+  const testimonials = Array.isArray(formData.testimonials) ? formData.testimonials : undefined;
+  const arrayError = validateArrayNotEmpty(testimonials, 'Testimonials');
   if (arrayError) return arrayError;
   
-  for (let i = 0; i < formData.testimonials.length; i++) {
-    const testimonial = formData.testimonials[i];
-    const nameError = validateRequired(testimonial.name, `Testimonial ${i + 1} name`);
+  for (let i = 0; i < (testimonials?.length || 0); i++) {
+    const testimonial = testimonials?.[i] as Record<string, unknown> | undefined;
+    const nameError = validateRequired(testimonial?.name, `Testimonial ${i + 1} name`);
     if (nameError) return nameError;
-    const textError = validateRequired(testimonial.text, `Testimonial ${i + 1} text`);
+    const textError = validateRequired(testimonial?.text, `Testimonial ${i + 1} text`);
     if (textError) return textError;
   }
   
   return null;
 }
 
-export function validateScratchBlock(formData: any): string | null {
+export function validateScratchBlock(formData: BlockFormData): string | null {
   return validateRequired(formData.revealText, 'Reveal text');
 }
 
-export function validateMapBlock(formData: any): string | null {
+export function validateMapBlock(formData: BlockFormData): string | null {
   return validateRequired(formData.embedUrl, 'Embed URL');
 }
 
-export function validateAvatarBlock(formData: any): string | null {
+export function validateAvatarBlock(formData: BlockFormData): string | null {
   return (
     validateUrl(formData.imageUrl, 'Image URL') ||
     validateRequired(formData.name, 'Name')
   );
 }
 
-export function validateSeparatorBlock(formData: any): string | null {
+export function validateSeparatorBlock(_formData: BlockFormData): string | null {
   // Separator block has no required fields
   return null;
 }

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,7 +14,7 @@ const LANGUAGE_NAMES: Record<string, string> = {
 };
 
 // Rate limiting: 15 requests per minute per IP
-async function checkRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<boolean> {
+async function checkRateLimit(supabase: SupabaseClient, ipAddress: string, endpoint: string): Promise<boolean> {
   const windowStart = new Date(Date.now() - 60000).toISOString();
   
   const { data: existingLimit } = await supabase

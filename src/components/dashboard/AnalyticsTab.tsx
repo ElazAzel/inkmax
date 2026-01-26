@@ -33,10 +33,15 @@ interface AnalyticsTabProps {
   blocks: Block[];
   isPremium: boolean;
   editorHistory: EditorHistoryType;
-  onApplyInsight: (action: { type: string; blockId?: string; data?: any }) => void;
+  onApplyInsight: (action: InsightAction) => void;
 }
 
 type Period = '7d' | '14d' | '30d';
+type InsightAction = {
+  type: string;
+  blockId?: string;
+  data?: Record<string, unknown>;
+};
 
 export const AnalyticsTab = memo(function AnalyticsTab({
   pageId,

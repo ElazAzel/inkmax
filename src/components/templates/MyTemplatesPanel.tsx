@@ -137,8 +137,10 @@ export const MyTemplatesPanel = memo(function MyTemplatesPanel({
         purchased_at: p.purchased_at,
         price: p.price,
         template: {
-          ...(p.user_templates as any),
-          blocks: ((p.user_templates as any)?.blocks as Block[]) || [],
+          ...(typeof p.user_templates === 'object' && p.user_templates ? p.user_templates : {}),
+          blocks: Array.isArray((p.user_templates as { blocks?: unknown })?.blocks)
+            ? ((p.user_templates as { blocks: Block[] }).blocks)
+            : [],
         },
       })));
     } catch (error) {

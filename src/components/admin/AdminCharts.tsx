@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/platform/supabase/client';
@@ -63,11 +63,7 @@ export function AdminCharts() {
   const [socialStats, setSocialStats] = useState<SocialStatsData[]>([]);
   const [blockTypeStats, setBlockTypeStats] = useState<{ name: string; count: number; color: string }[]>([]);
 
-  useEffect(() => {
-    loadChartData();
-  }, [t]);
-
-  const loadChartData = async () => {
+  const loadChartData = useCallback(async () => {
     setLoading(true);
     await Promise.all([
       loadDailyGrowth(),
@@ -78,7 +74,11 @@ export function AdminCharts() {
       loadBlockTypeStats()
     ]);
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    loadChartData();
+  }, [loadChartData, t]);
 
   const loadDailyGrowth = async () => {
     try {
@@ -112,7 +112,7 @@ export function AdminCharts() {
         
         const dateStr = format(day, 'dd.MM');
         
-        const filterByDay = (items: any[] | null) => 
+        const filterByDay = (items: Array<{ created_at: string }> | null | undefined) => 
           items?.filter(item => {
             const d = new Date(item.created_at);
             return d >= dayStart && d < dayEnd;

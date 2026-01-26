@@ -5,8 +5,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { EditorTab } from '../EditorTab';
+import type { EditorHistoryType } from '@/hooks/useEditorHistory';
 
-const mockEditorHistory = {
+const mockEditorHistory: EditorHistoryType = {
   currentBlocks: [],
   history: [],
   currentIndex: 0,
@@ -24,7 +25,7 @@ const mockEditorHistory = {
   recordBlockUpdate: vi.fn(),
   recordBlocksReorder: vi.fn(),
   pushAction: vi.fn(),
-} as any;
+};
 
 const defaultProps = {
   blocks: [],

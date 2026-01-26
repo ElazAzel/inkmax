@@ -18,6 +18,11 @@ interface InstallPromptProps {
 
 type DeviceType = 'desktop' | 'android' | 'ios';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
 function detectDevice(): DeviceType {
   const userAgent = navigator.userAgent.toLowerCase();
   
@@ -33,12 +38,12 @@ function detectDevice(): DeviceType {
 export function InstallPromptDialog({ open, onClose, pageUrl }: InstallPromptProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<DeviceType>(detectDevice());
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     window.addEventListener('beforeinstallprompt', handler);

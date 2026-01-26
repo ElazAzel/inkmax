@@ -141,10 +141,15 @@ export function OnboardingWizard({ open, onClose, onComplete }: OnboardingWizard
       const { profile, blocks } = data.result;
       
       // Transform blocks to proper Block format
-      const formattedBlocks: Block[] = blocks.map((block: any, index: number) => ({
-        id: `${block.type}-${Date.now()}-${index}`,
-        ...block,
-      }));
+      const blocksData: Array<Record<string, unknown>> = Array.isArray(blocks) ? blocks : [];
+      const formattedBlocks: Block[] = blocksData.map((blockData, index) => {
+        const type = typeof blockData.type === 'string' ? blockData.type : 'text';
+        return {
+          ...blockData,
+          type,
+          id: `${type}-${Date.now()}-${index}`,
+        } as Block;
+      });
 
       setStep('complete');
       

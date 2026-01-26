@@ -32,6 +32,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AddLeadDialog } from '@/components/crm/AddLeadDialog';
 import { LeadDetails } from '@/components/crm/LeadDetails';
 import { BookingsPanel } from '@/components/crm/BookingsPanel';
+import { EventsPanel } from '@/components/crm/EventsPanel';
 import { cn } from '@/lib/utils';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { Lead } from '@/hooks/useLeads';
@@ -69,7 +70,7 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [activeTab, setActiveTab] = useState<'leads' | 'bookings'>('leads');
+  const [activeTab, setActiveTab] = useState<'leads' | 'bookings' | 'events'>('events');
 
   const stats = getLeadStats();
 
@@ -103,31 +104,6 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
     return groups;
   }, {} as Record<string, Lead[]>);
 
-  // Premium gate
-  if (!isPremium) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-6 safe-area-top">
-        <div className="text-center max-w-sm">
-          <div className="h-24 w-24 rounded-[32px] bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-amber-500/30">
-            <Crown className="h-12 w-12 text-white" />
-          </div>
-          <h2 className="text-2xl font-black mb-3">{t('crm.premiumRequired', 'CRM для Premium')}</h2>
-          <p className="text-muted-foreground mb-6 leading-relaxed">
-            {t('crm.premiumDescription', 'Управляйте заявками как в мессенджере. Telegram-уведомления, статусы и история.')}
-          </p>
-          <Button 
-            size="lg" 
-            className="h-14 px-8 rounded-2xl text-base font-bold shadow-xl shadow-primary/30"
-            onClick={openPremiumPurchase}
-          >
-            <Crown className="h-5 w-5 mr-2" />
-            {t('crm.upgradeToPremium', 'Получить Premium')}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen safe-area-top pb-24">
       {/* Header - iOS style */}
@@ -137,32 +113,39 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
             <div>
               <h1 className="text-2xl font-black">{t('crm.title', 'CRM')}</h1>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-sm text-muted-foreground">
-                  {stats.total} {t('crm.leads', 'заявок')}
-                </span>
-                {stats.new > 0 && (
-                  <Badge className="h-5 px-2 text-xs bg-blue-500 text-white">
-                    +{stats.new} новых
-                  </Badge>
+                {activeTab === 'leads' && (
+                  <>
+                    <span className="text-sm text-muted-foreground">
+                      {stats.total} {t('crm.leads', 'заявок')}
+                    </span>
+                    {stats.new > 0 && (
+                      <Badge className="h-5 px-2 text-xs bg-blue-500 text-white">
+                        +{stats.new} новых
+                      </Badge>
+                    )}
+                  </>
                 )}
               </div>
             </div>
-            <Button 
-              size="icon"
-              className="h-12 w-12 rounded-2xl shadow-lg shadow-primary/25"
-              onClick={() => setShowAddDialog(true)}
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
+            {activeTab === 'leads' && isPremium && (
+              <Button 
+                size="icon"
+                className="h-12 w-12 rounded-2xl shadow-lg shadow-primary/25"
+                onClick={() => setShowAddDialog(true)}
+              >
+                <Plus className="h-6 w-6" />
+              </Button>
+            )}
           </div>
 
           {/* Tabs - iOS Segment Control style */}
           <div className="bg-muted/50 rounded-2xl p-1">
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'leads' | 'bookings')}>
-              <TabsList className="grid grid-cols-2 h-11 bg-transparent p-0 gap-1">
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'leads' | 'bookings' | 'events')}>
+              <TabsList className="grid grid-cols-3 h-11 bg-transparent p-0 gap-1">
                 <TabsTrigger 
                   value="leads" 
                   className="rounded-xl h-full data-[state=active]:bg-background data-[state=active]:shadow-sm font-bold text-sm"
+                  disabled={!isPremium}
                 >
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Заявки
@@ -170,17 +153,34 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
                 <TabsTrigger 
                   value="bookings" 
                   className="rounded-xl h-full data-[state=active]:bg-background data-[state=active]:shadow-sm font-bold text-sm"
+                  disabled={!isPremium}
                 >
                   <Calendar className="h-4 w-4 mr-2" />
                   Записи
                 </TabsTrigger>
+                <TabsTrigger 
+                  value="events" 
+                  className="rounded-xl h-full data-[state=active]:bg-background data-[state=active]:shadow-sm font-bold text-sm"
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Ивенты
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
+          {!isPremium && (
+            <div className="mt-3 rounded-2xl border border-border/60 p-3 text-sm text-muted-foreground flex items-center justify-between gap-3">
+              <span>{t('crm.premiumDescription', 'Управляйте заявками как в мессенджере. Telegram-уведомления, статусы и история.')}</span>
+              <Button size="sm" onClick={openPremiumPurchase}>
+                <Crown className="h-4 w-4 mr-2" />
+                {t('crm.upgradeToPremium', 'Получить Premium')}
+              </Button>
+            </div>
+          )}
         </div>
       </header>
 
-      {activeTab === 'leads' && (
+      {activeTab === 'leads' && isPremium && (
         <>
           {/* Status Pills - Horizontal scroll */}
           <div className="px-5 py-3 overflow-x-auto scrollbar-hide">
@@ -278,6 +278,9 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
 
       {activeTab === 'bookings' && (
         <BookingsPanel />
+      )}
+      {activeTab === 'events' && (
+        <EventsPanel />
       )}
 
       {/* Add Lead Dialog */}

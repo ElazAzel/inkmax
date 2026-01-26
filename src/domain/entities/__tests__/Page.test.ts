@@ -13,6 +13,7 @@ import {
   DEFAULT_SEO,
   type Page,
 } from '@/domain/entities/Page';
+import type { BaseBlock } from '@/domain/entities/Block';
 
 describe('Page Entity', () => {
   describe('createDefaultPage', () => {
@@ -73,7 +74,7 @@ describe('Page Entity', () => {
     });
 
     it('should return false when no profile block', () => {
-      const page: Page<any> = {
+      const page: Page<BaseBlock> = {
         id: 'page-1',
         userId: 'user-123',
         blocks: [{ id: '1', type: 'link' }],
@@ -92,7 +93,7 @@ describe('Page Entity', () => {
     });
 
     it('should return true when page has premium blocks', () => {
-      const page: Page<any> = {
+      const page: Page<BaseBlock> = {
         id: 'page-1',
         userId: 'user-123',
         blocks: [
@@ -109,7 +110,7 @@ describe('Page Entity', () => {
 
   describe('reorderBlocks', () => {
     it('should reorder blocks by new positions', () => {
-      const page: Page<any> = {
+      const page: Page<BaseBlock> = {
         id: 'page-1',
         userId: 'user-123',
         blocks: [

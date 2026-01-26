@@ -66,18 +66,22 @@ export const TemplatePreviewCard = memo(function TemplatePreviewCard({
   className,
   showBlockCount = true,
 }: TemplatePreviewCardProps) {
-  const blocksArray = useMemo(() => {
-    if (!blocks) return [];
-    return Array.isArray(blocks) ? blocks : [];
+  type PreviewBlock = Pick<Block, 'type' | 'blockSize'>;
+
+  const blocksArray = useMemo<PreviewBlock[]>(() => {
+    if (!blocks || !Array.isArray(blocks)) return [];
+    return blocks.filter((block): block is PreviewBlock => {
+      return typeof block === 'object' && block !== null && 'type' in block;
+    });
   }, [blocks]);
 
-  const profileBlock = blocksArray.find((b: any) => b?.type === 'profile');
-  const contentBlocks = blocksArray.filter((b: any) => b?.type !== 'profile').slice(0, 8);
+  const profileBlock = blocksArray.find((block) => block.type === 'profile');
+  const contentBlocks = blocksArray.filter((block) => block.type !== 'profile').slice(0, 8);
   
   // Group blocks into rows (max 2 per row for half-width, 1 for full-width)
   const rows = useMemo(() => {
-    const result: Array<Array<any>> = [];
-    let currentRow: any[] = [];
+    const result: Array<Array<PreviewBlock>> = [];
+    let currentRow: PreviewBlock[] = [];
     let currentCols = 0;
     
     for (const block of contentBlocks) {
@@ -104,7 +108,7 @@ export const TemplatePreviewCard = memo(function TemplatePreviewCard({
     return result.slice(0, 4); // Max 4 rows in preview
   }, [contentBlocks]);
 
-  const getBlockVisual = (block: any) => {
+  const getBlockVisual = (block: PreviewBlock) => {
     const config = BLOCK_ICONS[block?.type] || BLOCK_ICONS.link;
     const IconComponent = config.icon;
     
@@ -147,7 +151,7 @@ export const TemplatePreviewCard = memo(function TemplatePreviewCard({
         <div className="flex-1 p-1.5 sm:p-2 space-y-1 sm:space-y-1.5 overflow-hidden">
           {rows.map((row, rowIndex) => (
             <div key={rowIndex} className="flex gap-1 sm:gap-1.5">
-              {row.map((block: any, blockIndex: number) => {
+            {row.map((block, blockIndex) => {
                 const isFullWidth = !block.blockSize?.includes('half');
                 return (
                   <div 

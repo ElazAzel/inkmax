@@ -5,6 +5,7 @@ import { supabase } from '@/platform/supabase/client';
 import type { PageData, Block, ProfileBlock, PageTheme, EditorMode, GridConfig } from '@/types/page';
 import { createDefaultPageData } from '@/lib/constants';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { buildBlocksPayload } from '@/lib/page-blocks';
 import type { Json } from '@/platform/supabase/types';
 
 // ============= Types (exported for backward compatibility) =============
@@ -184,15 +185,7 @@ export async function savePage(
       return { data: null, error: wrapError(upsertError) };
     }
 
-    // Prepare blocks for atomic save
-    const blocksData = pageData.blocks.map((block, index) => ({
-      type: block.type,
-      position: index,
-      title: extractBlockTitle(block),
-      content: JSON.parse(JSON.stringify(block)),
-      style: {},
-      schedule: 'schedule' in block ? block.schedule : null,
-    }));
+    const blocksData = buildBlocksPayload(pageData.blocks, extractBlockTitle);
 
     // Save blocks atomically
     const { error: blocksError } = await supabase.rpc('save_page_blocks', {
@@ -203,6 +196,9 @@ export async function savePage(
 
     if (blocksError) {
       console.error('Error saving blocks:', blocksError);
+      if (import.meta.env?.DEV) {
+        console.error('save_page_blocks details:', JSON.stringify(blocksError, null, 2));
+      }
       return { data: null, error: wrapError(blocksError) };
     }
 

@@ -20,6 +20,7 @@ import type {
 } from '../interfaces/IPageRepository';
 import { createDefaultPageData, DEFAULT_THEME, DEFAULT_SEO } from '@/lib/constants';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { buildBlocksPayload } from '@/lib/page-blocks';
 import type { Json } from '@/platform/supabase/types';
 
 // ============= Helpers =============
@@ -138,15 +139,7 @@ export class SupabasePageRepository implements IPageRepository {
         throw upsertError;
       }
 
-      // Prepare blocks for atomic save
-      const blocksData = pageData.blocks.map((block, index) => ({
-        type: block.type,
-        position: index,
-        title: extractBlockTitle(block),
-        content: JSON.parse(JSON.stringify(block)),
-        style: {},
-        schedule: 'schedule' in block ? block.schedule : null,
-      }));
+      const blocksData = buildBlocksPayload(pageData.blocks, extractBlockTitle);
 
       // Save blocks atomically
       const { error: blocksError } = await supabase.rpc('save_page_blocks', {

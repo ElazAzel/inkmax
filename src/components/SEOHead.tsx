@@ -1,47 +1,25 @@
 import { useEffect } from 'react';
-import type { PageData, Block, ProfileBlock, AvatarBlock } from '@/types/page';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import type { PageData, FAQBlock, EventBlock, ProductBlock } from '@/types/page';
+import { evaluateUgsQuality, getProfileInfoFromBlocks } from '@/lib/ugs-quality';
 
 interface SEOHeadProps {
   pageData: PageData;
   pageUrl: string;
 }
 
-// Extract profile/avatar info from blocks
-function getProfileInfo(blocks: Block[]): { name?: string; bio?: string; avatar?: string } {
-  // Try profile block first
-  const profileBlock = blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
-  if (profileBlock) {
-    const name = typeof profileBlock.name === 'string' ? profileBlock.name : profileBlock.name?.ru || profileBlock.name?.en;
-    const bio = typeof profileBlock.bio === 'string' ? profileBlock.bio : profileBlock.bio?.ru || profileBlock.bio?.en;
-    return {
-      name,
-      bio,
-      avatar: profileBlock.avatar,
-    };
-  }
-
-  // Try avatar block
-  const avatarBlock = blocks.find(b => b.type === 'avatar') as AvatarBlock | undefined;
-  if (avatarBlock) {
-    const name = typeof avatarBlock.name === 'string' ? avatarBlock.name : avatarBlock.name?.ru || avatarBlock.name?.en;
-    const subtitle = avatarBlock.subtitle ? (typeof avatarBlock.subtitle === 'string' ? avatarBlock.subtitle : avatarBlock.subtitle?.ru || avatarBlock.subtitle?.en) : undefined;
-    return {
-      name,
-      bio: subtitle,
-      avatar: avatarBlock.imageUrl,
-    };
-  }
-
-  return {};
-}
-
 export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
+  const { i18n } = useTranslation();
+
   useEffect(() => {
-    const profileInfo = getProfileInfo(pageData.blocks);
+    const language = i18n.language as SupportedLanguage;
+    const profileInfo = getProfileInfoFromBlocks(pageData.blocks, language);
+    const quality = evaluateUgsQuality(pageData, language);
     const pageTitle = pageData.seo.title || profileInfo.name || 'lnkmx Page';
-    
+
     // Update document title - include name + role for clear OG
-    const fullTitle = profileInfo.name 
+    const fullTitle = profileInfo.name
       ? `${profileInfo.name}${profileInfo.bio ? ` - ${profileInfo.bio.slice(0, 50)}` : ''}`
       : pageTitle;
     document.title = fullTitle;
@@ -50,7 +28,7 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
     const setMetaTag = (name: string, content: string, property = false) => {
       const attr = property ? 'property' : 'name';
       let meta = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement;
-      
+
       if (!meta) {
         meta = document.createElement('meta');
         meta.setAttribute(attr, name);
@@ -81,10 +59,15 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
 
     // Basic meta tags
     const description = pageData.seo.description || profileInfo.bio || `${profileInfo.name || 'This page'} on lnkmx`;
+    const robotsValue = quality.indexable
+      ? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+      : quality.nofollow
+        ? 'noindex, nofollow'
+        : 'noindex, follow';
     setMetaTag('description', description);
-    setMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    setMetaTag('googlebot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    
+    setMetaTag('robots', robotsValue);
+    setMetaTag('googlebot', robotsValue);
+
     if (pageData.seo.keywords?.length) {
       setMetaTag('keywords', pageData.seo.keywords.join(', '));
     } else {
@@ -97,7 +80,7 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
     setMetaTag('og:description', description, true);
     setMetaTag('og:url', pageUrl, true);
     setMetaTag('og:site_name', 'lnkmx', true);
-    
+
     // Use avatar or a default image for OG
     const imageUrl = profileInfo.avatar || pageData.previewUrl || 'https://lnkmx.my/favicon.jpg';
     setMetaTag('og:image', imageUrl, true);
@@ -119,7 +102,7 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
     setLinkTag('alternate', `${pageUrl}?lang=kk`, 'kk');
     setLinkTag('alternate', pageUrl, 'x-default');
 
-    // JSON-LD structured data for Person profile
+    // JSON-LD structured data
     let jsonLd = document.querySelector('script[type="application/ld+json"]#page-schema');
     if (!jsonLd) {
       jsonLd = document.createElement('script');
@@ -127,28 +110,131 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
       jsonLd.id = 'page-schema';
       document.head.appendChild(jsonLd);
     }
-    
-    const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'ProfilePage',
-      name: fullTitle,
-      description: description,
-      url: pageUrl,
-      dateModified: new Date().toISOString(),
-      mainEntity: {
-        '@type': 'Person',
-        name: profileInfo.name || pageTitle,
-        description: profileInfo.bio || description,
-        image: profileInfo.avatar || undefined,
+
+    const faqBlocks = pageData.blocks.filter((block) => block.type === 'faq') as FAQBlock[];
+    const eventBlocks = pageData.blocks.filter((block) => block.type === 'event') as EventBlock[];
+    const productBlocks = pageData.blocks.filter((block) => block.type === 'product') as ProductBlock[];
+
+    const schemaGraph: Record<string, unknown>[] = [
+      {
+        '@type': 'WebPage',
+        name: fullTitle,
+        description,
         url: pageUrl,
-        sameAs: [], // Could be populated from social blocks
+        inLanguage: language,
+        dateModified: new Date().toISOString(),
       },
-      isPartOf: {
+      {
+        '@type': 'ProfilePage',
+        name: fullTitle,
+        description,
+        url: pageUrl,
+        mainEntity: {
+          '@type': 'Person',
+          name: profileInfo.name || pageTitle,
+          description: profileInfo.bio || description,
+          image: profileInfo.avatar || undefined,
+          url: pageUrl,
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'lnkmx',
+            item: 'https://lnkmx.my',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: pageTitle,
+            item: pageUrl,
+          },
+        ],
+      },
+      {
         '@type': 'WebSite',
         name: 'lnkmx',
         url: 'https://lnkmx.my',
       },
+    ];
+
+    if (faqBlocks.length > 0) {
+      schemaGraph.push({
+        '@type': 'FAQPage',
+        mainEntity: faqBlocks.flatMap((block) =>
+          block.items.map((item) => ({
+            '@type': 'Question',
+            name: typeof item.question === 'string' ? item.question : getTranslatedString(item.question, language),
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: typeof item.answer === 'string' ? item.answer : getTranslatedString(item.answer, language),
+            },
+          }))
+        ),
+      });
+    }
+
+    if (eventBlocks.length > 0) {
+      eventBlocks.forEach((eventBlock) => {
+        schemaGraph.push({
+          '@type': 'Event',
+          name: getTranslatedString(eventBlock.title, language),
+          description: eventBlock.description ? getTranslatedString(eventBlock.description, language) : undefined,
+          startDate: eventBlock.startAt,
+          endDate: eventBlock.endAt,
+          eventAttendanceMode: eventBlock.locationType === 'online'
+            ? 'https://schema.org/OnlineEventAttendanceMode'
+            : 'https://schema.org/OfflineEventAttendanceMode',
+          eventStatus: 'https://schema.org/EventScheduled',
+          location: eventBlock.locationType === 'online'
+            ? {
+                '@type': 'VirtualLocation',
+                url: eventBlock.locationValue || pageUrl,
+              }
+            : {
+                '@type': 'Place',
+                name: eventBlock.locationValue || pageTitle,
+              },
+          image: eventBlock.coverUrl ? [eventBlock.coverUrl] : undefined,
+          offers: eventBlock.isPaid && eventBlock.price
+            ? {
+                '@type': 'Offer',
+                price: eventBlock.price,
+                priceCurrency: eventBlock.currency || 'USD',
+                url: pageUrl,
+              }
+            : undefined,
+        });
+      });
+    }
+
+    if (productBlocks.length > 0) {
+      productBlocks.forEach((product) => {
+        schemaGraph.push({
+          '@type': 'Product',
+          name: typeof product.name === 'string' ? product.name : getTranslatedString(product.name, language),
+          description: typeof product.description === 'string'
+            ? product.description
+            : getTranslatedString(product.description, language),
+          image: product.image ? [product.image] : undefined,
+          offers: {
+            '@type': 'Offer',
+            price: product.price,
+            priceCurrency: product.currency,
+            url: product.buyLink || pageUrl,
+          },
+        });
+      });
+    }
+
+    const structuredData = {
+      '@context': 'https://schema.org',
+      '@graph': schemaGraph,
     };
+
     jsonLd.textContent = JSON.stringify(structuredData);
 
     // Cleanup on unmount - restore original meta tags
@@ -156,7 +242,7 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
       // Reset to defaults
       document.title = 'lnkmx - AI Bio Page Builder';
       setMetaTag('description', 'Create your bio page in 2 minutes with AI. For experts, freelancers and small business.');
-      
+
       // Remove page-specific tags
       const tagsToRemove = [
         'meta[property="og:type"]',
@@ -168,13 +254,13 @@ export function SEOHead({ pageData, pageUrl }: SEOHeadProps) {
         'link[rel="alternate"]',
         'script#page-schema'
       ];
-      
+
       tagsToRemove.forEach(selector => {
         const el = document.querySelector(selector);
         if (el) el.remove();
       });
     };
-  }, [pageData, pageUrl]);
+  }, [pageData, pageUrl, i18n.language]);
 
   return null; // This component only manages document head
 }

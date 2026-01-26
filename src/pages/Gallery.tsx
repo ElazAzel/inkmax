@@ -285,8 +285,20 @@ export default function Gallery() {
 }
 
 // Featured Page Card - Larger horizontal card
+interface GalleryPage {
+  id: string;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  preview_url?: string | null;
+  avatar_url?: string | null;
+  is_premium?: boolean | null;
+  gallery_likes?: number | null;
+  view_count?: number | null;
+}
+
 interface FeaturedPageCardProps {
-  page: any;
+  page: GalleryPage;
   onCopy: () => void;
   onView: () => void;
 }
@@ -366,7 +378,7 @@ function FeaturedPageCard({ page, onCopy, onView }: FeaturedPageCardProps) {
 
 // Gallery Page Card - Grid item
 interface GalleryPageCardProps {
-  page: any;
+  page: GalleryPage;
   onCopy: () => void;
   onView: () => void;
   onLike: () => void;

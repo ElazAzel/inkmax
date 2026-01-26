@@ -117,7 +117,7 @@ export function FileUpload({
       });
       
       toast.success(t('upload.success', 'File uploaded successfully'));
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
       toast.error(t('upload.error', 'Failed to upload file'));
     } finally {

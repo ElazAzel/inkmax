@@ -7,7 +7,7 @@ import { AIButton } from '@/components/form-fields/AIButton';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { generateSalesCopy } from '@/lib/ai-helpers';
-import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
+import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorHOC';
 import { validateProductBlock } from '@/lib/block-validators';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { migrateToMultilingual, getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';

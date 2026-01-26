@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
 import { Crown, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { ChangeEvent } from 'react';
 import type { FormBlock as FormBlockType } from '@/types/page';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -93,7 +94,8 @@ export const FormBlock = memo(function FormBlock({ block, pageOwnerId }: FormBlo
       name: fieldName,
       required: field.required,
       value: formData[fieldName] || '',
-      onChange: (e: any) => setFormData({ ...formData, [fieldName]: e.target.value }),
+      onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+        setFormData({ ...formData, [fieldName]: e.target.value }),
     };
 
     switch (field.type) {
