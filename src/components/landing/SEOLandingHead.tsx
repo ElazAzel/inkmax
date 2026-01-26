@@ -115,19 +115,41 @@ export function SEOLandingHead({ currentLanguage }: SEOLandingHeadProps) {
     // Update html lang attribute
     document.documentElement.lang = currentLanguage === 'kk' ? 'kk' : currentLanguage === 'en' ? 'en' : 'ru';
 
-    // Open Graph optimized for social sharing
+    // OG Image - modern 1200x630 format with cache-busting
+    // Using a high-quality generated OG image for social sharing
+    const ogImageUrl = 'https://lnkmx.my/og-image.png';
+    
+    // Open Graph optimized for social sharing (Facebook, LinkedIn, etc.)
     setMetaTag('og:type', 'website', true);
     setMetaTag('og:url', 'https://lnkmx.my/', true);
     setMetaTag('og:title', title, true);
     setMetaTag('og:description', description, true);
-    setMetaTag('og:site_name', 'lnkmx - AI Bio Page Builder', true);
+    setMetaTag('og:site_name', 'lnkmx', true);
     setMetaTag('og:locale', locale, true);
     setMetaTag('og:locale:alternate', isRussian ? 'en_US' : 'ru_RU', true);
+    
+    // OG Image with proper dimensions for social cards
+    setMetaTag('og:image', ogImageUrl, true);
+    setMetaTag('og:image:secure_url', ogImageUrl, true);
+    setMetaTag('og:image:type', 'image/png', true);
+    setMetaTag('og:image:width', '1200', true);
+    setMetaTag('og:image:height', '630', true);
+    setMetaTag('og:image:alt', isRussian 
+      ? 'lnkmx - создай мини-сайт за 2 минуты' 
+      : isKazakh 
+        ? 'lnkmx - 2 минутта мини-сайт жасаңыз'
+        : 'lnkmx - create a mini-site in 2 minutes', true);
 
-    // Twitter Cards
+    // Twitter Cards - use summary_large_image for big preview
     setMetaTag('twitter:card', 'summary_large_image');
     setMetaTag('twitter:title', title);
     setMetaTag('twitter:description', description);
+    setMetaTag('twitter:image', ogImageUrl);
+    setMetaTag('twitter:image:alt', isRussian 
+      ? 'lnkmx - создай мини-сайт за 2 минуты' 
+      : isKazakh 
+        ? 'lnkmx - 2 минутта мини-сайт жасаңыз'
+        : 'lnkmx - create a mini-site in 2 minutes');
     setMetaTag('twitter:site', '@lnkmx_app');
     setMetaTag('twitter:creator', '@lnkmx_app');
 
