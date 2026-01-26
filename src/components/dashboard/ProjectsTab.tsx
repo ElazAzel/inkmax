@@ -53,7 +53,8 @@ export const ProjectsTab = memo(function ProjectsTab({
   const navigate = useNavigate();
 
   const profileBlock = pageData.blocks.find(b => b.type === 'profile');
-  const profileData = profileBlock as any;
+  // Safe access to profile data with type guard
+  const profileData = profileBlock && profileBlock.type === 'profile' ? profileBlock : null;
   const rawName = profileData?.name || 'Мой сайт';
   const name = typeof rawName === 'object' ? (rawName.ru || rawName.en || 'Мой сайт') : rawName;
   const avatarUrl = profileData?.avatar || '';
