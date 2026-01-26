@@ -4,10 +4,14 @@ import { useAuth } from './useAuth';
 import { useUserPage, useSavePageMutation, usePublishPageMutation, pageQueryKeys } from '@/hooks/usePageCache';
 import { updatePageNiche } from '@/services/pages';
 import { deleteEventBlock, syncEventBlock } from '@/services/events';
+import { ensureBlockIds, deduplicateBlocks } from '@/lib/block-utils';
 import type { PageData, Block, EditorMode } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 import { toast } from 'sonner';
 import type { SaveStatus } from '@/components/editor/AutoSaveIndicator';
+
+// Request versioning to prevent stale writes
+let saveRequestVersion = 0;
 
 export function useCloudPageState() {
   const { user } = useAuth();
@@ -16,6 +20,7 @@ export function useCloudPageState() {
   const [chatbotContext, setChatbotContext] = useState<string>('');
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSaveVersionRef = useRef<number>(0);
 
   // Use React Query for cached page loading
   const { data: userData, isLoading: loading, refetch } = useUserPage(user?.id);
@@ -42,6 +47,10 @@ export function useCloudPageState() {
   const autoSaveAndPublish = useCallback((data: PageData, context: string) => {
     if (!user) return;
     
+    // Increment version for this save request
+    saveRequestVersion++;
+    const thisRequestVersion = saveRequestVersion;
+    
     // Set pending status immediately
     setSaveStatus('pending');
     
@@ -52,8 +61,20 @@ export function useCloudPageState() {
     
     // Debounce auto-save and publish with longer delay for stability
     autoSaveTimerRef.current = setTimeout(async () => {
+      // Check if this request is still the latest
+      if (thisRequestVersion !== saveRequestVersion) {
+        // Stale request - a newer save was triggered, skip this one
+        return;
+      }
+      
       try {
         setSaveStatus('saving');
+        
+        // Ensure block integrity before saving
+        const sanitizedData = {
+          ...data,
+          blocks: deduplicateBlocks(ensureBlockIds(data.blocks)),
+        };
         
         // Save first with retry logic
         let retries = 2;
@@ -61,13 +82,19 @@ export function useCloudPageState() {
         let savedPageId: string | undefined;
         
         while (retries > 0) {
+          // Check again before each retry
+          if (thisRequestVersion !== saveRequestVersion) {
+            return;
+          }
+          
           try {
             const result = await savePageMutation.mutateAsync({ 
-              pageData: data, 
+              pageData: sanitizedData, 
               chatbotContext: context 
             });
             // Get pageId from the saved result
             savedPageId = result.dbPage?.id;
+            lastSaveVersionRef.current = thisRequestVersion;
             break;
           } catch (err) {
             lastError = err as Error;
@@ -87,12 +114,17 @@ export function useCloudPageState() {
         
         // Sync event blocks after page is saved (now we have pageId)
         if (pageIdToUse && user?.id) {
-          const eventBlocks = data.blocks.filter((b) => b.type === 'event');
+          const eventBlocks = sanitizedData.blocks.filter((b) => b.type === 'event');
           for (const block of eventBlocks) {
             if (block.type === 'event') {
               void syncEventBlock(block, pageIdToUse, user.id);
             }
           }
+        }
+        
+        // Final stale check before publish
+        if (thisRequestVersion !== saveRequestVersion) {
+          return;
         }
         
         // Then auto-publish
@@ -105,7 +137,7 @@ export function useCloudPageState() {
         // Reset to idle after error display
         setTimeout(() => setSaveStatus('idle'), 3000);
       }
-    }, 2000);
+    }, 1500); // Optimized debounce time
   }, [user, savePageMutation, publishPageMutation]);
 
   const save = useCallback(async () => {
