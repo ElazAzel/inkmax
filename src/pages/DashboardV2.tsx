@@ -180,6 +180,8 @@ export default function DashboardV2() {
     title: p.title,
     slug: p.slug,
     isPublished: p.isPublished,
+    isPaid: p.isPaid,
+    isPrimaryPaid: p.isPrimaryPaid,
     updatedAt: p.updatedAt,
     viewCount: p.viewCount,
   }));
@@ -252,7 +254,16 @@ export default function DashboardV2() {
           {currentTab === 'pages' && (
             <PagesScreen
               pages={pagesForScreen}
+              limits={multiPage.limits ? {
+                tier: multiPage.limits.tier as 'free' | 'pro',
+                currentPages: multiPage.limits.currentPages,
+                maxPages: multiPage.limits.maxPages,
+                paidPages: multiPage.limits.paidPages,
+                freePages: multiPage.limits.freePages,
+                canCreate: multiPage.limits.canCreate,
+              } : undefined}
               loading={multiPage.loading}
+              isPremium={dashboard.isPremium}
               onCreatePage={() => setShowCreatePage(true)}
               onEditPage={handleEditPage}
               onPreviewPage={handlePreviewPage}
@@ -262,6 +273,15 @@ export default function DashboardV2() {
                 multiPage.switchPage(id);
                 handleTabChange('settings');
               }}
+              onDeletePage={(id) => {
+                // TODO: Add delete confirmation
+                toast.info(t('common.comingSoon', 'Coming soon'));
+              }}
+              onUpgradePage={(id) => {
+                // TODO: Open page upgrade flow
+                toast.info(t('common.comingSoon', 'Coming soon'));
+              }}
+              onUpgradePlan={() => navigate('/pricing')}
             />
           )}
 
@@ -292,6 +312,8 @@ export default function DashboardV2() {
               limits={{
                 pagesUsed: multiPage.limits?.currentPages || 1,
                 pagesLimit: multiPage.limits?.maxPages || 1,
+                paidPages: multiPage.limits?.paidPages || 0,
+                freePages: multiPage.limits?.freePages || 1,
                 blocksUsed: dashboard.pageData?.blocks.length || 0,
                 blocksLimit: dashboard.isPremium ? 50 : 8,
                 aiGenerationsUsed: 0,

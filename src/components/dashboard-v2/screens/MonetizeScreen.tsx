@@ -15,6 +15,8 @@ import { cn } from '@/lib/utils';
 interface PlanLimits {
   pagesUsed: number;
   pagesLimit: number;
+  paidPages: number;
+  freePages: number;
   blocksUsed: number;
   blocksLimit: number;
   aiGenerationsUsed: number;
@@ -44,7 +46,9 @@ export const MonetizeScreen = memo(function MonetizeScreen({
 
   const defaultLimits: PlanLimits = limits || {
     pagesUsed: 1,
-    pagesLimit: isPremium ? 10 : 1,
+    pagesLimit: isPremium ? 6 : 1,
+    paidPages: isPremium ? 1 : 0,
+    freePages: isPremium ? 5 : 1,
     blocksUsed: 5,
     blocksLimit: isPremium ? 50 : 8,
     aiGenerationsUsed: 0,
@@ -60,7 +64,7 @@ export const MonetizeScreen = memo(function MonetizeScreen({
 
   const proFeatures = [
     t('dashboard.monetize.pro.feature1', 'All 25+ blocks'),
-    t('dashboard.monetize.pro.feature2', '10 pages'),
+    t('dashboard.monetize.pro.feature2', '6 pages (1 paid + 5 free)'),
     t('dashboard.monetize.pro.feature3', '20 AI generations/month'),
     t('dashboard.monetize.pro.feature4', 'Mini-CRM + Telegram'),
     t('dashboard.monetize.pro.feature5', 'Advanced analytics'),
@@ -151,6 +155,7 @@ export const MonetizeScreen = memo(function MonetizeScreen({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Pages */}
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span>{t('dashboard.monetize.pages', 'Pages')}</span>
@@ -162,7 +167,14 @@ export const MonetizeScreen = memo(function MonetizeScreen({
                 value={(defaultLimits.pagesUsed / defaultLimits.pagesLimit) * 100} 
                 className="h-2"
               />
+              {isPremium && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t('dashboard.monetize.paidPages', 'Paid Pages')}: {defaultLimits.paidPages} • {t('dashboard.monetize.freePages', 'Free Pages')}: {defaultLimits.freePages}
+                </p>
+              )}
             </div>
+            
+            {/* Blocks */}
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span>{t('dashboard.monetize.blocks', 'Blocks')}</span>
@@ -175,6 +187,8 @@ export const MonetizeScreen = memo(function MonetizeScreen({
                 className="h-2"
               />
             </div>
+            
+            {/* AI Generations */}
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span>{t('dashboard.monetize.aiGenerations', 'AI Generations')}</span>

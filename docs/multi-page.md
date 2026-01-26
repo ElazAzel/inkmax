@@ -54,13 +54,15 @@ Returns array of all user pages with metadata.
 
 ### `useMultiPage` Hook
 Manages page list, active page, limits, and CRUD operations.
-- `pages` - List of user pages
-- `activePage` - Currently selected page
-- `limits` - Plan limits and usage
+- `pages` - List of user pages with full metadata
+- `activePage` - Currently selected page object
+- `activePageId` - Currently selected page ID
+- `limits` - Plan limits and usage info
 - `switchPage(pageId)` - Switch active page context
-- `createPage(title, slug)` - Create new page
-- `deletePage(pageId)` - Delete a page
+- `createPage(title, slug)` - Create new page with limit enforcement
+- `deletePage(pageId)` - Delete a page (except last one)
 - `updatePageSlug(pageId, newSlug)` - Change page URL
+- `setPrimaryPaidPage(pageId)` - Set primary paid page (Pro only)
 
 ### `PageSwitcher` Component
 - Desktop: Dropdown menu in header
@@ -73,6 +75,11 @@ Modal for creating new pages with limit enforcement.
 - Title and slug input
 - Slug validation
 - Upgrade prompt for Free users at limit
+
+### Settings Screens
+Two separate settings screens:
+- **PageSettingsScreen** - Page-scoped: slug, SEO, branding, niche
+- **AccountSettingsScreen** - User-scoped: profile, billing, language, security
 
 ## Page Context
 
