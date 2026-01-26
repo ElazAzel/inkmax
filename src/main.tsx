@@ -12,7 +12,8 @@ import App from "./App";
 checkCacheVersion();
 
 // Lazy load page components for route-based code splitting
-const Index = lazy(() => import("./pages/Index"));
+const Index = lazy(() => import("./pages/LandingV5"));
+const IndexLegacy = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/DashboardV2"));
 const DashboardLegacy = lazy(() => import("./pages/Dashboard"));
