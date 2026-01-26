@@ -345,6 +345,146 @@
         "secondary": "Or see examples"
       }
     },
+    "niches": {
+      "title": "Who is LinkMAX for?",
+      "subtitle": "We created special templates for each niche. AI knows your audience's pain points and creates a page for your tasks",
+      "cta": "Create a page for my niche",
+      "barber": {
+        "title": "Barber",
+        "pain": "Clients message to book",
+        "benefit": "Online booking"
+      },
+      "photographer": {
+        "title": "Photographer",
+        "pain": "Portfolio is scattered",
+        "benefit": "Gallery on one page"
+      },
+      "fitness": {
+        "title": "Fitness Trainer",
+        "pain": "Collects bookings manually",
+        "benefit": "Schedule + form"
+      },
+      "beauty": {
+        "title": "Beauty Master",
+        "pain": "Sends prices via DM",
+        "benefit": "Pricing + booking"
+      },
+      "psychologist": {
+        "title": "Psychologist",
+        "pain": "Wants to sell consultations",
+        "benefit": "Offer + experience"
+      },
+      "tutor": {
+        "title": "Tutor",
+        "pain": "Looking for students on socials",
+        "benefit": "Formats + inquiry"
+      },
+      "clinic": {
+        "title": "Clinic",
+        "pain": "Patients can't find services",
+        "benefit": "Catalog + map"
+      },
+      "musician": {
+        "title": "Musician",
+        "pain": "Music scattered across platforms",
+        "benefit": "Everything in one link"
+      },
+      "designer": {
+        "title": "Designer",
+        "pain": "Portfolio site is expensive",
+        "benefit": "Free showcase"
+      },
+      "cafe": {
+        "title": "Cafe",
+        "pain": "Menu is a PDF",
+        "benefit": "Online menu"
+      },
+      "shop": {
+        "title": "Shop",
+        "pain": "Instagram as catalog",
+        "benefit": "Mini-store"
+      },
+      "agency": {
+        "title": "Agency",
+        "pain": "Website is expensive and slow",
+        "benefit": "Page in 1 day"
+      }
+    },
+    "linkInBio": {
+      "title": "What is Link-in-Bio and why do you need it?",
+      "subtitle": "A link page is a mini-site that combines all your resources: social media, messengers, portfolio, products and services",
+      "p1": "Link-in-Bio (multi-link page) is a page you place in your Instagram, TikTok, YouTube or Telegram profile description. Instead of one link, you get a full mini-landing with buttons, contacts, and even a product catalog.",
+      "p2": "LinkMAX is a modern Linktree and Taplink alternative with AI content generation. Pick a niche (barber, photographer, trainer, psychologist) and AI creates a ready page in 2 minutes: with profile, needed blocks and copy.",
+      "p3": "Unlike competitors, we don't take commission on your sales. All money from products and services is yours. Built-in analytics and CRM help understand which links work best.",
+      "benefit1": "All links in one place",
+      "benefit2": "AI creates content",
+      "benefit3": "Click analytics",
+      "benefit4": "No commissions",
+      "benefit5": "Custom domain",
+      "benefit6": "Mobile editor",
+      "keywords": "Keywords: link page, link in bio, multi-link, linktree alternative, taplink analog, mini-landing"
+    },
+    "faq": {
+      "badge": "Questions and Answers",
+      "title": "Frequently Asked Questions.",
+      "subtitle": "Answers to popular questions about LinkMAX",
+      "q1": {
+        "question": "What is LinkMAX and what is it for?",
+        "answer": "lnkmx is an AI link in bio and mini-site builder that helps create one clear page for links, services, booking, and inquiries."
+      },
+      "q2": {
+        "question": "How much does LinkMAX cost?",
+        "answer": "Basic plan is free forever. Pro: 3 mo - 4,350 ₸/mo, 6 mo - 3,500 ₸/mo, 12 mo - 2,610 ₸/mo. Online payment, 14-day refund."
+      },
+      "q3": {
+        "question": "How does AI page generation work?",
+        "answer": "Pick a niche and write a few facts about yourself - AI builds structure, copy, and CTAs in minutes. Free plan has 1 generation/month, Pro has 5/month."
+      },
+      "q4": {
+        "question": "What blocks are available for pages?",
+        "answer": "20+ block types: profile, links, buttons, images, videos, carousels, products, pricing, forms, maps, messengers, testimonials, FAQ, timers, and more."
+      },
+      "q5": {
+        "question": "Is there CRM and analytics?",
+        "answer": "Yes. Pro includes CRM for leads and Telegram notifications. Analytics shows clicks, traffic sources, and visitor behavior."
+      },
+      "q6": {
+        "question": "Is mobile editor supported?",
+        "answer": "Yes! LinkMAX is built mobile-first. You can fully edit pages from your smartphone."
+      },
+      "q7": {
+        "question": "What integrations does LinkMAX support?",
+        "answer": "Telegram for lead notifications and Google Calendar for scheduling. Social media and messengers are available as blocks."
+      },
+      "q8": {
+        "question": "Does LinkMAX take commission on sales?",
+        "answer": "No. 0% commission on your sales - you only pay for subscription."
+      },
+      "q9": {
+        "question": "How to pay for Premium subscription?",
+        "answer": "Payment by card and available payment methods. You can also use tokens (100 tokens = 1 day of Pro)."
+      },
+      "q10": {
+        "question": "What are the refund conditions?",
+        "answer": "Refund is possible within 14 days of payment according to Kazakhstan law. Details in user agreement."
+      },
+      "q11": {
+        "question": "Can I see page examples?",
+        "answer": "Yes. The gallery has real pages from different niches: specialists, shops, services, and creators."
+      },
+      "q12": {
+        "question": "Why is LinkMAX better than Linktree and Taplink?",
+        "answer": "lnkmx has AI page building, CRM, and notifications without extra cost. Plus flexible blocks, clear pricing, and local languages."
+      },
+      "q13": {
+        "question": "Is lnkmx suitable for a shop or service?",
+        "answer": "Yes. You can add catalog, pricing, inquiry forms, and contact buttons so clients can quickly order or book."
+      },
+      "q14": {
+        "question": "Can I connect my own domain?",
+        "answer": "Yes, Pro includes custom domains and page branding."
+      }
+    },
     "nav": {
       "signIn": "Sign In",
       "getStarted": "Create",
@@ -353,6 +493,9 @@
     },
     "floatingCta": {
       "create": "Create"
+    },
+    "footer": {
+      "alternatives": "Comparison"
     },
     "hero": {
       "badge": "AI Mini-Site Builder",
