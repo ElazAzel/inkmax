@@ -973,9 +973,12 @@ export type Database = {
           id: string
           is_in_gallery: boolean | null
           is_indexable: boolean | null
+          is_paid: boolean | null
+          is_primary_paid: boolean | null
           is_published: boolean | null
           last_snapshot_at: string | null
           niche: string | null
+          page_type: string | null
           preview_url: string | null
           quality_score: number | null
           seo_meta: Json | null
@@ -998,9 +1001,12 @@ export type Database = {
           id?: string
           is_in_gallery?: boolean | null
           is_indexable?: boolean | null
+          is_paid?: boolean | null
+          is_primary_paid?: boolean | null
           is_published?: boolean | null
           last_snapshot_at?: string | null
           niche?: string | null
+          page_type?: string | null
           preview_url?: string | null
           quality_score?: number | null
           seo_meta?: Json | null
@@ -1023,9 +1029,12 @@ export type Database = {
           id?: string
           is_in_gallery?: boolean | null
           is_indexable?: boolean | null
+          is_paid?: boolean | null
+          is_primary_paid?: boolean | null
           is_published?: boolean | null
           last_snapshot_at?: string | null
           niche?: string | null
+          page_type?: string | null
           preview_url?: string | null
           quality_score?: number | null
           seo_meta?: Json | null
@@ -1888,6 +1897,7 @@ export type Database = {
         Args: { p_code: string; p_referred_user_id: string }
         Returns: Json
       }
+      check_page_limits: { Args: { p_user_id: string }; Returns: Json }
       claim_daily_token_reward: {
         Args: { p_action_type: string; p_amount: number; p_user_id: string }
         Returns: Json
@@ -1903,6 +1913,10 @@ export type Database = {
         Returns: Json
       }
       convert_tokens_to_premium: { Args: { p_user_id: string }; Returns: Json }
+      create_user_page: {
+        Args: { p_slug: string; p_title: string; p_user_id: string }
+        Returns: Json
+      }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
       get_page_version: {
@@ -1931,6 +1945,7 @@ export type Database = {
           username: string
         }[]
       }
+      get_user_pages: { Args: { p_user_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1964,6 +1979,10 @@ export type Database = {
       save_page_blocks: {
         Args: { p_blocks: Json; p_is_premium?: boolean; p_page_id: string }
         Returns: undefined
+      }
+      set_primary_paid_page: {
+        Args: { p_page_id: string; p_user_id: string }
+        Returns: Json
       }
       spend_linkkon_tokens: {
         Args: {
