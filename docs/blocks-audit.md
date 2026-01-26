@@ -85,17 +85,50 @@ rounded-3xl (24px) → минимум p-6 (24px)
 
 ## Исправленные проблемы
 
-### P0 - Критические
-1. **✅ FIXED:** `as any` в BlockRenderer (5 мест) → заменены на типизированные assertions
-2. **✅ FIXED:** Несогласованность PREMIUM_BLOCK_TYPES между файлами → единый реестр
+### P0 - Критические (Block Stability v2.0)
+
+#### Проблемы с исчезновением/дублированием блоков:
+
+| Проблема | Причина | Решение |
+|----------|---------|---------|
+| Блоки исчезают при drag | `key={rowIndex}` в GridEditor | `key={createRowKey()}` - стабильный ключ по ID блоков |
+| Дублирование блоков | Race conditions в autosave | Stale request protection + version tracking |
+| Наложение блоков | Нет валидации целостности | `ensureBlockIds()` + `deduplicateBlocks()` |
+| Mobile DnD не работает | Controls только по hover | Всегда видимые кнопки на mobile |
+
+#### Новые утилиты (`src/lib/block-utils.ts`):
+- `generateBlockId(type)` - Crypto-secure ID
+- `createRowKey(blocks)` - Стабильный ключ для React rows
+- `validateBlocksIntegrity(blocks)` - Проверка дубликатов/ID
+- `ensureBlockIds(blocks)` - Safety net для missing IDs
+- `deduplicateBlocks(blocks)` - Удаление дубликатов
+
+#### Autosave Protection (`src/hooks/useCloudPageState.ts`):
+- Request versioning для каждого save
+- Stale check перед каждой мутацией
+- Санитизация блоков перед save
+- Оптимизированный debounce (1.5s)
+
+#### Mobile Controls (`src/components/editor/GridEditor.tsx`):
+- Кнопки Up/Down всегда видны на mobile
+- Увеличенные touch targets (h-8)
+- DnD handle скрыт на mobile (стрелки - основной control)
+
+### P0 - Type Safety
+1. **✅ FIXED:** `as any` в BlockRenderer (5 мест) → типизированные assertions
+2. **✅ FIXED:** Несогласованность PREMIUM_BLOCK_TYPES → единый реестр
 
 ### Файлы изменены
 - `src/components/BlockRenderer.tsx` - убраны все `as any`
 - `src/lib/block-registry.ts` - НОВЫЙ: единый реестр блоков
+- `src/lib/block-utils.ts` - ОБНОВЛЁН: stability utilities
 - `src/lib/constants.ts` - реэкспорт из registry
 - `src/domain/entities/Block.ts` - синхронизация premium types
 - `src/components/blocks/FreePremiumBlockGate.tsx` - использует registry
 - `src/hooks/useBlockEditor.tsx` - импорт из registry
+- `src/hooks/useCloudPageState.ts` - stale request protection
+- `src/components/editor/GridEditor.tsx` - stable keys + mobile controls
+- `src/components/blocks/GridBlocksRenderer.tsx` - stable keys
 
 ## i18n Покрытие
 
