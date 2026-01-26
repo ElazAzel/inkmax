@@ -1,9 +1,10 @@
 /**
  * DashboardHeader - Screen header with context actions
+ * Includes optional page switcher for page-context screens
  */
 import { memo, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, MoreVertical } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +15,7 @@ interface DashboardHeaderProps {
   onBack?: () => void;
   actions?: ReactNode;
   rightElement?: ReactNode;
+  leftElement?: ReactNode;
   sticky?: boolean;
   className?: string;
 }
@@ -25,6 +27,7 @@ export const DashboardHeader = memo(function DashboardHeader({
   onBack,
   actions,
   rightElement,
+  leftElement,
   sticky = true,
   className,
 }: DashboardHeaderProps) {
@@ -50,12 +53,15 @@ export const DashboardHeader = memo(function DashboardHeader({
               <ArrowLeft className="h-5 w-5" />
             </Button>
           )}
-          <div className="min-w-0">
-            <h1 className="text-2xl font-black truncate">{title}</h1>
-            {subtitle && (
-              <p className="text-sm text-muted-foreground truncate">{subtitle}</p>
-            )}
-          </div>
+          {leftElement}
+          {!leftElement && (
+            <div className="min-w-0">
+              <h1 className="text-2xl font-black truncate">{title}</h1>
+              {subtitle && (
+                <p className="text-sm text-muted-foreground truncate">{subtitle}</p>
+              )}
+            </div>
+          )}
         </div>
 
         {(actions || rightElement) && (
