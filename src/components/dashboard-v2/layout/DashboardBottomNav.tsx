@@ -30,14 +30,14 @@ const TABS: NavTab[] = [
     icon: Home,
     labelKey: 'dashboard.nav.home',
     defaultLabel: 'Главная',
-    path: '/dashboard',
+    path: '/dashboard/home',
   },
   {
     id: 'editor',
     icon: PenTool,
     labelKey: 'dashboard.nav.editor',
     defaultLabel: 'Редактор',
-    path: '/dashboard?tab=editor',
+    path: '/dashboard/home?tab=editor',
   },
   {
     id: 'activity',

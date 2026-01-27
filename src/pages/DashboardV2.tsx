@@ -2,8 +2,8 @@
  * DashboardV2 - New mobile-first dashboard with multi-page support
  * Entry point for the redesigned dashboard experience
  */
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
@@ -56,6 +56,7 @@ type TabId = 'home' | 'editor' | 'pages' | 'activity' | 'insights' | 'monetize' 
 
 export default function DashboardV2() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { t, i18n } = useTranslation();
   
@@ -74,8 +75,21 @@ export default function DashboardV2() {
     }
   );
 
-  // Current tab from URL
-  const currentTab = (searchParams.get('tab') as TabId) || 'home';
+  // Current tab from URL - support both query params and pathname
+  const currentTab = useMemo((): TabId => {
+    // First check query params
+    const tabParam = searchParams.get('tab') as TabId;
+    if (tabParam && ['home', 'editor', 'pages', 'activity', 'insights', 'monetize', 'settings'].includes(tabParam)) {
+      return tabParam;
+    }
+    // Fall back to pathname
+    const pathParts = location.pathname.split('/');
+    const lastPart = pathParts[pathParts.length - 1];
+    if (['home', 'pages', 'activity', 'insights', 'monetize', 'settings'].includes(lastPart)) {
+      return lastPart as TabId;
+    }
+    return 'home';
+  }, [searchParams, location.pathname]);
   
   // UI State
   const [migrationKey, setMigrationKey] = useState(0);
@@ -102,10 +116,16 @@ export default function DashboardV2() {
     }
   }, [dashboard.pageData?.blocks.length]);
 
-  // Handle tab change
+  // Handle tab change - navigate to the proper route
   const handleTabChange = useCallback((tabId: string) => {
-    setSearchParams({ tab: tabId });
-  }, [setSearchParams]);
+    if (tabId === 'home') {
+      navigate('/dashboard/home');
+    } else if (tabId === 'editor') {
+      navigate('/dashboard/home?tab=editor');
+    } else {
+      navigate(`/dashboard/${tabId}`);
+    }
+  }, [navigate]);
 
   // Handle page switch
   const handlePageSwitch = useCallback((pageId: string) => {
