@@ -249,6 +249,13 @@ export const EventBlock = memo(function EventBlock({
         }, {}),
       };
 
+      // Capture UTM params for attribution
+      const utmParams: Record<string, string> = {};
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(key => {
+        const value = new URLSearchParams(window.location.search).get(key);
+        if (value) utmParams[key] = value;
+      });
+
       const { data: registration, error } = await supabase
         .from('event_registrations')
         .insert({
@@ -263,6 +270,7 @@ export const EventBlock = memo(function EventBlock({
           answers_json: answers,
           status: block.settings?.requireApproval ? 'pending' : 'confirmed',
           payment_status: 'none',
+          utm_json: Object.keys(utmParams).length > 0 ? utmParams : {},
         })
         .select('id')
         .single();
@@ -296,6 +304,17 @@ export const EventBlock = memo(function EventBlock({
           : t('event.registrationSuccess', 'Регистрация подтверждена')
       );
       localStorage.removeItem(draftKey);
+
+      // Send notification to organizer (Pro feature, non-blocking)
+      if (isOwnerPremium && registration?.id && block.eventId && pageOwnerId) {
+        supabase.functions.invoke('send-event-confirmation', {
+          body: {
+            registrationId: registration.id,
+            eventId: block.eventId,
+            ownerId: pageOwnerId,
+          },
+        }).catch(err => console.warn('Notification send failed:', err));
+      }
     } catch (error: unknown) {
       console.error('Event registration error:', error);
       setEventError(t('event.registrationError', 'Не удалось зарегистрироваться'));
