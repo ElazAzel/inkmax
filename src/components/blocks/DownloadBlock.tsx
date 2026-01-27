@@ -20,6 +20,7 @@ export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBloc
 
   const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
   const description = getTranslatedString(block.description, i18n.language as SupportedLanguage);
+  const buttonText = getTranslatedString(block.buttonText, i18n.language as SupportedLanguage) || t('actions.download', 'Download');
 
   return (
     <div className={cn(
@@ -53,7 +54,7 @@ export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBloc
               className="w-full h-10 rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform"
             >
               <Download className="h-4 w-4 mr-2" />
-              {t('actions.download', 'Download')}
+              {buttonText}
             </Button>
           </div>
         </div>

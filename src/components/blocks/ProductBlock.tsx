@@ -38,6 +38,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
   
   const name = getTranslatedString(block.name, i18n.language as SupportedLanguage);
   const description = getTranslatedString(block.description, i18n.language as SupportedLanguage);
+  const buttonText = getTranslatedString(block.buttonText, i18n.language as SupportedLanguage);
   
   // Check if this product uses token payment (price in KZT = tokens)
   const tokenPrice = block.currency === 'KZT' ? block.price : null;
@@ -171,7 +172,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
           ) : (
             <>
               <ShoppingCart className="h-5 w-5" />
-              {t('actions.buy', 'Купить')}
+              {buttonText || t('actions.buy', 'Купить')}
               <ExternalLink className="h-4 w-4 ml-auto opacity-60" />
             </>
           )}
