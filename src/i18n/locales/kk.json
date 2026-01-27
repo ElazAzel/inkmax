@@ -2626,7 +2626,26 @@
     "options": "Нұсқалар",
     "option": "Нұсқа",
     "optionLabel": "Нұсқа мәтіні",
-    "optionLabelPlaceholder": "Мәтінді енгізіңіз"
+    "optionLabelPlaceholder": "Мәтінді енгізіңіз",
+    "tabInfo": "Ақпарат",
+    "tabForm": "Форма",
+    "tabSettings": "Баптаулар",
+    "registrationSettings": "Тіркелу баптаулары",
+    "showProgressBar": "Толтыру барысын көрсету",
+    "confirmationMessage": "Тіркелгеннен кейінгі хабарлама",
+    "confirmationMessagePlaceholder": "Тіркелгеніңіз үшін рахмет!",
+    "shortNotePlaceholder": "Ұйымдастырушыға арналған ішкі жазба",
+    "importFromGoogleForms": "Google Forms-тан импорттау",
+    "moreTypes": "Тағы",
+    "allFieldTypes": "Барлық өріс түрлері",
+    "addField": "Өріс қосу",
+    "noFields": "Форма өрістері жоқ",
+    "addFieldHint": "Жоғарыдағы түймелермен өрістерді қосыңыз",
+    "untitledField": "Атаусыз",
+    "addOption": "Нұсқа қосу",
+    "optionPlaceholder": "Жауап нұсқасы",
+    "scaleMin": "Бастап",
+    "scaleMax": "Дейін"
   },
   "eventFields": {
     "shortText": "Қысқа мәтін",
@@ -2638,10 +2657,26 @@
     "singleChoice": "Бір нұсқа",
     "multipleChoice": "Бірнеше нұсқа",
     "date": "Күн",
-    "checkbox": "Құсбелгі",
-    "url": "Сілтеме (URL)",
-    "media": "Медиа бөлім (Pro)",
-    "file": "Файл (Pro)"
+    "time": "Уақыт",
+    "datetime": "Күн мен уақыт",
+    "checkbox": "Келісім",
+    "url": "Сілтеме",
+    "linearScale": "Сызықтық шкала",
+    "rating": "Рейтинг",
+    "grid": "Таңдау торы",
+    "checkboxGrid": "Құсбелгі торы",
+    "sectionHeader": "Секция тақырыбы",
+    "description": "Сипаттама",
+    "media": "Медиа (Pro)",
+    "file": "Файл (Pro)",
+    "choice": "Таңдау",
+    "category": {
+      "text": "Мәтін",
+      "choice": "Таңдау",
+      "date": "Күн",
+      "special": "Арнайы",
+      "layout": "Орналасу"
+    }
   },
   "landingV5": {
     "nav": {
