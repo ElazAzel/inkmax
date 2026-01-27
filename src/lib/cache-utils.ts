@@ -4,7 +4,7 @@
 
 // Version key for cache invalidation
 const CACHE_VERSION_KEY = 'lnkmx_cache_version';
-const CURRENT_CACHE_VERSION = '2';
+const CURRENT_CACHE_VERSION = '3'; // Incremented after Pro/Business tier merge
 
 /**
  * Clear all local storage items related to LinkMAX
