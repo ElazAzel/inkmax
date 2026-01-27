@@ -9,12 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/platform/supabase/client';
@@ -22,6 +20,7 @@ import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers'
 import { getCurrencySymbol } from '@/components/form-fields/CurrencySelect';
 import { getEventRegistrationCount, isEmailRegistered } from '@/services/events';
 import { downloadICS, getGoogleCalendarUrl, type CalendarEvent } from '@/lib/calendar-utils';
+import { EventFormRenderer } from '@/components/event-forms/EventFormRenderer';
 import type { EventBlock as EventBlockType, EventFormField } from '@/types/page';
 
 interface EventBlockProps {
@@ -34,7 +33,7 @@ interface EventBlockProps {
 const SYSTEM_EMAIL_FIELD_ID = 'system_email';
 const DRAFT_TTL_MS = 2 * 60 * 60 * 1000;
 
-type FormValue = string | string[] | boolean;
+type FormValue = string | string[] | boolean | number;
 
 export const EventBlock = memo(function EventBlock({
   block,
@@ -306,153 +305,37 @@ export const EventBlock = memo(function EventBlock({
   };
 
   const renderField = (field: EventFormField) => {
-    const label = getTranslatedString(field.label_i18n, language);
-    const placeholder = field.placeholder_i18n
-      ? getTranslatedString(field.placeholder_i18n, language)
-      : undefined;
-    const helpText = field.helpText_i18n
-      ? getTranslatedString(field.helpText_i18n, language)
-      : undefined;
-    const value = formValues[field.id];
-
-    if (field.type === 'media') {
-      return (
-        <div className="rounded-xl border border-dashed border-border/60 p-4 text-sm text-muted-foreground">
-          {t('event.mediaSection', 'Медиа-секция доступна в Pro')}
-        </div>
-      );
-    }
-
-    if (field.type === 'file') {
-      return (
-        <div className="rounded-xl border border-border/60 p-4 text-sm text-muted-foreground">
-          {t('event.fileUploadPro', 'Загрузка файлов доступна в Pro')}
-        </div>
-      );
-    }
-
-    switch (field.type) {
-      case 'long_text':
-        return (
-          <Textarea
-            value={typeof value === 'string' ? value : ''}
-            onChange={(e) => updateValue(field.id, e.target.value)}
-            placeholder={placeholder}
-          />
-        );
-      case 'number':
-        return (
-          <Input
-            type="number"
-            value={typeof value === 'string' ? value : ''}
-            onChange={(e) => updateValue(field.id, e.target.value)}
-            placeholder={placeholder}
-          />
-        );
-      case 'date':
-        return (
-          <Input
-            type="date"
-            value={typeof value === 'string' ? value : ''}
-            onChange={(e) => updateValue(field.id, e.target.value)}
-          />
-        );
-      case 'dropdown':
-        return (
-          <Select
-            value={typeof value === 'string' ? value : ''}
-            onValueChange={(val) => updateValue(field.id, val)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={placeholder || t('event.selectOption', 'Выберите вариант')} />
-            </SelectTrigger>
-            <SelectContent>
-              {(field.options || []).map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {getTranslatedString(option.label_i18n, language)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        );
-      case 'single_choice':
-        return (
-          <div className="space-y-2">
-            {(field.options || []).map((option) => (
-              <label key={option.id} className="flex items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  name={field.id}
-                  checked={value === option.id}
-                  onChange={() => updateValue(field.id, option.id)}
-                />
-                {getTranslatedString(option.label_i18n, language)}
-              </label>
-            ))}
-          </div>
-        );
-      case 'multiple_choice':
-        return (
-          <div className="space-y-2">
-            {(field.options || []).map((option) => {
-              const current = Array.isArray(value) ? value : [];
-              const checked = current.includes(option.id);
-              return (
-                <label key={option.id} className="flex items-center gap-2 text-sm">
-                  <Checkbox
-                    checked={checked}
-                    onCheckedChange={(next) => {
-                      const nextValue = Boolean(next)
-                        ? [...current, option.id]
-                        : current.filter((item) => item !== option.id);
-                      updateValue(field.id, nextValue);
-                    }}
-                  />
-                  {getTranslatedString(option.label_i18n, language)}
-                </label>
-              );
-            })}
-          </div>
-        );
-      case 'checkbox':
-        return (
-          <label className="flex items-center gap-2 text-sm">
-            <Checkbox
-              checked={Boolean(value)}
-              onCheckedChange={(checked) => updateValue(field.id, Boolean(checked))}
-            />
-            {label}
-          </label>
-        );
-      case 'url':
-        return (
-          <Input
-            type="url"
-            value={typeof value === 'string' ? value : ''}
-            onChange={(e) => updateValue(field.id, e.target.value)}
-            placeholder={placeholder || 'https://'}
-          />
-        );
-      case 'phone':
-        return (
-          <Input
-            type="tel"
-            value={typeof value === 'string' ? value : ''}
-            onChange={(e) => updateValue(field.id, e.target.value)}
-            placeholder={placeholder}
-          />
-        );
-      case 'short_text':
-      default:
-        return (
-          <Input
-            value={typeof value === 'string' ? value : ''}
-            onChange={(e) => updateValue(field.id, e.target.value)}
-            placeholder={placeholder}
-          />
-        );
-    }
+    return (
+      <EventFormRenderer
+        key={field.id}
+        field={field}
+        value={formValues[field.id] ?? ''}
+        onChange={(val) => updateValue(field.id, val)}
+        language={language}
+        disabled={isSubmitting}
+      />
+    );
   };
+
+  // Calculate form progress
+  const formProgress = useMemo(() => {
+    if (!block.settings?.showProgressBar) return 0;
+    const requiredFields = eventFields.filter(f => f.required || f.type === 'email');
+    const totalRequired = requiredFields.length + 1; // +1 for system email
+    let filledCount = 0;
+    
+    const emailVal = formValues[SYSTEM_EMAIL_FIELD_ID];
+    if (emailVal && typeof emailVal === 'string' && emailVal.trim()) filledCount++;
+    
+    for (const field of requiredFields) {
+      const val = formValues[field.id];
+      if (val !== undefined && val !== '' && val !== false && !(Array.isArray(val) && val.length === 0)) {
+        filledCount++;
+      }
+    }
+    
+    return Math.round((filledCount / totalRequired) * 100);
+  }, [formValues, eventFields, block.settings?.showProgressBar]);
 
   return (
     <>
@@ -643,6 +526,17 @@ export const EventBlock = memo(function EventBlock({
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Progress bar */}
+                  {block.settings?.showProgressBar && eventFields.length > 0 && (
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{t('event.formProgress', 'Заполнено')}</span>
+                        <span>{formProgress}%</span>
+                      </div>
+                      <Progress value={formProgress} className="h-1.5" />
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <Label htmlFor={SYSTEM_EMAIL_FIELD_ID}>
                       {emailLabel} <span className="text-destructive">*</span>
@@ -661,27 +555,11 @@ export const EventBlock = memo(function EventBlock({
                     </p>
                   </div>
 
-                  {eventFields.map((field) => {
-                    const label = getTranslatedString(field.label_i18n, language);
-                    const isRequired = isFieldRequired(field);
-                    const helpText = field.helpText_i18n
-                      ? getTranslatedString(field.helpText_i18n, language)
-                      : '';
-
-                    return (
-                      <div key={field.id} className="space-y-2">
-                        {field.type !== 'checkbox' && field.type !== 'media' && field.type !== 'file' && (
-                          <Label htmlFor={field.id}>
-                            {label} {isRequired && <span className="text-destructive">*</span>}
-                          </Label>
-                        )}
-                        {renderField(field)}
-                        {helpText && (
-                          <p className="text-xs text-muted-foreground">{helpText}</p>
-                        )}
-                      </div>
-                    );
-                  })}
+                  {eventFields.map((field) => (
+                    <div key={field.id}>
+                      {renderField(field)}
+                    </div>
+                  ))}
 
                   {eventError && (
                     <Alert variant="destructive">

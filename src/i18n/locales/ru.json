@@ -2626,7 +2626,26 @@
     "options": "Варианты",
     "option": "Вариант",
     "optionLabel": "Текст варианта",
-    "optionLabelPlaceholder": "Введите текст"
+    "optionLabelPlaceholder": "Введите текст",
+    "tabInfo": "Инфо",
+    "tabForm": "Форма",
+    "tabSettings": "Настройки",
+    "registrationSettings": "Настройки регистрации",
+    "showProgressBar": "Показывать прогресс заполнения",
+    "confirmationMessage": "Сообщение после регистрации",
+    "confirmationMessagePlaceholder": "Спасибо за регистрацию!",
+    "shortNotePlaceholder": "Внутренняя заметка для организатора",
+    "importFromGoogleForms": "Импорт из Google Forms",
+    "moreTypes": "Ещё",
+    "allFieldTypes": "Все типы полей",
+    "addField": "Добавить поле",
+    "noFields": "Нет полей формы",
+    "addFieldHint": "Добавьте поля с помощью кнопок выше",
+    "untitledField": "Без названия",
+    "addOption": "Добавить вариант",
+    "optionPlaceholder": "Вариант ответа",
+    "scaleMin": "От",
+    "scaleMax": "До"
   },
   "eventFields": {
     "shortText": "Короткий текст",
@@ -2638,10 +2657,26 @@
     "singleChoice": "Один вариант",
     "multipleChoice": "Несколько вариантов",
     "date": "Дата",
-    "checkbox": "Чекбокс согласия",
-    "url": "Ссылка (URL)",
-    "media": "Медиа-секция (Pro)",
-    "file": "Файл (Pro)"
+    "time": "Время",
+    "datetime": "Дата и время",
+    "checkbox": "Согласие",
+    "url": "Ссылка",
+    "linearScale": "Линейная шкала",
+    "rating": "Рейтинг",
+    "grid": "Сетка выбора",
+    "checkboxGrid": "Сетка флажков",
+    "sectionHeader": "Заголовок секции",
+    "description": "Описание",
+    "media": "Медиа (Pro)",
+    "file": "Файл (Pro)",
+    "choice": "Выбор",
+    "category": {
+      "text": "Текст",
+      "choice": "Выбор",
+      "date": "Дата",
+      "special": "Специальные",
+      "layout": "Макет"
+    }
   },
   "landingV5": {
     "nav": {

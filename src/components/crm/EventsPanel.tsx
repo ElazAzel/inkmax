@@ -1,6 +1,6 @@
 /**
  * EventsPanel - CRM tab for managing events and registrations
- * Features: Event list, registration management, QR scanner access, CSV export
+ * Features: Event list, registration management, QR scanner access, Excel/CSV export
  */
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
   CalendarDays,
   Users,
@@ -20,21 +21,20 @@ import {
   Download,
   RefreshCw,
   Search,
-  Eye,
   ChevronRight,
   Clock,
   MapPin,
-  Ticket,
-  Check,
-  X,
   Loader2,
-  Plus,
+  FileSpreadsheet,
+  FileText,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format, isPast } from 'date-fns';
 import { ru, kk, enUS } from 'date-fns/locale';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { EventRegistrationsList } from './EventRegistrationsList';
+import { exportToExcel, exportToCSV } from '@/lib/excel-export';
+import type { EventFormField } from '@/types/page';
 
 interface Event {
   id: string;
@@ -51,6 +51,7 @@ interface Event {
   location_value: string | null;
   created_at: string;
   registration_count?: number;
+  form_schema_json?: unknown;
 }
 
 interface EventsPanelProps {
@@ -136,11 +137,19 @@ export function EventsPanel({ isPremium }: EventsPanelProps) {
     totalRegistrations: events.reduce((sum, e) => sum + (e.registration_count || 0), 0),
   }), [events]);
 
-  const exportToCSV = async (eventId: string) => {
+  const handleExport = async (eventId: string, formatType: 'xlsx' | 'csv' = 'csv') => {
     try {
+      // Fetch event details for form fields
+      const event = events.find(e => e.id === eventId);
+      const eventTitle = event 
+        ? getTranslatedString((event.title_i18n_json || {}) as Record<string, string>, language) 
+        : 'Event';
+      const formFields = (event?.form_schema_json as EventFormField[]) || [];
+
+      // Fetch registrations
       const { data: registrations, error } = await supabase
         .from('event_registrations')
-        .select('*, event_tickets(ticket_code, status)')
+        .select('id, attendee_name, attendee_email, attendee_phone, answers_json, status, payment_status, created_at, event_tickets(ticket_code, status, checked_in_at)')
         .eq('event_id', eventId)
         .order('created_at', { ascending: false });
 
@@ -150,30 +159,38 @@ export function EventsPanel({ isPremium }: EventsPanelProps) {
         return;
       }
 
-      const headers = ['Name', 'Email', 'Phone', 'Status', 'Payment', 'Ticket', 'Registered At'];
-      const rows = registrations.map(r => [
-        r.attendee_name,
-        r.attendee_email,
-        r.attendee_phone || '',
-        r.status,
-        r.payment_status,
-        r.event_tickets?.[0]?.ticket_code || '',
-        format(new Date(r.created_at), 'yyyy-MM-dd HH:mm'),
-      ]);
+      // Transform data for export
+      const transformedRegistrations = (registrations as unknown as Array<{
+        id: string;
+        attendee_name: string;
+        attendee_email: string;
+        attendee_phone: string | null;
+        answers_json: Record<string, unknown> | null;
+        status: string;
+        payment_status: string;
+        created_at: string;
+        event_tickets: Array<{
+          ticket_code: string;
+          status: string;
+          checked_in_at: string | null;
+        }> | null;
+      }>);
 
-      const csvContent = [
-        headers.join(','),
-        ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-      ].join('\n');
+      const exportData = {
+        eventTitle,
+        registrations: transformedRegistrations,
+        formFields,
+        language,
+        includeAnswers: true,
+      };
 
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `event-registrations-${eventId.slice(0, 8)}-${new Date().toISOString().split('T')[0]}.csv`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-      
-      toast.success(t('events.exportSuccess', 'Экспорт завершен'));
+      if (formatType === 'xlsx' && isPremium) {
+        exportToExcel(exportData);
+        toast.success(t('events.exportSuccess', 'Экспорт в Excel завершен'));
+      } else {
+        exportToCSV(exportData);
+        toast.success(t('events.exportSuccess', 'Экспорт в CSV завершен'));
+      }
     } catch (error) {
       console.error('Export error:', error);
       toast.error(t('events.exportError', 'Ошибка экспорта'));
@@ -221,7 +238,7 @@ export function EventsPanel({ isPremium }: EventsPanelProps) {
         eventTitle={selectedTitle}
         isPremium={isPremium}
         onBack={() => setSelectedEventId(null)}
-        onExport={() => exportToCSV(selectedEventId)}
+        onExport={() => handleExport(selectedEventId, 'csv')}
         onOpenScanner={() => openScanner(selectedEventId)}
       />
     );

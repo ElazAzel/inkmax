@@ -2626,7 +2626,26 @@
     "options": "Options",
     "option": "Option",
     "optionLabel": "Option text",
-    "optionLabelPlaceholder": "Enter text"
+    "optionLabelPlaceholder": "Enter text",
+    "tabInfo": "Info",
+    "tabForm": "Form",
+    "tabSettings": "Settings",
+    "registrationSettings": "Registration settings",
+    "showProgressBar": "Show form progress",
+    "confirmationMessage": "Confirmation message",
+    "confirmationMessagePlaceholder": "Thank you for registering!",
+    "shortNotePlaceholder": "Internal note for organizer",
+    "importFromGoogleForms": "Import from Google Forms",
+    "moreTypes": "More",
+    "allFieldTypes": "All field types",
+    "addField": "Add field",
+    "noFields": "No form fields",
+    "addFieldHint": "Add fields using the buttons above",
+    "untitledField": "Untitled",
+    "addOption": "Add option",
+    "optionPlaceholder": "Option text",
+    "scaleMin": "From",
+    "scaleMax": "To"
   },
   "eventFields": {
     "shortText": "Short text",
@@ -2638,10 +2657,26 @@
     "singleChoice": "Single choice",
     "multipleChoice": "Multiple choice",
     "date": "Date",
+    "time": "Time",
+    "datetime": "Date and time",
     "checkbox": "Checkbox",
     "url": "URL",
-    "media": "Media section (Pro)",
-    "file": "File (Pro)"
+    "linearScale": "Linear scale",
+    "rating": "Rating",
+    "grid": "Choice grid",
+    "checkboxGrid": "Checkbox grid",
+    "sectionHeader": "Section header",
+    "description": "Description",
+    "media": "Media (Pro)",
+    "file": "File (Pro)",
+    "choice": "Choice",
+    "category": {
+      "text": "Text",
+      "choice": "Choice",
+      "date": "Date",
+      "special": "Special",
+      "layout": "Layout"
+    }
   },
   "landingV5": {
     "nav": {
