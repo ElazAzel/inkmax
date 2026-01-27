@@ -288,10 +288,20 @@ export default function EventScanner() {
     try {
       setCameraError(null);
       
+      // First, request camera permission explicitly
+      // This triggers the browser permission prompt
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      
+      // Stop the temporary stream - we'll use zxing's own stream
+      stream.getTracks().forEach(track => track.stop());
+      
       if (!readerRef.current) {
         readerRef.current = new BrowserQRCodeReader();
       }
       
+      // Now list devices - should work after permission granted
       const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices();
       
       // Prefer back camera
@@ -310,7 +320,7 @@ export default function EventScanner() {
       const controls = await readerRef.current.decodeFromVideoDevice(
         deviceId,
         videoRef.current!,
-        (result, error) => {
+        (result) => {
           if (result) {
             const code = result.getText();
             processScan(code);
@@ -325,9 +335,24 @@ export default function EventScanner() {
       
     } catch (error) {
       console.error('Camera error:', error);
-      const errorMessage = error instanceof Error && error.message === 'No camera found'
-        ? t('events.noCameraFound', 'Камера не найдена. Откройте на реальном устройстве.')
-        : t('events.cameraError', 'Не удалось запустить камеру. Проверьте разрешения.');
+      let errorMessage: string;
+      
+      if (error instanceof DOMException) {
+        if (error.name === 'NotAllowedError') {
+          errorMessage = t('events.cameraPermissionDenied', 'Разрешите доступ к камере в настройках браузера');
+        } else if (error.name === 'NotFoundError') {
+          errorMessage = t('events.noCameraFound', 'Камера не найдена на устройстве');
+        } else if (error.name === 'NotReadableError') {
+          errorMessage = t('events.cameraInUse', 'Камера используется другим приложением');
+        } else {
+          errorMessage = t('events.cameraError', 'Не удалось запустить камеру');
+        }
+      } else if (error instanceof Error && error.message === 'No camera found') {
+        errorMessage = t('events.noCameraFound', 'Камера не найдена на устройстве');
+      } else {
+        errorMessage = t('events.cameraError', 'Не удалось запустить камеру');
+      }
+      
       setCameraError(errorMessage);
       setManualMode(true);
     }
