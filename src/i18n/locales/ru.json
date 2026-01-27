@@ -1167,6 +1167,24 @@
       "changePassword": "Сменить пароль",
       "signOut": "Выйти"
     },
+    "settingsTabs": {
+      "page": "Страница",
+      "account": "Аккаунт"
+    },
+    "pageSwitcher": {
+      "title": "Ваши страницы",
+      "select": "Выбрать страницу",
+      "pagesUsed": "Использовано страниц",
+      "createPage": "Создать страницу",
+      "managePages": "Управление страницами",
+      "upgradePro": "Обновитесь до Pro для новых страниц",
+      "getMore": "Получить больше страниц",
+      "upgradeDesc": "Обновитесь до Pro",
+      "included": "Вкл.",
+      "addon": "Доп.",
+      "free": "Бесп.",
+      "search": "Поиск страниц..."
+    },
     "monetize": {
       "title": "Монетизация",
       "subtitle": "Ваш тариф и биллинг",

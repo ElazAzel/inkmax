@@ -638,6 +638,7 @@ export interface PageData {
   };
   isPremium?: boolean;
   isPublished?: boolean;
+  isIndexable?: boolean;
   viewCount?: number;
   metrics?: PageMetrics;
   editorMode?: EditorMode;

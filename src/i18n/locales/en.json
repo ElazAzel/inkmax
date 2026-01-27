@@ -1167,6 +1167,24 @@
       "changePassword": "Change Password",
       "signOut": "Sign Out"
     },
+    "settingsTabs": {
+      "page": "Page",
+      "account": "Account"
+    },
+    "pageSwitcher": {
+      "title": "Your Pages",
+      "select": "Select page",
+      "pagesUsed": "Pages used",
+      "createPage": "Create new page",
+      "managePages": "Manage all pages",
+      "upgradePro": "Upgrade to Pro for more pages",
+      "getMore": "Get more pages",
+      "upgradeDesc": "Upgrade to Pro",
+      "included": "Incl.",
+      "addon": "Add-on",
+      "free": "Free",
+      "search": "Search pages..."
+    },
     "monetize": {
       "title": "Monetize",
       "subtitle": "Your plan and billing",

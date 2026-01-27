@@ -268,6 +268,7 @@ export default function DashboardV2() {
               onShare={() => dashboard.sharingState.handleShare()}
               onOpenTemplates={() => setTemplateGalleryOpen(true)}
               onOpenMarketplace={() => setShowMarketplace(true)}
+              pageSwitcher={pageSwitcherElement}
             />
           )}
 
@@ -392,6 +393,26 @@ export default function DashboardV2() {
               onOpenMyTemplates={() => setShowMyTemplates(true)}
               onOpenTokens={() => setShowTokens(true)}
               onOpenAchievements={() => setShowAchievements(true)}
+              // Page settings props
+              pageTitle={multiPage.activePage?.title}
+              pageSlug={multiPage.activePage?.slug}
+              isPaid={multiPage.activePage?.isPaid}
+              isPrimaryPaid={multiPage.activePage?.isPrimaryPaid}
+              seoTitle={(dashboard.pageData?.seo as { title?: string })?.title}
+              seoDescription={(dashboard.pageData?.seo as { description?: string })?.description}
+              isIndexable={dashboard.pageData?.isIndexable}
+              onUpdateSlug={async (slug) => multiPage.updatePageSlug(multiPage.activePageId || '', slug)}
+              onUpdateSeo={(seo) => {
+                dashboard.updatePageDataPartial({
+                  seo: { ...dashboard.pageData?.seo, ...seo },
+                });
+              }}
+              onToggleIndexable={(indexable) => {
+                dashboard.updatePageDataPartial({ isIndexable: indexable });
+              }}
+              onUpgradePage={() => {
+                toast.info(t('common.comingSoon', 'Coming soon'));
+              }}
             />
           )}
         </DashboardLayout>
