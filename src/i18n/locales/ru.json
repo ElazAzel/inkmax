@@ -3055,5 +3055,29 @@
   },
   "footer": {
     "rights": "Все права защищены."
+  },
+  "themes": {
+    "pageTheme": "Тема и цвета",
+    "chooseTheme": "Выберите готовую тему для вашей страницы",
+    "freeThemes": "Бесплатные темы",
+    "premiumThemes": "Премиум темы",
+    "unlockPremium": "Разблокировать премиум темы",
+    "unlockPremiumDesc": "Получите доступ ко всем темам с PRO",
+    "classic": "Классика",
+    "classicDesc": "Чистый и профессиональный",
+    "darkMode": "Тёмная",
+    "darkModeDesc": "Элегантная тёмная тема",
+    "gradientTheme": "Градиент",
+    "gradientThemeDesc": "Яркий градиентный фон",
+    "minimal": "Минимализм",
+    "minimalDesc": "Строгий и лаконичный",
+    "neon": "Неон",
+    "neonDesc": "Яркие неоновые акценты",
+    "sunset": "Закат",
+    "sunsetDesc": "Тёплые оттенки заката",
+    "ocean": "Океан",
+    "oceanDesc": "Спокойные морские тона",
+    "forest": "Лес",
+    "forestDesc": "Природные зелёные оттенки"
   }
 }

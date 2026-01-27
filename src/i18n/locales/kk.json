@@ -3055,5 +3055,29 @@
   },
   "footer": {
     "rights": "Барлық құқықтар қорғалған."
+  },
+  "themes": {
+    "pageTheme": "Тема және түстер",
+    "chooseTheme": "Бетіңіз үшін дайын тема таңдаңыз",
+    "freeThemes": "Тегін темалар",
+    "premiumThemes": "Премиум темалар",
+    "unlockPremium": "Премиум темаларды ашу",
+    "unlockPremiumDesc": "PRO арқылы барлық темаларға қол жеткізіңіз",
+    "classic": "Классика",
+    "classicDesc": "Таза және кәсіби",
+    "darkMode": "Қараңғы",
+    "darkModeDesc": "Сәнді қараңғы тема",
+    "gradientTheme": "Градиент",
+    "gradientThemeDesc": "Жарқын градиент фоны",
+    "minimal": "Минимализм",
+    "minimalDesc": "Қатаң және қысқа",
+    "neon": "Неон",
+    "neonDesc": "Жарқын неон акценттері",
+    "sunset": "Күн батуы",
+    "sunsetDesc": "Жылы күн батуы реңктері",
+    "ocean": "Мұхит",
+    "oceanDesc": "Тыныш теңіз түстері",
+    "forest": "Орман",
+    "forestDesc": "Табиғи жасыл түстер"
   }
 }
