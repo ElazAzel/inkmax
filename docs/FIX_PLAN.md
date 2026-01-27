@@ -217,12 +217,16 @@ npm run test:e2e
 | Phase | Status | Completion |
 |-------|--------|------------|
 | Phase 1 (P0 Security) | ✅ Complete | 100% |
-| Phase 2 (P1 Security) | 🔴 Not Started | 0% |
-| Phase 3 (P1 Frontend) | 🟡 In Progress | 33% |
-| Phase 4 (P1 Testing) | 🔴 Not Started | 0% |
+| Phase 2 (P1 Security) | ✅ Complete | 90% |
+| Phase 3 (P1 Frontend) | ✅ Complete | 100% |
+| Phase 4 (P1 Testing) | ✅ Complete | 100% |
 | Phase 5 (P2 UX) | 🔴 Not Started | 0% |
 | Phase 6 (P2 Perf) | 🔴 Not Started | 0% |
 | Phase 7 (P2 SEO) | 🔴 Not Started | 0% |
+
+### Remaining Manual Actions (for user):
+1. **Leaked Password Protection**: Enable in Supabase Dashboard → Authentication → Settings
+2. **pg_net Extension**: Consider moving from `public` to `extensions` schema (optional, low risk)
 
 ---
 
