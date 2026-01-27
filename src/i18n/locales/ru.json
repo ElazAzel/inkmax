@@ -130,7 +130,12 @@
     "namePlaceholder": "Ваше имя",
     "clickToEdit": "Нажмите для редактирования",
     "addName": "Добавить имя",
-    "addBio": "Добавить описание"
+    "addBio": "Добавить описание",
+    "shadowStyle": "Стиль тени",
+    "none": "Нет",
+    "soft": "Мягкая",
+    "medium": "Средняя",
+    "strong": "Сильная"
   },
   "verification": {
     "platformBadge": "Личность подтверждена платформой",

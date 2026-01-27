@@ -130,7 +130,12 @@
     "namePlaceholder": "Your name",
     "clickToEdit": "Click to edit",
     "addName": "Add name",
-    "addBio": "Add bio"
+    "addBio": "Add bio",
+    "shadowStyle": "Shadow Style",
+    "none": "None",
+    "soft": "Soft",
+    "medium": "Medium",
+    "strong": "Strong"
   },
   "verification": {
     "platformBadge": "Identity verified by platform",
