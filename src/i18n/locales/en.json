@@ -3055,5 +3055,29 @@
   },
   "footer": {
     "rights": "All rights reserved."
+  },
+  "themes": {
+    "pageTheme": "Theme & Colors",
+    "chooseTheme": "Choose a pre-designed theme for your page",
+    "freeThemes": "Free Themes",
+    "premiumThemes": "Premium Themes",
+    "unlockPremium": "Unlock Premium Themes",
+    "unlockPremiumDesc": "Get access to all themes with PRO",
+    "classic": "Classic",
+    "classicDesc": "Clean and professional",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Elegant dark theme",
+    "gradientTheme": "Gradient",
+    "gradientThemeDesc": "Vibrant gradient background",
+    "minimal": "Minimal",
+    "minimalDesc": "Strict and concise",
+    "neon": "Neon",
+    "neonDesc": "Bright neon accents",
+    "sunset": "Sunset",
+    "sunsetDesc": "Warm sunset tones",
+    "ocean": "Ocean",
+    "oceanDesc": "Calm sea tones",
+    "forest": "Forest",
+    "forestDesc": "Natural green shades"
   }
 }

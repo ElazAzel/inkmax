@@ -50,6 +50,7 @@ import { MyTemplatesPanel } from '@/components/templates/MyTemplatesPanel';
 import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { LoadingState, BackgroundEffects } from '@/components/dashboard';
+import { ThemePanel } from '@/components/dashboard-v2/panels';
 
 import type { Niche } from '@/lib/niches';
 
@@ -104,6 +105,7 @@ export default function DashboardV2() {
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [showCreatePage, setShowCreatePage] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
+  const [showTheme, setShowTheme] = useState(false);
 
   // Page versions
   const handleRestoreVersion = useCallback((blocks: any[], theme?: any, seo?: any) => {
@@ -202,11 +204,27 @@ export default function DashboardV2() {
     }
   }, [multiPage.pages, t]);
 
-  // Listen for global events
+  // Listen for global events from sidebar
   useEffect(() => {
     const handleOpenFriends = () => setShowFriends(true);
+    const handleOpenTemplates = () => setTemplateGalleryOpen(true);
+    const handleOpenMarketplace = () => setShowMarketplace(true);
+    const handleOpenTokens = () => setShowTokens(true);
+    const handleOpenAchievements = () => setShowAchievements(true);
+    
     window.addEventListener('openFriends', handleOpenFriends);
-    return () => window.removeEventListener('openFriends', handleOpenFriends);
+    window.addEventListener('openTemplates', handleOpenTemplates);
+    window.addEventListener('openMarketplace', handleOpenMarketplace);
+    window.addEventListener('openTokens', handleOpenTokens);
+    window.addEventListener('openAchievements', handleOpenAchievements);
+    
+    return () => {
+      window.removeEventListener('openFriends', handleOpenFriends);
+      window.removeEventListener('openTemplates', handleOpenTemplates);
+      window.removeEventListener('openMarketplace', handleOpenMarketplace);
+      window.removeEventListener('openTokens', handleOpenTokens);
+      window.removeEventListener('openAchievements', handleOpenAchievements);
+    };
   }, []);
 
   // Loading state
@@ -431,7 +449,7 @@ export default function DashboardV2() {
               onOpenMyTemplates={() => setShowMyTemplates(true)}
               onOpenTokens={() => setShowTokens(true)}
               onOpenAchievements={() => setShowAchievements(true)}
-              onOpenTheme={() => navigate('/dashboard/home?tab=editor')}
+              onOpenTheme={() => setShowTheme(true)}
               onOpenMarketplace={() => setShowMarketplace(true)}
               onOpenTemplates={() => setTemplateGalleryOpen(true)}
               // Page settings props
@@ -571,6 +589,18 @@ export default function DashboardV2() {
           onRestore={pageVersions.restoreVersion}
           pageId={dashboard.pageData?.id}
           onFetch={pageVersions.fetchVersions}
+        />
+
+        {/* Theme Panel */}
+        <ThemePanel
+          open={showTheme}
+          onClose={() => setShowTheme(false)}
+          currentTheme={dashboard.pageData?.theme || {}}
+          onThemeChange={(theme) => {
+            dashboard.updatePageDataPartial({ theme: { ...dashboard.pageData?.theme, ...theme } });
+          }}
+          isPremium={dashboard.isPremium}
+          onUpgrade={() => navigate('/pricing')}
         />
       </div>
     </>
