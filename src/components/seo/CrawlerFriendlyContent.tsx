@@ -1,21 +1,24 @@
 /**
  * CrawlerFriendlyContent - Server-Side Readable Content for Crawlers
  * 
- * Enhanced for SEO/GEO with:
+ * Enhanced for AEO/GEO (Answer Engine & Generative Engine Optimization):
+ * - Answer Block at the top for AI extraction
+ * - Key Facts bullets for atomic citation
  * - Semantic HTML5 sections with stable anchors
- * - Key facts block for AI citability
- * - Complete content extraction
- * - Schema.org microdata attributes
+ * - Complete content extraction with microdata
  * - Proper heading hierarchy (H1 → H2 → H3)
  */
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Block, FAQBlock, EventBlock, ProfileBlock, AvatarBlock, PricingBlock, SocialsBlock, LinkBlock, TextBlock } from '@/types/page';
+import type { Block, FAQBlock, EventBlock, PricingBlock, SocialsBlock, TextBlock } from '@/types/page';
 import { getTranslatedString } from '@/lib/i18n-helpers';
-import { extractProfileFromBlocks, generateAutoAbout, generateSourceContext } from '@/lib/seo-utils';
-import { generateSectionAnchors, generateKeyFacts, SECTION_LABELS } from '@/lib/seo/anchors';
+import { extractProfileFromBlocks, generateSourceContext } from '@/lib/seo-utils';
+import { generateSectionAnchors, SECTION_LABELS } from '@/lib/seo/anchors';
 import { extractEntityLinks } from '@/lib/seo/entity-linking';
+import { generateAnswerBlock } from '@/lib/seo/answer-block';
+import { generateKeyFacts as generateEnhancedKeyFacts } from '@/lib/seo/key-facts';
+import { generateAutoFAQ, extractFAQContext, hasUserFAQ } from '@/lib/seo/auto-faq';
 
 interface CrawlerFriendlyContentProps {
   blocks: Block[];
@@ -28,11 +31,19 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
   const language = i18n.language as 'ru' | 'en' | 'kk';
 
   const profile = extractProfileFromBlocks(blocks, language);
-  const autoAbout = profile.bio || generateAutoAbout(profile, blocks, language);
   const sourceContext = generateSourceContext(slug, updatedAt || new Date().toISOString());
-  const sections = generateSectionAnchors(blocks);
-  const keyFacts = generateKeyFacts(profile, blocks, language);
   const entityLinks = extractEntityLinks(blocks, language);
+  
+  // Generate Answer Block for AEO
+  const answerBlock = generateAnswerBlock(blocks, slug, language);
+  
+  // Generate enhanced Key Facts
+  const keyFacts = generateEnhancedKeyFacts(blocks, answerBlock, profile.name, language);
+  
+  // Generate auto FAQ if user doesn't have one
+  const shouldGenerateAutoFAQ = !hasUserFAQ(blocks);
+  const faqContext = extractFAQContext(blocks, profile.name, answerBlock.niche, answerBlock.location, language);
+  const autoFAQItems = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 5) : [];
 
   // Extract FAQ content
   const faqBlock = blocks.find(b => b.type === 'faq') as FAQBlock | undefined;
@@ -64,11 +75,14 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
       <article 
         className="crawler-content" 
         itemScope 
-        itemType={`https://schema.org/${profile.type}`}
+        itemType={`https://schema.org/${answerBlock.entityType}`}
       >
         {/* Main heading - H1 */}
         <header id="about">
           <h1 itemProp="name">{profile.name || `Page @${slug}`}</h1>
+          {answerBlock.niche && (
+            <p itemProp="jobTitle" className="role">{answerBlock.niche}</p>
+          )}
           {profile.avatar && (
             <img 
               src={profile.avatar} 
@@ -88,28 +102,37 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
           ))}
         </header>
 
-        {/* Key Facts - Important for AI extraction */}
+        {/* Answer Block - PRIMARY for AI extraction */}
+        <section id="answer" aria-label="Summary">
+          <h2>{language === 'ru' ? 'О специалисте' : language === 'kk' ? 'Маман туралы' : 'About'}</h2>
+          <p itemProp="description" className="answer-summary">
+            {answerBlock.summary}
+          </p>
+        </section>
+
+        {/* Key Facts - Atomic facts for AI citation */}
         {keyFacts.length > 0 && (
           <section id="key-facts" aria-label="Key Facts">
             <h2>{language === 'ru' ? 'Ключевые факты' : language === 'kk' ? 'Негізгі фактілер' : 'Key Facts'}</h2>
             <ul>
               {keyFacts.map((fact, i) => (
-                <li key={i}>{fact}</li>
+                <li key={i}>
+                  <strong>{fact.label}:</strong> <span itemProp={fact.schemaProperty}>{fact.value}</span>
+                </li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* About section */}
-        <section aria-label="About">
-          <h2>{SECTION_LABELS.about[language]}</h2>
-          <p itemProp="description">{autoAbout}</p>
-          
-          {/* Additional text content */}
-          {textBlocks.map(block => (
-            <p key={block.id}>{getTranslatedString(block.content, language)}</p>
-          ))}
-        </section>
+        {/* Additional text content */}
+        {textBlocks.length > 0 && (
+          <section aria-label="Details">
+            <h2>{SECTION_LABELS.about[language]}</h2>
+            {textBlocks.map(block => (
+              <p key={block.id}>{getTranslatedString(block.content, language)}</p>
+            ))}
+          </section>
+        )}
 
         {/* Expertise/Skills (knowsAbout) */}
         {entityLinks.knowsAbout.length > 0 && (
@@ -179,8 +202,8 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
           </section>
         )}
 
-        {/* FAQ section */}
-        {faqBlock && faqBlock.items.length > 0 && (
+        {/* FAQ section - User-created or Auto-generated */}
+        {(faqBlock?.items?.length || autoFAQItems.length > 0) && (
           <section 
             id="faq"
             aria-label="FAQ"
@@ -189,7 +212,8 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
           >
             <h2>{SECTION_LABELS.faq[language]}</h2>
             <dl>
-              {faqBlock.items.map(item => (
+              {/* User-created FAQ items */}
+              {faqBlock?.items?.map(item => (
                 <div 
                   key={item.id}
                   itemScope 
@@ -203,6 +227,24 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
                     itemProp="acceptedAnswer"
                   >
                     <span itemProp="text">{getTranslatedString(item.answer, language)}</span>
+                  </dd>
+                </div>
+              ))}
+              {/* Auto-generated FAQ items (if user has no FAQ) */}
+              {autoFAQItems.map((item, i) => (
+                <div 
+                  key={`auto-faq-${i}`}
+                  itemScope 
+                  itemType="https://schema.org/Question"
+                  itemProp="mainEntity"
+                >
+                  <dt itemProp="name">{item.question}</dt>
+                  <dd 
+                    itemScope 
+                    itemType="https://schema.org/Answer"
+                    itemProp="acceptedAnswer"
+                  >
+                    <span itemProp="text">{item.answer}</span>
                   </dd>
                 </div>
               ))}
