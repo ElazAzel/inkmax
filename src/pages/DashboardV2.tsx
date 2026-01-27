@@ -150,10 +150,12 @@ export default function DashboardV2() {
   const seoTitle = t('dashboard.seo.title', 'lnkmx Dashboard');
   const seoDescription = t('dashboard.seo.description', 'Manage your lnkmx pages, leads, and analytics.');
 
-  // Check for new user quick start
+  // Check for new user quick start - show only for users with 2 or fewer blocks
   useEffect(() => {
     const completed = localStorage.getItem('linkmax_onboarding_completed');
-    if (!completed && dashboard.pageData?.blocks.length === 1) {
+    const blocksCount = dashboard.pageData?.blocks.length || 0;
+    // Only show quick start for new users with profile block only or just 1 content block
+    if (!completed && blocksCount <= 2) {
       setShowQuickStart(true);
     }
   }, [dashboard.pageData?.blocks.length]);
