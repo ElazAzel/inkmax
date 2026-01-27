@@ -2584,7 +2584,14 @@
     "promptText": "Sign up to see all your tickets in your profile and create your own page in a few clicks.",
     "promptSignup": "Sign up",
     "promptContinue": "Continue without account",
-    "field": "Field"
+    "field": "Field",
+    "mediaUpload": "Upload media",
+    "fileUpload": "Upload file",
+    "addToCalendar": "Add to calendar",
+    "calendar": "Calendar",
+    "downloadICS": "Download .ics",
+    "googleCalendar": "Google Calendar",
+    "outlook": "Outlook"
   },
   "eventBuilder": {
     "emailRequired": "Email field is always added automatically and is required.",

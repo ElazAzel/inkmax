@@ -2584,7 +2584,14 @@
     "promptText": "Тіркеліп, барлық билеттерді профиліңізден көріңіз және бірнеше секундта жеке бетіңізді жасаңыз.",
     "promptSignup": "Тіркелу",
     "promptContinue": "Тіркелмей жалғастыру",
-    "field": "Өріс"
+    "field": "Өріс",
+    "mediaUpload": "Медиа жүктеу",
+    "fileUpload": "Файл жүктеу",
+    "addToCalendar": "Күнтізбеге қосу",
+    "calendar": "Күнтізбе",
+    "downloadICS": ".ics жүктеу",
+    "googleCalendar": "Google Calendar",
+    "outlook": "Outlook"
   },
   "eventBuilder": {
     "emailRequired": "Email өрісі әрқашан автоматты түрде қосылады және міндетті.",

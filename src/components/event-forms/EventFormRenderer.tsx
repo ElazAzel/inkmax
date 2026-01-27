@@ -12,7 +12,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
-import { Star } from 'lucide-react';
+import { Star, Crown } from 'lucide-react';
+import { EventFileUpload } from './EventFileUpload';
 import type { EventFormField } from '@/types/page';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +25,8 @@ interface EventFormRendererProps {
   onChange: (value: FormValue) => void;
   language: SupportedLanguage;
   disabled?: boolean;
+  isPremium?: boolean;
+  eventId?: string;
 }
 
 export const EventFormRenderer = memo(function EventFormRenderer({
@@ -32,6 +35,8 @@ export const EventFormRenderer = memo(function EventFormRenderer({
   onChange,
   language,
   disabled = false,
+  isPremium = false,
+  eventId,
 }: EventFormRendererProps) {
   const { t } = useTranslation();
 
@@ -79,22 +84,56 @@ export const EventFormRenderer = memo(function EventFormRenderer({
     );
   }
 
-  // Media placeholders (Pro)
+  // Media placeholders (Pro-only)
   if (field.type === 'media') {
+    if (!isPremium) {
+      return (
+        <div className="rounded-xl border border-dashed border-border/60 p-4 text-sm text-muted-foreground text-center flex items-center justify-center gap-2">
+          <Crown className="h-4 w-4" />
+          {t('event.mediaSection', 'Медиа-секция доступна в Pro')}
+        </div>
+      );
+    }
+    // For Pro users, show file upload for media
     return (
-      <div className="rounded-xl border border-dashed border-border/60 p-4 text-sm text-muted-foreground text-center">
-        {t('event.mediaSection', 'Медиа-секция доступна в Pro')}
-      </div>
+      <EventFileUpload
+        value={typeof value === 'string' ? value : ''}
+        onChange={(url) => onChange(url)}
+        label={label || t('event.mediaUpload', 'Загрузить медиа')}
+        helpText={helpText}
+        required={isRequired}
+        disabled={disabled}
+        accept="image/*,video/*"
+        maxSizeMB={25}
+        eventId={eventId}
+      />
     );
   }
 
+  // File upload (Pro-only)
   if (field.type === 'file') {
+    if (!isPremium) {
+      return (
+        <FieldWrapper>
+          <div className="rounded-xl border border-dashed border-border/60 p-4 text-sm text-muted-foreground text-center flex items-center justify-center gap-2">
+            <Crown className="h-4 w-4" />
+            {t('event.fileUploadPro', 'Загрузка файлов доступна в Pro')}
+          </div>
+        </FieldWrapper>
+      );
+    }
     return (
-      <FieldWrapper>
-        <div className="rounded-xl border border-border/60 p-4 text-sm text-muted-foreground text-center">
-          {t('event.fileUploadPro', 'Загрузка файлов доступна в Pro')}
-        </div>
-      </FieldWrapper>
+      <EventFileUpload
+        value={typeof value === 'string' ? value : ''}
+        onChange={(url) => onChange(url)}
+        label={label || t('event.fileUpload', 'Загрузить файл')}
+        helpText={helpText}
+        required={isRequired}
+        disabled={disabled}
+        accept="*/*"
+        maxSizeMB={10}
+        eventId={eventId}
+      />
     );
   }
 

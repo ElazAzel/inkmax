@@ -2584,7 +2584,14 @@
     "promptText": "Зарегистрируйтесь, чтобы видеть все билеты в профиле и создать свой личный сайт за пару кликов.",
     "promptSignup": "Зарегистрироваться",
     "promptContinue": "Продолжить без регистрации",
-    "field": "Поле"
+    "field": "Поле",
+    "mediaUpload": "Загрузить медиа",
+    "fileUpload": "Загрузить файл",
+    "addToCalendar": "Добавить в календарь",
+    "calendar": "Календарь",
+    "downloadICS": "Скачать .ics",
+    "googleCalendar": "Google Calendar",
+    "outlook": "Outlook"
   },
   "eventBuilder": {
     "emailRequired": "Email поле всегда добавляется автоматически и является обязательным.",
