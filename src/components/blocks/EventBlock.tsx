@@ -315,6 +315,17 @@ export const EventBlock = memo(function EventBlock({
           },
         }).catch(err => console.warn('Notification send failed:', err));
       }
+
+      // Send confirmation email to attendee
+      if (registration?.id && block.eventId) {
+        supabase.functions.invoke('send-attendee-email', {
+          body: {
+            registrationId: registration.id,
+            eventId: block.eventId,
+            language: i18n.language,
+          },
+        }).catch(err => console.warn('Attendee email send failed:', err));
+      }
     } catch (error: unknown) {
       console.error('Event registration error:', error);
       setEventError(t('event.registrationError', 'Не удалось зарегистрироваться'));
@@ -332,6 +343,8 @@ export const EventBlock = memo(function EventBlock({
         onChange={(val) => updateValue(field.id, val)}
         language={language}
         disabled={isSubmitting}
+        isPremium={isOwnerPremium}
+        eventId={block.eventId}
       />
     );
   };

@@ -116,29 +116,34 @@ export const BookingBlock = memo(function BookingBlockComponent({
         });
       } else {
         // Generate default slots from block settings
-        const startHour = block.workingHoursStart || 9;
-        const endHour = block.workingHoursEnd || 18;
+        const startHour = block.workingHoursStart ?? 9;
+        const endHour = block.workingHoursEnd ?? 18;
         const duration = block.slotDuration || 60;
 
-        for (let hour = startHour; hour < endHour; hour++) {
-          for (let min = 0; min < 60; min += duration) {
-            if (hour + min / 60 >= endHour) break;
-            
-            const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:00`;
-            const endMinutes = min + duration;
-            const endHourCalc = hour + Math.floor(endMinutes / 60);
-            const endMinCalc = endMinutes % 60;
-            const endTimeStr = `${endHourCalc.toString().padStart(2, '0')}:${endMinCalc.toString().padStart(2, '0')}:00`;
+        // Calculate total minutes from start to end
+        const startMinutes = startHour * 60;
+        const endMinutes = endHour * 60;
+        
+        // Generate slots based on duration
+        for (let slotStart = startMinutes; slotStart + duration <= endMinutes; slotStart += duration) {
+          const slotEnd = slotStart + duration;
+          
+          const startHr = Math.floor(slotStart / 60);
+          const startMin = slotStart % 60;
+          const endHr = Math.floor(slotEnd / 60);
+          const endMin = slotEnd % 60;
+          
+          const timeStr = `${startHr.toString().padStart(2, '0')}:${startMin.toString().padStart(2, '0')}:00`;
+          const endTimeStr = `${endHr.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')}:00`;
 
-            const isBooked = bookings?.some(b => b.slot_time === timeStr);
-            
-            generatedSlots.push({
-              time: timeStr,
-              endTime: endTimeStr,
-              available: !isBooked,
-              bookingId: bookings?.find(b => b.slot_time === timeStr)?.id
-            });
-          }
+          const isBooked = bookings?.some(b => b.slot_time === timeStr);
+          
+          generatedSlots.push({
+            time: timeStr,
+            endTime: endTimeStr,
+            available: !isBooked,
+            bookingId: bookings?.find(b => b.slot_time === timeStr)?.id
+          });
         }
       }
 
