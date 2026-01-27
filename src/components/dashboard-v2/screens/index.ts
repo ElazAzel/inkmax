@@ -1,5 +1,6 @@
 export { HomeScreen } from './HomeScreen';
 export { PagesScreen } from './PagesScreen';
+export { EditorScreen } from './EditorScreen';
 export { ActivityScreen } from './ActivityScreen';
 export { InsightsScreen } from './InsightsScreen';
 export { MonetizeScreen } from './MonetizeScreen';

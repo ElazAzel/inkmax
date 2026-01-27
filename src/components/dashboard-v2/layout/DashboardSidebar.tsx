@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
   Home,
+  PenTool,
   FileText,
   Inbox,
   BarChart3,
@@ -54,6 +55,7 @@ interface DashboardSidebarProps {
 
 const MAIN_ITEMS: SidebarItem[] = [
   { id: 'home', icon: Home, labelKey: 'dashboard.nav.home', defaultLabel: 'Главная' },
+  { id: 'editor', icon: PenTool, labelKey: 'dashboard.nav.editor', defaultLabel: 'Редактор' },
   { id: 'pages', icon: FileText, labelKey: 'dashboard.nav.pages', defaultLabel: 'Страницы' },
   { id: 'activity', icon: Inbox, labelKey: 'dashboard.nav.activity', defaultLabel: 'Входящие' },
   { id: 'insights', icon: BarChart3, labelKey: 'dashboard.nav.insights', defaultLabel: 'Аналитика' },
