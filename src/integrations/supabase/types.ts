@@ -498,14 +498,19 @@ export type Database = {
           attendee_phone: string | null
           block_id: string
           created_at: string
+          currency: string | null
           event_id: string
           id: string
           owner_id: string
           page_id: string
+          paid_amount: number | null
           payment_status: string
+          provider: string | null
+          provider_payment_id: string | null
           status: string
           updated_at: string
           user_id: string | null
+          utm_json: Json | null
         }
         Insert: {
           answers_json?: Json | null
@@ -514,14 +519,19 @@ export type Database = {
           attendee_phone?: string | null
           block_id: string
           created_at?: string
+          currency?: string | null
           event_id: string
           id?: string
           owner_id: string
           page_id: string
+          paid_amount?: number | null
           payment_status?: string
+          provider?: string | null
+          provider_payment_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null
+          utm_json?: Json | null
         }
         Update: {
           answers_json?: Json | null
@@ -530,14 +540,19 @@ export type Database = {
           attendee_phone?: string | null
           block_id?: string
           created_at?: string
+          currency?: string | null
           event_id?: string
           id?: string
           owner_id?: string
           page_id?: string
+          paid_amount?: number | null
           payment_status?: string
+          provider?: string | null
+          provider_payment_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null
+          utm_json?: Json | null
         }
         Relationships: [
           {
