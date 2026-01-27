@@ -33,7 +33,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ru, kk, enUS } from 'date-fns/locale';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
-import { BrowserMultiFormatReader } from '@zxing/browser';
+import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
 
 interface ScanResult {
   ticketCode: string;
@@ -66,11 +66,13 @@ export default function EventScanner() {
   const [recentScans, setRecentScans] = useState<ScanResult[]>([]);
   const [torchOn, setTorchOn] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [cameraReady, setCameraReady] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const controlsRef = useRef<IScannerControls | null>(null);
   const readerRef = useRef<BrowserMultiFormatReader | null>(null);
-  const controlsRef = useRef<{ stop: () => void } | null>(null);
+  const isMountedRef = useRef(true);
 
   const locale = i18n.language === 'ru' ? ru : i18n.language === 'kk' ? kk : enUS;
 
@@ -283,75 +285,170 @@ export default function EventScanner() {
     setManualCode('');
   }, [processing, recentScans, checkInTicket]);
 
+  // Stop camera and cleanup
+  const stopCamera = useCallback(() => {
+    console.log('[Scanner] Stopping camera...');
+    
+    if (controlsRef.current) {
+      try {
+        controlsRef.current.stop();
+      } catch (e) {
+        console.warn('[Scanner] Error stopping controls:', e);
+      }
+      controlsRef.current = null;
+    }
+    
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => {
+        track.stop();
+      });
+      streamRef.current = null;
+    }
+    
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    
+    setScanning(false);
+    setCameraReady(false);
+    setTorchOn(false);
+  }, []);
+
   // Start camera with QR reader
   const startCamera = useCallback(async () => {
+    console.log('[Scanner] Starting camera...');
+    
+    // Cleanup any existing camera first
+    stopCamera();
+    
     try {
       setCameraError(null);
       
-      // Initialize QR reader
+      // Check if we have a video element
+      if (!videoRef.current) {
+        console.error('[Scanner] Video element not found');
+        setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
+        setManualMode(true);
+        return;
+      }
+
+      // Step 1: Request camera permission explicitly
+      console.log('[Scanner] Requesting camera permission...');
+      let stream: MediaStream;
+      
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+      } catch (permError) {
+        console.error('[Scanner] Permission error:', permError);
+        
+        if (permError instanceof DOMException) {
+          if (permError.name === 'NotAllowedError') {
+            setCameraError(t('events.cameraPermissionDenied', 'Разрешите доступ к камере в настройках браузера'));
+          } else if (permError.name === 'NotFoundError') {
+            setCameraError(t('events.noCameraFound', 'Камера не найдена на устройстве'));
+          } else if (permError.name === 'NotReadableError') {
+            setCameraError(t('events.cameraInUse', 'Камера используется другим приложением'));
+          } else {
+            setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
+          }
+        } else {
+          setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
+        }
+        
+        setManualMode(true);
+        return;
+      }
+
+      if (!isMountedRef.current) {
+        stream.getTracks().forEach(track => track.stop());
+        return;
+      }
+
+      console.log('[Scanner] Got camera stream, attaching to video...');
+      streamRef.current = stream;
+      
+      // Step 2: Attach stream to video element
+      videoRef.current.srcObject = stream;
+      
+      // Wait for video to be ready
+      await new Promise<void>((resolve, reject) => {
+        const video = videoRef.current!;
+        
+        const onLoadedMetadata = () => {
+          video.removeEventListener('loadedmetadata', onLoadedMetadata);
+          video.removeEventListener('error', onError);
+          resolve();
+        };
+        
+        const onError = (e: Event) => {
+          video.removeEventListener('loadedmetadata', onLoadedMetadata);
+          video.removeEventListener('error', onError);
+          reject(new Error('Video element error'));
+        };
+        
+        video.addEventListener('loadedmetadata', onLoadedMetadata);
+        video.addEventListener('error', onError);
+        
+        // Timeout fallback
+        setTimeout(() => {
+          video.removeEventListener('loadedmetadata', onLoadedMetadata);
+          video.removeEventListener('error', onError);
+          resolve(); // Continue anyway
+        }, 3000);
+      });
+
+      // Step 3: Play the video
+      console.log('[Scanner] Playing video...');
+      try {
+        await videoRef.current.play();
+      } catch (playError) {
+        console.warn('[Scanner] Video play error (may be fine):', playError);
+      }
+      
+      if (!isMountedRef.current) {
+        stopCamera();
+        return;
+      }
+
+      setCameraReady(true);
+      setScanning(true);
+      console.log('[Scanner] Camera is ready and streaming');
+
+      // Step 4: Initialize QR code reader
+      console.log('[Scanner] Initializing QR reader...');
       if (!readerRef.current) {
         readerRef.current = new BrowserMultiFormatReader();
       }
 
-      // Use decodeFromVideoDevice with undefined to let browser choose camera
-      // Pass video element ID as string - this is more reliable
-      const controls = await readerRef.current.decodeFromVideoDevice(
-        undefined, // Let browser choose best camera (usually back camera)
-        'scanner-video', // Use element ID instead of ref
+      // Step 5: Start decoding from the video element
+      const controls = await readerRef.current.decodeFromVideoElement(
+        videoRef.current,
         (result, error) => {
           if (result) {
             const code = result.getText();
+            console.log('[Scanner] QR Code detected:', code);
             processScan(code);
           }
-          // Ignore errors during continuous scanning - they are expected
+          // Errors during scanning are normal (no QR in frame), ignore them
         }
       );
       
       controlsRef.current = controls;
-      
-      // Get the stream from the video element
-      const videoEl = document.getElementById('scanner-video') as HTMLVideoElement;
-      if (videoEl?.srcObject) {
-        streamRef.current = videoEl.srcObject as MediaStream;
-      }
-      
-      setScanning(true);
+      console.log('[Scanner] QR reader started successfully');
       
     } catch (error) {
-      console.error('Camera error:', error);
-      let errorMessage: string;
-      
-      if (error instanceof DOMException) {
-        if (error.name === 'NotAllowedError') {
-          errorMessage = t('events.cameraPermissionDenied', 'Разрешите доступ к камере в настройках браузера');
-        } else if (error.name === 'NotFoundError') {
-          errorMessage = t('events.noCameraFound', 'Камера не найдена на устройстве');
-        } else if (error.name === 'NotReadableError') {
-          errorMessage = t('events.cameraInUse', 'Камера используется другим приложением');
-        } else {
-          errorMessage = t('events.cameraError', 'Не удалось запустить камеру');
-        }
-      } else {
-        errorMessage = t('events.cameraError', 'Не удалось запустить камеру');
-      }
-      
-      setCameraError(errorMessage);
+      console.error('[Scanner] Camera error:', error);
+      setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
       setManualMode(true);
     }
-  }, [t, processScan]);
-
-  // Stop camera
-  const stopCamera = useCallback(() => {
-    if (controlsRef.current) {
-      controlsRef.current.stop();
-      controlsRef.current = null;
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    setScanning(false);
-  }, []);
+  }, [t, processScan, stopCamera]);
 
   // Toggle torch
   const toggleTorch = useCallback(async () => {
@@ -368,12 +465,13 @@ export default function EventScanner() {
     }
   }, [torchOn, t]);
 
-  // Auto-start camera when page loads
+  // Track mounted state
   useEffect(() => {
-    if (!loading && !premiumLoading && isPremium && eventInfo && !scanning && !manualMode) {
-      startCamera();
-    }
-  }, [loading, premiumLoading, isPremium, eventInfo]);
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -381,6 +479,20 @@ export default function EventScanner() {
       stopCamera();
     };
   }, [stopCamera]);
+
+  // Auto-start camera when conditions are met
+  useEffect(() => {
+    if (!loading && !premiumLoading && isPremium && eventInfo && !manualMode) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        if (isMountedRef.current && !scanning) {
+          startCamera();
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [loading, premiumLoading, isPremium, eventInfo, manualMode]);
 
   // Premium gate
   if (!premiumLoading && !isPremium) {
@@ -441,45 +553,57 @@ export default function EventScanner() {
       {/* Main content */}
       <div className="flex-1 flex flex-col p-4 gap-4">
         {/* Camera view or manual input */}
-        {!manualMode && scanning ? (
+        {!manualMode ? (
           <div className="relative aspect-square max-w-sm mx-auto w-full rounded-2xl overflow-hidden bg-black">
             <video
-              id="scanner-video"
               ref={videoRef}
               className="w-full h-full object-cover"
               autoPlay
               playsInline
               muted
             />
-            {/* Canvas removed - using zxing video directly */}
+            
+            {/* Loading state */}
+            {!cameraReady && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black">
+                <div className="text-center text-white">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
+                  <p className="text-sm">{t('events.startingCamera', 'Запуск камеры...')}</p>
+                </div>
+              </div>
+            )}
             
             {/* Scan overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-48 h-48 border-2 border-primary rounded-2xl" />
-            </div>
+            {cameraReady && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-48 h-48 border-2 border-primary rounded-2xl" />
+              </div>
+            )}
 
             {/* Camera controls */}
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
-              <Button
-                size="icon"
-                variant="secondary"
-                className="h-12 w-12 rounded-full"
-                onClick={toggleTorch}
-              >
-                {torchOn ? <FlashlightOff className="h-5 w-5" /> : <Flashlight className="h-5 w-5" />}
-              </Button>
-              <Button
-                size="icon"
-                variant="destructive"
-                className="h-12 w-12 rounded-full"
-                onClick={() => {
-                  stopCamera();
-                  setManualMode(true);
-                }}
-              >
-                <CameraOff className="h-5 w-5" />
-              </Button>
-            </div>
+            {cameraReady && (
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="h-12 w-12 rounded-full"
+                  onClick={toggleTorch}
+                >
+                  {torchOn ? <FlashlightOff className="h-5 w-5" /> : <Flashlight className="h-5 w-5" />}
+                </Button>
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className="h-12 w-12 rounded-full"
+                  onClick={() => {
+                    stopCamera();
+                    setManualMode(true);
+                  }}
+                >
+                  <CameraOff className="h-5 w-5" />
+                </Button>
+              </div>
+            )}
 
             {processing && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -525,7 +649,11 @@ export default function EventScanner() {
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={startCamera}
+                onClick={() => {
+                  setManualMode(false);
+                  setCameraError(null);
+                  startCamera();
+                }}
               >
                 <Camera className="h-4 w-4 mr-2" />
                 {t('events.useCamera', 'Камера')}
@@ -533,7 +661,7 @@ export default function EventScanner() {
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => setManualMode(true)}
+                disabled
               >
                 <Keyboard className="h-4 w-4 mr-2" />
                 {t('events.manual', 'Вручную')}
