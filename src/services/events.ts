@@ -78,17 +78,15 @@ export async function getPublicEvent(eventId: string) {
  * Get registration count for an event
  */
 export async function getEventRegistrationCount(eventId: string): Promise<number> {
-  const { count, error } = await supabase
-    .from('event_registrations')
-    .select('*', { count: 'exact', head: true })
-    .eq('event_id', eventId)
-    .in('status', ['confirmed', 'pending']);
+  // Use security definer function to bypass RLS for public count access
+  const { data, error } = await supabase
+    .rpc('get_event_registration_count' as never, { p_event_id: eventId } as never);
   
   if (error) {
     console.error('Failed to get registration count:', error);
     return 0;
   }
-  return count || 0;
+  return (data as number) || 0;
 }
 
 /**

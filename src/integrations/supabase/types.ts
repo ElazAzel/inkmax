@@ -1919,6 +1919,10 @@ export type Database = {
       }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
+      get_event_registration_count: {
+        Args: { p_event_id: string }
+        Returns: number
+      }
       get_page_version: {
         Args: { p_slug: string; p_version_id?: string }
         Returns: {
