@@ -6,7 +6,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useScrollAnimation } from './hooks/useScrollAnimation';
+import { Reveal } from '@/components/motion';
 
 interface ResultsSectionProps {
   onCreatePage: () => void;
@@ -14,7 +14,6 @@ interface ResultsSectionProps {
 
 export default function ResultsSection({ onCreatePage }: ResultsSectionProps) {
   const { t } = useTranslation();
-  const { ref, isVisible } = useScrollAnimation(0.1);
 
   const useCases = [
     {
@@ -62,58 +61,57 @@ export default function ResultsSection({ onCreatePage }: ResultsSectionProps) {
   ];
 
   return (
-    <section ref={ref} className="py-12 px-5 bg-muted/20">
-      <div className={cn(
-        "max-w-3xl mx-auto transition-all duration-700",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      )}>
-        <div className="text-center mb-8">
-          <Badge className="mb-3 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
-            {t('landingV5.results.badge')}
-          </Badge>
-          <h2 className="text-xl sm:text-2xl font-bold mb-2">
-            {t('landingV5.results.title')}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {t('landingV5.results.subtitle')}
-          </p>
-        </div>
+    <section className="py-12 px-5 bg-muted/20">
+      <div className="max-w-3xl mx-auto">
+        <Reveal direction="up">
+          <div className="text-center mb-8">
+            <Badge className="mb-3 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
+              {t('landingV5.results.badge')}
+            </Badge>
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">
+              {t('landingV5.results.title')}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {t('landingV5.results.subtitle')}
+            </p>
+          </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {useCases.map((useCase, i) => (
-            <div
-              key={i}
-              className={cn(
-                "group relative p-4 rounded-2xl bg-card border border-border/40 hover:border-primary/30 transition-all cursor-pointer",
-                isVisible && "animate-in fade-in-0 slide-in-from-bottom-4"
-              )}
-              style={{ animationDelay: `${i * 80}ms` }}
-              onClick={onCreatePage}
-            >
-              <div className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${useCase.color} opacity-0 group-hover:opacity-5 transition-opacity`} />
-              
-              <div className="flex items-start gap-3">
-                <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${useCase.color} flex items-center justify-center flex-shrink-0`}>
-                  <useCase.icon className="h-5 w-5 text-white" />
+            <Reveal key={i} delay={i * 80} direction="up" distance={12}>
+              <div
+                className={cn(
+                  "group relative p-4 rounded-2xl bg-card border border-border/40",
+                  "hover:border-primary/30 hover:shadow-md transition-all cursor-pointer"
+                )}
+                onClick={onCreatePage}
+              >
+                <div className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${useCase.color} opacity-0 group-hover:opacity-5 transition-opacity`} />
+                
+                <div className="flex items-start gap-3">
+                  <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${useCase.color} flex items-center justify-center flex-shrink-0`}>
+                    <useCase.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm mb-1">{useCase.title}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-1 mb-1">
+                      <span className="text-destructive/70">✗</span> {useCase.problem}
+                    </p>
+                    <p className="text-xs text-primary font-medium line-clamp-1">
+                      <span className="text-primary">✓</span> {useCase.solution}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm mb-1">{useCase.title}</h3>
-                  <p className="text-xs text-muted-foreground line-clamp-1 mb-1">
-                    <span className="text-destructive/70">✗</span> {useCase.problem}
-                  </p>
-                  <p className="text-xs text-primary font-medium line-clamp-1">
-                    <span className="text-primary">✓</span> {useCase.solution}
-                  </p>
+                
+                <div className="mt-3 flex justify-end">
+                  <span className="text-xs text-primary font-medium group-hover:underline flex items-center gap-1">
+                    {t('landingV5.results.creators.cta')}
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                  </span>
                 </div>
               </div>
-              
-              <div className="mt-3 flex justify-end">
-                <span className="text-xs text-primary font-medium group-hover:underline flex items-center gap-1">
-                  {t('landingV5.results.creators.cta')}
-                  <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
