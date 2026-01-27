@@ -91,18 +91,18 @@ export async function getEventRegistrationCount(eventId: string): Promise<number
 
 /**
  * Check if email is already registered for event
+ * Uses SECURITY DEFINER function to bypass RLS for public access
  */
 export async function isEmailRegistered(eventId: string, email: string): Promise<boolean> {
-  const { count, error } = await supabase
-    .from('event_registrations')
-    .select('*', { count: 'exact', head: true })
-    .eq('event_id', eventId)
-    .eq('attendee_email', email)
-    .not('status', 'eq', 'cancelled');
+  const { data, error } = await supabase
+    .rpc('check_email_registered_for_event' as never, { 
+      p_event_id: eventId, 
+      p_email: email 
+    } as never);
   
   if (error) {
     console.error('Failed to check email registration:', error);
     return false;
   }
-  return (count || 0) > 0;
+  return Boolean(data);
 }

@@ -1912,6 +1912,10 @@ export type Database = {
         Args: { p_code: string; p_referred_user_id: string }
         Returns: Json
       }
+      check_email_registered_for_event: {
+        Args: { p_email: string; p_event_id: string }
+        Returns: boolean
+      }
       check_page_limits: { Args: { p_user_id: string }; Returns: Json }
       claim_daily_token_reward: {
         Args: { p_action_type: string; p_amount: number; p_user_id: string }
@@ -1934,6 +1938,7 @@ export type Database = {
       }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       generate_unique_slug: { Args: { base_slug: string }; Returns: string }
+      get_auth_user_email: { Args: never; Returns: string }
       get_event_registration_count: {
         Args: { p_event_id: string }
         Returns: number
