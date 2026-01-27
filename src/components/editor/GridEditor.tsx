@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, useMemo } from 'react';
+import { memo, useCallback, useState, useMemo, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Edit2, Trash2, GripVertical, ChevronUp, ChevronDown, Plus } from 'lucide-react';
 import {
@@ -358,9 +358,15 @@ export const GridEditor = memo(function GridEditor({
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [activeId, setActiveId] = useState<string | null>(null);
+  
+  // Unique ID for DndContext to prevent stale DOM reference issues
+  const dndContextId = useId();
 
   const profileBlock = blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
   const contentBlocks = blocks.filter(b => b.type !== 'profile');
+  
+  // Create stable block IDs string to detect when we need to reset DnD
+  const blockIdsKey = useMemo(() => contentBlocks.map(b => b.id).join(','), [contentBlocks]);
 
   // DnD sensors - optimized for both desktop and mobile
   const sensors = useSensors(
@@ -452,8 +458,9 @@ export const GridEditor = memo(function GridEditor({
         </div>
       )}
 
-      {/* Grid container with DnD */}
+      {/* Grid container with DnD - key resets context when blocks change to prevent stale DOM refs */}
       <DndContext
+        key={`${dndContextId}-${blockIdsKey}`}
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}

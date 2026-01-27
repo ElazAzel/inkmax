@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -52,6 +52,9 @@ export function useBlockEditor({
   const [editingBlock, setEditingBlock] = useState<Block | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [deletedBlocks, setDeletedBlocks] = useState<DeletedBlockInfo[]>([]);
+  
+  // Track if an operation is in progress to prevent race conditions
+  const operationInProgressRef = useRef(false);
 
   /**
    * Check if block type requires premium subscription
@@ -135,11 +138,16 @@ export function useBlockEditor({
    */
   const handleDeleteBlock = useCallback(
     (blockId: string) => {
+      // Prevent concurrent operations
+      if (operationInProgressRef.current) return;
+      
       const blockIndex = blocks.findIndex((b) => b.id === blockId);
       const block = blocks.find((b) => b.id === blockId);
 
       // Prevent profile block deletion
       if (!block || block.type === 'profile') return;
+
+      operationInProgressRef.current = true;
 
       // Store for undo
       const deletedInfo: DeletedBlockInfo = {
@@ -159,6 +167,11 @@ export function useBlockEditor({
       // Perform deletion
       deleteBlock(blockId);
       playDelete?.();
+      
+      // Reset operation flag after a short delay
+      setTimeout(() => {
+        operationInProgressRef.current = false;
+      }, 100);
 
       // Show toast with undo button
       toast(
@@ -170,10 +183,17 @@ export function useBlockEditor({
             className="h-7 px-2 gap-1"
             onClick={(e) => {
               e.stopPropagation();
+              if (operationInProgressRef.current) return;
+              operationInProgressRef.current = true;
+              
               hapticSuccess?.();
               addBlock(block, blockIndex);
               setDeletedBlocks((prev) => prev.filter((d) => d.blockId !== block.id));
               toast.success(t('blocks.restored', 'Block restored'));
+              
+              setTimeout(() => {
+                operationInProgressRef.current = false;
+              }, 100);
             }}
           >
             <Undo2 className="h-3.5 w-3.5" />
@@ -183,21 +203,28 @@ export function useBlockEditor({
         { duration: APP_CONFIG.undoTimeout }
       );
     },
-    [blocks, deleteBlock, addBlock, playDelete, hapticSuccess]
+    [blocks, deleteBlock, addBlock, playDelete, hapticSuccess, t]
   );
 
   /**
    * Restore last deleted block
    */
   const undoLastDelete = useCallback(() => {
+    if (operationInProgressRef.current) return;
+    
     const lastDeleted = deletedBlocks[deletedBlocks.length - 1];
     if (!lastDeleted) return;
 
+    operationInProgressRef.current = true;
     hapticSuccess?.();
     addBlock(lastDeleted.block, lastDeleted.position);
     setDeletedBlocks((prev) => prev.slice(0, -1));
     toast.success(t('blocks.restored', 'Block restored'));
-  }, [deletedBlocks, addBlock, hapticSuccess]);
+    
+    setTimeout(() => {
+      operationInProgressRef.current = false;
+    }, 100);
+  }, [deletedBlocks, addBlock, hapticSuccess, t]);
 
   return {
     // Editor state
