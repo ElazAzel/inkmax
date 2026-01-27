@@ -1167,6 +1167,24 @@
       "changePassword": "Құпия сөзді өзгерту",
       "signOut": "Шығу"
     },
+    "settingsTabs": {
+      "page": "Бет",
+      "account": "Аккаунт"
+    },
+    "pageSwitcher": {
+      "title": "Сіздің беттеріңіз",
+      "select": "Бетті таңдау",
+      "pagesUsed": "Қолданылған беттер",
+      "createPage": "Жаңа бет жасау",
+      "managePages": "Барлық беттерді басқару",
+      "upgradePro": "Көбірек беттер үшін Pro-ға жаңартыңыз",
+      "getMore": "Көбірек бет алу",
+      "upgradeDesc": "Pro-ға жаңарту",
+      "included": "Кіру",
+      "addon": "Қос.",
+      "free": "Тегін",
+      "search": "Беттерді іздеу..."
+    },
     "monetize": {
       "title": "Монетизация",
       "subtitle": "Сіздің тариф және биллинг",

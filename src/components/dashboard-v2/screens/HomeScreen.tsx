@@ -1,7 +1,8 @@
 /**
  * HomeScreen - Dashboard overview with primary page card and quick actions
+ * Now includes PageSwitcher in the header for multi-page context
  */
-import { memo } from 'react';
+import { memo, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -14,8 +15,6 @@ import {
   LayoutTemplate,
   Store,
   Users,
-  MousePointerClick,
-  TrendingUp,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -38,6 +37,7 @@ interface HomeScreenProps {
   onShare: () => void;
   onOpenTemplates: () => void;
   onOpenMarketplace: () => void;
+  pageSwitcher?: ReactNode;
 }
 
 export const HomeScreen = memo(function HomeScreen({
@@ -49,6 +49,7 @@ export const HomeScreen = memo(function HomeScreen({
   onShare,
   onOpenTemplates,
   onOpenMarketplace,
+  pageSwitcher,
 }: HomeScreenProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ export const HomeScreen = memo(function HomeScreen({
       <DashboardHeader
         title={t('dashboard.home.title', 'Главная')}
         subtitle={t('dashboard.home.subtitle', 'Обзор вашей страницы')}
+        rightElement={pageSwitcher}
       />
 
       <div className="px-5 py-6 space-y-6">
