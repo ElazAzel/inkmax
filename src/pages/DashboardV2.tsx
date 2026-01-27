@@ -30,6 +30,8 @@ import {
   InsightsScreen,
   MonetizeScreen,
   SettingsScreen,
+  EventsScreen,
+  EventDetailScreen,
 } from '@/components/dashboard-v2/screens';
 import { CreatePageDialog, PageVersionsDialog } from '@/components/dashboard-v2/dialogs';
 
@@ -54,7 +56,7 @@ import { ThemePanel } from '@/components/dashboard-v2/panels';
 
 import type { Niche } from '@/lib/niches';
 
-type TabId = 'home' | 'editor' | 'pages' | 'activity' | 'insights' | 'monetize' | 'settings';
+type TabId = 'home' | 'editor' | 'pages' | 'activity' | 'insights' | 'monetize' | 'settings' | 'events';
 
 export default function DashboardV2() {
   const navigate = useNavigate();
@@ -94,15 +96,19 @@ export default function DashboardV2() {
 
   // Current tab from URL - support both query params and pathname
   const currentTab = useMemo((): TabId => {
+    // Check for events routes first
+    if (location.pathname.startsWith('/dashboard/events')) {
+      return 'events';
+    }
     // First check query params
     const tabParam = searchParams.get('tab') as TabId;
-    if (tabParam && ['home', 'editor', 'pages', 'activity', 'insights', 'monetize', 'settings'].includes(tabParam)) {
+    if (tabParam && ['home', 'editor', 'pages', 'activity', 'insights', 'monetize', 'settings', 'events'].includes(tabParam)) {
       return tabParam;
     }
     // Fall back to pathname
     const pathParts = location.pathname.split('/');
     const lastPart = pathParts[pathParts.length - 1];
-    if (['home', 'pages', 'activity', 'insights', 'monetize', 'settings'].includes(lastPart)) {
+    if (['home', 'pages', 'activity', 'insights', 'monetize', 'settings', 'events'].includes(lastPart)) {
       return lastPart as TabId;
     }
     return 'home';
@@ -471,6 +477,15 @@ export default function DashboardV2() {
                 toast.info(t('common.comingSoon', 'Coming soon'));
               }}
             />
+          )}
+
+          {/* Events Screen */}
+          {currentTab === 'events' && (
+            location.pathname.match(/\/dashboard\/events\/[^/]+$/) && !location.pathname.includes('/scanner') ? (
+              <EventDetailScreen />
+            ) : (
+              <EventsScreen />
+            )
           )}
         </DashboardLayout>
 
