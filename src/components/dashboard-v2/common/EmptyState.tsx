@@ -1,7 +1,7 @@
 /**
  * EmptyState - Consistent empty state component with optional CTA
  */
-import { memo, ReactNode } from 'react';
+import { memo, ReactNode, isValidElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,7 @@ interface EmptyStateProps {
 }
 
 export const EmptyState = memo(function EmptyState({
-  icon,
+  icon: Icon,
   title,
   description,
   action,
@@ -27,13 +27,21 @@ export const EmptyState = memo(function EmptyState({
 }: EmptyStateProps) {
   const { t } = useTranslation();
 
-  // Check if icon is a React element or a LucideIcon component
+  // Check if icon is a React element or a component
   const renderIcon = () => {
-    if (typeof icon === 'function') {
-      const IconComponent = icon as LucideIcon;
+    // If it's already a valid React element, render it directly
+    if (isValidElement(Icon)) {
+      return Icon;
+    }
+    
+    // If it's a component (function or forwardRef object with $$typeof)
+    if (typeof Icon === 'function' || (Icon && typeof Icon === 'object' && '$$typeof' in Icon)) {
+      const IconComponent = Icon as LucideIcon;
       return <IconComponent className="h-10 w-10 text-muted-foreground/50" />;
     }
-    return icon;
+    
+    // Fallback: just render as-is (might be null or undefined)
+    return null;
   };
 
   return (
