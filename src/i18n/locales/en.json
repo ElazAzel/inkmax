@@ -165,9 +165,12 @@
     "changeCover": "Change cover",
     "clickToChangeCover": "Click to add cover",
     "avatarSettings": "Avatar settings",
-    "avatarSize": "Size",
+    "avatarSize": "Avatar size",
     "avatarFrame": "Frame style",
-    "clickToChangeAvatar": "Click to change avatar"
+    "clickToChangeAvatar": "Click to change avatar",
+    "frame": "Frame",
+    "size": "Size",
+    "nameAnim": "Name"
   },
   "verification": {
     "platformBadge": "Identity verified by platform",
@@ -192,7 +195,34 @@
     "double": "Double",
     "dashed": "Dashed",
     "dotted": "Dotted",
-    "glowPulse": "Glow Pulse"
+    "glowPulse": "Glow Pulse",
+    "fire": "Fire",
+    "electric": "Electric",
+    "wave": "Wave",
+    "heartbeat": "Heartbeat",
+    "sparkle": "Sparkle",
+    "glitch": "Glitch",
+    "unlockProFrames": "Unlock all frames with PRO subscription",
+    "categories": {
+      "basic": "Basic",
+      "gradient": "Gradient",
+      "neon": "Neon",
+      "animated": "Animated"
+    }
+  },
+  "nameAnimation": {
+    "title": "Name Animation",
+    "none": "No animation",
+    "typing": "Typewriter",
+    "wave": "Wave",
+    "bounce": "Bounce",
+    "glow": "Glow",
+    "gradient": "Gradient",
+    "shake": "Shake",
+    "pulse": "Pulse",
+    "rainbow": "Rainbow",
+    "neon": "Neon",
+    "unlockAll": "Unlock all animations"
   },
   "profileEditor": {
     "title": "Profile Editor",

@@ -7,6 +7,7 @@ import { getFrameStyles, getShadowStyles, isGradientFrame, FRAME_CSS, getVerific
 import { getLucideIcon, CheckCircle2 } from '@/lib/icon-utils';
 import { cn } from '@/lib/utils';
 import { VerifiedBadge } from './VerifiedBadge';
+import { NAME_ANIMATION_CSS, getNameAnimationClass, type NameAnimationType } from '@/lib/profile-frame-system';
 import type { ProfileBlock as ProfileBlockType, ProfileFrameStyle, VerificationIconType } from '@/types/page';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
 
@@ -229,8 +230,14 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
         </div>
         
         <div className="text-center space-y-2">
+          <style>{NAME_ANIMATION_CSS}</style>
           <div className="flex items-center justify-center gap-2">
-            <h1 className="text-2xl font-bold">{name}</h1>
+            <h1 className={cn(
+              "text-2xl font-bold",
+              getNameAnimationClass((block.nameAnimation as NameAnimationType) || 'none')
+            )}>
+              {name}
+            </h1>
           </div>
           
           {bio && (

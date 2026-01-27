@@ -1,11 +1,12 @@
 import { memo, useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle2, Check, X, Camera, Loader2, Settings2, Pencil } from 'lucide-react';
+import { CheckCircle2, Check, X, Camera, Loader2, Settings2, Pencil, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -19,14 +20,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { supabase } from '@/platform/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { compressImage } from '@/lib/image-compression';
 import { toast } from 'sonner';
 import { ImageCropper } from '@/components/form-fields/ImageCropper';
 import { RichTextEditor } from '@/components/form-fields/RichTextEditor';
-import type { ProfileBlock as ProfileBlockType } from '@/types/page';
+import { FrameSelector } from '@/components/profile/FrameSelector';
+import { NameAnimationSelector } from '@/components/profile/NameAnimationSelector';
+import { NAME_ANIMATION_CSS, getNameAnimationClass } from '@/lib/profile-frame-system';
+import type { ProfileBlock as ProfileBlockType, NameAnimationType } from '@/types/page';
 import { cn } from '@/lib/utils';
 
 // Lazy load full editor
@@ -43,6 +49,8 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
 }: InlineProfileEditorProps) {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { canUsePremiumFrames } = useFreemiumLimits();
   const currentLang = i18n.language as SupportedLanguage;
   
   const name = getTranslatedString(block.name, currentLang);
@@ -516,83 +524,90 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
                 onClick={(e) => e.stopPropagation()}
                 title={t('profile.avatarSettings', 'Avatar settings')}
               >
-                <Settings2 className="h-3.5 w-3.5" />
+                <Palette className="h-3.5 w-3.5" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-56" align="center" onClick={(e) => e.stopPropagation()}>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-xs">{t('profile.avatarSize', 'Size')}</Label>
-                  <Select
-                    value={block.avatarSize || 'large'}
-                    onValueChange={(value) => onUpdate({ avatarSize: value as 'small' | 'medium' | 'large' | 'xlarge' })}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="small">{t('profile.small', 'Small')}</SelectItem>
-                      <SelectItem value="medium">{t('profile.medium', 'Medium')}</SelectItem>
-                      <SelectItem value="large">{t('profile.large', 'Large')}</SelectItem>
-                      <SelectItem value="xlarge">{t('profile.xlarge', 'Extra Large')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <PopoverContent className="w-80" align="center" onClick={(e) => e.stopPropagation()}>
+              <Tabs defaultValue="frame" className="w-full">
+                <TabsList className="grid grid-cols-3 w-full h-auto mb-3">
+                  <TabsTrigger value="frame" className="text-xs py-2">
+                    {t('profile.frame', 'Рамка')}
+                  </TabsTrigger>
+                  <TabsTrigger value="size" className="text-xs py-2">
+                    {t('profile.size', 'Размер')}
+                  </TabsTrigger>
+                  <TabsTrigger value="animation" className="text-xs py-2">
+                    {t('profile.nameAnim', 'Имя')}
+                  </TabsTrigger>
+                </TabsList>
                 
-                <div className="space-y-2">
-                  <Label className="text-xs">{t('profile.avatarFrame', 'Frame style')}</Label>
-                  <Select
+                <TabsContent value="frame" className="mt-0">
+                  <FrameSelector
                     value={block.avatarFrame || 'default'}
-                    onValueChange={(value) => onUpdate({ avatarFrame: value as any })}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">{t('frames.default', 'Default')}</SelectItem>
-                      <SelectItem value="none">{t('frames.none', 'No Frame')}</SelectItem>
-                      <SelectItem value="solid">{t('frames.solid', 'Solid')}</SelectItem>
-                      <SelectItem value="gradient">{t('frames.gradient', 'Gradient')}</SelectItem>
-                      <SelectItem value="gradient-sunset">{t('frames.gradientSunset', 'Sunset')}</SelectItem>
-                      <SelectItem value="gradient-ocean">{t('frames.gradientOcean', 'Ocean')}</SelectItem>
-                      <SelectItem value="gradient-purple">{t('frames.gradientPurple', 'Purple')}</SelectItem>
-                      <SelectItem value="neon-blue">{t('frames.neonBlue', 'Neon Blue')}</SelectItem>
-                      <SelectItem value="neon-pink">{t('frames.neonPink', 'Neon Pink')}</SelectItem>
-                      <SelectItem value="neon-green">{t('frames.neonGreen', 'Neon Green')}</SelectItem>
-                      <SelectItem value="rainbow">{t('frames.rainbow', 'Rainbow')}</SelectItem>
-                      <SelectItem value="rainbow-spin">{t('frames.rainbowSpin', 'Rainbow Spin')}</SelectItem>
-                      <SelectItem value="double">{t('frames.double', 'Double')}</SelectItem>
-                      <SelectItem value="dashed">{t('frames.dashed', 'Dashed')}</SelectItem>
-                      <SelectItem value="dotted">{t('frames.dotted', 'Dotted')}</SelectItem>
-                      <SelectItem value="glow-pulse">{t('frames.glowPulse', 'Glow Pulse')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                    onChange={(value) => onUpdate({ avatarFrame: value })}
+                    isPremium={canUsePremiumFrames()}
+                    avatarUrl={block.avatar}
+                    onUpgradeClick={() => navigate('/pricing')}
+                  />
+                </TabsContent>
                 
-                <div className="space-y-2">
-                  <Label className="text-xs">{t('profile.shadowStyle', 'Shadow')}</Label>
-                  <Select
-                    value={block.shadowStyle || 'soft'}
-                    onValueChange={(value) => onUpdate({ shadowStyle: value as 'none' | 'soft' | 'medium' | 'strong' | 'glow' })}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">{t('profile.none', 'None')}</SelectItem>
-                      <SelectItem value="soft">{t('profile.soft', 'Soft')}</SelectItem>
-                      <SelectItem value="medium">{t('profile.medium', 'Medium')}</SelectItem>
-                      <SelectItem value="strong">{t('profile.strong', 'Strong')}</SelectItem>
-                      <SelectItem value="glow">{t('profile.glow', 'Glow')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+                <TabsContent value="size" className="mt-0 space-y-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs">{t('profile.avatarSize', 'Размер аватара')}</Label>
+                    <Select
+                      value={block.avatarSize || 'large'}
+                      onValueChange={(value) => onUpdate({ avatarSize: value as 'small' | 'medium' | 'large' | 'xlarge' })}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="small">{t('profile.small', 'Маленький')}</SelectItem>
+                        <SelectItem value="medium">{t('profile.medium', 'Средний')}</SelectItem>
+                        <SelectItem value="large">{t('profile.large', 'Большой')}</SelectItem>
+                        <SelectItem value="xlarge">{t('profile.xlarge', 'Очень большой')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-xs">{t('profile.shadowStyle', 'Тень')}</Label>
+                    <Select
+                      value={block.shadowStyle || 'soft'}
+                      onValueChange={(value) => onUpdate({ shadowStyle: value as 'none' | 'soft' | 'medium' | 'strong' | 'glow' })}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">{t('profile.none', 'Нет')}</SelectItem>
+                        <SelectItem value="soft">{t('profile.soft', 'Мягкая')}</SelectItem>
+                        <SelectItem value="medium">{t('profile.medium', 'Средняя')}</SelectItem>
+                        <SelectItem value="strong">{t('profile.strong', 'Сильная')}</SelectItem>
+                        <SelectItem value="glow">{t('profile.glow', 'Свечение')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="animation" className="mt-0">
+                  <NameAnimationSelector
+                    value={(block.nameAnimation as NameAnimationType) || 'none'}
+                    onChange={(value) => onUpdate({ nameAnimation: value })}
+                    isPremium={canUsePremiumFrames()}
+                    previewName={name}
+                    onUpgradeClick={() => navigate('/pricing')}
+                  />
+                </TabsContent>
+              </Tabs>
             </PopoverContent>
           </Popover>
         </div>
         
         <div className="text-center space-y-3 w-full max-w-md">
+          {/* CSS for name animations */}
+          <style>{NAME_ANIMATION_CSS}</style>
+          
           {/* Editable Name - Optimized with animations */}
           <div className="flex items-center justify-center gap-3">
             {isEditingName ? (
@@ -621,7 +636,8 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
                 className={cn(
                   "text-2xl sm:text-3xl font-black cursor-pointer transition-all duration-200",
                   "hover:text-primary border-b-2 border-transparent hover:border-primary/30",
-                  "active:scale-[0.98] tracking-tight px-2 py-1 rounded-lg hover:bg-muted/50"
+                  "active:scale-[0.98] tracking-tight px-2 py-1 rounded-lg hover:bg-muted/50",
+                  getNameAnimationClass((block.nameAnimation as NameAnimationType) || 'none')
                 )}
                 onClick={() => setIsEditingName(true)}
                 title={t('profile.clickToEdit', 'Нажмите для редактирования')}

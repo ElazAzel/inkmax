@@ -47,6 +47,8 @@ export interface BlockSchedule {
 
 export type ProfileFrameStyle = 'default' | 'none' | 'solid' | 'gradient' | 'gradient-sunset' | 'gradient-ocean' | 'gradient-purple' | 'neon-blue' | 'neon-pink' | 'neon-green' | 'rainbow' | 'rainbow-spin' | 'double' | 'dashed' | 'dotted' | 'glow-pulse' | 'fire' | 'electric' | 'wave' | 'heartbeat' | 'sparkle' | 'glitch';
 
+export type NameAnimationType = 'none' | 'typing' | 'wave' | 'bounce' | 'glow' | 'gradient' | 'shake' | 'pulse' | 'rainbow' | 'neon';
+
 export type VerificationIconColor = 'blue' | 'green' | 'gold' | 'purple' | 'pink' | 'red' | 'white';
 export type VerificationIconPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 export type VerificationIconType = 'check-circle' | 'badge-check' | 'shield-check' | 'verified' | 'star' | 'crown' | 'award' | 'medal' | 'trophy' | 'gem' | 'diamond' | 'sparkles' | 'heart' | 'flame' | 'zap';
@@ -65,6 +67,7 @@ export interface ProfileBlock {
   autoVerifyPremium?: boolean; // Auto-verify if page owner is premium
   avatarFrame?: ProfileFrameStyle;
   avatarIcon?: string; // Lucide icon name
+  nameAnimation?: NameAnimationType; // Name text animation
   coverImage?: string;
   coverGradient?: 'none' | 'dark' | 'light' | 'primary' | 'sunset' | 'ocean' | 'purple';
   coverHeight?: 'small' | 'medium' | 'large';
