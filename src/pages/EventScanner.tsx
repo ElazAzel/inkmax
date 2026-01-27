@@ -325,7 +325,10 @@ export default function EventScanner() {
       
     } catch (error) {
       console.error('Camera error:', error);
-      setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
+      const errorMessage = error instanceof Error && error.message === 'No camera found'
+        ? t('events.noCameraFound', 'Камера не найдена. Откройте на реальном устройстве.')
+        : t('events.cameraError', 'Не удалось запустить камеру. Проверьте разрешения.');
+      setCameraError(errorMessage);
       setManualMode(true);
     }
   }, [t, processScan]);
