@@ -358,6 +358,13 @@ export default function EventScanner() {
     }
   }, [torchOn, t]);
 
+  // Auto-start camera when page loads
+  useEffect(() => {
+    if (!loading && !premiumLoading && isPremium && eventInfo && !scanning && !manualMode) {
+      startCamera();
+    }
+  }, [loading, premiumLoading, isPremium, eventInfo]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
