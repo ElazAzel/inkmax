@@ -39,7 +39,8 @@ export function AppRoutes() {
       <Route path="/dashboard/insights" element={<DashboardV2 />} />
       <Route path="/dashboard/monetize" element={<DashboardV2 />} />
       <Route path="/dashboard/settings" element={<DashboardV2 />} />
-      {/* Event scanner (Pro feature) */}
+      {/* Event scanner (Pro feature) - accessible via CRM Events tab */}
+      {/* Route: /dashboard/events/:eventId/scanner */}
       <Route path="/dashboard/events/:eventId/scanner" element={<EventScanner />} />
       <Route path="/install" element={<Install />} />
       <Route path="/gallery" element={<Gallery />} />
