@@ -96,6 +96,9 @@
     "right": "Right",
     "buttonText": "Button Text"
   },
+  "hints": {
+    "bioLinks": "Tip: Add links with [text](url) format"
+  },
   "quickStart": {
     "welcomeTitle": "Create your page in 60 seconds",
     "welcomeDescription": "AI will generate a personalized page based on your niche and description",
