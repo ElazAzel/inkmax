@@ -67,8 +67,14 @@ export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId 
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  const messengers = block.messengers || [];
+  
   // Compact horizontal layout for mobile
-  const isSingleMessenger = block.messengers.length === 1;
+  const isSingleMessenger = messengers.length === 1;
+  
+  if (messengers.length === 0) {
+    return null;
+  }
 
   return (
     <div 
@@ -89,7 +95,7 @@ export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId 
         "flex gap-2",
         isSingleMessenger ? "flex-col" : "flex-wrap"
       )}>
-        {block.messengers.map((messenger, index) => (
+        {messengers.map((messenger, index) => (
           <button
             key={index}
             onClick={() => handleMessengerClick(messenger.platform, messenger.username, messenger.message)}
