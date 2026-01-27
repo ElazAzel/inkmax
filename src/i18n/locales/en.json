@@ -827,6 +827,28 @@
     "aiBlocksCreated": "✨ Created {{count}} blocks with AI",
     "blocksAdded": "Added {{count}} blocks",
     "onboardingComplete": "Welcome! Start building your page.",
+    "nav": {
+      "home": "Home",
+      "editor": "Editor",
+      "pages": "Pages",
+      "activity": "Inbox",
+      "insights": "Analytics",
+      "settings": "Settings"
+    },
+    "sidebar": {
+      "tools": "Tools",
+      "templates": "Templates",
+      "marketplace": "Marketplace",
+      "account": "Account",
+      "tokens": "Tokens",
+      "achievements": "Achievements",
+      "upgrade": "Upgrade",
+      "signOut": "Sign Out"
+    },
+    "editor": {
+      "title": "Editor",
+      "blocks": "blocks"
+    },
     "seo": {
       "title": "lnkmx Dashboard",
       "description": "Manage your pages, leads, and analytics in one place."

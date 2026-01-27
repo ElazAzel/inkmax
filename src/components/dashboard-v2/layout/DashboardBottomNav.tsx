@@ -5,7 +5,7 @@
 import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, FileText, Inbox, BarChart3, Settings, MoreHorizontal } from 'lucide-react';
+import { Home, PenTool, Inbox, BarChart3, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useHapticFeedback } from '@/hooks/useHapticFeedback';
 
@@ -33,11 +33,11 @@ const TABS: NavTab[] = [
     path: '/dashboard',
   },
   {
-    id: 'pages',
-    icon: FileText,
-    labelKey: 'dashboard.nav.pages',
-    defaultLabel: 'Страницы',
-    path: '/dashboard/pages',
+    id: 'editor',
+    icon: PenTool,
+    labelKey: 'dashboard.nav.editor',
+    defaultLabel: 'Редактор',
+    path: '/dashboard?tab=editor',
   },
   {
     id: 'activity',

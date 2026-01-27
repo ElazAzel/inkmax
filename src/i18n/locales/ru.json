@@ -827,6 +827,28 @@
     "aiBlocksCreated": "✨ Создано {{count}} блоков с помощью AI",
     "blocksAdded": "Добавлено {{count}} блоков",
     "onboardingComplete": "Добро пожаловать! Начните создавать свою страницу.",
+    "nav": {
+      "home": "Главная",
+      "editor": "Редактор",
+      "pages": "Страницы",
+      "activity": "Входящие",
+      "insights": "Аналитика",
+      "settings": "Настройки"
+    },
+    "sidebar": {
+      "tools": "Инструменты",
+      "templates": "Шаблоны",
+      "marketplace": "Маркетплейс",
+      "account": "Аккаунт",
+      "tokens": "Токены",
+      "achievements": "Достижения",
+      "upgrade": "Обновить",
+      "signOut": "Выйти"
+    },
+    "editor": {
+      "title": "Редактор",
+      "blocks": "блоков"
+    },
     "seo": {
       "title": "Личный кабинет lnkmx",
       "description": "Управляйте страницами, лидами и аналитикой."

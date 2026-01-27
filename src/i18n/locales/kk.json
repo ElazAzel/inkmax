@@ -827,6 +827,28 @@
     "aiBlocksCreated": "✨ AI арқылы {{count}} блок жасалды",
     "blocksAdded": "{{count}} блок қосылды",
     "onboardingComplete": "Қош келдіңіз! Бетіңізді жасай бастаңыз.",
+    "nav": {
+      "home": "Басты",
+      "editor": "Редактор",
+      "pages": "Беттер",
+      "activity": "Кіріс",
+      "insights": "Аналитика",
+      "settings": "Баптаулар"
+    },
+    "sidebar": {
+      "tools": "Құралдар",
+      "templates": "Үлгілер",
+      "marketplace": "Маркетплейс",
+      "account": "Аккаунт",
+      "tokens": "Токендер",
+      "achievements": "Жетістіктер",
+      "upgrade": "Жаңарту",
+      "signOut": "Шығу"
+    },
+    "editor": {
+      "title": "Редактор",
+      "blocks": "блок"
+    },
     "seo": {
       "title": "lnkmx кабинеті",
       "description": "Беттерді, лидтерді және аналитиканы басқарыңыз."

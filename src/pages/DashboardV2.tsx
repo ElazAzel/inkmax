@@ -24,6 +24,7 @@ import {
 import {
   HomeScreen,
   PagesScreen,
+  EditorScreen,
   ActivityScreen,
   InsightsScreen,
   MonetizeScreen,
@@ -51,7 +52,7 @@ import { LoadingState, BackgroundEffects } from '@/components/dashboard';
 
 import type { Niche } from '@/lib/niches';
 
-type TabId = 'home' | 'pages' | 'activity' | 'insights' | 'monetize' | 'settings';
+type TabId = 'home' | 'editor' | 'pages' | 'activity' | 'insights' | 'monetize' | 'settings';
 
 export default function DashboardV2() {
   const navigate = useNavigate();
@@ -242,11 +243,35 @@ export default function DashboardV2() {
               pageData={dashboard.pageData}
               loading={dashboard.loading}
               isPremium={dashboard.isPremium}
-              onOpenEditor={() => navigate('/dashboard?tab=editor')}
+              onOpenEditor={() => handleTabChange('editor')}
               onPreview={() => dashboard.sharingState.handlePreview()}
               onShare={() => dashboard.sharingState.handleShare()}
               onOpenTemplates={() => setTemplateGalleryOpen(true)}
               onOpenMarketplace={() => setShowMarketplace(true)}
+            />
+          )}
+
+          {/* Editor Screen */}
+          {currentTab === 'editor' && (
+            <EditorScreen
+              pageData={dashboard.pageData}
+              loading={dashboard.loading}
+              isPremium={dashboard.isPremium}
+              currentTier={dashboard.isPremium ? 'pro' : 'free'}
+              premiumTier={dashboard.currentTier}
+              onInsertBlock={dashboard.blockEditor.handleInsertBlock}
+              onEditBlock={dashboard.blockEditor.handleEditBlock}
+              onDeleteBlock={dashboard.blockEditor.handleDeleteBlock}
+              onUpdateBlock={dashboard.updateBlock}
+              onReorderBlocks={dashboard.reorderBlocks}
+              onPreview={() => dashboard.sharingState.handlePreview()}
+              onShare={() => dashboard.sharingState.handleShare()}
+              onOpenTemplates={() => setTemplateGalleryOpen(true)}
+              onOpenAI={() => dashboard.aiState.openAIBuilder()}
+              canUndo={editorHistory.canUndo}
+              canRedo={editorHistory.canRedo}
+              onUndo={editorHistory.undo}
+              onRedo={editorHistory.redo}
             />
           )}
 
