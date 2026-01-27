@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sitemap Index for lnkmx.my
+  
+  This index references multiple sitemaps:
+  1. Static sitemap with main pages
+  2. Dynamic sitemap with all published user pages (via Edge Function)
+  
+  Canonical Domain: https://lnkmx.my
+-->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Static pages sitemap -->
+  <sitemap>
+    <loc>https://lnkmx.my/sitemap.xml</loc>
+    <lastmod>2025-02-01</lastmod>
+  </sitemap>
+  
+  <!-- Dynamic user pages sitemap (Edge Function) -->
+  <sitemap>
+    <loc>https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/generate-sitemap</loc>
+    <lastmod>2025-02-01</lastmod>
+  </sitemap>
+</sitemapindex>

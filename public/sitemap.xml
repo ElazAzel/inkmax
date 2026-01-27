@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Static Sitemap Fallback for lnkmx.my
+  
+  This is a static fallback. The dynamic sitemap with all published user pages
+  is available at: /api/sitemap or via the Edge Function.
+  
+  Canonical Domain: https://lnkmx.my (no www, HTTPS only, no trailing slash on paths)
+  Languages: ru (default), en, kk
+  
+  Last Updated: 2025-02-01
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage -->
   <url>
     <loc>https://lnkmx.my/</loc>
     <lastmod>2025-02-01</lastmod>
@@ -10,7 +24,13 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/?lang=kk"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/"/>
+    <image:image>
+      <image:loc>https://lnkmx.my/og-image.png</image:loc>
+      <image:title>lnkmx - мини-сайт за 2 минуты</image:title>
+    </image:image>
   </url>
+  
+  <!-- Gallery -->
   <url>
     <loc>https://lnkmx.my/gallery</loc>
     <lastmod>2025-02-01</lastmod>
@@ -21,6 +41,8 @@
     <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/gallery?lang=kk"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/gallery"/>
   </url>
+  
+  <!-- Pricing -->
   <url>
     <loc>https://lnkmx.my/pricing</loc>
     <lastmod>2025-02-01</lastmod>
@@ -31,6 +53,20 @@
     <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/pricing?lang=kk"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/pricing"/>
   </url>
+  
+  <!-- Experts Directory -->
+  <url>
+    <loc>https://lnkmx.my/experts</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://lnkmx.my/experts?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://lnkmx.my/experts?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/experts?lang=kk"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/experts"/>
+  </url>
+  
+  <!-- Alternatives Comparison -->
   <url>
     <loc>https://lnkmx.my/alternatives</loc>
     <lastmod>2025-02-01</lastmod>
@@ -41,6 +77,70 @@
     <xhtml:link rel="alternate" hreflang="kk" href="https://lnkmx.my/alternatives?lang=kk"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lnkmx.my/alternatives"/>
   </url>
+  
+  <!-- Expert Niche Pages -->
+  <url>
+    <loc>https://lnkmx.my/experts/beauty</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/fitness</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/education</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/consulting</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/health</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/tech</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/marketing</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/design</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/music</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lnkmx.my/experts/photo</loc>
+    <lastmod>2025-02-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Legal Pages -->
   <url>
     <loc>https://lnkmx.my/terms</loc>
     <lastmod>2025-02-01</lastmod>

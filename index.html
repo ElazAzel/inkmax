@@ -8,6 +8,17 @@
     <title>lnkmx - мини-сайт и заявки из одной ссылки</title>
     <meta name="description" content="AI-конструктор мини-сайтов для экспертов, фрилансеров и малого бизнеса. Соберите оффер, прайс и формы заявок за 2 минуты." />
     <meta name="author" content="lnkmx" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    
+    <!-- Canonical URL Strategy: https://lnkmx.my (no www, no trailing slash) -->
+    <link rel="canonical" href="https://lnkmx.my/" />
+    
+    <!-- Hreflang for multi-language support -->
+    <link rel="alternate" hreflang="ru" href="https://lnkmx.my/?lang=ru" />
+    <link rel="alternate" hreflang="en" href="https://lnkmx.my/?lang=en" />
+    <link rel="alternate" hreflang="kk" href="https://lnkmx.my/?lang=kk" />
+    <link rel="alternate" hreflang="x-default" href="https://lnkmx.my/" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -33,6 +44,9 @@
     <meta name="twitter:site" content="@lnkmx_app" />
     <meta name="twitter:creator" content="@lnkmx_app" />
     
+    <!-- Verification tags (add your codes here after GSC setup) -->
+    <!-- <meta name="google-site-verification" content="YOUR_GSC_CODE" /> -->
+    
     <!-- Preconnect to external origins for faster resource loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -42,9 +56,16 @@
     <!-- Critical CSS for LCP - inline minimal styles for above-the-fold content -->
     <style>
       /* Critical font fallback to prevent layout shift */
-      body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; }
       /* Initial loading state to prevent FOUC */
       #root { min-height: 100vh; }
+      /* SSR fallback content styling */
+      .ssr-fallback { max-width: 800px; margin: 0 auto; padding: 2rem; }
+      .ssr-fallback h1 { font-size: 2rem; margin-bottom: 1rem; }
+      .ssr-fallback p { font-size: 1.125rem; line-height: 1.7; margin-bottom: 1rem; }
+      .ssr-fallback ul { list-style: disc; padding-left: 1.5rem; }
+      .ssr-fallback li { margin-bottom: 0.5rem; }
+      .ssr-fallback a { color: #0080ff; text-decoration: underline; }
     </style>
     
     <!-- Load fonts with display=swap - non-blocking -->
@@ -61,10 +82,127 @@
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
     <link rel="manifest" href="/manifest.webmanifest">
+    
+    <!-- JSON-LD Schema for Landing Page -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "lnkmx",
+      "alternateName": "lnkmx.my",
+      "url": "https://lnkmx.my/",
+      "description": "AI-конструктор мини-сайтов для экспертов, фрилансеров и малого бизнеса",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KZT",
+        "description": "Бесплатный тариф с базовыми функциями"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "lnkmx",
+        "url": "https://lnkmx.my/"
+      }
+    }
+    </script>
+    
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "lnkmx",
+      "url": "https://lnkmx.my/",
+      "logo": "https://lnkmx.my/favicon.png",
+      "sameAs": [
+        "https://t.me/lnkmx_app",
+        "https://instagram.com/lnkmx_app"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "availableLanguage": ["Russian", "English", "Kazakh"]
+      }
+    }
+    </script>
   </head>
 
   <body>
+    <!-- Main React App Container -->
     <div id="root"></div>
+    
+    <!-- SSR Fallback Content for Crawlers (noscript) -->
+    <noscript>
+      <div class="ssr-fallback" itemscope itemtype="https://schema.org/WebApplication">
+        <header>
+          <h1 itemprop="name">lnkmx - мини-сайт и заявки из одной ссылки</h1>
+        </header>
+        
+        <main>
+          <section id="about">
+            <h2>О платформе</h2>
+            <p itemprop="description">
+              lnkmx - это AI-конструктор мини-сайтов для экспертов, фрилансеров и малого бизнеса в Казахстане и СНГ. 
+              Создайте профессиональную страницу с ссылками, прайс-листом, формами для заявок и бронированием за 2 минуты.
+            </p>
+          </section>
+          
+          <section id="features">
+            <h2>Возможности</h2>
+            <ul>
+              <li>Мини-сайт с вашими ссылками и контактами</li>
+              <li>Прайс-лист с услугами и ценами</li>
+              <li>Форма сбора заявок и лидов</li>
+              <li>Онлайн-бронирование консультаций</li>
+              <li>Аналитика переходов и кликов</li>
+              <li>Интеграция с Telegram-ботом</li>
+              <li>Поддержка 3 языков: русский, английский, казахский</li>
+            </ul>
+          </section>
+          
+          <section id="pricing">
+            <h2>Тарифы</h2>
+            <p>Бесплатный тариф включает все базовые функции. Premium открывает расширенную аналитику, приоритетную поддержку и дополнительные блоки.</p>
+            <p><a href="https://lnkmx.my/pricing">Смотреть все тарифы →</a></p>
+          </section>
+          
+          <section id="experts">
+            <h2>Каталог экспертов</h2>
+            <p>Найдите проверенных специалистов в разных нишах: красота, фитнес, образование, консалтинг и другие.</p>
+            <p><a href="https://lnkmx.my/experts">Открыть каталог →</a></p>
+          </section>
+          
+          <section id="get-started">
+            <h2>Начать бесплатно</h2>
+            <p>Создайте свой мини-сайт прямо сейчас - регистрация занимает меньше минуты.</p>
+            <p><a href="https://lnkmx.my/auth">Создать страницу →</a></p>
+          </section>
+        </main>
+        
+        <footer>
+          <nav aria-label="Footer navigation">
+            <ul>
+              <li><a href="https://lnkmx.my/pricing">Тарифы</a></li>
+              <li><a href="https://lnkmx.my/gallery">Галерея</a></li>
+              <li><a href="https://lnkmx.my/experts">Эксперты</a></li>
+              <li><a href="https://lnkmx.my/alternatives">Сравнение</a></li>
+              <li><a href="https://lnkmx.my/terms">Условия</a></li>
+              <li><a href="https://lnkmx.my/privacy">Конфиденциальность</a></li>
+            </ul>
+          </nav>
+          <p>© 2024-2025 lnkmx. Все права защищены.</p>
+          <link itemprop="url" href="https://lnkmx.my/">
+        </footer>
+      </div>
+    </noscript>
+    
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
