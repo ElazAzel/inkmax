@@ -1161,6 +1161,10 @@
       "branding": "Branding",
       "theme": "Theme & Colors",
       "themeDesc": "Customize colors and fonts",
+      "templates": "Templates",
+      "templatesDesc": "Ready-made page designs",
+      "marketplace": "Marketplace",
+      "marketplaceDesc": "Community templates",
       "errors": {
         "slug_taken": "This URL is taken",
         "invalid_slug": "Invalid URL"

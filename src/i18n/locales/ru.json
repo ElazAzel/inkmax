@@ -1161,6 +1161,10 @@
       "branding": "Брендинг",
       "theme": "Тема и цвета",
       "themeDesc": "Настройте цвета и шрифты",
+      "templates": "Шаблоны",
+      "templatesDesc": "Готовые дизайны страниц",
+      "marketplace": "Маркетплейс",
+      "marketplaceDesc": "Шаблоны от сообщества",
       "errors": {
         "slug_taken": "Этот URL уже занят",
         "invalid_slug": "Некорректный URL"
