@@ -21,6 +21,8 @@ import {
   generateSourceContext,
   generateContentHash,
 } from '@/lib/seo-utils';
+import { extractEntityLinks } from '@/lib/seo/entity-linking';
+import { generateSectionAnchors, generateKeyFacts } from '@/lib/seo/anchors';
 
 interface EnhancedSEOHeadProps {
   pageData: PageData;
@@ -98,6 +100,11 @@ export function EnhancedSEOHead({
     const autoAbout = !profile.bio 
       ? generateAutoAbout(profile, pageData.blocks, language)
       : null;
+    
+    // Enhanced entity linking for richer schema
+    const entityLinks = extractEntityLinks(pageData.blocks, language);
+    const sections = generateSectionAnchors(pageData.blocks);
+    const keyFacts = generateKeyFacts(profile, pageData.blocks, language);
 
     return {
       profile,
@@ -107,6 +114,9 @@ export function EnhancedSEOHead({
       contentHash,
       sourceContext,
       autoAbout,
+      entityLinks,
+      sections,
+      keyFacts,
     };
   }, [pageData.blocks, slug, language, updatedAt, isNewAccount]);
 
