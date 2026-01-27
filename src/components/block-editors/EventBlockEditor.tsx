@@ -338,6 +338,14 @@ function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
             }
             placeholder={t('eventBuilder.confirmationMessagePlaceholder', 'Спасибо за регистрацию!')}
           />
+
+          {/* Custom button text */}
+          <MultilingualInput
+            label={t('eventBuilder.buttonText', 'Текст кнопки')}
+            value={formData.buttonText || createMultilingualString('')}
+            onChange={(value) => onChange({ ...formData, buttonText: value })}
+            placeholder={t('eventBuilder.buttonTextPlaceholder', 'Зарегистрироваться')}
+          />
         </TabsContent>
       </Tabs>
     </div>

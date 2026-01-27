@@ -2488,7 +2488,9 @@
     "dailyReminderDesc": "Get list of today's bookings",
     "reminderTime": "Reminder time",
     "weeklyMotivation": "Weekly motivation",
-    "weeklyMotivationDesc": "Monday at 9:00 AM - personal inspiration"
+    "weeklyMotivationDesc": "Monday at 9:00 AM - personal inspiration",
+    "buttonText": "Button text",
+    "buttonTextPlaceholder": "Book Now"
   },
   "mapBlock": {
     "address": "Address",
@@ -2652,7 +2654,9 @@
     "addOption": "Add option",
     "optionPlaceholder": "Option text",
     "scaleMin": "From",
-    "scaleMax": "To"
+    "scaleMax": "To",
+    "buttonText": "Button text",
+    "buttonTextPlaceholder": "Register"
   },
   "eventFields": {
     "shortText": "Short text",

@@ -574,8 +574,8 @@ export const BookingBlock = memo(function BookingBlockComponent({
                   <Check className="h-4 w-4 mr-2" />
                 )}
                 {block.requirePrepayment 
-                  ? t('booking.confirmAndPay', 'Записаться и оплатить')
-                  : t('booking.confirm', 'Записаться')
+                  ? (getTranslatedString(block.buttonText, i18n.language as SupportedLanguage) || t('booking.confirmAndPay', 'Записаться и оплатить'))
+                  : (getTranslatedString(block.buttonText, i18n.language as SupportedLanguage) || t('booking.confirm', 'Записаться'))
                 }
               </Button>
             </div>

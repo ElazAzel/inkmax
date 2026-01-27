@@ -2488,7 +2488,9 @@
     "dailyReminderDesc": "Бүгінгі жазылулар тізімін алу",
     "reminderTime": "Еске салу уақыты",
     "weeklyMotivation": "Апталық мотивация",
-    "weeklyMotivationDesc": "Дүйсенбі сағат 9:00 - жеке шабыт"
+    "weeklyMotivationDesc": "Дүйсенбі сағат 9:00 - жеке шабыт",
+    "buttonText": "Батырма мәтіні",
+    "buttonTextPlaceholder": "Жазылу"
   },
   "mapBlock": {
     "address": "Мекенжай",
@@ -2652,7 +2654,9 @@
     "addOption": "Нұсқа қосу",
     "optionPlaceholder": "Жауап нұсқасы",
     "scaleMin": "Бастап",
-    "scaleMax": "Дейін"
+    "scaleMax": "Дейін",
+    "buttonText": "Батырма мәтіні",
+    "buttonTextPlaceholder": "Тіркелу"
   },
   "eventFields": {
     "shortText": "Қысқа мәтін",

@@ -426,7 +426,7 @@ export const EventBlock = memo(function EventBlock({
               ? t('event.noSpots', 'Мест нет')
               : registrationClosed 
                 ? t('event.registrationClosed', 'Регистрация закрыта')
-                : t('event.register', 'Зарегистрироваться')
+                : (block.buttonText && getTranslatedString(block.buttonText, language)) || t('event.register', 'Зарегистрироваться')
             }
           </Button>
         </div>
