@@ -69,7 +69,7 @@ interface MobileSettingsSheetProps {
   
   // Premium status
   isPremium: boolean;
-  premiumTier?: 'free' | 'pro' | 'business';
+  premiumTier?: 'free' | 'pro';
   premiumLoading: boolean;
   
   // Chatbot settings
