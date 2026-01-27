@@ -13,10 +13,8 @@ checkCacheVersion();
 
 // Lazy load page components for route-based code splitting
 const Index = lazy(() => import("./pages/LandingV5"));
-const IndexLegacy = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/DashboardV2"));
-const DashboardLegacy = lazy(() => import("./pages/Dashboard"));
 const PublicPage = lazy(() => import("./pages/PublicPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Install = lazy(() => import("./pages/Install"));
@@ -28,7 +26,6 @@ const AdminTranslations = lazy(() => import("./pages/AdminTranslations"));
 const TeamPage = lazy(() => import("./pages/TeamPage"));
 const CollabPage = lazy(() => import("./pages/CollabPage"));
 const JoinTeam = lazy(() => import("./pages/JoinTeam"));
-const IndexBento = lazy(() => import("./pages/IndexBento"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const PaymentTerms = lazy(() => import("./pages/PaymentTerms"));
@@ -49,7 +46,6 @@ const router = createBrowserRouter([
       { path: "dashboard/insights", element: <Dashboard /> },
       { path: "dashboard/monetize", element: <Dashboard /> },
       { path: "dashboard/settings", element: <Dashboard /> },
-      { path: "dashboard/legacy", element: <DashboardLegacy /> },
       { path: "install", element: <Install /> },
       { path: "gallery", element: <Gallery /> },
       { path: "pricing", element: <Pricing /> },
@@ -58,7 +54,6 @@ const router = createBrowserRouter([
       { path: "admin/translations", element: <AdminTranslations /> },
       { path: "team/:slug", element: <TeamPage /> },
       { path: "join/:inviteCode", element: <JoinTeam /> },
-      { path: "bento", element: <IndexBento /> },
       { path: "terms", element: <Terms /> },
       { path: "privacy", element: <Privacy /> },
       { path: "payment-terms", element: <PaymentTerms /> },
