@@ -1,9 +1,10 @@
 /**
  * EnhancedSEOHead - Comprehensive Auto-SEO for User Pages
  * 
- * Features:
+ * AEO/GEO Features:
+ * - Answer Block for AI extraction
  * - Auto meta tags generation
- * - Schema.org JSON-LD (Person/Organization, FAQ, Event, Service)
+ * - Schema.org JSON-LD (Person/Organization, FAQ, Event, Service, HowTo)
  * - Quality gate for indexation
  * - Source context for AI citability
  * - Version tracking for stable URLs
@@ -16,13 +17,13 @@ import {
   evaluateQualityGate,
   extractProfileFromBlocks,
   generatePageMeta,
-  generateSchemas,
-  generateAutoAbout,
-  generateSourceContext,
-  generateContentHash,
 } from '@/lib/seo-utils';
 import { extractEntityLinks } from '@/lib/seo/entity-linking';
-import { generateSectionAnchors, generateKeyFacts } from '@/lib/seo/anchors';
+import { generateSectionAnchors } from '@/lib/seo/anchors';
+import { generateAnswerBlock } from '@/lib/seo/answer-block';
+import { generateEnhancedKeyFacts } from '@/lib/seo';
+import { generateGEOSchemas, generateJsonLdGraph } from '@/lib/seo/geo-schemas';
+import { generateAutoFAQ, extractFAQContext, hasUserFAQ } from '@/lib/seo/auto-faq';
 
 interface EnhancedSEOHeadProps {
   pageData: PageData;
@@ -59,7 +60,7 @@ const setLinkTag = (rel: string, href: string, hreflang?: string) => {
 };
 
 // Helper to add JSON-LD schema
-const addJsonLd = (id: string, data: object) => {
+const addJsonLd = (id: string, data: object | string) => {
   let script = document.querySelector(`script#${id}`) as HTMLScriptElement;
   if (!script) {
     script = document.createElement('script');
@@ -67,7 +68,7 @@ const addJsonLd = (id: string, data: object) => {
     script.id = id;
     document.head.appendChild(script);
   }
-  script.textContent = JSON.stringify(data);
+  script.textContent = typeof data === 'string' ? data : JSON.stringify(data);
 };
 
 export function EnhancedSEOHead({ 
@@ -90,38 +91,46 @@ export function EnhancedSEOHead({
       isNewAccount
     );
     const meta = generatePageMeta(profile, pageData.blocks, slug, qualityGate, language);
-    const schemas = generateSchemas(profile, pageData.blocks, slug, meta, language);
-    const contentHash = generateContentHash(pageData.blocks);
-    const sourceContext = generateSourceContext(
-      slug,
-      updatedAt || new Date().toISOString(),
-      contentHash
-    );
-    const autoAbout = !profile.bio 
-      ? generateAutoAbout(profile, pageData.blocks, language)
-      : null;
     
-    // Enhanced entity linking for richer schema
+    // Generate Answer Block for AEO
+    const answerBlock = generateAnswerBlock(pageData.blocks, slug, language);
+    
+    // Generate enhanced Key Facts
+    const keyFacts = generateEnhancedKeyFacts(pageData.blocks, answerBlock, profile.name, language);
+    
+    // Generate GEO Schemas with combined graph
+    const geoSchemas = generateGEOSchemas(pageData.blocks, {
+      slug,
+      name: profile.name || '',
+      bio: profile.bio,
+      avatar: profile.avatar,
+      answerBlock,
+      sameAs: profile.sameAs,
+      language,
+    });
+    
+    // Generate auto FAQ if needed
+    const shouldGenerateAutoFAQ = !hasUserFAQ(pageData.blocks);
+    const faqContext = extractFAQContext(pageData.blocks, profile.name, answerBlock.niche, answerBlock.location, language);
+    const autoFAQ = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 5) : [];
+    
+    // Entity links for structured data
     const entityLinks = extractEntityLinks(pageData.blocks, language);
-    const sections = generateSectionAnchors(pageData.blocks);
-    const keyFacts = generateKeyFacts(profile, pageData.blocks, language);
 
     return {
       profile,
       qualityGate,
       meta,
-      schemas,
-      contentHash,
-      sourceContext,
-      autoAbout,
-      entityLinks,
-      sections,
+      answerBlock,
       keyFacts,
+      geoSchemas,
+      autoFAQ,
+      entityLinks,
     };
   }, [pageData.blocks, slug, language, updatedAt, isNewAccount]);
 
   useEffect(() => {
-    const { meta, schemas, sourceContext, qualityGate } = seoData;
+    const { meta, geoSchemas, qualityGate, answerBlock } = seoData;
 
     // Set document title
     document.title = meta.title;
@@ -164,45 +173,14 @@ export function EnhancedSEOHead({
     setLinkTag('alternate', `${meta.canonical}?lang=kk`, 'kk');
     setLinkTag('alternate', meta.canonical, 'x-default');
 
-    // JSON-LD Schemas
-    addJsonLd('schema-webpage', schemas.webPage);
-    addJsonLd('schema-main-entity', schemas.mainEntity);
-    addJsonLd('schema-breadcrumb', schemas.breadcrumb);
-
-    if (schemas.faq) {
-      addJsonLd('schema-faq', schemas.faq);
-    }
-
-    if (schemas.events && schemas.events.length > 0) {
-      schemas.events.forEach((event, index) => {
-        addJsonLd(`schema-event-${index}`, event);
-      });
-    }
-
-    if (schemas.services && schemas.services.length > 0) {
-      // Combine services into a single schema
-      addJsonLd('schema-services', {
-        '@context': 'https://schema.org',
-        '@type': 'ItemList',
-        itemListElement: schemas.services.map((service, index) => ({
-          '@type': 'ListItem',
-          position: index + 1,
-          item: service,
-        })),
-      });
-    }
-
-    // Source context comment for AI crawlers
-    let sourceComment = document.querySelector('meta[name="source-context"]');
-    if (!sourceComment) {
-      sourceComment = document.createElement('meta');
-      sourceComment.setAttribute('name', 'source-context');
-      document.head.appendChild(sourceComment);
-    }
-    (sourceComment as HTMLMetaElement).content = sourceContext;
+    // Add combined JSON-LD graph (all schemas in one)
+    addJsonLd('schema-graph', generateJsonLdGraph(geoSchemas));
 
     // Page quality indicator (for internal use)
     setMetaTag('page-quality-score', String(qualityGate.score));
+    
+    // Answer block summary for AI crawlers
+    setMetaTag('ai-summary', answerBlock.summary);
 
     // Cleanup on unmount
     return () => {
@@ -214,21 +192,12 @@ export function EnhancedSEOHead({
         'meta[property="og:url"]',
         'meta[property="og:site_name"]',
         'meta[property="og:image:alt"]',
-        'meta[name="source-context"]',
         'meta[name="page-quality-score"]',
+        'meta[name="ai-summary"]',
         'link[rel="canonical"]',
         'link[rel="alternate"]',
-        'script#schema-webpage',
-        'script#schema-main-entity',
-        'script#schema-breadcrumb',
-        'script#schema-faq',
-        'script#schema-services',
+        'script#schema-graph',
       ];
-
-      // Also remove event schemas
-      for (let i = 0; i < 10; i++) {
-        tagsToRemove.push(`script#schema-event-${i}`);
-      }
 
       tagsToRemove.forEach(selector => {
         const elements = document.querySelectorAll(selector);
