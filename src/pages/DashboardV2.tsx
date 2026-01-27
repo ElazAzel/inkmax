@@ -62,8 +62,23 @@ export default function DashboardV2() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { t, i18n } = useTranslation();
   
-  // Core state
-  const dashboard = useDashboard();
+  // Page versions - hook defined early for onPublish callback
+  const pageVersionsRef = useRef<ReturnType<typeof usePageVersions> | null>(null);
+  
+  // Callback for saving version on each publish
+  const handlePublishVersion = useCallback((pageData: import('@/types/page').PageData) => {
+    if (pageData?.id && pageVersionsRef.current) {
+      pageVersionsRef.current.saveVersion(
+        pageData.id,
+        pageData.blocks,
+        pageData.theme,
+        pageData.seo
+      );
+    }
+  }, []);
+  
+  // Core state - with onPublish callback for automatic versioning
+  const dashboard = useDashboard({ onPublish: handlePublishVersion });
   const multiPage = useMultiPage();
   const { canUseCustomPageBackground } = useFreemiumLimits();
   
@@ -118,6 +133,11 @@ export default function DashboardV2() {
   }, [dashboard]);
 
   const pageVersions = usePageVersions(handleRestoreVersion);
+  
+  // Keep ref updated for onPublish callback
+  useEffect(() => {
+    pageVersionsRef.current = pageVersions;
+  }, [pageVersions]);
 
   // SEO
   const canonical = 'https://lnkmx.my/dashboard';
@@ -131,28 +151,6 @@ export default function DashboardV2() {
       setShowQuickStart(true);
     }
   }, [dashboard.pageData?.blocks.length]);
-
-  // Save version when page is published
-  const wasPublishedRef = useRef(dashboard.pageData?.isPublished);
-  useEffect(() => {
-    const isNowPublished = dashboard.pageData?.isPublished;
-    const wasPublished = wasPublishedRef.current;
-    
-    // Save version on initial load if published, or when first publishing
-    if (isNowPublished && dashboard.pageData?.id) {
-      // Only save on state change from unpublished to published
-      if (!wasPublished) {
-        pageVersions.saveVersion(
-          dashboard.pageData.id,
-          dashboard.pageData.blocks,
-          dashboard.pageData.theme,
-          dashboard.pageData.seo
-        );
-      }
-    }
-    
-    wasPublishedRef.current = isNowPublished;
-  }, [dashboard.pageData?.isPublished, dashboard.pageData?.id]);
 
   // Handle tab change - navigate to the proper route
   const handleTabChange = useCallback((tabId: string) => {
