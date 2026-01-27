@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Play } from 'lucide-react';
+import { Sparkles, Play, Rocket } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Reveal } from '@/components/motion';
 
@@ -14,10 +14,17 @@ export default function FinalCTASection({ onCreatePage, onViewExamples }: FinalC
   const { t } = useTranslation();
 
   return (
-    <section className="py-16 px-5 bg-gradient-to-b from-muted/30 to-primary/5">
-      <div className="max-w-xl mx-auto text-center">
+    <section className="py-16 px-5 bg-gradient-to-b from-muted/30 via-primary/5 to-primary/10 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+      </div>
+      
+      <div className="max-w-xl mx-auto text-center relative">
         <Reveal direction="up">
           <Badge className="mb-4 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
+            <Rocket className="h-3.5 w-3.5 mr-1.5" />
             {t('landingV5.finalCta.badge')}
           </Badge>
           
@@ -35,7 +42,9 @@ export default function FinalCTASection({ onCreatePage, onViewExamples }: FinalC
               size="lg"
               onClick={onCreatePage}
               className={cn(
-                "h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/25",
+                "h-14 rounded-2xl text-base font-bold",
+                "bg-gradient-to-r from-primary to-primary/90",
+                "shadow-xl shadow-primary/25 hover:shadow-2xl hover:shadow-primary/30",
                 "hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
               )}
             >

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Check, Crown, Shield, Sparkles } from 'lucide-react';
+import { Check, Crown, Shield, Sparkles, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Reveal } from '@/components/motion';
 
@@ -32,7 +32,7 @@ export default function PricingSection({ isKZ, onSelectFree, onSelectPro }: Pric
   ];
 
   return (
-    <section className="py-12 px-5 bg-muted/20">
+    <section className="py-12 px-5 bg-gradient-to-b from-background to-muted/30">
       <div className="max-w-xl mx-auto">
         <Reveal direction="up">
           <div className="text-center mb-8">
@@ -52,19 +52,21 @@ export default function PricingSection({ isKZ, onSelectFree, onSelectPro }: Pric
         <div className="grid gap-4">
           {/* Free Plan */}
           <Reveal delay={100} direction="left" distance={16}>
-            <Card className="p-5 border border-border/50 hover:border-border transition-colors">
+            <Card className="p-5 border border-border/50 bg-card/50 hover:border-border hover:shadow-md transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-bold">{t('landingV5.pricing.free.title')}</h3>
                   <p className="text-2xl font-black">{t('landingV5.pricing.free.price')}</p>
                 </div>
-                <Badge variant="secondary">{t('landingV5.pricing.free.period')}</Badge>
+                <Badge variant="secondary" className="rounded-lg">{t('landingV5.pricing.free.period')}</Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-4">{t('landingV5.pricing.free.description')}</p>
               <ul className="space-y-2 text-sm mb-4">
                 {freeFeatures.map((feature, i) => (
                   <li key={i} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="h-4 w-4 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-2.5 w-2.5 text-primary" />
+                    </div>
                     {feature}
                   </li>
                 ))}
@@ -84,11 +86,16 @@ export default function PricingSection({ isKZ, onSelectFree, onSelectPro }: Pric
 
           {/* Pro Plan */}
           <Reveal delay={200} direction="right" distance={16}>
-            <Card className="p-5 border-2 border-primary bg-primary/5 relative hover:shadow-lg transition-shadow">
-              <div className="absolute -top-2.5 left-4 px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded-full">
+            <Card className="p-5 border-2 border-primary bg-gradient-to-br from-primary/5 to-primary/10 relative overflow-hidden hover:shadow-xl transition-all duration-300">
+              {/* Shine effect */}
+              <div className="absolute -inset-px bg-gradient-to-tr from-primary/20 via-transparent to-transparent pointer-events-none" />
+              
+              <div className="absolute -top-px left-4 px-3 py-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-semibold rounded-b-lg flex items-center gap-1 shadow-md">
+                <Star className="h-3 w-3" />
                 {t('landingV5.pricing.pro.popular')}
               </div>
-              <div className="flex items-center justify-between mb-4">
+              
+              <div className="flex items-center justify-between mb-4 pt-4">
                 <div>
                   <h3 className="text-lg font-bold flex items-center gap-2">
                     {t('landingV5.pricing.pro.title')} <Crown className="h-4 w-4 text-primary" />
@@ -102,18 +109,28 @@ export default function PricingSection({ isKZ, onSelectFree, onSelectPro }: Pric
                   </p>
                 </div>
               </div>
+              
               <p className="text-sm text-muted-foreground mb-4">{t('landingV5.pricing.pro.description')}</p>
+              
               <ul className="space-y-2 text-sm mb-4">
                 {proFeatures.map((feature, i) => (
                   <li key={i} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className={cn(
+                      "h-4 w-4 rounded-full flex items-center justify-center flex-shrink-0",
+                      i < 2 ? "bg-primary text-primary-foreground" : "bg-primary/10"
+                    )}>
+                      <Check className="h-2.5 w-2.5" />
+                    </div>
                     <span className={i < 2 ? 'font-medium' : ''}>{feature}</span>
                   </li>
                 ))}
               </ul>
+              
               <Button 
                 className={cn(
-                  "w-full h-11 rounded-xl font-semibold shadow-md shadow-primary/20",
+                  "w-full h-11 rounded-xl font-semibold",
+                  "bg-gradient-to-r from-primary to-primary/90",
+                  "shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30",
                   "hover:scale-[1.01] active:scale-[0.99] transition-all"
                 )}
                 onClick={onSelectPro}
@@ -126,8 +143,8 @@ export default function PricingSection({ isKZ, onSelectFree, onSelectPro }: Pric
         </div>
 
         <Reveal delay={400} direction="fade">
-          <p className="text-center text-xs text-muted-foreground mt-4">
-            <Shield className="inline h-3.5 w-3.5 mr-1" />
+          <p className="text-center text-xs text-muted-foreground mt-4 flex items-center justify-center gap-1">
+            <Shield className="h-3.5 w-3.5" />
             {t('landingV5.pricing.guarantee')}
           </p>
         </Reveal>
