@@ -130,7 +130,12 @@
     "namePlaceholder": "Сіздің атыңыз",
     "clickToEdit": "Өңдеу үшін басыңыз",
     "addName": "Атын қосу",
-    "addBio": "Сипаттама қосу"
+    "addBio": "Сипаттама қосу",
+    "shadowStyle": "Көлеңке стилі",
+    "none": "Жоқ",
+    "soft": "Жұмсақ",
+    "medium": "Орташа",
+    "strong": "Күшті"
   },
   "verification": {
     "platformBadge": "Жеке басы платформамен расталған",
