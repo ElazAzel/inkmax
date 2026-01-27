@@ -33,57 +33,107 @@ npm run e2e
 
 ## Tech Stack
 
-| Layer    | Technology                                           |
-| -------- | ---------------------------------------------------- |
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui  |
-| Backend  | Supabase (PostgreSQL, Edge Functions, Storage, Auth) |
-| AI       | Gemini 2.5 Flash (content generation, translations)  |
-| State    | TanStack Query, React Context                        |
-| i18n     | i18next (RU/EN/KK)                                   |
-| PWA      | vite-plugin-pwa                                      |
+| Layer     | Technology                                           |
+| --------- | ---------------------------------------------------- |
+| Frontend  | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui  |
+| Backend   | Supabase (PostgreSQL, Edge Functions, Storage, Auth) |
+| AI        | Gemini 2.5 Flash (content generation, translations)  |
+| State     | TanStack Query, React Context                        |
+| i18n      | i18next (RU/EN/KK)                                   |
+| PWA       | vite-plugin-pwa                                      |
+| Animation | CSS + IntersectionObserver (motion system)           |
 
-## Architecture
+## Project Structure
 
 ```
 src/
-├── components/        # UI components (shadcn/ui based)
-│   ├── blocks/       # Page block renderers
-│   ├── block-editors/# Block editor modals
-│   ├── dashboard/    # Dashboard tabs
-│   ├── landing/      # Landing page sections
-│   └── ui/           # Base UI components
-├── domain/           # Domain entities (Block, Page, User)
-├── hooks/            # React hooks
-├── pages/            # Route pages
-├── platform/         # External integrations (Supabase client/types)
-├── repositories/     # Data access layer (Supabase)
-├── services/         # Business logic services
-├── testing/          # Test setup & fixtures
-├── types/            # TypeScript interfaces
-└── use-cases/        # Application use cases
+├── assets/              # Static assets (images, icons)
+├── components/          # UI components
+│   ├── blocks/          # Page block renderers (28 types)
+│   ├── block-editors/   # Block editor modals
+│   ├── dashboard/       # Dashboard tabs (legacy)
+│   ├── dashboard-v2/    # Dashboard v2 (current)
+│   ├── landing/         # Landing page sections (legacy)
+│   ├── landing-v5/      # Landing page v5 (current)
+│   ├── motion/          # Animation system (Reveal, Stagger)
+│   ├── ui/              # Base shadcn/ui components
+│   ├── admin/           # Admin panel components
+│   ├── analytics/       # Analytics components
+│   ├── auth/            # Auth forms and flows
+│   ├── crm/             # Lead management (CRM)
+│   ├── editor/          # Page editor components
+│   ├── gallery/         # Public gallery
+│   ├── onboarding/      # User onboarding flow
+│   ├── settings/        # User settings
+│   ├── templates/       # Template marketplace
+│   └── tokens/          # Linkkon token economy
+├── contexts/            # React contexts
+├── domain/              # Domain entities (Block, Page, User)
+├── hooks/               # React hooks (50+ hooks)
+├── i18n/                # Localization (ru, en, kk)
+├── lib/                 # Shared utilities
+├── pages/               # Route pages
+├── platform/            # External integrations (Supabase)
+├── repositories/        # Data access layer
+├── services/            # Business logic services
+├── testing/             # Test setup & fixtures
+├── types/               # TypeScript interfaces
+└── use-cases/           # Application use cases
+
+docs/
+├── architecture.md      # Architecture overview
+├── platform.md          # Platform documentation
+├── project_overview.md  # Product vision
+├── Features.md          # Feature documentation
+├── SECURITY.md          # Security guidelines
+├── i18n_ops.md          # i18n operations
+└── ...                  # Other docs
+
+supabase/
+├── functions/           # 20 Edge Functions
+│   ├── ai-content-generator/
+│   ├── chatbot-stream/
+│   ├── create-lead/
+│   ├── send-*-notification/
+│   ├── telegram-bot-webhook/
+│   └── translate-content/
+└── migrations/          # Database migrations
 ```
 
-### Clean Architecture Layers
+## Clean Architecture Layers
 
 1. **Domain** - Business entities with validation logic
 2. **Repositories** - Data access abstraction (IPageRepository, IUserRepository)
 3. **Use Cases** - Application workflows (SavePageUseCase, LoadUserProfileUseCase)
 4. **Services** - External integrations (analytics, AI, collaboration)
-5. **Hooks** - UI state coordination
+5. **Hooks** - UI state coordination (50+ specialized hooks)
 6. **Components** - Presentation layer
 
-### Entrypoints & Routing
+## Key Features
 
-- `src/main.tsx` boots the app and initializes i18n.
-- `src/App.tsx` defines route-level pages and layouts.
+### Page Builder
+- 28 block types (profile, links, products, forms, booking, etc.)
+- Drag-and-drop reordering
+- AI-powered content generation
+- Theme customization
+- SEO optimization
 
-### Dependency Analysis
+### CRM & Analytics
+- Lead capture and management
+- Telegram notifications
+- Page analytics (views, clicks, conversions)
+- Heatmap tracking
 
-- `npm run analyze:deps` — dependency listing.
-- `npm run analyze:cycles` — fail on circular deps.
-- `npm run analyze:layers` — fail on layer violations.
-- `npm run analyze:unused` — unused files/exports.
-- `npm run quality:gate` — run all checks.
+### Social Features
+- Gallery showcase
+- Template marketplace
+- Collaboration (shoutouts)
+- Friends & activity feed
+
+### Monetization
+- Free/Pro/Business tiers
+- Linkkon token economy
+- Template sales
 
 ## Database Schema
 
@@ -103,6 +153,7 @@ src/
 | `leads`          | CRM leads from forms   |
 | `bookings`       | Appointment bookings   |
 | `analytics`      | Page view/click events |
+| `events`         | Event management       |
 | `collaborations` | User collaborations    |
 | `teams`          | Team pages             |
 
@@ -118,6 +169,8 @@ src/
 | `send-lead-notification`    | Lead alerts to Telegram    |
 | `telegram-bot-webhook`      | Telegram bot integration   |
 | `validate-telegram`         | Telegram auth verification |
+| `generate-sitemap`          | Dynamic sitemap generation |
+| `process-crm-automations`   | CRM automation workflows   |
 
 ## Security
 
@@ -145,7 +198,7 @@ All tables have RLS enabled with policies:
 
 | Route         | Access | Description       |
 | ------------- | ------ | ----------------- |
-| `/`           | Public | Landing page      |
+| `/`           | Public | Landing page (v5) |
 | `/:username`  | Public | User's bio page   |
 | `/gallery`    | Public | Community gallery |
 | `/dashboard`  | Auth   | User dashboard    |
@@ -155,10 +208,11 @@ All tables have RLS enabled with policies:
 
 ## Pricing (KZT)
 
-| Plan | Price     | Features                                |
-| ---- | --------- | --------------------------------------- |
-| Free | 0₸        | 6 blocks, basic analytics               |
-| Pro  | 2,610₸/mo | Unlimited blocks, AI, CRM, no watermark |
+| Plan     | Price     | Features                                |
+| -------- | --------- | --------------------------------------- |
+| Free     | 0₸        | Basic blocks, watermark                 |
+| Pro      | 2,610₸/mo | All blocks, AI, CRM, no watermark       |
+| Business | 7,500₸/mo | White label, unlimited AI, priority     |
 
 Payments via RoboKassa (14-day refund policy per Kazakhstan law).
 
@@ -187,7 +241,7 @@ npm run lint        # ESLint
 npx tsc --noEmit    # TypeScript check
 npm test            # Unit tests (Vitest)
 npm run lint:i18n   # i18n lint for JSX literals
-npm run i18n:check  # Validate locale alignment and placeholders
+npm run i18n:check  # Validate locale alignment
 npm run e2e         # Playwright E2E
 npm run e2e:ci      # E2E in CI mode
 ```
@@ -197,8 +251,6 @@ npm run e2e:ci      # E2E in CI mode
 - Add new UI strings via `t('namespace.key')` and update `src/i18n/locales/{ru,en,kk}.json`.
 - Run `npm run i18n:check` to validate alignment and placeholders.
 - Run `npm run lint:i18n` to prevent hardcoded JSX strings.
-- Use `npm run i18n:export` and `npm run i18n:import` for translator workflows.
-- See `docs/translation_playbook.md` and `docs/i18n_ops.md` for playbook, governance, and rollout guidance.
 
 ### Deployment
 
