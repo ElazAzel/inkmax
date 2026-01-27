@@ -288,20 +288,31 @@ export default function EventScanner() {
     try {
       setCameraError(null);
       
+      // First get the camera stream directly
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+        audio: false,
+      });
+      
+      // Assign stream to video element
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+      
+      streamRef.current = stream;
+      
+      // Initialize QR reader
       if (!readerRef.current) {
         readerRef.current = new BrowserQRCodeReader();
       }
 
-      // Use undefined deviceId to let zxing choose the best camera
-      // Pass video constraints directly for better compatibility
-      const controls = await readerRef.current.decodeFromConstraints(
-        {
-          video: {
-            facingMode: { ideal: 'environment' },
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-          }
-        },
+      // Start decoding from the video element that already has the stream
+      const controls = await readerRef.current.decodeFromVideoElement(
         videoRef.current!,
         (result) => {
           if (result) {
@@ -312,12 +323,6 @@ export default function EventScanner() {
       );
       
       controlsRef.current = controls;
-      
-      // Get the stream from the video element after zxing sets it up
-      if (videoRef.current?.srcObject) {
-        streamRef.current = videoRef.current.srcObject as MediaStream;
-      }
-      
       setScanning(true);
       
     } catch (error) {
