@@ -32,6 +32,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AddLeadDialog } from '@/components/crm/AddLeadDialog';
 import { LeadDetails } from '@/components/crm/LeadDetails';
 import { BookingsPanel } from '@/components/crm/BookingsPanel';
+import { EventsPanel } from '@/components/crm/EventsPanel';
 import { cn } from '@/lib/utils';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import type { Lead } from '@/hooks/useLeads';
@@ -69,7 +70,7 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [activeTab, setActiveTab] = useState<'leads' | 'bookings'>('leads');
+  const [activeTab, setActiveTab] = useState<'leads' | 'bookings' | 'events'>('leads');
 
   const stats = getLeadStats();
 
@@ -158,21 +159,28 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
 
           {/* Tabs - iOS Segment Control style */}
           <div className="bg-muted/50 rounded-2xl p-1">
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'leads' | 'bookings')}>
-              <TabsList className="grid grid-cols-2 h-11 bg-transparent p-0 gap-1">
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'leads' | 'bookings' | 'events')}>
+              <TabsList className="grid grid-cols-3 h-11 bg-transparent p-0 gap-1">
                 <TabsTrigger 
                   value="leads" 
                   className="rounded-xl h-full data-[state=active]:bg-background data-[state=active]:shadow-sm font-bold text-sm"
                 >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Заявки
+                  <MessageCircle className="h-4 w-4 mr-1" />
+                  {t('crm.leads', 'Заявки')}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="bookings" 
                   className="rounded-xl h-full data-[state=active]:bg-background data-[state=active]:shadow-sm font-bold text-sm"
                 >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Записи
+                  <Calendar className="h-4 w-4 mr-1" />
+                  {t('crm.bookings', 'Записи')}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="events" 
+                  className="rounded-xl h-full data-[state=active]:bg-background data-[state=active]:shadow-sm font-bold text-sm"
+                >
+                  <Calendar className="h-4 w-4 mr-1" />
+                  {t('crm.events', 'Ивенты')}
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -278,6 +286,10 @@ export const CRMTab = memo(function CRMTab({ isPremium }: CRMTabProps) {
 
       {activeTab === 'bookings' && (
         <BookingsPanel />
+      )}
+
+      {activeTab === 'events' && (
+        <EventsPanel isPremium={isPremium} />
       )}
 
       {/* Add Lead Dialog */}

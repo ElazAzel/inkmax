@@ -22,6 +22,7 @@ const IndexBento = lazy(() => import("./pages/IndexBento"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const PaymentTerms = lazy(() => import("./pages/PaymentTerms"));
+const EventScanner = lazy(() => import("./pages/EventScanner"));
 
 export function AppRoutes() {
   return (
@@ -38,6 +39,8 @@ export function AppRoutes() {
       <Route path="/dashboard/insights" element={<DashboardV2 />} />
       <Route path="/dashboard/monetize" element={<DashboardV2 />} />
       <Route path="/dashboard/settings" element={<DashboardV2 />} />
+      {/* Event scanner (Pro feature) */}
+      <Route path="/dashboard/events/:eventId/scanner" element={<EventScanner />} />
       <Route path="/install" element={<Install />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/pricing" element={<Pricing />} />
