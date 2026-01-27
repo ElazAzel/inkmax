@@ -48,6 +48,7 @@ interface Registration {
   status: string;
   payment_status: string;
   created_at: string;
+  utm_json?: Record<string, string>;
   event_tickets: Array<{
     id: string;
     ticket_code: string;
@@ -102,7 +103,7 @@ export function EventRegistrationsList({
     try {
       const { data, error } = await supabase
         .from('event_registrations')
-        .select('id, attendee_name, attendee_email, attendee_phone, answers_json, status, payment_status, created_at, event_tickets(id, ticket_code, status, checked_in_at)')
+        .select('id, attendee_name, attendee_email, attendee_phone, answers_json, status, payment_status, created_at, utm_json, event_tickets(id, ticket_code, status, checked_in_at)')
         .eq('event_id', eventId)
         .eq('owner_id', user.id)
         .order('created_at', { ascending: false });
@@ -371,6 +372,33 @@ export function EventRegistrationsList({
                       {t('events.checkedInAt', 'Отмечен')}: {format(new Date(selectedRegistration.event_tickets[0].checked_in_at), 'HH:mm', { locale })}
                     </Badge>
                   )}
+                </div>
+              )}
+
+              {/* UTM Attribution (Pro) */}
+              {isPremium && selectedRegistration.utm_json && Object.keys(selectedRegistration.utm_json).length > 0 && (
+                <div className="rounded-lg border border-border/60 p-3 space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">{t('events.utmAttribution', 'Источник трафика')}</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {selectedRegistration.utm_json.utm_source && (
+                      <div>
+                        <span className="text-muted-foreground">Source: </span>
+                        <span className="font-medium">{selectedRegistration.utm_json.utm_source}</span>
+                      </div>
+                    )}
+                    {selectedRegistration.utm_json.utm_medium && (
+                      <div>
+                        <span className="text-muted-foreground">Medium: </span>
+                        <span className="font-medium">{selectedRegistration.utm_json.utm_medium}</span>
+                      </div>
+                    )}
+                    {selectedRegistration.utm_json.utm_campaign && (
+                      <div className="col-span-2">
+                        <span className="text-muted-foreground">Campaign: </span>
+                        <span className="font-medium">{selectedRegistration.utm_json.utm_campaign}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
