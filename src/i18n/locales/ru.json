@@ -165,9 +165,12 @@
     "changeCover": "Изменить обложку",
     "clickToChangeCover": "Нажмите для добавления обложки",
     "avatarSettings": "Настройки аватара",
-    "avatarSize": "Размер",
+    "avatarSize": "Размер аватара",
     "avatarFrame": "Рамка",
-    "clickToChangeAvatar": "Нажмите для изменения аватара"
+    "clickToChangeAvatar": "Нажмите для изменения аватара",
+    "frame": "Рамка",
+    "size": "Размер",
+    "nameAnim": "Имя"
   },
   "verification": {
     "platformBadge": "Личность подтверждена платформой",
@@ -188,11 +191,38 @@
     "neonPink": "Неон розовый",
     "neonGreen": "Неон зелёный",
     "rainbow": "Радуга",
-    "rainbowSpin": "Радуга (вращение)",
+    "rainbowSpin": "Радуга вращение",
     "double": "Двойная",
     "dashed": "Пунктирная",
     "dotted": "Точечная",
-    "glowPulse": "Пульсирующее свечение"
+    "glowPulse": "Пульсирующее свечение",
+    "fire": "Огонь",
+    "electric": "Электро",
+    "wave": "Волна",
+    "heartbeat": "Сердцебиение",
+    "sparkle": "Сияние",
+    "glitch": "Глитч",
+    "unlockProFrames": "Разблокируйте все рамки с PRO подпиской",
+    "categories": {
+      "basic": "Базовые",
+      "gradient": "Градиент",
+      "neon": "Неон",
+      "animated": "Анимация"
+    }
+  },
+  "nameAnimation": {
+    "title": "Анимация имени",
+    "none": "Без анимации",
+    "typing": "Печатная машинка",
+    "wave": "Волна",
+    "bounce": "Прыжки",
+    "glow": "Свечение",
+    "gradient": "Градиент",
+    "shake": "Тряска",
+    "pulse": "Пульсация",
+    "rainbow": "Радуга",
+    "neon": "Неон",
+    "unlockAll": "Разблокировать все анимации"
   },
   "profileEditor": {
     "title": "Редактор профиля",

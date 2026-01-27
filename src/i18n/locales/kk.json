@@ -165,9 +165,12 @@
     "changeCover": "Мұқабаны өзгерту",
     "clickToChangeCover": "Мұқаба қосу үшін басыңыз",
     "avatarSettings": "Аватар параметрлері",
-    "avatarSize": "Өлшемі",
+    "avatarSize": "Аватар өлшемі",
     "avatarFrame": "Жақтау стилі",
-    "clickToChangeAvatar": "Аватарды өзгерту үшін басыңыз"
+    "clickToChangeAvatar": "Аватарды өзгерту үшін басыңыз",
+    "frame": "Жақтау",
+    "size": "Өлшемі",
+    "nameAnim": "Аты"
   },
   "verification": {
     "platformBadge": "Жеке басы платформамен расталған",
@@ -188,11 +191,38 @@
     "neonPink": "Неон қызғылт",
     "neonGreen": "Неон жасыл",
     "rainbow": "Кемпірқосақ",
-    "rainbowSpin": "Кемпірқосақ (айналу)",
+    "rainbowSpin": "Кемпірқосақ айналу",
     "double": "Қос",
     "dashed": "Сызықты",
     "dotted": "Нүктелі",
-    "glowPulse": "Пульстеуші жарқырау"
+    "glowPulse": "Пульстеуші жарқырау",
+    "fire": "От",
+    "electric": "Электр",
+    "wave": "Толқын",
+    "heartbeat": "Жүрек соғысы",
+    "sparkle": "Жарқырау",
+    "glitch": "Глитч",
+    "unlockProFrames": "PRO жазылыммен барлық жақтауларды ашыңыз",
+    "categories": {
+      "basic": "Негізгі",
+      "gradient": "Градиент",
+      "neon": "Неон",
+      "animated": "Анимация"
+    }
+  },
+  "nameAnimation": {
+    "title": "Аты анимациясы",
+    "none": "Анимациясыз",
+    "typing": "Баспа машинкасы",
+    "wave": "Толқын",
+    "bounce": "Секіру",
+    "glow": "Жарқырау",
+    "gradient": "Градиент",
+    "shake": "Сілкіну",
+    "pulse": "Пульсация",
+    "rainbow": "Кемпірқосақ",
+    "neon": "Неон",
+    "unlockAll": "Барлық анимацияларды ашу"
   },
   "profileEditor": {
     "title": "Профиль редакторы",
