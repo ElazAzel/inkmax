@@ -58,6 +58,13 @@
     "pleaseWait": "Күте тұрыңыз...",
     "comingSoon": "Жуырда"
   },
+  "fields": {
+    "name": "Аты",
+    "bio": "Өзі туралы",
+    "left": "Сол жақта",
+    "center": "Ортада",
+    "right": "Оң жақта"
+  },
   "quickStart": {
     "welcomeTitle": "60 секундта бет жасаңыз",
     "welcomeDescription": "AI сіздің нишаңызға сәйкес жеке бет жасайды",
@@ -185,6 +192,24 @@
     "dashed": "Сызықты",
     "dotted": "Нүктелі",
     "glowPulse": "Пульстеуші жарқырау"
+  },
+  "profileEditor": {
+    "title": "Профиль редакторы",
+    "subtitle": "Профиліңізді баптаңыз",
+    "cover": "Мұқаба",
+    "coverDesc": "Әдемі мұқаба қосыңыз",
+    "uploadCover": "Мұқаба жүктеу",
+    "removeCover": "Мұқабаны жою",
+    "avatar": "Аватар",
+    "avatarDesc": "Сіздің профиль фотоңыз",
+    "info": "Сіз туралы",
+    "infoDesc": "Аты мен сипаттама",
+    "style": "Орналасу",
+    "styleDesc": "Сыртқы түрін баптаңыз",
+    "position": "Позиция",
+    "yourName": "Сіздің атыңыз",
+    "yourBio": "Сіз туралы",
+    "openEditor": "Редакторды ашу"
   },
   "blockTypes": {
     "text": "Мәтін",

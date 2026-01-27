@@ -1,11 +1,11 @@
-import { memo, useState, useEffect, useRef, useCallback } from 'react';
+import { memo, useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle2, Check, X, Camera, Loader2, Settings2 } from 'lucide-react';
+import { CheckCircle2, Check, X, Camera, Loader2, Settings2, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -29,6 +29,9 @@ import { RichTextEditor } from '@/components/form-fields/RichTextEditor';
 import type { ProfileBlock as ProfileBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 
+// Lazy load full editor
+const ProfileFullEditor = lazy(() => import('./ProfileFullEditor'));
+
 interface InlineProfileEditorProps {
   block: ProfileBlockType;
   onUpdate: (updates: Partial<ProfileBlockType>) => void;
@@ -51,6 +54,7 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
   const [editedBio, setEditedBio] = useState(bio);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [isFullEditorOpen, setIsFullEditorOpen] = useState(false);
   
   // Image cropper state
   const [cropperOpen, setCropperOpen] = useState(false);
@@ -333,6 +337,17 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
 
   return (
     <div className={`relative flex flex-col ${getPositionClass()}`}>
+      {/* Full Editor Button - Floating */}
+      <Button
+        size="icon"
+        variant="secondary"
+        onClick={() => setIsFullEditorOpen(true)}
+        className="absolute top-2 left-2 z-20 h-10 w-10 rounded-xl shadow-lg bg-background/90 backdrop-blur-sm hover:bg-background"
+        title={t('profileEditor.openEditor', 'Открыть редактор')}
+      >
+        <Pencil className="h-4 w-4" />
+      </Button>
+
       {/* Hidden file input for cover upload */}
       <input
         ref={coverInputRef}
@@ -672,6 +687,16 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
         aspectRatio={cropperType === 'avatar' ? 1 : 16 / 9}
         shape={cropperType === 'avatar' ? 'circle' : 'rectangle'}
       />
+
+      {/* Full Profile Editor */}
+      <Suspense fallback={null}>
+        <ProfileFullEditor
+          block={block}
+          isOpen={isFullEditorOpen}
+          onClose={() => setIsFullEditorOpen(false)}
+          onSave={onUpdate}
+        />
+      </Suspense>
     </div>
   );
 });
