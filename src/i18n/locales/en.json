@@ -77,6 +77,38 @@
     "completeTitle": "Done! 🎉",
     "completeDescription": "Your page is ready for editing"
   },
+  "wizard": {
+    "back": "Back",
+    "next": "Next",
+    "finish": "Done",
+    "cover": {
+      "title": "Profile Cover",
+      "description": "Add a beautiful cover for your profile",
+      "placeholder": "Click to upload",
+      "gradient": "Gradient overlay",
+      "remove": "Remove cover"
+    },
+    "avatar": {
+      "title": "Your Photo",
+      "description": "Add an avatar - it helps people recognize you",
+      "hint": "Recommended: square photo at least 400×400px",
+      "size": "Avatar size"
+    },
+    "info": {
+      "title": "About You",
+      "description": "Tell about yourself - name and short description"
+    },
+    "style": {
+      "title": "Final Touches",
+      "description": "Customize profile appearance",
+      "position": "Avatar position",
+      "ready": "Great! Your profile is ready to publish"
+    },
+    "preview": {
+      "name": "Your name",
+      "bio": "About you"
+    }
+  },
   "errors": {
     "pageNotFound": "Page not found",
     "invalidLink": "Check the link or the page may have been deleted",
