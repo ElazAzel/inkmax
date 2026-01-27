@@ -19,10 +19,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
@@ -40,12 +37,13 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { getTranslatedString, migrateToMultilingual, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getTranslatedString, createMultilingualString, isMultilingualString, type SupportedLanguage, type MultilingualString } from '@/lib/i18n-helpers';
 import { compressImage } from '@/lib/image-compression';
 import { supabase } from '@/platform/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { ImageCropper } from '@/components/form-fields/ImageCropper';
+import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import type { ProfileBlock as ProfileBlockType } from '@/types/page';
 
 interface ProfileFullEditorProps {
@@ -252,8 +250,8 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
         className="hidden"
       />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <TabsList className="grid grid-cols-4 mx-4 mb-4 h-12 rounded-2xl bg-muted/50 p-1">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        <TabsList className="grid grid-cols-4 mx-4 mb-4 h-12 rounded-2xl bg-muted/50 p-1 shrink-0">
           <TabsTrigger value="cover" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <Image className="h-4 w-4" />
           </TabsTrigger>
@@ -268,7 +266,7 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
           </TabsTrigger>
         </TabsList>
 
-        <ScrollArea className="flex-1">
+        <div className="flex-1 overflow-y-auto min-h-0">
           <div className="px-5 pb-6 space-y-6">
             {/* Cover Tab */}
             <TabsContent value="cover" className="mt-0 space-y-5">
@@ -494,38 +492,26 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
             <TabsContent value="info" className="mt-0 space-y-5">
               <div className="text-center mb-4">
                 <h3 className="text-lg font-bold">{t('profileEditor.info', 'О вас')}</h3>
-                <p className="text-sm text-muted-foreground">{t('profileEditor.infoDesc', 'Имя и описание')}</p>
+                <p className="text-sm text-muted-foreground">{t('profileEditor.infoDesc', 'Имя и описание на 3 языках')}</p>
               </div>
 
-              {/* Name Input */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">{t('fields.name', 'Имя')}</Label>
-                <Input
-                  value={name}
-                  onChange={(e) => {
-                    const newName = migrateToMultilingual(e.target.value);
-                    setFormData(prev => ({ ...prev, name: newName }));
-                  }}
-                  placeholder={t('profile.namePlaceholder', 'Ваше имя')}
-                  className="h-14 text-lg rounded-2xl border-2 focus:border-primary"
-                />
-              </div>
+              {/* Multilingual Name Input */}
+              <MultilingualInput
+                label={t('fields.name', 'Имя')}
+                value={isMultilingualString(formData.name) ? formData.name : createMultilingualString(name)}
+                onChange={(newName: MultilingualString) => setFormData(prev => ({ ...prev, name: newName }))}
+                type="input"
+                placeholder={t('profile.namePlaceholder', 'Ваше имя')}
+              />
 
-              {/* Bio Input */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">{t('fields.bio', 'О себе')}</Label>
-                <Textarea
-                  value={bio}
-                  onChange={(e) => {
-                    const newBio = migrateToMultilingual(e.target.value);
-                    setFormData(prev => ({ ...prev, bio: newBio }));
-                  }}
-                  placeholder={t('profile.bioPlaceholder', 'Расскажите о себе...')}
-                  className="min-h-[120px] text-base rounded-2xl border-2 focus:border-primary resize-none"
-                  rows={4}
-                />
-                <p className="text-xs text-muted-foreground text-right">{bio.length}/200</p>
-              </div>
+              {/* Multilingual Bio Input */}
+              <MultilingualInput
+                label={t('fields.bio', 'О себе')}
+                value={isMultilingualString(formData.bio) ? formData.bio : createMultilingualString(bio)}
+                onChange={(newBio: MultilingualString) => setFormData(prev => ({ ...prev, bio: newBio }))}
+                type="textarea"
+                placeholder={t('profile.bioPlaceholder', 'Расскажите о себе...')}
+              />
             </TabsContent>
 
             {/* Style Tab */}
@@ -593,7 +579,7 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
               </div>
             </TabsContent>
           </div>
-        </ScrollArea>
+        </div>
       </Tabs>
 
       {/* Image Cropper */}
