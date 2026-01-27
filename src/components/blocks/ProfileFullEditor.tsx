@@ -4,6 +4,7 @@
  */
 import { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { 
   Drawer, 
   DrawerContent, 
@@ -34,9 +35,11 @@ import {
   X,
   ChevronLeft,
   Trash2,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { getTranslatedString, createMultilingualString, isMultilingualString, type SupportedLanguage, type MultilingualString } from '@/lib/i18n-helpers';
 import { compressImage } from '@/lib/image-compression';
 import { supabase } from '@/platform/supabase/client';
@@ -44,7 +47,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { ImageCropper } from '@/components/form-fields/ImageCropper';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import type { ProfileBlock as ProfileBlockType } from '@/types/page';
+import { FrameSelector } from '@/components/profile/FrameSelector';
+import { NameAnimationSelector } from '@/components/profile/NameAnimationSelector';
+import { NAME_ANIMATION_CSS, getNameAnimationClass } from '@/lib/profile-frame-system';
+import type { ProfileBlock as ProfileBlockType, NameAnimationType } from '@/types/page';
 
 interface ProfileFullEditorProps {
   block: ProfileBlockType;
@@ -76,20 +82,7 @@ const AVATAR_SIZES = [
   { value: 'xlarge', label: 'profile.xlarge', size: 'h-24 w-24' },
 ];
 
-const AVATAR_FRAMES = [
-  { value: 'default', label: 'frames.default' },
-  { value: 'none', label: 'frames.none' },
-  { value: 'solid', label: 'frames.solid' },
-  { value: 'gradient', label: 'frames.gradient' },
-  { value: 'gradient-sunset', label: 'frames.gradientSunset' },
-  { value: 'gradient-ocean', label: 'frames.gradientOcean' },
-  { value: 'gradient-purple', label: 'frames.gradientPurple' },
-  { value: 'neon-blue', label: 'frames.neonBlue' },
-  { value: 'neon-pink', label: 'frames.neonPink' },
-  { value: 'neon-green', label: 'frames.neonGreen' },
-  { value: 'rainbow', label: 'frames.rainbow' },
-  { value: 'rainbow-spin', label: 'frames.rainbowSpin' },
-];
+// Avatar frames are now handled by FrameSelector component with full options
 
 const SHADOW_STYLES = [
   { value: 'none', label: 'profile.none' },
@@ -113,7 +106,9 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
 }: ProfileFullEditorProps) {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { canUsePremiumFrames } = useFreemiumLimits();
   const currentLang = i18n.language as SupportedLanguage;
   
   const [formData, setFormData] = useState<Partial<ProfileBlockType>>(() => ({ ...block }));
@@ -426,43 +421,16 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                 </div>
               </div>
 
-              {/* Avatar Frame */}
+              {/* Avatar Frame - Using FrameSelector for full options with freemium */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">{t('profile.avatarFrame', 'Рамка')}</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {AVATAR_FRAMES.slice(0, 6).map((frame) => (
-                    <button
-                      key={frame.value}
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, avatarFrame: frame.value as any }))}
-                      className={cn(
-                        "py-2.5 rounded-xl border-2 text-xs font-medium transition-all",
-                        formData.avatarFrame === frame.value 
-                          ? "border-primary bg-primary/5" 
-                          : "border-border/20 hover:border-border/50"
-                      )}
-                    >
-                      {t(frame.label)}
-                    </button>
-                  ))}
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {AVATAR_FRAMES.slice(6).map((frame) => (
-                    <button
-                      key={frame.value}
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, avatarFrame: frame.value as any }))}
-                      className={cn(
-                        "py-2.5 rounded-xl border-2 text-xs font-medium transition-all",
-                        formData.avatarFrame === frame.value 
-                          ? "border-primary bg-primary/5" 
-                          : "border-border/20 hover:border-border/50"
-                      )}
-                    >
-                      {t(frame.label)}
-                    </button>
-                  ))}
-                </div>
+                <FrameSelector
+                  value={formData.avatarFrame || 'default'}
+                  onChange={(value) => setFormData(prev => ({ ...prev, avatarFrame: value }))}
+                  isPremium={canUsePremiumFrames()}
+                  avatarUrl={formData.avatar}
+                  onUpgradeClick={() => navigate('/pricing')}
+                />
               </div>
 
               {/* Shadow Style */}
@@ -485,6 +453,17 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Name Animation - Using NameAnimationSelector for full options with freemium */}
+              <div className="space-y-3">
+                <NameAnimationSelector
+                  value={(formData.nameAnimation as NameAnimationType) || 'none'}
+                  onChange={(value) => setFormData(prev => ({ ...prev, nameAnimation: value }))}
+                  isPremium={canUsePremiumFrames()}
+                  previewName={name}
+                  onUpgradeClick={() => navigate('/pricing')}
+                />
               </div>
             </TabsContent>
 
