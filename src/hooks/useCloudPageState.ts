@@ -25,19 +25,35 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastSaveVersionRef = useRef<number>(0);
+  // Track if user has made local changes that shouldn't be overwritten by cache
+  const hasLocalChangesRef = useRef<boolean>(false);
+  // Track initial load to only sync from cache once
+  const initialLoadDoneRef = useRef<boolean>(false);
 
   // Use React Query for cached page loading
   const { data: userData, isLoading: loading, refetch } = useUserPage(user?.id);
   const savePageMutation = useSavePageMutation(user?.id);
   const publishPageMutation = usePublishPageMutation(user?.id);
 
-  // Update local state when cached data loads
+  // Update local state when cached data loads - ONLY on initial load
+  // This prevents cache updates from overwriting local changes
   useEffect(() => {
-    if (userData) {
+    if (userData && !initialLoadDoneRef.current) {
       setPageData(userData.pageData);
       setChatbotContext(userData.chatbotContext || '');
+      initialLoadDoneRef.current = true;
+      hasLocalChangesRef.current = false;
     }
   }, [userData]);
+
+  // Reset initial load flag when user changes (logout/login)
+  useEffect(() => {
+    if (!user) {
+      initialLoadDoneRef.current = false;
+      hasLocalChangesRef.current = false;
+      setPageData(null);
+    }
+  }, [user]);
 
   // Cleanup timer on unmount
   useEffect(() => {
