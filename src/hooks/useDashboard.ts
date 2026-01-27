@@ -20,10 +20,14 @@ import { useTokens } from '@/hooks/useTokens';
 import type { Block, ProfileBlock } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
 
+interface UseDashboardOptions {
+  onPublish?: (pageData: import('@/types/page').PageData) => void;
+}
+
 /**
  * Main dashboard state hook - composes all dashboard-related hooks
  */
-export function useDashboard() {
+export function useDashboard(options?: UseDashboardOptions) {
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const { isPremium, isLoading: premiumLoading, tier: currentTier = 'free' } = usePremiumStatus();
@@ -33,8 +37,8 @@ export function useDashboard() {
   const isMobile = useIsMobile();
   const haptic = useHapticFeedback();
 
-  // Page state from cloud
-  const pageState = useCloudPageState();
+  // Page state from cloud - with onPublish callback for versioning
+  const pageState = useCloudPageState({ onPublish: options?.onPublish });
   const { pageData, loading, addBlock, updateBlock, save, publish } = pageState;
 
   // Auth guard - redirects to /auth if not logged in

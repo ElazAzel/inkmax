@@ -13,7 +13,11 @@ import type { SaveStatus } from '@/components/editor/AutoSaveIndicator';
 // Request versioning to prevent stale writes
 let saveRequestVersion = 0;
 
-export function useCloudPageState() {
+interface UseCloudPageStateOptions {
+  onPublish?: (pageData: PageData) => void;
+}
+
+export function useCloudPageState(options?: UseCloudPageStateOptions) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [pageData, setPageData] = useState<PageData | null>(null);
@@ -179,12 +183,18 @@ export function useCloudPageState() {
       });
       const slug = await publishPageMutation.mutateAsync();
       setSaveStatus('saved');
+      
+      // Call onPublish callback to save version
+      if (options?.onPublish) {
+        options.onPublish(pageData);
+      }
+      
       return slug;
     } catch (error) {
       setSaveStatus('error');
       throw error;
     }
-  }, [user, pageData, chatbotContext, savePageMutation, publishPageMutation]);
+  }, [user, pageData, chatbotContext, savePageMutation, publishPageMutation, options]);
 
   const addBlock = useCallback((block: Block, position?: number) => {
     if (!pageData) return;
