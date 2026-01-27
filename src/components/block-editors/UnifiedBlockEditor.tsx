@@ -310,17 +310,17 @@ export const UnifiedBlockEditor = memo(function UnifiedBlockEditor({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className={cn(
-        "max-h-[90vh] overflow-hidden flex flex-col",
+        "max-h-[90vh] flex flex-col",
         "bg-card/98 backdrop-blur-2xl border border-border/20 shadow-2xl rounded-3xl",
         isProfileBlock ? "max-w-lg p-0" : "max-w-2xl"
       )}>
         {isProfileBlock ? (
-          <div className="flex flex-col h-[80vh]">
+          <div className="flex flex-col h-[80vh] overflow-hidden">
             {renderEditor()}
           </div>
         ) : (
           <>
-            <DialogHeader className="pb-4 border-b border-border/10">
+            <DialogHeader className="pb-4 border-b border-border/10 shrink-0">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
                   <BlockIcon className="h-6 w-6 text-primary" />
@@ -336,13 +336,13 @@ export const UnifiedBlockEditor = memo(function UnifiedBlockEditor({
               </div>
             </DialogHeader>
             
-            <ScrollArea className="flex-1 max-h-[60vh]">
-              <div className="py-6 space-y-5">
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <div className="py-6 space-y-5 pr-2">
                 {renderEditor()}
               </div>
-            </ScrollArea>
+            </div>
 
-            <div className="pt-4 border-t border-border/10 flex gap-4">
+            <div className="pt-4 border-t border-border/10 flex gap-4 shrink-0">
               <Button variant="outline" onClick={onClose} className="flex-1 rounded-2xl h-12">
                 {t('editor.cancel', 'Отмена')}
               </Button>
