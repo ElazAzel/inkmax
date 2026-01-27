@@ -54,7 +54,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({
     setPeriod(p);
     // Map to usePageAnalytics period type
     if (p === '7d') setAnalyticsPeriod('week');
-    else if (p === '14d') setAnalyticsPeriod('week'); // Use week for 14d as closest match
+    else if (p === '14d') setAnalyticsPeriod('two_weeks');
     else if (p === '30d') setAnalyticsPeriod('month');
   };
 

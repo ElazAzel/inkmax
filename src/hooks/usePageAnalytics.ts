@@ -58,7 +58,7 @@ export interface DeviceBreakdown {
   desktop: number;
 }
 
-export type TimePeriod = 'day' | 'week' | 'month' | 'all';
+export type TimePeriod = 'day' | 'week' | 'two_weeks' | 'month' | 'all';
 
 export function usePageAnalytics() {
   const { user } = useAuth();
@@ -103,12 +103,16 @@ export function usePageAnalytics() {
           previousStartDate = subDays(startDate, 1);
           break;
         case 'week':
-          startDate = startOfWeek(now, { weekStartsOn: 1 });
-          previousStartDate = subWeeks(startDate, 1);
+          startDate = subDays(now, 7);
+          previousStartDate = subDays(startDate, 7);
+          break;
+        case 'two_weeks':
+          startDate = subDays(now, 14);
+          previousStartDate = subDays(startDate, 14);
           break;
         case 'month':
-          startDate = startOfMonth(now);
-          previousStartDate = subMonths(startDate, 1);
+          startDate = subDays(now, 30);
+          previousStartDate = subDays(startDate, 30);
           break;
         default:
           startDate = subMonths(now, 12); // Last 12 months for "all"

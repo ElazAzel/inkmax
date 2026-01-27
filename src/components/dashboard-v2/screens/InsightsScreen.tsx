@@ -45,7 +45,8 @@ export const InsightsScreen = memo(function InsightsScreen({
 
   const handlePeriodChange = (p: Period) => {
     setPeriod(p);
-    if (p === '7d' || p === '14d') setAnalyticsPeriod('week');
+    if (p === '7d') setAnalyticsPeriod('week');
+    else if (p === '14d') setAnalyticsPeriod('two_weeks');
     else if (p === '30d') setAnalyticsPeriod('month');
   };
 
