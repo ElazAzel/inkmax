@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, MessageCircle } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/accordion';
 import { Reveal } from '@/components/motion';
 import { useMarketingAnalytics } from '@/hooks/useMarketingAnalytics';
+import { cn } from '@/lib/utils';
 
 export default function FAQSection() {
   const { t } = useTranslation();
@@ -31,12 +32,12 @@ export default function FAQSection() {
   ];
 
   return (
-    <section className="py-12 px-5 bg-muted/20">
+    <section className="py-12 px-5 bg-gradient-to-b from-muted/30 to-background">
       <div className="max-w-xl mx-auto">
         <Reveal direction="up">
           <div className="text-center mb-8">
             <Badge className="mb-3 h-6 px-3 text-xs font-medium bg-primary/10 text-primary border-primary/20 rounded-full">
-              <HelpCircle className="h-3.5 w-3.5 mr-1.5" />
+              <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
               {t('landingV5.faq.badge')}
             </Badge>
             <h2 className="text-xl sm:text-2xl font-bold mb-2">
@@ -66,7 +67,10 @@ export default function FAQSection() {
               <AccordionItem 
                 key={i}
                 value={`faq-${i}`}
-                className="rounded-xl bg-card/50 border border-border/40 px-4 overflow-hidden hover:border-primary/30 transition-colors"
+                className={cn(
+                  "rounded-xl bg-card/50 border border-border/40 px-4 overflow-hidden",
+                  "hover:border-primary/30 hover:bg-card/70 transition-all duration-200"
+                )}
               >
                 <AccordionTrigger className="text-left py-4 hover:no-underline group">
                   <span className="font-medium text-sm sm:text-base group-hover:text-primary transition-colors pr-2">

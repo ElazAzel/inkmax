@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Check, ArrowDown } from 'lucide-react';
+import { AlertTriangle, Check, ArrowDown, X } from 'lucide-react';
 import { Reveal, Stagger } from '@/components/motion';
+import { cn } from '@/lib/utils';
 
 export default function ProblemSolutionSection() {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export default function ProblemSolutionSection() {
   ];
 
   return (
-    <section className="py-12 px-5 bg-muted/20">
+    <section className="py-12 px-5 bg-gradient-to-b from-muted/30 to-background">
       <div className="max-w-xl mx-auto">
         {/* Problem */}
         <Reveal direction="up">
@@ -42,9 +43,15 @@ export default function ProblemSolutionSection() {
           {problems.map((problem, i) => (
             <div 
               key={i}
-              className="flex items-start gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/10"
+              className={cn(
+                "flex items-start gap-3 p-3 rounded-xl",
+                "bg-destructive/5 border border-destructive/10",
+                "hover:bg-destructive/8 transition-colors"
+              )}
             >
-              <span className="text-destructive mt-0.5">✗</span>
+              <div className="h-5 w-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <X className="h-3 w-3 text-destructive" />
+              </div>
               <div>
                 <p className="text-sm font-medium">{problem.title}</p>
                 <p className="text-xs text-muted-foreground">{problem.desc}</p>
@@ -55,8 +62,10 @@ export default function ProblemSolutionSection() {
 
         {/* Arrow */}
         <Reveal delay={300} direction="fade">
-          <div className="flex justify-center my-4">
-            <ArrowDown className="h-6 w-6 text-primary animate-bounce" />
+          <div className="flex justify-center my-5">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <ArrowDown className="h-5 w-5 text-primary animate-bounce" />
+            </div>
           </div>
         </Reveal>
 
@@ -81,9 +90,15 @@ export default function ProblemSolutionSection() {
           {solutions.map((solution, i) => (
             <div 
               key={i}
-              className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20"
+              className={cn(
+                "flex items-start gap-3 p-3 rounded-xl",
+                "bg-primary/5 border border-primary/20",
+                "hover:bg-primary/8 hover:border-primary/30 transition-colors"
+              )}
             >
-              <Check className="h-4 w-4 text-primary mt-0.5" />
+              <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Check className="h-3 w-3 text-primary" />
+              </div>
               <div>
                 <p className="text-sm font-medium">{solution.title}</p>
                 <p className="text-xs text-muted-foreground">{solution.desc}</p>

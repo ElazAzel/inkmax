@@ -3,19 +3,22 @@
  * Human-centric copywriting, conversion optimized, SEO/AIO ready
  * Mobile-first, performance focused
  */
-import { Suspense, lazy, useCallback, useEffect, useState, useRef } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { useLandingAnalytics } from '@/hooks/useLandingAnalytics';
 import { useMarketingAnalytics } from '@/hooks/useMarketingAnalytics';
+import { Sparkles } from 'lucide-react';
 
-// Lazy load sections for performance
-const HeroSection = lazy(() => import('@/components/landing-v5/HeroSection'));
-const ProblemSolutionSection = lazy(() => import('@/components/landing-v5/ProblemSolutionSection'));
+// Critical sections - eager load for LCP
+import HeroSection from '@/components/landing-v5/HeroSection';
+import ProblemSolutionSection from '@/components/landing-v5/ProblemSolutionSection';
+import NavBar from '@/components/landing-v5/NavBar';
+import SEOHead from '@/components/landing-v5/SEOHead';
+
+// Lazy load below-the-fold sections for performance
 const HowItWorksSection = lazy(() => import('@/components/landing-v5/HowItWorksSection'));
 const ResultsSection = lazy(() => import('@/components/landing-v5/ResultsSection'));
 const BlocksShowcaseSection = lazy(() => import('@/components/landing-v5/BlocksShowcaseSection'));
@@ -26,17 +29,20 @@ const SEOExplainerSection = lazy(() => import('@/components/landing-v5/SEOExplai
 const FAQSection = lazy(() => import('@/components/landing-v5/FAQSection'));
 const FinalCTASection = lazy(() => import('@/components/landing-v5/FinalCTASection'));
 const FooterSection = lazy(() => import('@/components/landing-v5/FooterSection'));
-const NavBar = lazy(() => import('@/components/landing-v5/NavBar'));
-const SEOHead = lazy(() => import('@/components/landing-v5/SEOHead'));
 
 // Skeleton for lazy sections
-function SectionSkeleton() {
+function SectionSkeleton({ height = 'py-16' }: { height?: string }) {
   return (
-    <div className="py-16 px-5">
+    <div className={cn("px-5", height)}>
       <div className="max-w-xl mx-auto space-y-4">
-        <div className="h-8 bg-muted/50 rounded-lg w-2/3 mx-auto animate-pulse" />
-        <div className="h-4 bg-muted/30 rounded w-full animate-pulse" />
-        <div className="h-4 bg-muted/30 rounded w-4/5 animate-pulse" />
+        <div className="h-6 bg-muted/40 rounded-full w-24 mx-auto" />
+        <div className="h-8 bg-muted/50 rounded-lg w-2/3 mx-auto" />
+        <div className="h-4 bg-muted/30 rounded w-full" />
+        <div className="h-4 bg-muted/30 rounded w-4/5" />
+        <div className="grid grid-cols-2 gap-3 mt-6">
+          <div className="h-24 bg-muted/40 rounded-xl" />
+          <div className="h-24 bg-muted/40 rounded-xl" />
+        </div>
       </div>
     </div>
   );
@@ -45,7 +51,6 @@ function SectionSkeleton() {
 export default function LandingV5() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const isMobile = useIsMobile();
   const [showFloatingCta, setShowFloatingCta] = useState(false);
   const { trackCtaClick } = useLandingAnalytics();
   const { trackMarketingEvent } = useMarketingAnalytics();
@@ -80,33 +85,25 @@ export default function LandingV5() {
 
   return (
     <>
-      <Suspense fallback={null}>
-        <SEOHead language={i18n.language} />
-      </Suspense>
+      <SEOHead language={i18n.language} />
       
       <div className="min-h-screen bg-background overflow-x-hidden">
-        {/* Navigation */}
-        <Suspense fallback={null}>
-          <NavBar 
-            onCreatePage={() => handleCreatePage('nav')}
-            onViewExamples={() => handleViewExamples('nav')}
-          />
-        </Suspense>
+        {/* Navigation - Critical */}
+        <NavBar 
+          onCreatePage={() => handleCreatePage('nav')}
+          onViewExamples={() => handleViewExamples('nav')}
+        />
 
         {/* Main content */}
         <main>
-          {/* 1. HERO */}
-          <Suspense fallback={<SectionSkeleton />}>
-            <HeroSection 
-              onCreatePage={() => handleCreatePage('hero')}
-              onViewExamples={() => handleViewExamples('hero')}
-            />
-          </Suspense>
+          {/* 1. HERO - Critical for LCP */}
+          <HeroSection 
+            onCreatePage={() => handleCreatePage('hero')}
+            onViewExamples={() => handleViewExamples('hero')}
+          />
 
-          {/* 2. PROBLEM → SOLUTION */}
-          <Suspense fallback={<SectionSkeleton />}>
-            <ProblemSolutionSection />
-          </Suspense>
+          {/* 2. PROBLEM → SOLUTION - Critical */}
+          <ProblemSolutionSection />
 
           {/* 3. HOW IT WORKS (3 steps) */}
           <Suspense fallback={<SectionSkeleton />}>
@@ -123,7 +120,7 @@ export default function LandingV5() {
           </Suspense>
 
           {/* 5. BLOCKS SHOWCASE */}
-          <Suspense fallback={<SectionSkeleton />}>
+          <Suspense fallback={<SectionSkeleton height="py-12" />}>
             <BlocksShowcaseSection />
           </Suspense>
 
@@ -135,7 +132,7 @@ export default function LandingV5() {
           </Suspense>
 
           {/* 7. TRUST / PROOF */}
-          <Suspense fallback={<SectionSkeleton />}>
+          <Suspense fallback={<SectionSkeleton height="py-12" />}>
             <TrustSection />
           </Suspense>
 
@@ -149,7 +146,7 @@ export default function LandingV5() {
           </Suspense>
 
           {/* 9. SEO EXPLAINER (AI-friendly) */}
-          <Suspense fallback={<SectionSkeleton />}>
+          <Suspense fallback={<SectionSkeleton height="py-12" />}>
             <SEOExplainerSection />
           </Suspense>
 
@@ -159,7 +156,7 @@ export default function LandingV5() {
           </Suspense>
 
           {/* 11. FINAL CTA */}
-          <Suspense fallback={<SectionSkeleton />}>
+          <Suspense fallback={<SectionSkeleton height="py-16" />}>
             <FinalCTASection 
               onCreatePage={() => handleCreatePage('final_cta')}
               onViewExamples={() => handleViewExamples('final_cta')}
@@ -178,8 +175,14 @@ export default function LandingV5() {
             <Button 
               size="lg"
               onClick={() => handleCreatePage('floating')}
-              className="h-12 px-6 rounded-full font-bold shadow-2xl shadow-primary/30"
+              className={cn(
+                "h-12 px-6 rounded-full font-bold",
+                "bg-gradient-to-r from-primary to-primary/90",
+                "shadow-2xl shadow-primary/30 hover:shadow-primary/40",
+                "hover:scale-[1.02] active:scale-[0.98] transition-all"
+              )}
             >
+              <Sparkles className="h-4 w-4 mr-2" />
               {t('landingV5.floatingCta')}
             </Button>
           </div>
