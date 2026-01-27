@@ -33,7 +33,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ru, kk, enUS } from 'date-fns/locale';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
-import { BrowserQRCodeReader } from '@zxing/browser';
+import { BrowserMultiFormatReader } from '@zxing/browser';
 
 interface ScanResult {
   ticketCode: string;
@@ -69,7 +69,7 @@ export default function EventScanner() {
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const readerRef = useRef<BrowserQRCodeReader | null>(null);
+  const readerRef = useRef<BrowserMultiFormatReader | null>(null);
   const controlsRef = useRef<{ stop: () => void } | null>(null);
 
   const locale = i18n.language === 'ru' ? ru : i18n.language === 'kk' ? kk : enUS;
@@ -288,41 +288,33 @@ export default function EventScanner() {
     try {
       setCameraError(null);
       
-      // First get the camera stream directly
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: 'environment' },
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-        },
-        audio: false,
-      });
-      
-      // Assign stream to video element
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      
-      streamRef.current = stream;
-      
       // Initialize QR reader
       if (!readerRef.current) {
-        readerRef.current = new BrowserQRCodeReader();
+        readerRef.current = new BrowserMultiFormatReader();
       }
 
-      // Start decoding from the video element that already has the stream
-      const controls = await readerRef.current.decodeFromVideoElement(
-        videoRef.current!,
-        (result) => {
+      // Use decodeFromVideoDevice with undefined to let browser choose camera
+      // Pass video element ID as string - this is more reliable
+      const controls = await readerRef.current.decodeFromVideoDevice(
+        undefined, // Let browser choose best camera (usually back camera)
+        'scanner-video', // Use element ID instead of ref
+        (result, error) => {
           if (result) {
             const code = result.getText();
             processScan(code);
           }
+          // Ignore errors during continuous scanning - they are expected
         }
       );
       
       controlsRef.current = controls;
+      
+      // Get the stream from the video element
+      const videoEl = document.getElementById('scanner-video') as HTMLVideoElement;
+      if (videoEl?.srcObject) {
+        streamRef.current = videoEl.srcObject as MediaStream;
+      }
+      
       setScanning(true);
       
     } catch (error) {
@@ -452,6 +444,7 @@ export default function EventScanner() {
         {!manualMode && scanning ? (
           <div className="relative aspect-square max-w-sm mx-auto w-full rounded-2xl overflow-hidden bg-black">
             <video
+              id="scanner-video"
               ref={videoRef}
               className="w-full h-full object-cover"
               autoPlay
