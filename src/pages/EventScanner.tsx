@@ -288,49 +288,36 @@ export default function EventScanner() {
     try {
       setCameraError(null);
       
-      // First, request camera permission explicitly
-      // This triggers the browser permission prompt
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      });
-      
-      // Stop the temporary stream - we'll use zxing's own stream
-      stream.getTracks().forEach(track => track.stop());
-      
       if (!readerRef.current) {
         readerRef.current = new BrowserQRCodeReader();
       }
-      
-      // Now list devices - should work after permission granted
-      const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices();
-      
-      // Prefer back camera
-      const backCamera = videoInputDevices.find(device => 
-        device.label.toLowerCase().includes('back') || 
-        device.label.toLowerCase().includes('rear') ||
-        device.label.toLowerCase().includes('environment')
-      );
-      
-      const deviceId = backCamera?.deviceId || videoInputDevices[0]?.deviceId;
-      
-      if (!deviceId) {
-        throw new Error('No camera found');
-      }
 
-      const controls = await readerRef.current.decodeFromVideoDevice(
-        deviceId,
+      // Use undefined deviceId to let zxing choose the best camera
+      // Pass video constraints directly for better compatibility
+      const controls = await readerRef.current.decodeFromConstraints(
+        {
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          }
+        },
         videoRef.current!,
         (result) => {
           if (result) {
             const code = result.getText();
             processScan(code);
           }
-          // Ignore errors during continuous scanning
         }
       );
       
       controlsRef.current = controls;
-      streamRef.current = videoRef.current?.srcObject as MediaStream || null;
+      
+      // Get the stream from the video element after zxing sets it up
+      if (videoRef.current?.srcObject) {
+        streamRef.current = videoRef.current.srcObject as MediaStream;
+      }
+      
       setScanning(true);
       
     } catch (error) {
@@ -347,8 +334,6 @@ export default function EventScanner() {
         } else {
           errorMessage = t('events.cameraError', 'Не удалось запустить камеру');
         }
-      } else if (error instanceof Error && error.message === 'No camera found') {
-        errorMessage = t('events.noCameraFound', 'Камера не найдена на устройстве');
       } else {
         errorMessage = t('events.cameraError', 'Не удалось запустить камеру');
       }
@@ -464,6 +449,7 @@ export default function EventScanner() {
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
+              autoPlay
               playsInline
               muted
             />
