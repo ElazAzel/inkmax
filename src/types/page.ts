@@ -119,6 +119,7 @@ export interface ProductBlock {
   currency: Currency;
   image?: string;
   buyLink?: string;
+  buttonText?: string | MultilingualString;
   alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
@@ -247,6 +248,7 @@ export interface DownloadBlock {
   fileName: string;
   fileSize?: string;
   icon?: string;
+  buttonText?: string | MultilingualString;
   alignment?: 'left' | 'center' | 'right';
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
@@ -451,6 +453,7 @@ export interface CommunityBlock {
   icon?: 'users' | 'crown' | 'star' | 'heart' | 'zap' | 'lock';
   memberCount?: string; // e.g., "500+ участников"
   style?: 'default' | 'premium' | 'exclusive';
+  buttonText?: string | MultilingualString;
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }

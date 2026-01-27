@@ -63,7 +63,8 @@
     "bio": "Bio",
     "left": "Left",
     "center": "Center",
-    "right": "Right"
+    "right": "Right",
+    "buttonText": "Button Text"
   },
   "quickStart": {
     "welcomeTitle": "Create your page in 60 seconds",

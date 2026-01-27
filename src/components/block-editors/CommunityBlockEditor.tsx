@@ -85,6 +85,14 @@ export function CommunityBlockEditor({ formData, onChange }: CommunityBlockEdito
         />
       </div>
 
+      {/* Button Text */}
+      <MultilingualInput
+        label={t('fields.buttonText', 'Текст кнопки')}
+        value={typeof formData.buttonText === 'string' ? createMultilingualString(formData.buttonText) : (formData.buttonText || createMultilingualString(''))}
+        onChange={(value) => onChange({ buttonText: value })}
+        placeholder={t('blocks.community.join', 'Вступить')}
+      />
+
       {/* Icon */}
       <div className="space-y-2">
         <Label>{t('blocks.community.icon', 'Иконка')}</Label>

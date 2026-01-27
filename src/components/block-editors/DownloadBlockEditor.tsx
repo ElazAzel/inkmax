@@ -37,6 +37,13 @@ function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
         placeholder="Brief description of the file"
       />
 
+      <MultilingualInput
+        label={t('fields.buttonText', 'Button Text')}
+        value={migrateToMultilingual(formData.buttonText)}
+        onChange={(value) => onChange({ ...formData, buttonText: value })}
+        placeholder={t('actions.download', 'Download')}
+      />
+
       <FileUpload
         label={t('fields.file', 'Файл')}
         value={formData.fileUrl || ''}
