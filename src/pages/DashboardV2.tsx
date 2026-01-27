@@ -2,7 +2,7 @@
  * DashboardV2 - New mobile-first dashboard with multi-page support
  * Entry point for the redesigned dashboard experience
  */
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { useDashboard } from '@/hooks/useDashboard';
 import { useMultiPage } from '@/hooks/useMultiPage';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { useEditorHistory } from '@/hooks/useEditorHistory';
+import { usePageVersions } from '@/hooks/usePageVersions';
 
 // SEO
 import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
@@ -30,7 +31,7 @@ import {
   MonetizeScreen,
   SettingsScreen,
 } from '@/components/dashboard-v2/screens';
-import { CreatePageDialog } from '@/components/dashboard-v2/dialogs';
+import { CreatePageDialog, PageVersionsDialog } from '@/components/dashboard-v2/dialogs';
 
 // Modals & Panels (reused from v1)
 import { UnifiedBlockEditor } from '@/components/block-editors/UnifiedBlockEditor';
@@ -102,6 +103,19 @@ export default function DashboardV2() {
   const [showMarketplace, setShowMarketplace] = useState(false);
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [showCreatePage, setShowCreatePage] = useState(false);
+  const [showVersions, setShowVersions] = useState(false);
+
+  // Page versions
+  const handleRestoreVersion = useCallback((blocks: any[], theme?: any, seo?: any) => {
+    dashboard.updatePageDataPartial({
+      blocks,
+      theme: theme || dashboard.pageData?.theme,
+      seo: seo ? { ...dashboard.pageData?.seo, ...seo } : dashboard.pageData?.seo,
+    });
+    setShowVersions(false);
+  }, [dashboard]);
+
+  const pageVersions = usePageVersions(handleRestoreVersion);
 
   // SEO
   const canonical = 'https://lnkmx.my/dashboard';
@@ -115,6 +129,28 @@ export default function DashboardV2() {
       setShowQuickStart(true);
     }
   }, [dashboard.pageData?.blocks.length]);
+
+  // Save version when page is published
+  const wasPublishedRef = useRef(dashboard.pageData?.isPublished);
+  useEffect(() => {
+    const isNowPublished = dashboard.pageData?.isPublished;
+    const wasPublished = wasPublishedRef.current;
+    
+    // Save version on initial load if published, or when first publishing
+    if (isNowPublished && dashboard.pageData?.id) {
+      // Only save on state change from unpublished to published
+      if (!wasPublished) {
+        pageVersions.saveVersion(
+          dashboard.pageData.id,
+          dashboard.pageData.blocks,
+          dashboard.pageData.theme,
+          dashboard.pageData.seo
+        );
+      }
+    }
+    
+    wasPublishedRef.current = isNowPublished;
+  }, [dashboard.pageData?.isPublished, dashboard.pageData?.id]);
 
   // Handle tab change - navigate to the proper route
   const handleTabChange = useCallback((tabId: string) => {
@@ -269,6 +305,7 @@ export default function DashboardV2() {
               onOpenTemplates={() => setTemplateGalleryOpen(true)}
               onOpenMarketplace={() => setShowMarketplace(true)}
               pageSwitcher={pageSwitcherElement}
+              onOpenVersions={() => setShowVersions(true)}
             />
           )}
 
@@ -293,6 +330,7 @@ export default function DashboardV2() {
               canRedo={editorHistory.canRedo}
               onUndo={editorHistory.undo}
               onRedo={editorHistory.redo}
+              onOpenVersions={() => setShowVersions(true)}
             />
           )}
 
@@ -522,6 +560,17 @@ export default function DashboardV2() {
           onOpenChange={dashboard.sharingState.closeShareDialog}
           userId={dashboard.user?.id}
           publishedUrl={dashboard.sharingState.publishedUrl}
+        />
+
+        {/* Page Versions Dialog */}
+        <PageVersionsDialog
+          open={showVersions}
+          onClose={() => setShowVersions(false)}
+          versions={pageVersions.versions}
+          loading={pageVersions.loading}
+          onRestore={pageVersions.restoreVersion}
+          pageId={dashboard.pageData?.id}
+          onFetch={pageVersions.fetchVersions}
         />
       </div>
     </>
