@@ -97,7 +97,16 @@
     "buttonText": "Button Text"
   },
   "hints": {
-    "bioLinks": "Tip: Add links with [text](url) format"
+    "bioLinks": "Tip: Add links with [text](url) format",
+    "richTextVisual": "Use the 🔗 button to add links. Line breaks are preserved."
+  },
+  "richText": {
+    "insertLink": "Insert link",
+    "linkText": "Link text",
+    "linkTextPlaceholder": "e.g.: click here",
+    "linkUrl": "URL",
+    "insert": "Insert",
+    "removeLinks": "Remove all links"
   },
   "quickStart": {
     "welcomeTitle": "Create your page in 60 seconds",
