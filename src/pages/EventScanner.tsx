@@ -33,6 +33,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ru, kk, enUS } from 'date-fns/locale';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
+import { BrowserQRCodeReader } from '@zxing/browser';
 
 interface ScanResult {
   ticketCode: string;
@@ -68,8 +69,8 @@ export default function EventScanner() {
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const scanIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const readerRef = useRef<BrowserQRCodeReader | null>(null);
+  const controlsRef = useRef<{ stop: () => void } | null>(null);
 
   const locale = i18n.language === 'ru' ? ru : i18n.language === 'kk' ? kk : enUS;
 
@@ -282,41 +283,62 @@ export default function EventScanner() {
     setManualCode('');
   }, [processing, recentScans, checkInTicket]);
 
-  // Start camera
+  // Start camera with QR reader
   const startCamera = useCallback(async () => {
     try {
       setCameraError(null);
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }
-      });
       
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+      if (!readerRef.current) {
+        readerRef.current = new BrowserQRCodeReader();
       }
-      setScanning(true);
       
-      // Note: Real QR scanning would require a library like @zxing/browser
-      // For MVP, we use manual input mode as primary
-      toast.info(t('events.cameraStarted', 'Камера запущена. Используйте ручной ввод для надежности.'));
+      const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices();
+      
+      // Prefer back camera
+      const backCamera = videoInputDevices.find(device => 
+        device.label.toLowerCase().includes('back') || 
+        device.label.toLowerCase().includes('rear') ||
+        device.label.toLowerCase().includes('environment')
+      );
+      
+      const deviceId = backCamera?.deviceId || videoInputDevices[0]?.deviceId;
+      
+      if (!deviceId) {
+        throw new Error('No camera found');
+      }
+
+      const controls = await readerRef.current.decodeFromVideoDevice(
+        deviceId,
+        videoRef.current!,
+        (result, error) => {
+          if (result) {
+            const code = result.getText();
+            processScan(code);
+          }
+          // Ignore errors during continuous scanning
+        }
+      );
+      
+      controlsRef.current = controls;
+      streamRef.current = videoRef.current?.srcObject as MediaStream || null;
+      setScanning(true);
       
     } catch (error) {
       console.error('Camera error:', error);
       setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
       setManualMode(true);
     }
-  }, [t]);
+  }, [t, processScan]);
 
   // Stop camera
   const stopCamera = useCallback(() => {
+    if (controlsRef.current) {
+      controlsRef.current.stop();
+      controlsRef.current = null;
+    }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
-    }
-    if (scanIntervalRef.current) {
-      clearInterval(scanIntervalRef.current);
-      scanIntervalRef.current = null;
     }
     setScanning(false);
   }, []);
@@ -410,7 +432,7 @@ export default function EventScanner() {
               playsInline
               muted
             />
-            <canvas ref={canvasRef} className="hidden" />
+            {/* Canvas removed - using zxing video directly */}
             
             {/* Scan overlay */}
             <div className="absolute inset-0 flex items-center justify-center">

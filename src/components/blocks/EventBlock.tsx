@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus, Users, AlertCircle } from 'lucide-react';
+import { CalendarDays, MapPin, Mail, Ticket, CheckCircle2, ArrowRight, UserPlus, Users, AlertCircle, CalendarPlus, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru, kk } from 'date-fns/locale';
 import { Card } from '@/components/ui/card';
@@ -14,12 +14,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/platform/supabase/client';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { getCurrencySymbol } from '@/components/form-fields/CurrencySelect';
 import { getEventRegistrationCount, isEmailRegistered } from '@/services/events';
+import { downloadICS, getGoogleCalendarUrl, type CalendarEvent } from '@/lib/calendar-utils';
 import type { EventBlock as EventBlockType, EventFormField } from '@/types/page';
 
 interface EventBlockProps {
@@ -537,6 +539,60 @@ export const EventBlock = memo(function EventBlock({
                   </div>
                   <div className="text-xl font-semibold">{ticketCode}</div>
                 </div>
+                
+                {/* Add to Calendar */}
+                {block.startAt && (
+                  <div className="rounded-xl border border-border/60 p-4 space-y-3">
+                    <p className="text-sm font-medium flex items-center gap-2">
+                      <CalendarPlus className="h-4 w-4" />
+                      {t('event.addToCalendar', 'Добавить в календарь')}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <CalendarPlus className="h-4 w-4 mr-2" />
+                            {t('event.calendar', 'Календарь')}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              const calendarEvent: CalendarEvent = {
+                                title,
+                                description: description || undefined,
+                                location: block.locationValue || undefined,
+                                startAt: block.startAt!,
+                                endAt: block.endAt || undefined,
+                                timezone: block.timezone || undefined,
+                              };
+                              window.open(getGoogleCalendarUrl(calendarEvent), '_blank');
+                            }}
+                          >
+                            Google Calendar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              const calendarEvent: CalendarEvent = {
+                                title,
+                                description: description || undefined,
+                                location: block.locationValue || undefined,
+                                startAt: block.startAt!,
+                                endAt: block.endAt || undefined,
+                                timezone: block.timezone || undefined,
+                              };
+                              downloadICS(calendarEvent, `${title.replace(/[^a-zA-Z0-9]/g, '_')}.ics`);
+                            }}
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            {t('event.downloadICS', 'Скачать .ics')}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                )}
+
                 {!user && (
                   <div className="rounded-xl border border-border/60 p-4 space-y-3">
                     <p className="text-sm">
