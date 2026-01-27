@@ -1,14 +1,12 @@
 # =============================================================================
 # lnkmx.my robots.txt
 # Canonical Domain: https://lnkmx.my (no www, HTTPS only)
-# Last Updated: 2025-02-01
+# Last Updated: 2026-01-27
 # =============================================================================
 
 # Default rules for all crawlers
 User-agent: *
 Allow: /
-
-# Block private/admin routes
 Disallow: /api/
 Disallow: /admin
 Disallow: /dashboard
@@ -24,45 +22,12 @@ Disallow: /crm/
 Disallow: /event-scanner
 Disallow: /legacy
 
-# Block file types that shouldn't be indexed
-Disallow: /*.json$
-Disallow: /*.js.map$
-Disallow: /*.css.map$
-
-# Block query parameters that create duplicates (handled via canonical)
-Disallow: /*?utm_*
-Disallow: /*?ref=*
-Disallow: /*?source=*
-Disallow: /*?fbclid=*
-Disallow: /*?gclid=*
-
-# =============================================================================
-# Sitemaps
-# =============================================================================
-# Static fallback sitemap (always available)
+# Sitemap (static fallback, dynamic via Edge Function)
 Sitemap: https://lnkmx.my/sitemap.xml
 
-# Dynamic sitemap via Edge Function (includes all published user pages)
-Sitemap: https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/generate-sitemap
-
 # =============================================================================
-# Crawl Rate Limiting
+# Search Engine Bots
 # =============================================================================
-Crawl-delay: 1
-
-# =============================================================================
-# AI Crawlers - Welcome! We provide structured Schema.org data
-# =============================================================================
-User-agent: GPTBot
-Allow: /
-Crawl-delay: 2
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
 User-agent: Googlebot
 Allow: /
 
@@ -77,7 +42,6 @@ Allow: /
 
 User-agent: bingbot
 Allow: /
-Crawl-delay: 2
 
 User-agent: Slurp
 Allow: /
@@ -90,9 +54,17 @@ Allow: /
 
 User-agent: YandexBot
 Allow: /
-Crawl-delay: 2
 
-User-agent: CCBot
+# =============================================================================
+# AI Crawlers
+# =============================================================================
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
 Allow: /
 
 User-agent: anthropic-ai
@@ -104,19 +76,15 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: YouBot
-Allow: /
-
 User-agent: Applebot
 Allow: /
 
 User-agent: Applebot-Extended
 Allow: /
 
-User-agent: Bytespider
-Allow: /
-Crawl-delay: 5
-
+# =============================================================================
+# Social Media Bots
+# =============================================================================
 User-agent: facebookexternalhit
 Allow: /
 
@@ -130,7 +98,7 @@ User-agent: TelegramBot
 Allow: /
 
 # =============================================================================
-# Block Bad Bots
+# Block SEO Scraper Bots
 # =============================================================================
 User-agent: AhrefsBot
 Disallow: /
