@@ -496,6 +496,7 @@ export interface BookingBlock {
   dailyReminderEnabled?: boolean; // Send daily reminder about today's bookings
   dailyReminderTime?: string; // Time for daily reminder in HH:MM format (default: 08:50)
   weeklyMotivationEnabled?: boolean; // Send weekly motivation on Mondays at 9:00
+  buttonText?: string | MultilingualString; // Custom button text
   isPremium: true;
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
@@ -607,6 +608,7 @@ export interface EventBlock {
     shuffleQuestions?: boolean;
     confirmationMessage_i18n?: MultilingualString;
   };
+  buttonText?: MultilingualString; // Custom button text
   schedule?: BlockSchedule;
   blockStyle?: BlockStyle;
 }

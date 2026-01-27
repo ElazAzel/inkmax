@@ -109,6 +109,16 @@ export function BookingBlockEditor({ formData, onChange }: BookingBlockEditorPro
             type="textarea"
             placeholder={t('bookingBlock.descriptionPlaceholder', 'Выберите удобное время для записи')}
           />
+
+          <MultilingualInput
+            label={t('bookingBlock.buttonText', 'Текст кнопки')}
+            value={isMultilingualString(block.buttonText) 
+              ? block.buttonText 
+              : createMultilingualString(typeof block.buttonText === 'string' ? block.buttonText : '')}
+            onChange={(val) => handleChange({ buttonText: val })}
+            type="input"
+            placeholder={t('bookingBlock.buttonTextPlaceholder', 'Записаться')}
+          />
         </div>
 
         <Separator />

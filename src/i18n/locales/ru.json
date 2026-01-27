@@ -2488,7 +2488,9 @@
     "dailyReminderDesc": "Получите список записей на сегодня",
     "reminderTime": "Время напоминания",
     "weeklyMotivation": "Мотивация на неделю",
-    "weeklyMotivationDesc": "Понедельник в 9:00 - персональное вдохновение"
+    "weeklyMotivationDesc": "Понедельник в 9:00 - персональное вдохновение",
+    "buttonText": "Текст кнопки",
+    "buttonTextPlaceholder": "Записаться"
   },
   "mapBlock": {
     "address": "Адрес",
@@ -2652,7 +2654,9 @@
     "addOption": "Добавить вариант",
     "optionPlaceholder": "Вариант ответа",
     "scaleMin": "От",
-    "scaleMax": "До"
+    "scaleMax": "До",
+    "buttonText": "Текст кнопки",
+    "buttonTextPlaceholder": "Зарегистрироваться"
   },
   "eventFields": {
     "shortText": "Короткий текст",
