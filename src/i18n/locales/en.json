@@ -58,6 +58,13 @@
     "pleaseWait": "Please wait...",
     "comingSoon": "Coming soon"
   },
+  "fields": {
+    "name": "Name",
+    "bio": "Bio",
+    "left": "Left",
+    "center": "Center",
+    "right": "Right"
+  },
   "quickStart": {
     "welcomeTitle": "Create your page in 60 seconds",
     "welcomeDescription": "AI will generate a personalized page based on your niche and description",
@@ -185,6 +192,24 @@
     "dashed": "Dashed",
     "dotted": "Dotted",
     "glowPulse": "Glow Pulse"
+  },
+  "profileEditor": {
+    "title": "Profile Editor",
+    "subtitle": "Customize your profile",
+    "cover": "Cover",
+    "coverDesc": "Add a beautiful cover",
+    "uploadCover": "Upload cover",
+    "removeCover": "Remove cover",
+    "avatar": "Avatar",
+    "avatarDesc": "Your profile photo",
+    "info": "About",
+    "infoDesc": "Name and bio",
+    "style": "Layout",
+    "styleDesc": "Customize appearance",
+    "position": "Position",
+    "yourName": "Your name",
+    "yourBio": "About you",
+    "openEditor": "Open editor"
   },
   "blockTypes": {
     "text": "Text",
