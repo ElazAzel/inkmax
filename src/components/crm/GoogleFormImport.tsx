@@ -1,6 +1,6 @@
 /**
  * GoogleFormImport - Dialog for importing form structure from Google Forms
- * Supports URL parsing and manual JSON import
+ * Supports URL parsing via edge function and manual JSON import
  */
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { FileText, Link, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import {
   isValidGoogleFormsUrl,
   parseGoogleFormJson,
@@ -46,8 +47,9 @@ export function GoogleFormImport({ open, onOpenChange, onImport }: GoogleFormImp
 
   const lang = (i18n.language || 'ru') as 'ru' | 'en' | 'kk';
 
-  const handleUrlCheck = () => {
+  const handleUrlImport = async () => {
     setError(null);
+    setParsedForm(null);
     
     if (!formUrl.trim()) {
       setError(t('googleForms.urlRequired', 'Введите ссылку на Google Form'));
@@ -58,11 +60,48 @@ export function GoogleFormImport({ open, onOpenChange, onImport }: GoogleFormImp
       setError(t('googleForms.invalidUrl', 'Неверная ссылка. Используйте ссылку вида docs.google.com/forms/...'));
       return;
     }
-    
-    // Due to CORS, we can't fetch directly. Show manual import instructions.
-    setError(null);
-    setActiveTab('json');
-    toast.info(t('googleForms.corsNote', 'Прямой импорт ограничен. Используйте ручной ввод структуры формы.'));
+
+    setLoading(true);
+
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('google-forms-parser', {
+        body: { url: formUrl }
+      });
+
+      if (fnError) {
+        console.error('Edge function error:', fnError);
+        setError(t('googleForms.serverError', 'Ошибка сервера. Попробуйте позже.'));
+        return;
+      }
+
+      if (data.error) {
+        const errorMessages: Record<string, string> = {
+          'url_required': t('googleForms.urlRequired', 'Введите ссылку на Google Form'),
+          'invalid_url': t('googleForms.invalidUrl', 'Неверная ссылка'),
+          'fetch_failed': t('googleForms.fetchFailed', 'Не удалось загрузить форму. Проверьте ссылку.'),
+          'form_closed': t('googleForms.formClosed', 'Форма закрыта для ответов'),
+          'form_not_public': t('googleForms.formNotPublic', 'Форма не публичная. Откройте доступ в настройках Google Forms.'),
+          'form_data_not_found': t('googleForms.formDataNotFound', 'Не удалось найти данные формы'),
+          'parse_error': t('googleForms.parseError', 'Ошибка парсинга формы'),
+        };
+        setError(errorMessages[data.error] || t('googleForms.unknownError', 'Неизвестная ошибка'));
+        return;
+      }
+
+      if (!data.fields || data.fields.length === 0) {
+        setError(t('googleForms.noFields', 'Не найдено полей для импорта'));
+        return;
+      }
+
+      setParsedForm(data as ParsedGoogleForm);
+      toast.success(t('googleForms.parseSuccess', 'Форма успешно распознана!'));
+
+    } catch (err) {
+      console.error('Import error:', err);
+      setError(t('googleForms.serverError', 'Ошибка сервера. Попробуйте позже.'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleJsonParse = () => {
@@ -145,22 +184,17 @@ export function GoogleFormImport({ open, onOpenChange, onImport }: GoogleFormImp
                 value={formUrl}
                 onChange={(e) => setFormUrl(e.target.value)}
                 placeholder="https://docs.google.com/forms/d/..."
+                disabled={loading}
               />
               <p className="text-xs text-muted-foreground">
                 {t('googleForms.urlHint', 'Форма должна быть публичной')}
               </p>
             </div>
             
-            <Button onClick={handleUrlCheck} className="w-full">
-              {t('googleForms.checkUrl', 'Проверить')}
+            <Button onClick={handleUrlImport} className="w-full" disabled={loading || !formUrl.trim()}>
+              {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+              {loading ? t('googleForms.loading', 'Загрузка...') : t('googleForms.importFromUrl', 'Импортировать')}
             </Button>
-            
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                {t('googleForms.corsWarning', 'Из-за ограничений браузера прямой импорт может быть недоступен. Используйте ручной ввод JSON.')}
-              </AlertDescription>
-            </Alert>
           </TabsContent>
 
           <TabsContent value="json" className="space-y-4">
@@ -208,19 +242,19 @@ export function GoogleFormImport({ open, onOpenChange, onImport }: GoogleFormImp
               <CheckCircle2 className="h-5 w-5" />
               <span className="font-medium">{t('googleForms.foundFields', 'Найдено полей')}: {parsedForm.fields.length}</span>
             </div>
-            <div className="space-y-1 text-sm">
-              {parsedForm.fields.slice(0, 5).map((field, idx) => (
+            {parsedForm.title && (
+              <div className="text-sm text-muted-foreground">
+                {t('googleForms.formTitle', 'Название')}: {parsedForm.title}
+              </div>
+            )}
+            <div className="space-y-1 text-sm max-h-[150px] overflow-y-auto">
+              {parsedForm.fields.map((field, idx) => (
                 <div key={idx} className="flex items-center gap-2 text-muted-foreground">
                   <span>• {field.title}</span>
                   <span className="text-xs opacity-70">({field.type})</span>
                   {field.required && <span className="text-destructive">*</span>}
                 </div>
               ))}
-              {parsedForm.fields.length > 5 && (
-                <div className="text-muted-foreground text-xs">
-                  {t('googleForms.andMore', '...и еще {{count}}', { count: parsedForm.fields.length - 5 })}
-                </div>
-              )}
             </div>
           </div>
         )}
