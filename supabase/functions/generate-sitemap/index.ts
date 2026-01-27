@@ -24,9 +24,16 @@ const STATIC_PAGES = [
   { loc: '/gallery', changefreq: 'daily', priority: '0.8' },
   { loc: '/pricing', changefreq: 'monthly', priority: '0.9' },
   { loc: '/alternatives', changefreq: 'monthly', priority: '0.8' },
+  { loc: '/experts', changefreq: 'daily', priority: '0.9' },
   { loc: '/terms', changefreq: 'yearly', priority: '0.3' },
   { loc: '/privacy', changefreq: 'yearly', priority: '0.3' },
   { loc: '/payment-terms', changefreq: 'yearly', priority: '0.3' },
+];
+
+// Niche/tag pages for experts directory
+const NICHE_TAGS = [
+  'beauty', 'coaching', 'consulting', 'design', 'education',
+  'fitness', 'health', 'marketing', 'music', 'photo', 'tech', 'other'
 ];
 
 const LANGUAGES = ['ru', 'en', 'kk'];
@@ -90,7 +97,24 @@ serve(async (req) => {
 `;
     }
 
-    // Add user pages
+    // Add niche/tag pages for experts directory
+    for (const tag of NICHE_TAGS) {
+      sitemap += `  <url>
+    <loc>${BASE_URL}/experts/${tag}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+`;
+      for (const lang of LANGUAGES) {
+        sitemap += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${BASE_URL}/experts/${tag}?lang=${lang}"/>
+`;
+      }
+      sitemap += `    <xhtml:link rel="alternate" hreflang="x-default" href="${BASE_URL}/experts/${tag}"/>
+  </url>
+`;
+    }
+
+    // Add user pages (only indexable ones)
     if (pages) {
       for (const page of pages as PublishedPage[]) {
         if (!page.slug) continue;

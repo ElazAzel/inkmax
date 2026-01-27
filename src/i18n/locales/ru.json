@@ -2969,5 +2969,27 @@
       "copyright": "© {{year}} lnkmx. Сделано в Казахстане."
     },
     "floatingCta": "Создать"
+  },
+  "experts": {
+    "title": "эксперты",
+    "directoryTitle": "Каталог экспертов | lnkmx",
+    "directoryDescription": "Найдите экспертов и специалистов на lnkmx",
+    "tagDescription": "Профили {{tag}} специалистов на lnkmx",
+    "findExperts": "Найти экспертов",
+    "onLnkmx": "на lnkmx",
+    "subtitle": "Мини-сайты экспертов, фрилансеров и малого бизнеса",
+    "searchPlaceholder": "Поиск по имени или нише...",
+    "profiles": "профилей",
+    "all": "Все",
+    "noResults": "Пока нет профилей в этой категории",
+    "beFirst": "Стать первым",
+    "views": "просмотров",
+    "noDescription": "Нет описания",
+    "ctaTitle": "Создайте свою страницу бесплатно",
+    "ctaSubtitle": "Присоединяйтесь к сообществу экспертов на lnkmx",
+    "ctaButton": "Создать страницу"
+  },
+  "footer": {
+    "rights": "Все права защищены."
   }
 }

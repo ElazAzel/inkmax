@@ -32,6 +32,7 @@ const IndexBento = lazy(() => import("./pages/IndexBento"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const PaymentTerms = lazy(() => import("./pages/PaymentTerms"));
+const Experts = lazy(() => import("./pages/Experts"));
 
 // Create router with optimized code splitting
 const router = createBrowserRouter([
@@ -61,6 +62,8 @@ const router = createBrowserRouter([
       { path: "terms", element: <Terms /> },
       { path: "privacy", element: <Privacy /> },
       { path: "payment-terms", element: <PaymentTerms /> },
+      { path: "experts", element: <Experts /> },
+      { path: "experts/:tag", element: <Experts /> },
       { path: "collab/:collabSlug", element: <CollabPage /> },
       { path: "p/:compressed", element: <PublicPage /> },
       { path: ":slug", element: <PublicPage /> },

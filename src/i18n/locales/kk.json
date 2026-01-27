@@ -2969,5 +2969,27 @@
       "copyright": "© {{year}} lnkmx. Қазақстанда жасалған."
     },
     "floatingCta": "Бет жасау"
+  },
+  "experts": {
+    "title": "сарапшылар",
+    "directoryTitle": "Сарапшылар каталогы | lnkmx",
+    "directoryDescription": "lnkmx-те сарапшылар мен мамандарды табыңыз",
+    "tagDescription": "lnkmx-те {{tag}} мамандарының профильдері",
+    "findExperts": "Сарапшыларды табу",
+    "onLnkmx": "lnkmx-те",
+    "subtitle": "Сарапшылар, фрилансерлер және шағын бизнестің мини-сайттары",
+    "searchPlaceholder": "Аты немесе нишасы бойынша іздеу...",
+    "profiles": "профиль",
+    "all": "Барлығы",
+    "noResults": "Бұл санатта әлі профильдер жоқ",
+    "beFirst": "Бірінші болыңыз",
+    "views": "көрулер",
+    "noDescription": "Сипаттама жоқ",
+    "ctaTitle": "Өз бетіңізді тегін жасаңыз",
+    "ctaSubtitle": "lnkmx сарапшылар қауымдастығына қосылыңыз",
+    "ctaButton": "Бет жасау"
+  },
+  "footer": {
+    "rights": "Барлық құқықтар қорғалған."
   }
 }

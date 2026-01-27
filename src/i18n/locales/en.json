@@ -2969,5 +2969,27 @@
       "copyright": "© {{year}} lnkmx. Made in Kazakhstan."
     },
     "floatingCta": "Create"
+  },
+  "experts": {
+    "title": "experts",
+    "directoryTitle": "Experts Directory | lnkmx",
+    "directoryDescription": "Find experts and specialists on lnkmx",
+    "tagDescription": "{{tag}} specialists profiles on lnkmx",
+    "findExperts": "Find Experts",
+    "onLnkmx": "on lnkmx",
+    "subtitle": "Mini-sites of experts, freelancers, and small businesses",
+    "searchPlaceholder": "Search by name or niche...",
+    "profiles": "profiles",
+    "all": "All",
+    "noResults": "No profiles in this category yet",
+    "beFirst": "Be the first",
+    "views": "views",
+    "noDescription": "No description",
+    "ctaTitle": "Create your page for free",
+    "ctaSubtitle": "Join the community of experts on lnkmx",
+    "ctaButton": "Create page"
+  },
+  "footer": {
+    "rights": "All rights reserved."
   }
 }
