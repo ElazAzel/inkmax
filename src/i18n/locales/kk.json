@@ -1161,6 +1161,10 @@
       "branding": "Брендтеу",
       "theme": "Тақырып және түстер",
       "themeDesc": "Түстер мен қаріптерді реттеу",
+      "templates": "Үлгілер",
+      "templatesDesc": "Дайын бет дизайндары",
+      "marketplace": "Маркетплейс",
+      "marketplaceDesc": "Қоғамдастық үлгілері",
       "errors": {
         "slug_taken": "Бұл URL бос емес",
         "invalid_slug": "Қате URL"

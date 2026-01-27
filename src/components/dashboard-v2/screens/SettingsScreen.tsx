@@ -30,6 +30,7 @@ import {
   MessageCircle,
   CreditCard,
   Lock,
+  Store,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -97,6 +98,9 @@ interface SettingsScreenProps {
   onOpenMyTemplates: () => void;
   onOpenTokens: () => void;
   onOpenAchievements: () => void;
+  onOpenTheme?: () => void;
+  onOpenMarketplace?: () => void;
+  onOpenTemplates?: () => void;
 }
 
 interface SettingsItemProps {
@@ -397,10 +401,10 @@ export const SettingsScreen = memo(function SettingsScreen(props: SettingsScreen
               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider px-1">
                 {t('dashboard.pageSettings.branding', 'Branding')}
               </h3>
-              <Card className="p-4">
+              <Card className="divide-y divide-border/50 overflow-hidden">
                 <button
-                  className="w-full flex items-center gap-4 text-left"
-                  onClick={() => {/* TODO: Open theme editor */}}
+                  className="w-full flex items-center gap-4 text-left p-4 hover:bg-muted/50 transition-colors"
+                  onClick={props.onOpenTheme}
                 >
                   <div className="h-11 w-11 rounded-2xl bg-primary/15 flex items-center justify-center">
                     <Palette className="w-5 h-5 text-primary" />
@@ -414,6 +418,36 @@ export const SettingsScreen = memo(function SettingsScreen(props: SettingsScreen
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {t('dashboard.pageSettings.themeDesc', 'Customize colors and fonts')}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </button>
+                <button
+                  className="w-full flex items-center gap-4 text-left p-4 hover:bg-muted/50 transition-colors"
+                  onClick={props.onOpenTemplates}
+                >
+                  <div className="h-11 w-11 rounded-2xl bg-emerald-500/15 flex items-center justify-center">
+                    <LayoutTemplate className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="font-medium">{t('dashboard.pageSettings.templates', 'Templates')}</span>
+                    <p className="text-sm text-muted-foreground">
+                      {t('dashboard.pageSettings.templatesDesc', 'Ready-made page designs')}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </button>
+                <button
+                  className="w-full flex items-center gap-4 text-left p-4 hover:bg-muted/50 transition-colors"
+                  onClick={props.onOpenMarketplace}
+                >
+                  <div className="h-11 w-11 rounded-2xl bg-violet-500/15 flex items-center justify-center">
+                    <Store className="w-5 h-5 text-violet-600" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="font-medium">{t('dashboard.pageSettings.marketplace', 'Marketplace')}</span>
+                    <p className="text-sm text-muted-foreground">
+                      {t('dashboard.pageSettings.marketplaceDesc', 'Community templates')}
                     </p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground" />

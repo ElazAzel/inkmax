@@ -393,6 +393,9 @@ export default function DashboardV2() {
               onOpenMyTemplates={() => setShowMyTemplates(true)}
               onOpenTokens={() => setShowTokens(true)}
               onOpenAchievements={() => setShowAchievements(true)}
+              onOpenTheme={() => navigate('/dashboard/home?tab=editor')}
+              onOpenMarketplace={() => setShowMarketplace(true)}
+              onOpenTemplates={() => setTemplateGalleryOpen(true)}
               // Page settings props
               pageTitle={multiPage.activePage?.title}
               pageSlug={multiPage.activePage?.slug}
