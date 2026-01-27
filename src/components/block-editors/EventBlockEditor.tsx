@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { ArrayFieldList } from '@/components/form-fields/ArrayFieldList';
 import { ArrayFieldItem } from '@/components/form-fields/ArrayFieldItem';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
@@ -14,6 +15,8 @@ import { createMultilingualString } from '@/lib/i18n-helpers';
 import { validateEventBlock } from '@/lib/block-validators';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
+import { GoogleFormImport } from '@/components/crm/GoogleFormImport';
+import { FileText } from 'lucide-react';
 import type { EventFieldType, EventFormField } from '@/types/page';
 
 const toLocalInputValue = (value?: string) => {
@@ -44,6 +47,7 @@ const createField = (): EventFormField => ({
 function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
   const { t } = useTranslation();
   const { isPremium } = usePremiumStatus();
+  const [showGoogleImport, setShowGoogleImport] = useState(false);
   const fields = formData.formFields || [];
 
   const typeOptions = useMemo(
@@ -118,6 +122,19 @@ function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
     onChange({ ...formData, formFields: updated });
   };
 
+  const handleGoogleFormImport = (importedFields: EventFormField[], title?: string) => {
+    // Merge imported fields with existing ones
+    const updatedFields = [...fields, ...importedFields];
+    const updates: Record<string, unknown> = { formFields: updatedFields };
+    
+    // Update title if provided and current is empty
+    if (title && (!formData.title || !formData.title.ru)) {
+      updates.title = createMultilingualString(title);
+    }
+    
+    onChange({ ...formData, ...updates });
+  };
+
   return (
     <div className="space-y-5">
       <Alert>
@@ -125,6 +142,26 @@ function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
           {t('eventBuilder.emailRequired', 'Email поле всегда добавляется автоматически и является обязательным.')}
         </AlertDescription>
       </Alert>
+
+      {/* Google Form Import Button */}
+      <div className="flex gap-2">
+        <Button 
+          type="button" 
+          variant="outline" 
+          size="sm" 
+          onClick={() => setShowGoogleImport(true)}
+          className="gap-2"
+        >
+          <FileText className="h-4 w-4" />
+          {t('eventBuilder.importFromGoogleForms', 'Импорт из Google Forms')}
+        </Button>
+      </div>
+
+      <GoogleFormImport
+        open={showGoogleImport}
+        onOpenChange={setShowGoogleImport}
+        onImport={handleGoogleFormImport}
+      />
 
       <MultilingualInput
         label={t('eventBuilder.title', 'Название события')}
