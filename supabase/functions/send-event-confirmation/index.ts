@@ -261,9 +261,9 @@ const handler = async (req: Request): Promise<Response> => {
           );
 
           const { error: emailError } = await resend.emails.send({
-            from: "LNKMX <onboarding@resend.dev>",
+            from: "LNKMX <noreply@lnkmx.my>",
             to: [ownerEmail],
-            subject: `🎫 Новая регистрация — ${eventTitle}`,
+            subject: `🎫 Новая регистрация - ${eventTitle}`,
             html: emailHTML,
           });
 

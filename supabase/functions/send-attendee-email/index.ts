@@ -337,10 +337,9 @@ const handler = async (req: Request): Promise<Response> => {
       baseUrl
     );
 
-    // Use Resend's test domain while main domain is being verified
-    // TODO: Switch to "LNKMX <noreply@linkmax.lovable.app>" after domain verification
+    // Send email via Resend using verified lnkmx.my domain
     const { data: emailResult, error: emailError } = await resend.emails.send({
-      from: "LNKMX <onboarding@resend.dev>",
+      from: "LNKMX <noreply@lnkmx.my>",
       to: [regData.attendee_email],
       subject: `🎫 ${t.subject} — ${eventTitle}`,
       html: emailHTML,
