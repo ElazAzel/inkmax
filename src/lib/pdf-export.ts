@@ -1,10 +1,12 @@
 /**
  * PDF Export utility for event registrations with analytics charts
  * Uses jsPDF for generating PDF files with tables and charts
+ * Supports Cyrillic (Russian, Kazakh) and Latin characters
  */
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { format } from 'date-fns';
+import { ru, kk, enUS } from 'date-fns/locale';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { EventFormField } from '@/types/page';
 
@@ -64,10 +66,38 @@ const CHART_COLORS = [
   [249, 115, 22],   // Orange
 ];
 
+// Roboto font base64 (subset with Cyrillic support)
+// We'll load it dynamically from Google Fonts CDN
+let fontLoaded = false;
+let fontData: string | null = null;
+
+async function loadCyrillicFont(): Promise<string | null> {
+  if (fontData) return fontData;
+  
+  try {
+    // Load Roboto font with Cyrillic subset from Google Fonts
+    const response = await fetch(
+      'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2'
+    );
+    const blob = await response.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        fontData = reader.result as string;
+        resolve(fontData);
+      };
+      reader.readAsDataURL(blob);
+    });
+  } catch (e) {
+    console.warn('Could not load Cyrillic font, using fallback');
+    return null;
+  }
+}
+
 /**
  * Export event data to PDF with analytics charts
  */
-export function exportEventToPDF({
+export async function exportEventToPDF({
   eventTitle,
   eventDate,
   eventLocation,
@@ -77,15 +107,35 @@ export function exportEventToPDF({
   language,
   includeAnalytics = true,
   includeRegistrationsList = true,
-}: PDFExportOptions): void {
+}: PDFExportOptions): Promise<void> {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
   let yPos = margin;
 
+  // Get locale for date formatting
+  const dateLocale = language === 'ru' ? ru : language === 'kk' ? kk : enUS;
+
+  // Try to load Cyrillic font
+  const font = await loadCyrillicFont();
+  if (font) {
+    try {
+      // Extract base64 data from data URL
+      const base64Data = font.split(',')[1];
+      if (base64Data) {
+        doc.addFileToVFS('Roboto-Regular.ttf', base64Data);
+        doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+        doc.setFont('Roboto');
+        fontLoaded = true;
+      }
+    } catch (e) {
+      console.warn('Could not register font:', e);
+    }
+  }
+
   // Header
-  doc.setFontSize(20);
+  doc.setFontSize(18);
   doc.setTextColor(30, 30, 30);
   doc.text(eventTitle, margin, yPos);
   yPos += 10;
@@ -94,14 +144,14 @@ export function exportEventToPDF({
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
   if (eventDate) {
-    doc.text(`📅 ${eventDate}`, margin, yPos);
+    doc.text(`${getLabel('date', language)}: ${eventDate}`, margin, yPos);
     yPos += 5;
   }
   if (eventLocation) {
-    doc.text(`📍 ${eventLocation}`, margin, yPos);
+    doc.text(`${getLabel('location', language)}: ${eventLocation}`, margin, yPos);
     yPos += 5;
   }
-  doc.text(`📊 ${getLabel('exportDate', language)}: ${format(new Date(), 'dd.MM.yyyy HH:mm')}`, margin, yPos);
+  doc.text(`${getLabel('exportDate', language)}: ${format(new Date(), 'dd.MM.yyyy HH:mm', { locale: dateLocale })}`, margin, yPos);
   yPos += 15;
 
   // Summary stats
@@ -119,35 +169,38 @@ export function exportEventToPDF({
   yPos += 30;
 
   if (includeAnalytics && analytics.statusBreakdown.length > 0) {
-    // Status pie chart
+    // Status distribution section
     doc.setFontSize(12);
     doc.setTextColor(30, 30, 30);
     doc.text(getLabel('statusDistribution', language), margin, yPos);
-    yPos += 5;
+    yPos += 8;
 
-    const pieSize = 40;
-    const pieX = margin + pieSize;
-    const pieY = yPos + pieSize;
-    
-    drawPieChart(doc, pieX, pieY, pieSize, analytics.statusBreakdown.map((s, i) => ({
-      value: s.count,
-      label: translateStatus(s.status, language),
-      color: CHART_COLORS[i % CHART_COLORS.length],
-    })));
+    // Draw horizontal bar chart for status distribution
+    const barHeight = 16;
+    const maxBarWidth = pageWidth - margin * 2 - 80;
+    const maxCount = Math.max(...analytics.statusBreakdown.map(s => s.count), 1);
 
-    // Legend
-    let legendY = yPos + 10;
     analytics.statusBreakdown.forEach((stat, i) => {
+      const barWidth = Math.max((stat.count / maxCount) * maxBarWidth, 5);
       const color = CHART_COLORS[i % CHART_COLORS.length];
-      doc.setFillColor(color[0], color[1], color[2]);
-      doc.rect(margin + pieSize * 2 + 20, legendY - 3, 8, 8, 'F');
+      
+      // Status label
       doc.setFontSize(9);
       doc.setTextColor(60, 60, 60);
-      doc.text(`${translateStatus(stat.status, language)}: ${stat.count} (${stat.percentage.toFixed(1)}%)`, margin + pieSize * 2 + 32, legendY + 2);
-      legendY += 12;
+      const statusLabel = translateStatus(stat.status, language);
+      doc.text(statusLabel, margin, yPos + barHeight / 2);
+      
+      // Bar
+      doc.setFillColor(color[0], color[1], color[2]);
+      doc.roundedRect(margin + 50, yPos, barWidth, barHeight - 4, 2, 2, 'F');
+      
+      // Count and percentage
+      doc.setFontSize(8);
+      doc.text(`${stat.count} (${stat.percentage.toFixed(1)}%)`, margin + 55 + barWidth, yPos + barHeight / 2 - 1);
+      
+      yPos += barHeight;
     });
-
-    yPos += pieSize * 2 + 10;
+    yPos += 10;
   }
 
   // Form field analytics (like Google Forms)
@@ -157,6 +210,9 @@ export function exportEventToPDF({
       if (yPos > pageHeight - 80) {
         doc.addPage();
         yPos = margin;
+        if (fontLoaded) {
+          doc.setFont('Roboto');
+        }
       }
 
       doc.setFontSize(11);
@@ -166,27 +222,38 @@ export function exportEventToPDF({
 
       if (fieldStat.type === 'choice' && fieldStat.options) {
         // Bar chart for choice fields
-        const barHeight = 12;
-        const maxBarWidth = pageWidth - margin * 2 - 60;
+        const barHeight = 14;
+        const maxBarWidth = pageWidth - margin * 2 - 80;
         const maxCount = Math.max(...fieldStat.options.map(o => o.count), 1);
 
         fieldStat.options.forEach((option, i) => {
-          const barWidth = (option.count / maxCount) * maxBarWidth;
+          if (yPos > pageHeight - 30) {
+            doc.addPage();
+            yPos = margin;
+            if (fontLoaded) {
+              doc.setFont('Roboto');
+            }
+          }
+
+          const barWidth = Math.max((option.count / maxCount) * maxBarWidth, 3);
           const color = CHART_COLORS[i % CHART_COLORS.length];
+
+          // Option label (truncate if too long)
+          doc.setFontSize(8);
+          doc.setTextColor(60, 60, 60);
+          const label = option.label.length > 25 ? option.label.slice(0, 22) + '...' : option.label;
+          doc.text(label, margin, yPos + barHeight / 2 - 1);
 
           // Bar
           doc.setFillColor(color[0], color[1], color[2]);
-          doc.roundedRect(margin, yPos, Math.max(barWidth, 2), barHeight - 2, 2, 2, 'F');
+          doc.roundedRect(margin + 55, yPos, barWidth, barHeight - 4, 2, 2, 'F');
 
-          // Label
-          doc.setFontSize(8);
-          doc.setTextColor(60, 60, 60);
-          const labelText = `${option.label}: ${option.count} (${option.percentage.toFixed(1)}%)`;
-          doc.text(labelText, margin + 5, yPos + barHeight - 5);
+          // Count
+          doc.text(`${option.count} (${option.percentage.toFixed(0)}%)`, margin + 60 + barWidth, yPos + barHeight / 2 - 1);
 
-          yPos += barHeight + 2;
+          yPos += barHeight;
         });
-        yPos += 10;
+        yPos += 8;
       }
     }
   }
@@ -200,6 +267,9 @@ export function exportEventToPDF({
 
     doc.setFontSize(14);
     doc.setTextColor(30, 30, 30);
+    if (fontLoaded) {
+      doc.setFont('Roboto');
+    }
     doc.text(getLabel('registrationsList', language), margin, yPos);
     yPos += 8;
 
@@ -222,7 +292,7 @@ export function exportEventToPDF({
         reg.attendee_phone || '-',
         translateStatus(reg.status, language),
         ticket?.ticket_code || '-',
-        format(new Date(reg.created_at), 'dd.MM.yyyy HH:mm'),
+        format(new Date(reg.created_at), 'dd.MM.yyyy HH:mm', { locale: dateLocale }),
       ];
     });
 
@@ -233,6 +303,7 @@ export function exportEventToPDF({
       styles: {
         fontSize: 8,
         cellPadding: 3,
+        font: fontLoaded ? 'Roboto' : 'helvetica',
       },
       headStyles: {
         fillColor: [59, 130, 246],
@@ -247,9 +318,9 @@ export function exportEventToPDF({
   }
 
   // Save the PDF
-  const safeTitle = eventTitle.replace(/[^a-zA-Zа-яА-Я0-9]/g, '_').slice(0, 30);
+  const safeTitle = eventTitle.replace(/[^a-zA-Zа-яА-ЯәіңғүұқөһӘІҢҒҮҰҚӨҺ0-9\s]/g, '').trim().slice(0, 30) || 'event';
   const dateStr = format(new Date(), 'yyyy-MM-dd');
-  doc.save(`${safeTitle}_report_${dateStr}.pdf`);
+  doc.save(`${safeTitle}_${getLabel('report', language)}_${dateStr}.pdf`);
 }
 
 /**
@@ -269,68 +340,14 @@ function drawStatCard(
   doc.roundedRect(x, y, width, 20, 3, 3, 'F');
 
   // Value
-  doc.setFontSize(16);
+  doc.setFontSize(14);
   doc.setTextColor(color[0], color[1], color[2]);
   doc.text(value.toString(), x + width / 2, y + 10, { align: 'center' });
 
   // Label
-  doc.setFontSize(8);
+  doc.setFontSize(7);
   doc.setTextColor(100, 100, 100);
   doc.text(label, x + width / 2, y + 17, { align: 'center' });
-}
-
-/**
- * Draw a simple pie chart
- */
-function drawPieChart(
-  doc: jsPDF,
-  cx: number,
-  cy: number,
-  radius: number,
-  data: Array<{ value: number; label: string; color: number[] }>
-): void {
-  const total = data.reduce((sum, d) => sum + d.value, 0);
-  if (total === 0) return;
-
-  let startAngle = -Math.PI / 2; // Start from top
-
-  data.forEach(({ value, color }) => {
-    const sliceAngle = (value / total) * 2 * Math.PI;
-    const endAngle = startAngle + sliceAngle;
-
-    // Draw slice
-    doc.setFillColor(color[0], color[1], color[2]);
-    
-    // Create pie slice path
-    const segments = 50;
-    const points: [number, number][] = [[cx, cy]];
-    
-    for (let i = 0; i <= segments; i++) {
-      const angle = startAngle + (i / segments) * sliceAngle;
-      points.push([
-        cx + radius * Math.cos(angle),
-        cy + radius * Math.sin(angle),
-      ]);
-    }
-    
-    // Draw as filled polygon
-    doc.setDrawColor(255, 255, 255);
-    doc.setLineWidth(0.5);
-    
-    // Use lines to draw pie slice
-    const x = points.map(p => p[0]);
-    const y = points.map(p => p[1]);
-    
-    doc.lines(
-      points.slice(1).map((p, i) => [p[0] - points[i][0], p[1] - points[i][1]]),
-      points[0][0],
-      points[0][1],
-      [1, 1],
-      'F'
-    );
-
-    startAngle = endAngle;
-  });
 }
 
 /**
@@ -372,7 +389,7 @@ export function calculateEventAnalytics(
   const answerStats: EventAnalytics['answerStats'] = [];
   
   const choiceFields = formFields.filter(f => 
-    ['radio', 'checkbox', 'select', 'dropdown'].includes(f.type) && f.options?.length
+    ['radio', 'checkbox', 'select', 'dropdown', 'single_choice', 'multiple_choice'].includes(f.type) && f.options?.length
   );
 
   choiceFields.forEach(field => {
@@ -449,6 +466,8 @@ function getLabel(key: string, lang: SupportedLanguage): string {
     status: { ru: 'Статус', en: 'Status', kk: 'Мәртебе' },
     ticket: { ru: 'Билет', en: 'Ticket', kk: 'Билет' },
     date: { ru: 'Дата', en: 'Date', kk: 'Күні' },
+    location: { ru: 'Место', en: 'Location', kk: 'Орны' },
+    report: { ru: 'отчет', en: 'report', kk: 'есеп' },
   };
   return labels[key]?.[lang] || key;
 }
