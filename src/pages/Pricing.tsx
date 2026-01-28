@@ -180,9 +180,7 @@ export default function Pricing() {
                 {period === 12 && <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                     -30%
                   </span>}
-                {period === 6 && <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                    -20%
-                  </span>}
+                {period === 6 && <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">-15%</span>}
               </button>)}
           </div>
         </div>
