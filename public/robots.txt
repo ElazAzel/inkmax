@@ -25,9 +25,6 @@ Disallow: /legacy
 # Dynamic Sitemap (includes all published user pages)
 Sitemap: https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/generate-sitemap
 
-# Static Sitemap Fallback
-Sitemap: https://lnkmx.my/sitemap.xml
-
 # =============================================================================
 # Search Engine Bots
 # =============================================================================
