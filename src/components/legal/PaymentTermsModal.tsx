@@ -35,8 +35,8 @@ export function PaymentTermsModal({ open, onOpenChange }: PaymentTermsModalProps
           <p className="text-sm text-muted-foreground mb-2">2.1. LinkMAX services are provided on a subscription model for plans (e.g., PRO, BUSINESS).</p>
           <p className="text-sm text-muted-foreground mb-2">2.2. Base rates for PRO subscription at the time of publication:</p>
           <p className="text-sm text-muted-foreground mb-2">• 3 months - 4,350 ₸ per month (total 13,050 ₸ for the period);</p>
-          <p className="text-sm text-muted-foreground mb-2">• 6 months - 3,500 ₸ per month (total 21,000 ₸ for the period);</p>
-          <p className="text-sm text-muted-foreground mb-2">• 12 months - 2,610 ₸ per month (total 31,320 ₸ for the period).</p>
+          <p className="text-sm text-muted-foreground mb-2">• 6 months - 3,698 ₸ per month (total 22,185 ₸ for the period) - 15% discount;</p>
+          <p className="text-sm text-muted-foreground mb-2">• 12 months - 3,045 ₸ per month (total 36,540 ₸ for the period) - 30% discount.</p>
           <p className="text-sm text-muted-foreground mb-2">2.3. All prices are shown in the national currency of the Republic of Kazakhstan - tenge (KZT). Foreign currency equivalents are for informational purposes only.</p>
           <p className="text-sm text-muted-foreground mb-2">2.4. The current list of plans, pricing, and included features are published on the Platform's pricing page and may be updated by the Administration unilaterally for new payment periods.</p>
 
