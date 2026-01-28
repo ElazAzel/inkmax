@@ -206,7 +206,7 @@ export function TermsOfServiceModal({ open, onOpenChange }: TermsOfServiceModalP
           
           <h3 className="font-semibold mt-6 mb-2">5. Paid Services, Tariffs, and Payments</h3>
           <p className="text-sm text-muted-foreground mb-2">5.1. Access to additional Platform features (PRO tariff) is provided on a prepaid subscription basis with a minimum term of 3 months.</p>
-          <p className="text-sm text-muted-foreground mb-2">5.2. Current pricing in Kazakhstani tenge (KZT): 3 months - 4,350₸/month (total 13,050₸); 6 months - 3,500₸/month (total 21,000₸); 12 months - 2,610₸/month (total 31,320₸). Approximate USD equivalent: $8.50, $6.80, $5.10 per month respectively.</p>
+          <p className="text-sm text-muted-foreground mb-2">5.2. Current pricing in Kazakhstani tenge (KZT): 3 months - 4,350₸/month (total 13,050₸); 6 months - 3,698₸/month (total 22,185₸, 15% discount); 12 months - 3,045₸/month (total 36,540₸, 30% discount). Approximate USD equivalent: $8.50, $7.20, $5.95 per month respectively.</p>
           <p className="text-sm text-muted-foreground mb-2">5.3. Prices, tariff composition and payment terms are published on the tariffs page at https://lnkmx.my/pricing and may be changed by the Administration unilaterally for new periods.</p>
           <p className="text-sm text-muted-foreground mb-2">5.4. Payment is made through the RoboKassa payment system and other available payment methods.</p>
           

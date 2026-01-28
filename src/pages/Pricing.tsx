@@ -95,8 +95,8 @@ export default function Pricing() {
   };
 
   const getSavingsPercent = (period: BillingPeriod): number => {
-    if (period === 12) return 40;
-    if (period === 6) return 20;
+    if (period === 12) return 30;
+    if (period === 6) return 15;
     return 0;
   };
 
