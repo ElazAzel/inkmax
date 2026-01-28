@@ -74,7 +74,7 @@ export const LinkBlock = memo(function LinkBlockComponent({ block, onClick }: Li
   const isImageBackground = block.background?.type === 'image';
 
   // Get custom block styles (new system)
-  const { style: blockStyleObj } = getBlockStyles(block.blockStyle);
+  const { style: blockStyleObj, textEffectClass } = getBlockStyles(block.blockStyle);
   const hasBlockStyle = hasCustomBlockStyle(block.blockStyle);
   
   // Combine styles - new blockStyle takes precedence
@@ -123,7 +123,8 @@ export const LinkBlock = memo(function LinkBlockComponent({ block, onClick }: Li
           )}
           <span className={cn(
             "font-medium text-sm sm:text-base line-clamp-2 text-left",
-            hasLegacyBackground ? 'text-white drop-shadow-md' : hasBlockStyle ? '' : 'text-foreground'
+            hasLegacyBackground ? 'text-white drop-shadow-md' : hasBlockStyle ? '' : 'text-foreground',
+            textEffectClass
           )} style={blockStyleObj.color ? { color: blockStyleObj.color } : undefined}>
             {title}
           </span>

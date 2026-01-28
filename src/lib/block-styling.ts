@@ -1,6 +1,6 @@
 /**
  * Block styling utilities
- * Applies custom colors and fonts to blocks
+ * Applies custom colors, fonts, and text effects to blocks
  */
 
 import type { BlockStyle, BlockFontFamily } from '@/types/page';
@@ -27,9 +27,27 @@ export const getFontStyle = (font?: BlockFontFamily): React.CSSProperties => {
   }
 };
 
+/**
+ * Get text effect CSS class
+ */
+export const getTextEffectClass = (effect?: BlockStyle['textEffect']): string => {
+  switch (effect) {
+    case 'shimmer': return 'text-effect-shimmer';
+    case 'glow': return 'text-effect-glow';
+    case 'pulse': return 'text-effect-pulse';
+    case 'blink': return 'text-effect-blink';
+    case 'rainbow': return 'text-effect-rainbow';
+    case 'neon': return 'text-effect-neon';
+    case 'typewriter': return 'text-effect-typewriter';
+    case 'gradient-flow': return 'text-effect-gradient-flow';
+    default: return '';
+  }
+};
+
 export interface BlockStyleResult {
   style: React.CSSProperties;
   className: string;
+  textEffectClass: string;
 }
 
 /**
@@ -37,7 +55,7 @@ export interface BlockStyleResult {
  */
 export function getBlockStyles(blockStyle?: BlockStyle): BlockStyleResult {
   if (!blockStyle) {
-    return { style: {}, className: '' };
+    return { style: {}, className: '', textEffectClass: '' };
   }
 
   const style: React.CSSProperties = {};
@@ -68,9 +86,13 @@ export function getBlockStyles(blockStyle?: BlockStyle): BlockStyleResult {
     style.opacity = blockStyle.backgroundOpacity;
   }
 
+  // Text effect class
+  const textEffectClass = getTextEffectClass(blockStyle.textEffect);
+
   return {
     style,
     className: classes.join(' '),
+    textEffectClass,
   };
 }
 
@@ -83,6 +105,7 @@ export function hasCustomBlockStyle(blockStyle?: BlockStyle): boolean {
     blockStyle.backgroundColor ||
     blockStyle.backgroundGradient ||
     blockStyle.textColor ||
-    blockStyle.fontFamily
+    blockStyle.fontFamily ||
+    blockStyle.textEffect
   );
 }

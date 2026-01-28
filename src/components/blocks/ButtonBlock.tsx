@@ -26,7 +26,7 @@ export const ButtonBlock = memo(function ButtonBlockComponent({ block, onClick }
   const legacyButtonStyle = hasLegacyBackground ? getBackgroundStyle(block.background) : {};
 
   // New block styling system
-  const { style: blockStyleObj } = getBlockStyles(block.blockStyle);
+  const { style: blockStyleObj, textEffectClass } = getBlockStyles(block.blockStyle);
   const hasBlockStyle = hasCustomBlockStyle(block.blockStyle);
 
   // Combine styles - new blockStyle takes precedence
@@ -60,7 +60,7 @@ export const ButtonBlock = memo(function ButtonBlockComponent({ block, onClick }
         {isImageBackground && (
           <div className="absolute inset-0 bg-black/30 pointer-events-none" />
         )}
-        <span className="relative z-10 line-clamp-2">{title}</span>
+        <span className={cn("relative z-10 line-clamp-2", textEffectClass)}>{title}</span>
         {/* Glass reflection overlay */}
         {!hasBlockStyle && (
           <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none z-20" />

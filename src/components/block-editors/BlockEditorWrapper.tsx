@@ -10,11 +10,12 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Info, Calendar as CalendarIcon, X, Maximize2, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd, ChevronDown, Settings2, Palette, Type } from 'lucide-react';
+import { Crown, Info, Calendar as CalendarIcon, X, Maximize2, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd, ChevronDown, Settings2, Palette, Type, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { AnimationSettings } from '@/components/editor/AnimationSettings';
 import { PaidContentSettings } from './PaidContentSettings';
+import { getTextEffectClass } from '@/lib/block-styling';
 import type { BlockStyle, BlockSizePreset, BlockFontFamily } from '@/types/page';
 
 export interface BaseBlockEditorProps {
@@ -179,9 +180,19 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
       });
     };
 
+    const handleTextEffectChange = (effect: BlockStyle['textEffect']) => {
+      handleChange({
+        ...formData,
+        blockStyle: {
+          ...(formData.blockStyle || {}),
+          textEffect: effect === 'none' ? undefined : effect,
+        }
+      });
+    };
+
     const handleClearBlockStyle = () => {
       const { blockStyle, ...rest } = formData;
-      const { backgroundColor, textColor, fontFamily, ...otherStyles } = blockStyle || {};
+      const { backgroundColor, textColor, fontFamily, textEffect, ...otherStyles } = blockStyle || {};
       handleChange({
         ...rest,
         blockStyle: Object.keys(otherStyles).length > 0 ? otherStyles : undefined,
@@ -193,7 +204,8 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
     const currentBgColor = formData.blockStyle?.backgroundColor || '';
     const currentTextColor = formData.blockStyle?.textColor || '';
     const currentFontFamily = formData.blockStyle?.fontFamily || 'sans';
-    const hasBlockStyles = currentBgColor || currentTextColor || formData.blockStyle?.fontFamily;
+    const currentTextEffect = formData.blockStyle?.textEffect || 'none';
+    const hasBlockStyles = currentBgColor || currentTextColor || formData.blockStyle?.fontFamily || formData.blockStyle?.textEffect;
 
     return (
       <BlockEditorWrapper
@@ -311,6 +323,30 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
                 </Select>
               </div>
 
+              {/* Text Effect */}
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground flex items-center gap-2">
+                  <Sparkles className="h-3 w-3" />
+                  {t('blockEditor.textEffect', 'Эффект текста')}
+                </Label>
+                <Select value={currentTextEffect} onValueChange={(v) => handleTextEffectChange(v as BlockStyle['textEffect'])}>
+                  <SelectTrigger className="bg-background/50">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{t('textEffects.none', 'Без эффекта')}</SelectItem>
+                    <SelectItem value="shimmer">{t('textEffects.shimmer', '✨ Переливание')}</SelectItem>
+                    <SelectItem value="glow">{t('textEffects.glow', '💡 Свечение')}</SelectItem>
+                    <SelectItem value="pulse">{t('textEffects.pulse', '💓 Пульсация')}</SelectItem>
+                    <SelectItem value="blink">{t('textEffects.blink', '👁 Мигание')}</SelectItem>
+                    <SelectItem value="rainbow">{t('textEffects.rainbow', '🌈 Радуга')}</SelectItem>
+                    <SelectItem value="neon">{t('textEffects.neon', '🔮 Неон')}</SelectItem>
+                    <SelectItem value="typewriter">{t('textEffects.typewriter', '⌨️ Печатная машинка')}</SelectItem>
+                    <SelectItem value="gradient-flow">{t('textEffects.gradientFlow', '🌊 Текучий градиент')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Preview */}
               {hasBlockStyles && (
                 <div className="space-y-2">
@@ -322,7 +358,9 @@ export function withBlockEditor<P extends BaseBlockEditorProps>(
                       color: currentTextColor || 'var(--foreground)',
                     }}
                   >
-                    <p className="text-sm">{t('blockEditor.previewText', 'Пример текста блока')}</p>
+                    <p className={cn("text-sm", getTextEffectClass(currentTextEffect as BlockStyle['textEffect']))}>
+                      {t('blockEditor.previewText', 'Пример текста блока')}
+                    </p>
                   </div>
                 </div>
               )}

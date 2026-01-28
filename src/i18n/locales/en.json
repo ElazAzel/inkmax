@@ -1,4 +1,15 @@
 {
+  "textEffects": {
+    "none": "No effect",
+    "shimmer": "✨ Shimmer",
+    "glow": "💡 Glow",
+    "pulse": "💓 Pulse",
+    "blink": "👁 Blink",
+    "rainbow": "🌈 Rainbow",
+    "neon": "🔮 Neon",
+    "typewriter": "⌨️ Typewriter",
+    "gradientFlow": "🌊 Gradient Flow"
+  },
   "googleForms": {
     "importTitle": "Import from Google Forms",
     "importDescription": "Import field structure from a public Google Form",
@@ -2457,7 +2468,8 @@
     "fontFamily": "Font",
     "noColor": "No color",
     "preview": "Preview",
-    "previewText": "Sample block text"
+    "previewText": "Sample block text",
+    "textEffect": "Text effect"
   },
   "currency": {
     "names": {
