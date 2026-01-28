@@ -1,12 +1,28 @@
-lnkmx (LinkMAX) — AI-powered link in bio and mini-site builder.
+lnkmx (LinkMAX) — Micro-Business OS: AI-powered page builder, CRM, and lead management platform.
+
+What is lnkmx?
+lnkmx is an operating system for micro-businesses that combines:
+- AI Page Builder: Create professional mini-sites in 2 minutes with 25+ block types
+- Built-in CRM: Manage leads, track interactions, and automate follow-ups
+- Lead Forms: Collect client information with customizable forms
+- Telegram Notifications: Get instant alerts about new leads
+- Analytics: Track page views, clicks, and conversions
+- Booking System: Allow clients to book appointments online
 
 Key pages:
-- https://lnkmx.my/ (home, link in bio & mini-site builder)
+- https://lnkmx.my/ (home - micro-business OS, page builder, CRM)
 - https://lnkmx.my/pricing (plans and pricing)
 - https://lnkmx.my/gallery (examples and templates)
 - https://lnkmx.my/alternatives (comparisons)
 - https://lnkmx.my/terms (terms)
 - https://lnkmx.my/privacy (privacy)
+
+Use cases:
+- Freelancers: Showcase services and pricing
+- Small businesses: Catalog, map, and booking
+- Creators: Courses, merch, and content links
+- Experts: Schedule, pricing, and testimonials
+- Salons: Online booking and price list
 
 Languages:
 - Russian: https://lnkmx.my/?lang=ru
