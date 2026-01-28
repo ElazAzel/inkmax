@@ -22,6 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import {
   ArrowLeft,
@@ -44,10 +45,17 @@ import {
   X,
   RefreshCw,
   Ticket,
+  FileSpreadsheet,
+  FileText,
+  BarChart3,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
 import { cn } from '@/lib/utils';
+import { exportToExcel, exportToCSV } from '@/lib/excel-export';
+import { exportEventToPDF, calculateEventAnalytics } from '@/lib/pdf-export';
+import type { SupportedLanguage } from '@/lib/i18n-helpers';
+import type { EventFormField } from '@/types/page';
 
 interface Registration {
   id: string;
@@ -59,6 +67,24 @@ interface Registration {
   ticketCode: string | null;
   ticketStatus: 'valid' | 'used' | 'cancelled' | null;
   checkedInAt: string | null;
+  answersJson: Record<string, unknown> | null;
+  paymentStatus: string;
+}
+
+interface FullRegistration {
+  id: string;
+  attendee_name: string;
+  attendee_email: string;
+  attendee_phone: string | null;
+  answers_json: Record<string, unknown> | null;
+  status: string;
+  payment_status: string;
+  created_at: string;
+  event_tickets?: Array<{
+    ticket_code: string;
+    status: string;
+    checked_in_at: string | null;
+  }> | null;
 }
 
 interface EventDetail {
@@ -76,6 +102,7 @@ interface EventDetail {
   currency: string | null;
   coverUrl: string | null;
   pageSlug: string;
+  formSchema: EventFormField[];
 }
 
 export const EventDetailScreen = memo(function EventDetailScreen() {
@@ -87,10 +114,12 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
 
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [fullRegistrations, setFullRegistrations] = useState<FullRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'confirmed' | 'pending' | 'checked'>('all');
   const [refreshing, setRefreshing] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const locale = i18n.language === 'ru' ? ru : i18n.language === 'kk' ? kk : enUS;
 
@@ -98,7 +127,7 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
     if (!user || !eventId) return;
 
     try {
-      // Fetch event details
+      // Fetch event details with form schema
       const { data: eventData, error: eventError } = await supabase
         .from('events')
         .select(`
@@ -115,6 +144,7 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
           price_amount,
           currency,
           cover_url,
+          form_schema_json,
           pages!inner(slug)
         `)
         .eq('id', eventId)
@@ -126,6 +156,8 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
         navigate('/dashboard/events');
         return;
       }
+
+      const formSchema = ((eventData.form_schema_json as { fields?: EventFormField[] })?.fields || []) as EventFormField[];
 
       setEvent({
         id: eventData.id,
@@ -144,12 +176,13 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
         currency: eventData.currency,
         coverUrl: eventData.cover_url,
         pageSlug: (eventData.pages as { slug: string })?.slug || '',
+        formSchema,
       });
 
-      // Fetch registrations
+      // Fetch registrations with answers
       const { data: regsData, error: regsError } = await supabase
         .from('event_registrations')
-        .select('id, attendee_name, attendee_email, attendee_phone, status, created_at')
+        .select('id, attendee_name, attendee_email, attendee_phone, status, payment_status, answers_json, created_at')
         .eq('event_id', eventId)
         .order('created_at', { ascending: false });
 
@@ -164,11 +197,30 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
           .from('event_tickets')
           .select('registration_id, ticket_code, status, checked_in_at')
           .in('registration_id', regIds);
-        // Cast to unknown first to bypass strict type checking
         ticketsData = (data as unknown) as typeof ticketsData;
       }
 
       const ticketMap = new Map(ticketsData.map(t => [t.registration_id, t]));
+
+      // Set full registrations for export
+      setFullRegistrations((regsData || []).map(r => {
+        const ticket = ticketMap.get(r.id);
+        return {
+          id: r.id,
+          attendee_name: r.attendee_name,
+          attendee_email: r.attendee_email,
+          attendee_phone: r.attendee_phone,
+          answers_json: r.answers_json as Record<string, unknown> | null,
+          status: r.status,
+          payment_status: r.payment_status,
+          created_at: r.created_at,
+          event_tickets: ticket ? [{
+            ticket_code: ticket.ticket_code,
+            status: ticket.status,
+            checked_in_at: ticket.checked_in_at,
+          }] : null,
+        };
+      }));
 
       setRegistrations((regsData || []).map(r => {
         const ticket = ticketMap.get(r.id);
@@ -182,6 +234,8 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
           ticketCode: ticket?.ticket_code || null,
           ticketStatus: ticket?.status as Registration['ticketStatus'] || null,
           checkedInAt: ticket?.checked_in_at || null,
+          answersJson: r.answers_json as Record<string, unknown> | null,
+          paymentStatus: r.payment_status,
         };
       }));
     } catch (error) {
@@ -284,6 +338,107 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
       toast.success(t('events.checkedIn', 'Гость отмечен!'));
     } catch (error) {
       toast.error(t('events.checkInError', 'Ошибка отметки'));
+    }
+  };
+
+  // Export handlers
+  const handleExportExcel = async () => {
+    if (!event || fullRegistrations.length === 0) {
+      toast.error(t('events.noDataToExport', 'Нет данных для экспорта'));
+      return;
+    }
+
+    if (!isPremium) {
+      openPremiumPurchase();
+      return;
+    }
+
+    setExporting(true);
+    try {
+      exportToExcel({
+        eventTitle: event.title,
+        registrations: fullRegistrations,
+        formFields: event.formSchema,
+        language: i18n.language as SupportedLanguage,
+        includeAnswers: true,
+      });
+      toast.success(t('events.exportSuccess', 'Экспорт в Excel завершён'));
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error(t('events.exportError', 'Ошибка экспорта'));
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportCSV = async () => {
+    if (!event || fullRegistrations.length === 0) {
+      toast.error(t('events.noDataToExport', 'Нет данных для экспорта'));
+      return;
+    }
+
+    setExporting(true);
+    try {
+      exportToCSV({
+        eventTitle: event.title,
+        registrations: fullRegistrations,
+        formFields: event.formSchema,
+        language: i18n.language as SupportedLanguage,
+        includeAnswers: true,
+      });
+      toast.success(t('events.exportSuccess', 'Экспорт в CSV завершён'));
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error(t('events.exportError', 'Ошибка экспорта'));
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportPDF = async () => {
+    if (!event || fullRegistrations.length === 0) {
+      toast.error(t('events.noDataToExport', 'Нет данных для экспорта'));
+      return;
+    }
+
+    if (!isPremium) {
+      openPremiumPurchase();
+      return;
+    }
+
+    setExporting(true);
+    try {
+      const analytics = calculateEventAnalytics(
+        fullRegistrations,
+        event.formSchema,
+        i18n.language as SupportedLanguage
+      );
+
+      const eventDate = event.startAt 
+        ? format(new Date(event.startAt), 'dd MMMM yyyy, HH:mm', { locale })
+        : undefined;
+      
+      const eventLocation = event.locationType === 'online' 
+        ? t('events.online', 'Онлайн')
+        : event.locationValue || t('events.offline', 'Офлайн');
+
+      exportEventToPDF({
+        eventTitle: event.title,
+        eventDate,
+        eventLocation,
+        registrations: fullRegistrations,
+        analytics,
+        formFields: event.formSchema,
+        language: i18n.language as SupportedLanguage,
+        includeAnalytics: true,
+        includeRegistrationsList: true,
+      });
+      toast.success(t('events.exportSuccess', 'Экспорт в PDF завершён'));
+    } catch (error) {
+      console.error('PDF Export error:', error);
+      toast.error(t('events.exportError', 'Ошибка экспорта'));
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -465,14 +620,50 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
               {t('events.scanner', 'Сканер')}
               {!isPremium && <Crown className="h-3 w-3 ml-1 text-amber-500" />}
             </Button>
+            
+            {/* Export Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1 h-9 text-xs"
+                  disabled={exporting || registrations.length === 0}
+                >
+                  {exporting ? (
+                    <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                  ) : (
+                    <Download className="h-4 w-4 mr-1.5" />
+                  )}
+                  {t('events.export', 'Экспорт')}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={handleExportExcel}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2 text-emerald-600" />
+                  Excel (.xlsx)
+                  {!isPremium && <Crown className="h-3 w-3 ml-auto text-amber-500" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportCSV}>
+                  <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+                  CSV
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleExportPDF}>
+                  <BarChart3 className="h-4 w-4 mr-2 text-primary" />
+                  {t('events.exportPdfWithCharts', 'PDF + Аналитика')}
+                  {!isPremium && <Crown className="h-3 w-3 ml-auto text-amber-500" />}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
             <Button 
               variant="outline" 
               size="sm" 
-              className="flex-1 h-9 text-xs"
+              className="h-9 w-9 p-0"
               onClick={() => window.open(`https://lnkmx.my/${event.pageSlug}`, '_blank')}
             >
-              <ExternalLink className="h-4 w-4 mr-1.5" />
-              {t('events.viewPage', 'Страница')}
+              <ExternalLink className="h-4 w-4" />
             </Button>
           </div>
         </div>
