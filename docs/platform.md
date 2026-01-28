@@ -61,7 +61,7 @@ Signup → AI Onboarding (3 steps) → Page Generated → Customize Blocks → P
 |---------|-----------|----------|
 | Pages | 1 | 6 (1 primary + 5 additional) |
 | Blocks | 11 free types | All 28 types |
-| AI generations | 3/week | Unlimited |
+| AI generations | 1/month | 5/month |
 | Analytics | Basic (7 days) | Full (30 days + heatmaps) |
 | CRM/Leads | View only | Full management |
 | Remove watermark | No | Yes |
@@ -291,8 +291,8 @@ new -> contacted -> qualified -> won/lost
 
 | Plan | Price (KZT/month) | Features |
 |------|-------------------|----------|
-| Free | 0 | 1 page, 11 blocks, 3 AI/week, basic analytics |
-| Pro | 2,900 | 6 pages, 28 blocks, unlimited AI, full CRM, no watermark |
+| Free | 0 | 1 page, 11 blocks, 1 AI generation/month, basic analytics |
+| Pro | 2,900 (annual) | 6 pages (1 primary + 5 additional), 28 blocks, 5 AI/month, full CRM, no watermark |
 
 ### Plan Checking
 
