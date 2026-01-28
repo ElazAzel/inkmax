@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { parseRichText } from '@/lib/rich-text-parser';
+import { getBlockStyles } from '@/lib/block-styling';
 import type { TextBlock as TextBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 
@@ -18,31 +19,43 @@ export const TextBlock = memo(function TextBlockComponent({ block }: TextBlockPr
     : block.alignment === 'right' ? 'text-right' 
     : 'text-left';
 
+  // Get custom block styles
+  const { style: customStyle } = getBlockStyles(block.blockStyle);
+
   switch (block.style) {
     case 'heading':
       return (
-        <h2 className={cn(
-          "text-xl sm:text-2xl font-bold break-words hyphens-auto leading-tight",
-          alignmentClass
-        )}>
+        <h2 
+          className={cn(
+            "text-xl sm:text-2xl font-bold break-words hyphens-auto leading-tight",
+            alignmentClass
+          )}
+          style={customStyle}
+        >
           {parsedContent}
         </h2>
       );
     case 'quote':
       return (
-        <blockquote className={cn(
-          "border-l-4 border-primary pl-3 sm:pl-4 italic text-muted-foreground whitespace-pre-line break-words hyphens-auto text-sm sm:text-base",
-          alignmentClass
-        )}>
+        <blockquote 
+          className={cn(
+            "border-l-4 border-primary pl-3 sm:pl-4 italic text-muted-foreground whitespace-pre-line break-words hyphens-auto text-sm sm:text-base",
+            alignmentClass
+          )}
+          style={customStyle}
+        >
           {parsedContent}
         </blockquote>
       );
     default:
       return (
-        <p className={cn(
-          "text-foreground whitespace-pre-line break-words hyphens-auto text-sm sm:text-base leading-relaxed",
-          alignmentClass
-        )}>
+        <p 
+          className={cn(
+            "text-foreground whitespace-pre-line break-words hyphens-auto text-sm sm:text-base leading-relaxed",
+            alignmentClass
+          )}
+          style={customStyle}
+        >
           {parsedContent}
         </p>
       );

@@ -2450,7 +2450,14 @@
     "disappearDate": "Исчезновение",
     "selectDate": "Выберите дату",
     "scheduleHint": "Блок будет виден только в указанный период",
-    "premiumFeature": "Это Premium-функция."
+    "premiumFeature": "Это Premium-функция.",
+    "blockStyle": "Цвет и шрифт блока",
+    "backgroundColor": "Цвет фона",
+    "textColor": "Цвет текста",
+    "fontFamily": "Шрифт",
+    "noColor": "Без цвета",
+    "preview": "Превью",
+    "previewText": "Пример текста блока"
   },
   "currency": {
     "names": {
@@ -3086,11 +3093,15 @@
   },
   "themes": {
     "pageTheme": "Тема и цвета",
+    "themes": "Темы",
+    "background": "Фон",
     "chooseTheme": "Выберите готовую тему для вашей страницы",
     "freeThemes": "Бесплатные темы",
     "premiumThemes": "Премиум темы",
     "unlockPremium": "Разблокировать премиум темы",
     "unlockPremiumDesc": "Получите доступ ко всем темам с PRO",
+    "unlockBackground": "Свой фон страницы",
+    "unlockBackgroundDesc": "Установите цвет, градиент или изображение",
     "classic": "Классика",
     "classicDesc": "Чистый и профессиональный",
     "darkMode": "Тёмная",

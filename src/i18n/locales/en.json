@@ -2450,7 +2450,14 @@
     "disappearDate": "Disappear",
     "selectDate": "Select date",
     "scheduleHint": "Block will be visible only during the specified period",
-    "premiumFeature": "This is a Premium feature."
+    "premiumFeature": "This is a Premium feature.",
+    "blockStyle": "Block color & font",
+    "backgroundColor": "Background color",
+    "textColor": "Text color",
+    "fontFamily": "Font",
+    "noColor": "No color",
+    "preview": "Preview",
+    "previewText": "Sample block text"
   },
   "currency": {
     "names": {
@@ -3086,11 +3093,15 @@
   },
   "themes": {
     "pageTheme": "Theme & Colors",
+    "themes": "Themes",
+    "background": "Background",
     "chooseTheme": "Choose a pre-designed theme for your page",
     "freeThemes": "Free Themes",
     "premiumThemes": "Premium Themes",
     "unlockPremium": "Unlock Premium Themes",
     "unlockPremiumDesc": "Get access to all themes with PRO",
+    "unlockBackground": "Custom Page Background",
+    "unlockBackgroundDesc": "Set color, gradient or image",
     "classic": "Classic",
     "classicDesc": "Clean and professional",
     "darkMode": "Dark Mode",

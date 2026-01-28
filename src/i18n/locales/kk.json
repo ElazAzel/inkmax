@@ -2450,7 +2450,14 @@
     "disappearDate": "Жоғалу",
     "selectDate": "Күнді таңдаңыз",
     "scheduleHint": "Блок тек көрсетілген кезеңде көрінеді",
-    "premiumFeature": "Бұл Premium функциясы."
+    "premiumFeature": "Бұл Premium функциясы.",
+    "blockStyle": "Блок түсі мен қаріпі",
+    "backgroundColor": "Фон түсі",
+    "textColor": "Мәтін түсі",
+    "fontFamily": "Қаріп",
+    "noColor": "Түссіз",
+    "preview": "Алдын ала қарау",
+    "previewText": "Блок мәтінінің үлгісі"
   },
   "currency": {
     "names": {
@@ -3086,11 +3093,15 @@
   },
   "themes": {
     "pageTheme": "Тема және түстер",
+    "themes": "Темалар",
+    "background": "Фон",
     "chooseTheme": "Бетіңіз үшін дайын тема таңдаңыз",
     "freeThemes": "Тегін темалар",
     "premiumThemes": "Премиум темалар",
     "unlockPremium": "Премиум темаларды ашу",
     "unlockPremiumDesc": "PRO арқылы барлық темаларға қол жеткізіңіз",
+    "unlockBackground": "Бет фонын теңшеу",
+    "unlockBackgroundDesc": "Түс, градиент немесе сурет орнатыңыз",
     "classic": "Классика",
     "classicDesc": "Таза және кәсіби",
     "darkMode": "Қараңғы",
