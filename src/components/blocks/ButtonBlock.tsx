@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { createBlockClickHandler, getHoverClass, getBackgroundStyle } from '@/lib/block-utils';
+import { getBlockStyles, hasCustomBlockStyle } from '@/lib/block-styling';
 import type { ButtonBlock as ButtonBlockType } from '@/types/page';
 import { cn } from '@/lib/utils';
 
@@ -19,9 +20,18 @@ export const ButtonBlock = memo(function ButtonBlockComponent({ block, onClick }
     : block.alignment === 'right' ? 'justify-end' 
     : 'justify-center';
 
-  const hasCustomBackground = block.background && block.background.value;
+  // Legacy background system
+  const hasLegacyBackground = block.background && block.background.value;
   const isImageBackground = block.background?.type === 'image';
-  const buttonStyle = hasCustomBackground ? getBackgroundStyle(block.background) : {};
+  const legacyButtonStyle = hasLegacyBackground ? getBackgroundStyle(block.background) : {};
+
+  // New block styling system
+  const { style: blockStyleObj } = getBlockStyles(block.blockStyle);
+  const hasBlockStyle = hasCustomBlockStyle(block.blockStyle);
+
+  // Combine styles - new blockStyle takes precedence
+  const combinedStyle = { ...legacyButtonStyle, ...blockStyleObj };
+  const hasAnyCustomStyle = hasLegacyBackground || hasBlockStyle;
 
   const widthClass = block.width === 'full' ? 'w-full' 
     : block.width === 'small' ? 'w-auto min-w-[120px]' 
@@ -38,11 +48,13 @@ export const ButtonBlock = memo(function ButtonBlockComponent({ block, onClick }
           "hover:shadow-glass-xl hover:scale-[1.02] active:scale-[0.98]",
           "break-words hyphens-auto",
           getHoverClass(block.hoverEffect),
-          hasCustomBackground 
+          hasLegacyBackground 
             ? 'text-white drop-shadow-md' 
-            : 'bg-primary text-primary-foreground border border-primary/20'
+            : hasBlockStyle 
+              ? '' 
+              : 'bg-primary text-primary-foreground border border-primary/20'
         )}
-        style={buttonStyle}
+        style={combinedStyle}
       >
         {/* Overlay for image backgrounds to ensure text readability */}
         {isImageBackground && (
@@ -50,7 +62,9 @@ export const ButtonBlock = memo(function ButtonBlockComponent({ block, onClick }
         )}
         <span className="relative z-10 line-clamp-2">{title}</span>
         {/* Glass reflection overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none z-20" />
+        {!hasBlockStyle && (
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none z-20" />
+        )}
       </button>
     </div>
   );

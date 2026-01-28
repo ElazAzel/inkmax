@@ -25,6 +25,10 @@ export interface BlockStyle {
   backgroundGradient?: string;
   backgroundOpacity?: number;
   
+  // Text styling
+  textColor?: string;
+  fontFamily?: BlockFontFamily;
+  
   // Content alignment (vertical)
   contentAlignment?: 'top' | 'center' | 'bottom';
   
@@ -39,6 +43,9 @@ export interface BlockStyle {
   paidContentPrice?: number;
   paidContentCurrency?: Currency;
 }
+
+// Font families that support RU/EN/KK
+export type BlockFontFamily = 'sans' | 'serif' | 'mono' | 'display' | 'rounded';
 
 export interface BlockSchedule {
   startDate?: string; // ISO date string
