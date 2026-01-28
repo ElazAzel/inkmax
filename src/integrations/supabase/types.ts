@@ -837,6 +837,57 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscriptions: {
+        Row: {
+          block_id: string | null
+          created_at: string
+          email: string
+          id: string
+          owner_id: string
+          page_id: string | null
+          status: string
+          subscribed_at: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          block_id?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          owner_id: string
+          page_id?: string | null
+          status?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          block_id?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          owner_id?: string
+          page_id?: string | null
+          status?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_subscriptions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_subscriptions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "public_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_boosts: {
         Row: {
           boost_type: string
