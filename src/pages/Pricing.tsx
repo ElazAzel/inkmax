@@ -41,7 +41,7 @@ export default function Pricing() {
     'Compare lnkmx plans: free link in bio builder, Pro with AI, CRM, analytics, and custom domains. Transparent pricing in minutes.'
   );
 
-  // Pricing in KZT: 3mo = 4350₸/mo, 6mo = 3500₸/mo, 12mo = 2610₸/mo
+  // Pricing in KZT: 3mo = 4350₸/mo, 6mo = 3698₸/mo (15% off), 12mo = 3045₸/mo (30% off)
   const pricingPlans = {
     basic: {
       name: 'BASIC',
@@ -72,10 +72,10 @@ export default function Pricing() {
       icon: Crown,
       color: 'from-violet-500 to-purple-600',
       popular: true,
-      pricesKzt: { 3: 4350, 6: 3500, 12: 2610 },
-      pricesUsd: { 3: 8.50, 6: 6.80, 12: 5.10 },
-      totalKzt: { 3: 13050, 6: 21000, 12: 31320 },
-      totalUsd: { 3: 25.50, 6: 40.80, 12: 61.20 },
+      pricesKzt: { 3: 4350, 6: 3698, 12: 3045 },
+      pricesUsd: { 3: 8.50, 6: 7.20, 12: 5.95 },
+      totalKzt: { 3: 13050, 6: 22185, 12: 36540 },
+      totalUsd: { 3: 25.50, 6: 43.20, 12: 71.40 },
       features: [
         t('pricing.features.allBasic', 'Всё из BASIC, плюс:'),
         t('pricing.features.allBlocks', 'Все 25+ типов блоков без ограничений'),

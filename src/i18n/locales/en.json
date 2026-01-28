@@ -716,7 +716,7 @@
       },
       "q2": {
         "question": "How much does LinkMAX cost?",
-        "answer": "Basic plan is free forever. Pro: 3 mo - 4,350 ₸/mo, 6 mo - 3,500 ₸/mo, 12 mo - 2,610 ₸/mo. Online payment, 14-day refund."
+        "answer": "Basic plan is free forever. Pro: 3 mo - 4,350 ₸/mo, 6 mo - 3,698 ₸/mo (-15%), 12 mo - 3,045 ₸/mo (-30%). Online payment, 14-day refund."
       },
       "q3": {
         "question": "How does AI page generation work?",
@@ -907,9 +907,9 @@
       "freeAction": "Start free",
       "viewPlans": "Choose Pro",
       "otherPlans": "Other options:",
-      "annualPriceKzt": "31,320 ₸ for 12 months",
-      "annualPriceUsd": "$60/year",
-      "otherPlansSix": "6 months: 3,500 ₸/mo",
+      "annualPriceKzt": "36,540 ₸ for 12 months",
+      "annualPriceUsd": "$71/year",
+      "otherPlansSix": "6 months: 3,698 ₸/mo (-15%)",
       "otherPlansThree": "3 months: 4,350 ₸/mo",
       "free": {
         "item1": "6 basic blocks",
@@ -944,7 +944,7 @@
       },
       "q2": {
         "question": "How much does lnkmx cost?",
-        "answer": "The basic plan is free forever. Pro: 3 months - 4,350₸/mo, 6 months - 3,500₸/mo, 12 months - 2,610₸/mo. Online payment and 14-day refund."
+        "answer": "The basic plan is free forever. Pro: 3 months - 4,350₸/mo, 6 months - 3,698₸/mo (-15%), 12 months - 3,045₸/mo (-30%). Online payment and 14-day refund."
       },
       "q3": {
         "question": "How does AI page generation work?",
