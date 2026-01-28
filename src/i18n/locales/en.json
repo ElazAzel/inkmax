@@ -2774,38 +2774,38 @@
       "create": "Create"
     },
     "hero": {
-      "badge": "Free. 2 minutes. No code",
-      "title1": "A page that",
-      "title2": "brings you clients",
-      "subtitle": "Build a mini-site with your services, pricing, and contact form. Visitors get it instantly - and reach out.",
-      "cta": "Create your page",
+      "badge": "Micro-Business OS",
+      "title1": "Operating system",
+      "title2": "for your business",
+      "subtitle": "Mini-site + CRM + leads + analytics in one place. AI-powered page builder - launch your business in 2 minutes with no code.",
+      "cta": "Create for free",
       "secondary": "See examples",
       "trust1": "No card needed",
-      "trust2": "Mobile editor",
-      "trust3": "0% commission",
+      "trust2": "Page builder",
+      "trust3": "Built-in CRM",
       "previewCta": "Book now"
     },
     "problem": {
       "badge": "Sound familiar?",
-      "title": "Your link in bio isn't working",
-      "description": "Visitors land on 10 random buttons. No context. No offer. They bounce.",
-      "item1": "Link chaos",
-      "item1desc": "Visitors get confused and leave",
-      "item2": "No clear offer",
-      "item2desc": "Hard to tell what you do",
-      "item3": "No contact form",
-      "item3desc": "They want to reach out - but can't"
+      "title": "Social media can't replace business tools",
+      "description": "Leads in DMs, prices in stories, clients in a notebook. Chaos instead of a system. You waste time - clients leave.",
+      "item1": "Leads get lost",
+      "item1desc": "Client messaged - you forgot",
+      "item2": "No unified system",
+      "item2desc": "Everything scattered across messengers",
+      "item3": "No analytics",
+      "item3desc": "You don't know what works"
     },
     "solution": {
       "badge": "The solution",
-      "title": "A mini-site, not a link menu",
-      "description": "One page: who you are, what you offer, how much, where to contact. Clear in 30 seconds.",
-      "item1": "Everything in one place",
-      "item1desc": "Profile, services, pricing, contacts",
-      "item2": "Leads go to Telegram",
-      "item2desc": "Instant notification on your phone",
-      "item3": "Edit from your phone",
-      "item3desc": "Update text without a laptop"
+      "title": "One platform for your entire business",
+      "description": "Business card website, lead CRM, Telegram notifications, analytics - all in one place. Your operating system for micro-business.",
+      "item1": "Page builder",
+      "item1desc": "Build a site from 25+ ready blocks",
+      "item2": "Built-in CRM",
+      "item2desc": "All leads in one place",
+      "item3": "Instant notifications",
+      "item3desc": "Telegram bot notifies about new clients"
     },
     "howItWorks": {
       "badge": "3 steps",
@@ -2958,14 +2958,14 @@
       "bestValue": "Best value"
     },
     "seo": {
-      "badge": "What is it",
-      "title": "A mini-site for your bio link",
+      "badge": "What is lnkmx",
+      "title": "Operating system for micro-business",
       "items": {
-        "1": "A modern link-in-bio alternative",
-        "2": "Mini landing with contact form",
-        "3": "Digital card for experts",
-        "4": "No-code builder",
-        "5": "AI writes the copy for you"
+        "1": "Micro-Business OS - everything for your business in one place",
+        "2": "AI page builder: create a site in 2 minutes",
+        "3": "Built-in CRM: manage leads and clients",
+        "4": "Mini-site + lead forms + Telegram notifications",
+        "5": "Taplink & Linktree alternative with CRM features"
       }
     },
     "faq": {
@@ -2974,7 +2974,7 @@
       "subtitle": "Can't find your answer? Reach out to support",
       "q1": {
         "question": "What is lnkmx?",
-        "answer": "A mini-site builder. Create one page with your info, services, and pricing. Visitors click your Instagram or TikTok link and instantly get what you offer."
+        "answer": "lnkmx is a Micro-Business OS: an operating system for small business. It includes an AI page builder, built-in CRM for leads, Telegram notifications, and analytics. Everything you need to launch a business in one place."
       },
       "q2": {
         "question": "How much does it cost?",

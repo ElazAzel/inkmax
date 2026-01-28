@@ -13,17 +13,17 @@ export default function SEOHead({ language }: SEOHeadProps) {
     const isKazakh = language === 'kk';
     const locale = isRussian ? 'ru_RU' : isKazakh ? 'kk_KZ' : 'en_US';
     
-    // Titles optimized for CTR and clarity
+    // Titles optimized for CTR and clarity - Micro-Business OS positioning
     const titles = {
-      ru: 'lnkmx - мини-сайт за 2 минуты | Заявки из одной ссылки',
-      en: 'lnkmx - mini-site in 2 minutes | Leads from one link',
-      kk: 'lnkmx - 2 минутта мини-сайт | Бір сілтемеден өтінім',
+      ru: 'lnkmx - Micro-Business OS | Конструктор страниц + CRM для бизнеса',
+      en: 'lnkmx - Micro-Business OS | Page Builder + CRM for Business',
+      kk: 'lnkmx - Micro-Business OS | Бет конструкторы + CRM бизнеске',
     };
     
     const descriptions = {
-      ru: 'Бесплатный AI-конструктор мини-сайтов. Соберите страницу с оффером, прайсом и формой заявки за 2 минуты. Без кода и дизайнера.',
-      en: 'Free AI mini-site builder. Create a page with offer, pricing, and lead form in 2 minutes. No code, no designer needed.',
-      kk: 'Тегін AI мини-сайт құрастырушы. Оффер, прайс және өтінім формасы бар бетті 2 минутта жасаңыз.',
+      ru: 'Операционная система для микро-бизнеса: AI-конструктор страниц, встроенная CRM, форма заявок и Telegram-уведомления. Запустите бизнес за 2 минуты без кода.',
+      en: 'Operating system for micro-business: AI page builder, built-in CRM, lead forms and Telegram notifications. Launch your business in 2 minutes with no code.',
+      kk: 'Микро-бизнес үшін операциялық жүйе: AI бет конструкторы, ішкі CRM, өтініш формасы және Telegram хабарламалары. Бизнесті 2 минутта кодсыз бастаңыз.',
     };
 
     const title = titles[language as keyof typeof titles] || titles.ru;
@@ -62,11 +62,11 @@ export default function SEOHead({ language }: SEOHeadProps) {
     setMeta('author', 'lnkmx');
     setMeta('theme-color', '#0080ff');
 
-    // Keywords for each language
+    // Keywords for each language - including OS, CRM, page builder terms
     const keywords = {
-      ru: 'link in bio, линк в био, мини-сайт, страница ссылок, linktree альтернатива, taplink альтернатива, сайт-визитка',
-      en: 'link in bio, mini-site, link page, linktree alternative, taplink alternative, digital business card',
-      kk: 'link in bio, мини-сайт, сілтемелер беті, linktree баламасы, taplink баламасы',
+      ru: 'micro business os, crm для малого бизнеса, конструктор страниц, link in bio, мини-сайт, сайт-визитка, linktree альтернатива, taplink альтернатива, бесплатная crm',
+      en: 'micro business os, small business crm, page builder, link in bio, mini-site, business card website, linktree alternative, taplink alternative, free crm',
+      kk: 'micro business os, шағын бизнес crm, бет конструкторы, link in bio, мини-сайт, сайт-визитка, linktree баламасы, taplink баламасы',
     };
     setMeta('keywords', keywords[language as keyof typeof keywords] || keywords.ru);
 
@@ -127,15 +127,16 @@ export default function SEOHead({ language }: SEOHeadProps) {
           'query-input': 'required name=username',
         },
       },
-      // SoftwareApplication
+      // SoftwareApplication - positioned as Micro-Business OS
       {
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
-        name: 'lnkmx',
+        name: 'lnkmx - Micro-Business OS',
         applicationCategory: 'BusinessApplication',
-        applicationSubCategory: 'Link in Bio Tool',
+        applicationSubCategory: 'Business Operating System',
         operatingSystem: 'Web',
         description: description,
+        featureList: ['AI Page Builder', 'CRM', 'Lead Management', 'Telegram Notifications', 'Analytics', 'Booking System'],
         offers: [
           { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' },
           { '@type': 'Offer', name: 'Pro', price: '5', priceCurrency: 'USD' },
