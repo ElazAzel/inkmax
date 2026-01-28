@@ -29,6 +29,9 @@ export interface BlockStyle {
   textColor?: string;
   fontFamily?: BlockFontFamily;
   
+  // Text effects (like Taplink)
+  textEffect?: 'none' | 'shimmer' | 'glow' | 'pulse' | 'blink' | 'rainbow' | 'neon' | 'typewriter' | 'gradient-flow';
+  
   // Content alignment (vertical)
   contentAlignment?: 'top' | 'center' | 'bottom';
   
