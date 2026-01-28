@@ -22,7 +22,10 @@ Disallow: /crm/
 Disallow: /event-scanner
 Disallow: /legacy
 
-# Sitemap (static fallback, dynamic via Edge Function)
+# Dynamic Sitemap (includes all published user pages)
+Sitemap: https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/generate-sitemap
+
+# Static Sitemap Fallback
 Sitemap: https://lnkmx.my/sitemap.xml
 
 # =============================================================================
