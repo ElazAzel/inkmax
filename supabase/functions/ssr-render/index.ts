@@ -17,7 +17,7 @@ function escapeHtml(text: string): string {
 }
 
 serve(async (req: Request) => {
-  console.log('seo: request received', req.url);
+  console.log('SEO function v3:', req.url);
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -28,7 +28,7 @@ serve(async (req: Request) => {
     const slug = url.searchParams.get('slug');
     const lang = url.searchParams.get('lang') || 'ru';
 
-    console.log('seo: slug=', slug, 'lang=', lang);
+    console.log('SEO: slug=', slug, 'lang=', lang);
 
     if (!slug) {
       return new Response('Slug required', { 
@@ -41,7 +41,7 @@ serve(async (req: Request) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
     if (!supabaseUrl || !supabaseKey) {
-      console.error('seo: Missing env vars');
+      console.error('SEO: Missing env vars');
       return new Response('Server error', { status: 500, headers: corsHeaders });
     }
 
@@ -54,7 +54,7 @@ serve(async (req: Request) => {
       .eq('is_published', true)
       .single();
 
-    console.log('seo: page result', page ? 'found' : 'not found');
+    console.log('SEO: page result', page ? 'found' : 'not found', pageError?.message);
 
     if (!page || pageError) {
       const html = `<!DOCTYPE html>
@@ -106,9 +106,34 @@ serve(async (req: Request) => {
       "description": desc
     });
 
-    const html = '<!DOCTYPE html>\n<html lang="' + lang + '">\n<head>\n  <meta charset="UTF-8">\n  <title>' + name + ' | lnkmx</title>\n  <meta name="description" content="' + desc.slice(0, 160) + '">\n  <meta name="robots" content="index, follow">\n  <link rel="canonical" href="' + canonical + '">\n  <meta property="og:type" content="profile">\n  <meta property="og:title" content="' + name + '">\n  <meta property="og:description" content="' + desc.slice(0, 160) + '">\n  <meta property="og:url" content="' + canonical + '">\n  <meta property="og:image" content="' + avatar + '">\n  <meta name="twitter:card" content="summary_large_image">\n  <meta name="twitter:title" content="' + name + '">\n  <meta name="twitter:description" content="' + desc.slice(0, 160) + '">\n  <meta name="twitter:image" content="' + avatar + '">\n  <script type="application/ld+json">' + jsonLd + '</script>\n</head>\n<body>\n  <h1>' + name + '</h1>\n  ' + (desc ? '<p>' + desc + '</p>' : '') + '\n  ' + content + '\n  <footer><a href="https://lnkmx.my/">lnkmx.my</a></footer>\n</body>\n</html>';
+    const html = `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+  <meta charset="UTF-8">
+  <title>${name} | lnkmx</title>
+  <meta name="description" content="${desc.slice(0, 160)}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="${canonical}">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="${name}">
+  <meta property="og:description" content="${desc.slice(0, 160)}">
+  <meta property="og:url" content="${canonical}">
+  <meta property="og:image" content="${avatar}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${name}">
+  <meta name="twitter:description" content="${desc.slice(0, 160)}">
+  <meta name="twitter:image" content="${avatar}">
+  <script type="application/ld+json">${jsonLd}</script>
+</head>
+<body>
+  <h1>${name}</h1>
+  ${desc ? '<p>' + desc + '</p>' : ''}
+  ${content}
+  <footer><a href="https://lnkmx.my/">lnkmx.my</a></footer>
+</body>
+</html>`;
 
-    console.log('seo: returning HTML');
+    console.log('SEO: returning HTML for', slug);
 
     return new Response(html, {
       status: 200,
@@ -120,7 +145,7 @@ serve(async (req: Request) => {
       }
     });
   } catch (error) {
-    console.error('seo: error', error);
+    console.error('SEO: error', error);
     return new Response('Error', { status: 500, headers: corsHeaders });
   }
 });

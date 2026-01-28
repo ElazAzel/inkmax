@@ -9,7 +9,7 @@
  */
 
 // Edge Function URL for server-side rendering
-const SSR_FUNCTION_URL = 'https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/seo';
+const SSR_FUNCTION_URL = 'https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/ssr-render';
 
 // Bot User-Agent patterns for detection
 const BOT_AGENTS = [
