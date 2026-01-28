@@ -17,7 +17,7 @@ function escapeHtml(text: string): string {
 }
 
 serve(async (req: Request) => {
-  console.log('SEO function v3:', req.url);
+  console.log('SSR function v6:', req.url);
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -28,7 +28,7 @@ serve(async (req: Request) => {
     const slug = url.searchParams.get('slug');
     const lang = url.searchParams.get('lang') || 'ru';
 
-    console.log('SEO: slug=', slug, 'lang=', lang);
+    console.log('SSR: slug=', slug, 'lang=', lang);
 
     if (!slug) {
       return new Response('Slug required', { 
@@ -41,7 +41,7 @@ serve(async (req: Request) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
     if (!supabaseUrl || !supabaseKey) {
-      console.error('SEO: Missing env vars');
+      console.error('SSR: Missing env vars');
       return new Response('Server error', { status: 500, headers: corsHeaders });
     }
 
@@ -54,7 +54,7 @@ serve(async (req: Request) => {
       .eq('is_published', true)
       .single();
 
-    console.log('SEO: page result', page ? 'found' : 'not found', pageError?.message);
+    console.log('SSR: page result', page ? 'found' : 'not found', pageError?.message);
 
     if (!page || pageError) {
       const html = `<!DOCTYPE html>
@@ -133,7 +133,7 @@ serve(async (req: Request) => {
 </body>
 </html>`;
 
-    console.log('SEO: returning HTML for', slug);
+    console.log('SSR: returning HTML for', slug);
 
     return new Response(html, {
       status: 200,
@@ -145,7 +145,7 @@ serve(async (req: Request) => {
       }
     });
   } catch (error) {
-    console.error('SEO: error', error);
+    console.error('SSR: error', error);
     return new Response('Error', { status: 500, headers: corsHeaders });
   }
 });
