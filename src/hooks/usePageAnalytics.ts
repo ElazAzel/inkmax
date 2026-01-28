@@ -30,6 +30,13 @@ export interface TimeSeriesData {
   shares: number;
 }
 
+export interface GeoData {
+  country: string;
+  countryCode: string;
+  count: number;
+  percentage: number;
+}
+
 export interface AnalyticsSummary {
   totalViews: number;
   totalClicks: number;
@@ -44,6 +51,11 @@ export interface AnalyticsSummary {
   clicksChange: number;
   trafficSources: TrafficSource[];
   deviceBreakdown: DeviceBreakdown;
+  geoData: GeoData[];
+  avgSessionDuration: number; // in seconds
+  bounceRate: number; // percentage
+  returningVisitors: number; // percentage
+  totalConversions: number;
 }
 
 export interface TrafficSource {
@@ -243,6 +255,63 @@ export function usePageAnalytics() {
       });
       const deviceBreakdown: DeviceBreakdown = deviceCounts;
 
+      // Calculate geography breakdown
+      const geoMap = new Map<string, { country: string; countryCode: string; count: number }>();
+      events.filter(e => e.event_type === 'view').forEach(e => {
+        const countryCode = (e.metadata?.country as string) || 'unknown';
+        const country = (e.metadata?.countryName as string) || countryCode;
+        const existing = geoMap.get(countryCode);
+        if (existing) {
+          existing.count++;
+        } else {
+          geoMap.set(countryCode, { country, countryCode, count: 1 });
+        }
+      });
+      const geoData: GeoData[] = Array.from(geoMap.values())
+        .map(g => ({
+          ...g,
+          percentage: totalViews > 0 ? (g.count / totalViews) * 100 : 0,
+        }))
+        .sort((a, b) => b.count - a.count);
+
+      // Calculate session metrics (estimates based on available data)
+      const sessionsWithClicks = events.filter(e => e.event_type === 'click').length;
+      const bounceRate = totalViews > 0 
+        ? Math.max(0, Math.min(100, ((totalViews - sessionsWithClicks) / totalViews) * 100))
+        : 0;
+
+      // Estimate average session duration from metadata if available
+      const durations = events
+        .filter(e => e.metadata?.sessionDuration && typeof e.metadata.sessionDuration === 'number')
+        .map(e => e.metadata.sessionDuration as number);
+      const avgSessionDuration = durations.length > 0
+        ? durations.reduce((sum, d) => sum + d, 0) / durations.length
+        : 45; // Default estimate
+
+      // Calculate returning visitors
+      const visitorCounts = new Map<string, number>();
+      events.filter(e => e.event_type === 'view').forEach(e => {
+        const visitorId = (e.metadata?.visitorId as string) || e.id;
+        visitorCounts.set(visitorId, (visitorCounts.get(visitorId) || 0) + 1);
+      });
+      const returningCount = Array.from(visitorCounts.values()).filter(c => c > 1).length;
+      const returningVisitorsPercent = uniqueVisitors > 0 ? (returningCount / uniqueVisitors) * 100 : 0;
+
+      // Fetch conversions (leads + bookings)
+      const { data: leads } = await supabase
+        .from('leads')
+        .select('id')
+        .eq('user_id', user.id)
+        .gte('created_at', startDate.toISOString());
+      
+      const { data: bookings } = await supabase
+        .from('bookings')
+        .select('id')
+        .eq('owner_id', user.id)
+        .gte('created_at', startDate.toISOString());
+      
+      const totalConversions = (leads?.length || 0) + (bookings?.length || 0);
+
       setAnalytics({
         totalViews,
         totalClicks,
@@ -257,6 +326,11 @@ export function usePageAnalytics() {
         clicksChange,
         trafficSources,
         deviceBreakdown,
+        geoData,
+        avgSessionDuration,
+        bounceRate,
+        returningVisitors: returningVisitorsPercent,
+        totalConversions,
       });
     } catch (error) {
       console.error('Error fetching analytics:', error);
