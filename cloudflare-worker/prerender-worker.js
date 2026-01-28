@@ -1,15 +1,15 @@
 /**
- * Cloudflare Worker for Prerender.io Integration
+ * Cloudflare Worker for SEO/AEO/GEO Bot Routing
  * 
- * This worker intercepts requests from search engine bots and AI crawlers,
- * proxying them to Prerender.io for pre-rendered HTML responses.
+ * Routes search engine bots and AI crawlers to our SSR Edge Function
+ * while serving the normal SPA to human users.
  * 
- * Deploy: wrangler publish
- * Test: curl -A "Googlebot" https://lnkmx.my/
+ * Deploy: wrangler deploy
+ * Test: curl -A "Googlebot" https://lnkmx.my/your-slug
  */
 
-// Prerender.io token - set in Cloudflare Worker environment variables
-const PRERENDER_TOKEN = '0viuc489f58Vc5A0G7q9';
+// Edge Function URL for server-side rendering
+const SSR_FUNCTION_URL = 'https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/render-page';
 
 // Bot User-Agent patterns for detection
 const BOT_AGENTS = [
@@ -34,6 +34,8 @@ const BOT_AGENTS = [
   'you.com',
   'cohere-ai',
   'meta-externalagent',
+  'google-extended',
+  'applebot',
   
   // Social Media Crawlers
   'facebookexternalhit',
@@ -45,24 +47,6 @@ const BOT_AGENTS = [
   'whatsapp',
   'discordbot',
   'vkshare',
-  
-  // SEO Tools & Validators
-  'semrushbot',
-  'ahrefsbot',
-  'mj12bot',
-  'dotbot',
-  'rogerbot',
-  'screaming frog',
-  
-  // Preview Services
-  'embedly',
-  'quora link preview',
-  'outbrain',
-  'w3c_validator',
-  'validator.nu',
-  
-  // Prerender.io own crawler
-  'prerender',
 ];
 
 // File extensions to ignore (static assets)
@@ -72,10 +56,10 @@ const IGNORED_EXTENSIONS = [
   '.avi', '.ppt', '.mpg', '.mpeg', '.tif', '.wav', '.mov', '.psd', '.ai',
   '.xls', '.mp4', '.m4a', '.swf', '.dat', '.dmg', '.iso', '.flv', '.m4v',
   '.torrent', '.woff', '.woff2', '.ttf', '.eot', '.svg', '.webp', '.webm',
-  '.avif', '.map', '.json'
+  '.avif', '.map', '.json', '.wasm'
 ];
 
-// Paths to exclude from prerendering
+// Paths to exclude from SSR
 const EXCLUDED_PATHS = [
   '/api/',
   '/dashboard',
@@ -87,6 +71,25 @@ const EXCLUDED_PATHS = [
   '/_',
   '/admin',
   '/.well-known',
+  '/install',
+  '/join/',
+  '/team/',
+  '/p/',
+  '/event-scanner',
+  '/legacy',
+];
+
+// Static pages that don't need SSR (already have good static HTML)
+const STATIC_PAGES = [
+  '/',
+  '/gallery',
+  '/pricing',
+  '/alternatives',
+  '/experts',
+  '/terms',
+  '/privacy',
+  '/payment-terms',
+  '/bento',
 ];
 
 /**
@@ -99,7 +102,7 @@ function isBot(userAgent) {
 }
 
 /**
- * Check if the path should be excluded from prerendering
+ * Check if the path should be excluded from SSR
  */
 function shouldExclude(pathname) {
   // Check excluded paths
@@ -117,86 +120,99 @@ function shouldExclude(pathname) {
 }
 
 /**
+ * Check if the path is a static page
+ */
+function isStaticPage(pathname) {
+  return STATIC_PAGES.includes(pathname) || 
+         pathname.startsWith('/experts/');
+}
+
+/**
+ * Extract slug from pathname
+ */
+function extractSlug(pathname) {
+  // Remove leading slash and any trailing slashes
+  const slug = pathname.replace(/^\/+|\/+$/g, '');
+  return slug || null;
+}
+
+/**
  * Main request handler
  */
 async function handleRequest(request) {
   const url = new URL(request.url);
   const userAgent = request.headers.get('User-Agent') || '';
-  
-  // Skip if already prerendered (avoid loops)
-  if (request.headers.get('X-Prerender') === '1') {
-    return fetch(request);
-  }
+  const pathname = url.pathname;
   
   // Skip excluded paths and static assets
-  if (shouldExclude(url.pathname)) {
+  if (shouldExclude(pathname)) {
     return fetch(request);
   }
   
   // Check for _escaped_fragment_ (legacy but still used)
   const hasEscapedFragment = url.searchParams.has('_escaped_fragment_');
   
-  // Only prerender for bots or escaped fragment requests
+  // Only SSR for bots or escaped fragment requests
   if (!isBot(userAgent) && !hasEscapedFragment) {
     return fetch(request);
   }
   
-  // Build Prerender.io URL
-  const prerenderUrl = `https://service.prerender.io/${url.toString()}`;
+  // Static pages don't need SSR - they have good HTML already
+  if (isStaticPage(pathname)) {
+    return fetch(request);
+  }
   
-  // Prepare headers for Prerender.io
-  const prerenderHeaders = new Headers({
-    'X-Prerender-Token': PRERENDER_TOKEN,
-    'X-Prerender-Int-Type': 'cloudflare-worker',
-    'Accept': 'text/html',
-  });
+  // Extract slug for user pages
+  const slug = extractSlug(pathname);
+  if (!slug) {
+    return fetch(request);
+  }
   
-  // Forward original headers that might be useful
-  const forwardHeaders = ['Accept-Language', 'Cookie'];
-  forwardHeaders.forEach(header => {
-    const value = request.headers.get(header);
-    if (value) prerenderHeaders.set(header, value);
-  });
+  // Get language from query params
+  const lang = url.searchParams.get('lang') || 'ru';
+  
+  // Build SSR URL
+  const ssrUrl = `${SSR_FUNCTION_URL}?slug=${encodeURIComponent(slug)}&lang=${encodeURIComponent(lang)}`;
   
   try {
-    // Fetch pre-rendered content
-    const prerenderResponse = await fetch(prerenderUrl, {
+    // Fetch SSR content from Edge Function
+    const ssrResponse = await fetch(ssrUrl, {
       method: 'GET',
-      headers: prerenderHeaders,
-      redirect: 'follow',
+      headers: {
+        'Accept': 'text/html',
+        'User-Agent': userAgent,
+      },
     });
     
-    // Check if Prerender.io returned a valid response
-    if (prerenderResponse.ok) {
+    // Check if SSR returned a valid response
+    if (ssrResponse.ok) {
       // Clone response and add custom headers
-      const responseHeaders = new Headers(prerenderResponse.headers);
-      responseHeaders.set('X-Prerendered', 'true');
-      responseHeaders.set('X-Prerender-Status', prerenderResponse.status.toString());
+      const responseHeaders = new Headers(ssrResponse.headers);
+      responseHeaders.set('X-SSR-Rendered', 'true');
+      responseHeaders.set('X-SSR-Slug', slug);
       
       // Ensure proper content type
-      if (!responseHeaders.has('Content-Type')) {
-        responseHeaders.set('Content-Type', 'text/html; charset=utf-8');
-      }
+      responseHeaders.set('Content-Type', 'text/html; charset=utf-8');
       
-      return new Response(prerenderResponse.body, {
-        status: prerenderResponse.status,
-        statusText: prerenderResponse.statusText,
+      return new Response(ssrResponse.body, {
+        status: ssrResponse.status,
+        statusText: ssrResponse.statusText,
         headers: responseHeaders,
       });
     }
     
-    // If Prerender.io fails, fall back to origin
-    console.error(`Prerender failed with status: ${prerenderResponse.status}`);
+    // If SSR fails (404 for unpublished pages, etc.), fall back to origin
+    console.log(`SSR returned status ${ssrResponse.status} for slug: ${slug}`);
     return fetch(request);
     
   } catch (error) {
     // On any error, fall back to origin
-    console.error('Prerender error:', error.message);
+    console.error('SSR error:', error.message);
     return fetch(request);
   }
 }
 
-// Event listener for Cloudflare Worker
+// Event listener for Cloudflare Worker (legacy)
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
 });
