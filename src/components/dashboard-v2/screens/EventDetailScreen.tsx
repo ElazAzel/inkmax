@@ -422,7 +422,7 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
         ? t('events.online', 'Онлайн')
         : event.locationValue || t('events.offline', 'Офлайн');
 
-      exportEventToPDF({
+      await exportEventToPDF({
         eventTitle: event.title,
         eventDate,
         eventLocation,
