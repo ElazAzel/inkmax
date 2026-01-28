@@ -625,11 +625,11 @@ export default function Index() {
                       Pro <Crown className="h-4 w-4 text-amber-500" />
                     </h3>
                     <p className="text-2xl font-black">
-                      {isKZ ? '2 610 ₸' : '$5'}
+                      {isKZ ? '3 045 ₸' : '$6'}
                       <span className="text-sm font-normal text-muted-foreground">/{t('landing.v4.pricing.month', 'мес')}</span>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {isKZ ? '31 320 ₸ за год' : '$60/year'} · {t('landing.v4.pricing.save', 'экономия 40%')}
+                      {isKZ ? '36 540 ₸ за год' : '$71/year'} · {t('landing.v4.pricing.save', 'экономия 30%')}
                     </p>
                   </div>
                 </div>
