@@ -222,7 +222,7 @@ serve(async (req) => {
         'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
         'ETag': etag,
         'Access-Control-Allow-Origin': '*',
-        'X-Robots-Tag': 'noindex', // Sitemap itself shouldn't be indexed
+        // Removed X-Robots-Tag to allow sitemap to be indexed
         'X-Content-Type-Options': 'nosniff',
       },
     });
