@@ -1,4 +1,4 @@
-# lnkmx.my — Platform Overview
+# lnkmx.my — The Micro-Business OS
 
 > **Document Purpose:** Single source of truth for the lnkmx platform — architecture, features, user flows, and repository structure. Written for team onboarding and technical reference.
 
@@ -6,13 +6,21 @@
 
 ## 1) What lnkmx is
 
-lnkmx is a SaaS platform for building AI-assisted mini-sites, link-in-bio pages, and landing pages. It helps creators, freelancers, and small businesses create professional web presence in minutes without coding skills. The platform offers 28 customizable block types, built-in CRM for lead management, analytics, event registration, and appointment booking. Pages are optimized for SEO and AI search engines (GEO/AEO). The core value: from signup to published page in under 60 seconds using AI-powered generation.
+**Positioning:** The Micro-Business Operating System — Page Builder + Mini-CRM + Analytics
+
+lnkmx is a comprehensive SaaS platform that combines three core capabilities into one unified system:
+
+1. **Page Builder** — AI-powered drag-and-drop constructor with 28 customizable blocks for creating professional websites without coding
+2. **Mini-CRM** — Lead management system with status tracking, interaction history, and Telegram notifications
+3. **Analytics** — Click tracking, conversion funnels, traffic sources, device breakdown, and geography insights
+
+The platform enables creators, freelancers, and small businesses to build their online presence, capture leads, and manage client relationships from a single dashboard. Core value: complete business system accessible in minutes.
 
 **Target audiences:**
-- Instagram/TikTok creators needing link-in-bio aggregation
-- Freelancers and consultants showcasing services and pricing
-- Small businesses displaying products without full e-commerce
-- Event organizers managing registrations and ticket sales
+- Experts and consultants showcasing services with booking and lead capture
+- Small businesses managing products, clients, and analytics
+- Service providers (beauty, fitness, education) with appointment scheduling
+- Creators and freelancers needing a professional web presence
 
 ## Company Information
 

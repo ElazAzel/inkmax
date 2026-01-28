@@ -501,21 +501,21 @@
     },
     "v4": {
       "hero": {
-        "badge": "Free. No code. In 2 minutes.",
-        "title": "Build a page that brings clients",
-        "subtitle": "AI writes the copy. Leads go to Telegram. You see what works.",
-        "cta": "Create page",
+        "badge": "The Micro-Business OS",
+        "title": "Site, CRM & Analytics - All in One",
+        "subtitle": "Page builder, lead management, click analytics. Everything a small business needs - no code required.",
+        "cta": "Create for Free",
         "secondary": "See examples",
-        "trust1": "No card required",
-        "trust2": "Mobile editor",
-        "trust3": "Publish in one click"
+        "trust1": "Page Builder",
+        "trust2": "Mini-CRM",
+        "trust3": "Analytics"
       },
       "forWhom": {
-        "label": "For those who sell via socials:",
+        "label": "For those who need a simple business system:",
         "expert": "Experts",
-        "beauty": "Beauty",
+        "beauty": "Services",
         "creator": "Creators",
-        "business": "Business"
+        "business": "Shops"
       },
       "problem": {
         "title": "Sound familiar?",
@@ -542,22 +542,22 @@
         "cta": "Try it"
       },
       "benefits": {
-        "title": "What you get",
+        "title": "Complete Business System",
         "crm": {
-          "title": "Mini-CRM + Telegram",
-          "desc": "All leads in one place. Instant notifications to your phone."
+          "title": "Mini-CRM",
+          "desc": "All leads in one place. Statuses, history, Telegram notifications."
         },
         "analytics": {
-          "title": "Click analytics",
-          "desc": "See which blocks work. Know what to improve."
+          "title": "Analytics",
+          "desc": "Clicks, conversions, traffic sources, visitor geography."
         },
         "ai": {
-          "title": "AI assistant",
-          "desc": "Generates copy, structure, and ideas. Saves hours of work."
+          "title": "AI Generation",
+          "desc": "AI creates structure, copy, and recommendations. Saves hours of work."
         },
         "mobile": {
-          "title": "Mobile editor",
-          "desc": "Edit from your phone. Publish in a second."
+          "title": "Page Builder",
+          "desc": "25+ blocks, drag & drop. Edit from phone or desktop."
         }
       },
       "blocks": {
@@ -621,9 +621,9 @@
         "proCta": "Choose Pro"
       },
       "finalCta": {
-        "title": "Ready to build your page?",
-        "subtitle": "Free. No code. Results in 2 minutes.",
-        "cta": "Create page",
+        "title": "Ready to launch your business hub?",
+        "subtitle": "Site + CRM + analytics. Free. No code.",
+        "cta": "Create for Free",
         "secondary": "Or see examples"
       }
     },
