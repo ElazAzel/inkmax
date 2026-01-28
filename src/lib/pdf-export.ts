@@ -66,32 +66,37 @@ const CHART_COLORS = [
   [249, 115, 22],   // Orange
 ];
 
-// Roboto font base64 (subset with Cyrillic support)
-// We'll load it dynamically from Google Fonts CDN
-let fontLoaded = false;
-let fontData: string | null = null;
+/**
+ * Transliterate Cyrillic text to Latin for PDF compatibility
+ * jsPDF's built-in fonts don't support Cyrillic, so we transliterate
+ */
+function transliterate(text: string): string {
+  const cyrillicToLatin: Record<string, string> = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+    'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
+    'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
+    'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh',
+    'З': 'Z', 'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O',
+    'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts',
+    'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Sch', 'Ъ': '', 'Ы': 'Y', 'Ь': '', 'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya',
+    // Kazakh specific
+    'ә': 'a', 'і': 'i', 'ң': 'n', 'ғ': 'g', 'ү': 'u', 'ұ': 'u', 'қ': 'q', 'ө': 'o', 'һ': 'h',
+    'Ә': 'A', 'І': 'I', 'Ң': 'N', 'Ғ': 'G', 'Ү': 'U', 'Ұ': 'U', 'Қ': 'Q', 'Ө': 'O', 'Һ': 'H',
+  };
 
-async function loadCyrillicFont(): Promise<string | null> {
-  if (fontData) return fontData;
-  
-  try {
-    // Load Roboto font with Cyrillic subset from Google Fonts
-    const response = await fetch(
-      'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2'
-    );
-    const blob = await response.blob();
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        fontData = reader.result as string;
-        resolve(fontData);
-      };
-      reader.readAsDataURL(blob);
-    });
-  } catch (e) {
-    console.warn('Could not load Cyrillic font, using fallback');
-    return null;
+  return text.split('').map(char => cyrillicToLatin[char] || char).join('');
+}
+
+/**
+ * Safe text for PDF - transliterates if contains Cyrillic
+ */
+function safeText(text: string): string {
+  // Check if text contains Cyrillic characters
+  if (/[а-яА-ЯёЁәіңғүұқөһӘІҢҒҮҰҚӨҺ]/.test(text)) {
+    return transliterate(text);
   }
+  return text;
 }
 
 /**
@@ -117,62 +122,48 @@ export async function exportEventToPDF({
   // Get locale for date formatting
   const dateLocale = language === 'ru' ? ru : language === 'kk' ? kk : enUS;
 
-  // Try to load Cyrillic font
-  const font = await loadCyrillicFont();
-  if (font) {
-    try {
-      // Extract base64 data from data URL
-      const base64Data = font.split(',')[1];
-      if (base64Data) {
-        doc.addFileToVFS('Roboto-Regular.ttf', base64Data);
-        doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-        doc.setFont('Roboto');
-        fontLoaded = true;
-      }
-    } catch (e) {
-      console.warn('Could not register font:', e);
-    }
-  }
+  // Use helvetica (built-in font that supports Latin characters)
+  doc.setFont('helvetica');
 
   // Header
   doc.setFontSize(18);
   doc.setTextColor(30, 30, 30);
-  doc.text(eventTitle, margin, yPos);
+  doc.text(safeText(eventTitle), margin, yPos);
   yPos += 10;
 
   // Event info
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
   if (eventDate) {
-    doc.text(`${getLabel('date', language)}: ${eventDate}`, margin, yPos);
+    doc.text(`${safeText(getLabel('date', language))}: ${safeText(eventDate)}`, margin, yPos);
     yPos += 5;
   }
   if (eventLocation) {
-    doc.text(`${getLabel('location', language)}: ${eventLocation}`, margin, yPos);
+    doc.text(`${safeText(getLabel('location', language))}: ${safeText(eventLocation)}`, margin, yPos);
     yPos += 5;
   }
-  doc.text(`${getLabel('exportDate', language)}: ${format(new Date(), 'dd.MM.yyyy HH:mm', { locale: dateLocale })}`, margin, yPos);
+  doc.text(`${safeText(getLabel('exportDate', language))}: ${format(new Date(), 'dd.MM.yyyy HH:mm', { locale: dateLocale })}`, margin, yPos);
   yPos += 15;
 
   // Summary stats
   doc.setFontSize(14);
   doc.setTextColor(30, 30, 30);
-  doc.text(getLabel('summary', language), margin, yPos);
+  doc.text(safeText(getLabel('summary', language)), margin, yPos);
   yPos += 10;
 
   // Stats cards
   const statsCardWidth = (pageWidth - margin * 2 - 15) / 4;
-  drawStatCard(doc, margin, yPos, statsCardWidth, analytics.total, getLabel('total', language), [59, 130, 246]);
-  drawStatCard(doc, margin + statsCardWidth + 5, yPos, statsCardWidth, analytics.confirmed, getLabel('confirmed', language), [16, 185, 129]);
-  drawStatCard(doc, margin + (statsCardWidth + 5) * 2, yPos, statsCardWidth, analytics.pending, getLabel('pending', language), [245, 158, 11]);
-  drawStatCard(doc, margin + (statsCardWidth + 5) * 3, yPos, statsCardWidth, analytics.checkedIn, getLabel('checkedIn', language), [139, 92, 246]);
+  drawStatCard(doc, margin, yPos, statsCardWidth, analytics.total, safeText(getLabel('total', language)), [59, 130, 246]);
+  drawStatCard(doc, margin + statsCardWidth + 5, yPos, statsCardWidth, analytics.confirmed, safeText(getLabel('confirmed', language)), [16, 185, 129]);
+  drawStatCard(doc, margin + (statsCardWidth + 5) * 2, yPos, statsCardWidth, analytics.pending, safeText(getLabel('pending', language)), [245, 158, 11]);
+  drawStatCard(doc, margin + (statsCardWidth + 5) * 3, yPos, statsCardWidth, analytics.checkedIn, safeText(getLabel('checkedIn', language)), [139, 92, 246]);
   yPos += 30;
 
   if (includeAnalytics && analytics.statusBreakdown.length > 0) {
     // Status distribution section
     doc.setFontSize(12);
     doc.setTextColor(30, 30, 30);
-    doc.text(getLabel('statusDistribution', language), margin, yPos);
+    doc.text(safeText(getLabel('statusDistribution', language)), margin, yPos);
     yPos += 8;
 
     // Draw horizontal bar chart for status distribution
@@ -187,7 +178,7 @@ export async function exportEventToPDF({
       // Status label
       doc.setFontSize(9);
       doc.setTextColor(60, 60, 60);
-      const statusLabel = translateStatus(stat.status, language);
+      const statusLabel = safeText(translateStatus(stat.status, language));
       doc.text(statusLabel, margin, yPos + barHeight / 2);
       
       // Bar
@@ -210,14 +201,11 @@ export async function exportEventToPDF({
       if (yPos > pageHeight - 80) {
         doc.addPage();
         yPos = margin;
-        if (fontLoaded) {
-          doc.setFont('Roboto');
-        }
       }
 
       doc.setFontSize(11);
       doc.setTextColor(30, 30, 30);
-      doc.text(fieldStat.fieldLabel, margin, yPos);
+      doc.text(safeText(fieldStat.fieldLabel), margin, yPos);
       yPos += 8;
 
       if (fieldStat.type === 'choice' && fieldStat.options) {
@@ -230,9 +218,6 @@ export async function exportEventToPDF({
           if (yPos > pageHeight - 30) {
             doc.addPage();
             yPos = margin;
-            if (fontLoaded) {
-              doc.setFont('Roboto');
-            }
           }
 
           const barWidth = Math.max((option.count / maxCount) * maxBarWidth, 3);
@@ -241,8 +226,8 @@ export async function exportEventToPDF({
           // Option label (truncate if too long)
           doc.setFontSize(8);
           doc.setTextColor(60, 60, 60);
-          const label = option.label.length > 25 ? option.label.slice(0, 22) + '...' : option.label;
-          doc.text(label, margin, yPos + barHeight / 2 - 1);
+          const labelText = option.label.length > 25 ? option.label.slice(0, 22) + '...' : option.label;
+          doc.text(safeText(labelText), margin, yPos + barHeight / 2 - 1);
 
           // Bar
           doc.setFillColor(color[0], color[1], color[2]);
@@ -267,30 +252,27 @@ export async function exportEventToPDF({
 
     doc.setFontSize(14);
     doc.setTextColor(30, 30, 30);
-    if (fontLoaded) {
-      doc.setFont('Roboto');
-    }
-    doc.text(getLabel('registrationsList', language), margin, yPos);
+    doc.text(safeText(getLabel('registrationsList', language)), margin, yPos);
     yPos += 8;
 
     // Build table headers
     const headers = [
-      getLabel('name', language),
+      safeText(getLabel('name', language)),
       'Email',
-      getLabel('phone', language),
-      getLabel('status', language),
-      getLabel('ticket', language),
-      getLabel('date', language),
+      safeText(getLabel('phone', language)),
+      safeText(getLabel('status', language)),
+      safeText(getLabel('ticket', language)),
+      safeText(getLabel('date', language)),
     ];
 
     // Build table rows
     const rows = registrations.map(reg => {
       const ticket = reg.event_tickets?.[0];
       return [
-        reg.attendee_name,
+        safeText(reg.attendee_name),
         reg.attendee_email,
         reg.attendee_phone || '-',
-        translateStatus(reg.status, language),
+        safeText(translateStatus(reg.status, language)),
         ticket?.ticket_code || '-',
         format(new Date(reg.created_at), 'dd.MM.yyyy HH:mm', { locale: dateLocale }),
       ];
@@ -303,7 +285,6 @@ export async function exportEventToPDF({
       styles: {
         fontSize: 8,
         cellPadding: 3,
-        font: fontLoaded ? 'Roboto' : 'helvetica',
       },
       headStyles: {
         fillColor: [59, 130, 246],
@@ -318,9 +299,9 @@ export async function exportEventToPDF({
   }
 
   // Save the PDF
-  const safeTitle = eventTitle.replace(/[^a-zA-Zа-яА-ЯәіңғүұқөһӘІҢҒҮҰҚӨҺ0-9\s]/g, '').trim().slice(0, 30) || 'event';
+  const safeTitle = transliterate(eventTitle).replace(/[^a-zA-Z0-9\s]/g, '').trim().slice(0, 30) || 'event';
   const dateStr = format(new Date(), 'yyyy-MM-dd');
-  doc.save(`${safeTitle}_${getLabel('report', language)}_${dateStr}.pdf`);
+  doc.save(`${safeTitle}_report_${dateStr}.pdf`);
 }
 
 /**
