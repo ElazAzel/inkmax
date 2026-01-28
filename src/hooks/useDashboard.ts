@@ -148,10 +148,11 @@ export function useDashboard(options?: UseDashboardOptions) {
     onClaimBlockToken: () => tokens.claimDailyTokens('add_block'),
   });
 
-  // Onboarding
+  // Onboarding - skip if user already has content (more than 2 blocks)
   const onboardingState = useDashboardOnboarding({
     isUserReady: !!user,
     isPageReady: !!pageData,
+    blockCount: pageData?.blocks?.length || 0,
     onNicheComplete: (profile, blocks, niche) => {
       const profileBlock = pageData?.blocks.find((b) => b.type === 'profile');
       if (profile && profileBlock) {

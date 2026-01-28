@@ -9,6 +9,9 @@ const STORAGE_KEYS = {
   ONBOARDING_COMPLETED: 'linkmax_onboarding_completed',
 } as const;
 
+/** Minimum block count to skip AI onboarding (user already has content) */
+const MIN_BLOCKS_TO_SKIP_ONBOARDING = 2;
+
 interface OnboardingProfile {
   name: string;
   bio: string;
@@ -17,12 +20,15 @@ interface OnboardingProfile {
 interface UseDashboardOnboardingOptions {
   isUserReady: boolean;
   isPageReady: boolean;
+  /** Current block count on the page */
+  blockCount: number;
   onNicheComplete: (profile: OnboardingProfile, blocks: Block[], niche: Niche) => void;
 }
 
 export function useDashboardOnboarding({
   isUserReady,
   isPageReady,
+  blockCount,
   onNicheComplete,
 }: UseDashboardOnboardingOptions) {
   const { t } = useTranslation();
@@ -36,12 +42,26 @@ export function useDashboardOnboarding({
     const hasCompletedNiche = localStorage.getItem(STORAGE_KEYS.NICHE_COMPLETED);
     const hasCompletedOnboarding = localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
 
+    // Skip AI builder onboarding if user already has content (more than 2 blocks)
+    const hasExistingContent = blockCount > MIN_BLOCKS_TO_SKIP_ONBOARDING;
+
+    if (hasExistingContent) {
+      // Auto-mark as completed if user has content
+      if (!hasCompletedNiche) {
+        localStorage.setItem(STORAGE_KEYS.NICHE_COMPLETED, 'true');
+      }
+      if (!hasCompletedOnboarding) {
+        localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
+      }
+      return;
+    }
+
     if (!hasCompletedNiche) {
       setTimeout(() => setShowNicheOnboarding(true), 500);
     } else if (!hasCompletedOnboarding) {
       setTimeout(() => setShowOnboarding(true), 1000);
     }
-  }, [isUserReady, isPageReady]);
+  }, [isUserReady, isPageReady, blockCount]);
 
   const handleOnboardingComplete = useCallback(() => {
     localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
