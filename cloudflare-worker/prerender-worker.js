@@ -14,7 +14,7 @@
 // Supabase Edge Function URL (combined sitemap + SSR)
 const SUPABASE_PROJECT = 'pphdcfxucfndmwulpfwv';
 const FUNCTION_URL = `https://${SUPABASE_PROJECT}.supabase.co/functions/v1/generate-sitemap`;
-// Both SSR and Sitemap use the same function now (slug param triggers SSR mode)
+// Both SSR and Sitemap use the same function now (path-based SSR route)
 const SSR_FUNCTION_URL = FUNCTION_URL;
 const SITEMAP_FUNCTION_URL = FUNCTION_URL;
 
@@ -28,10 +28,7 @@ const WHITELIST_PAGES = new Set([
   'alternatives',
   'terms',
   'privacy',
-  'payment-terms',
   'contact',
-  'bento',
-  'legacy',
 ]);
 
 // BLACKLIST: Private pages - never SSR, never index
@@ -47,10 +44,6 @@ const BLACKLIST_PREFIXES = [
   'settings',
   'install',
   'team',
-  'join',
-  'p',
-  'collab',
-  'event-scanner',
 ];
 
 // Bot User-Agent patterns for SSR routing
@@ -60,32 +53,11 @@ const BOT_PATTERNS = [
   'bingbot',
   'yandexbot',
   'duckduckbot',
-  'baiduspider',
-  'slurp',           // Yahoo
-  'sogou',
-  'exabot',
-  
-  // AI & Answer Engines (AEO/GEO)
   'gptbot',
   'chatgpt-user',
-  'claude-web',
-  'anthropic-ai',
   'perplexitybot',
-  'you.com',
-  'cohere-ai',
-  'meta-externalagent',
-  'google-extended',
+  'claude-web',
   'applebot',
-  
-  // Social Media Crawlers
-  'facebookexternalhit',
-  'twitterbot',
-  'linkedinbot',
-  'pinterest',
-  'slackbot',
-  'telegrambot',
-  'whatsapp',
-  'discordbot',
 ];
 
 // Static file extensions - never process
@@ -182,7 +154,7 @@ async function handleRequest(request) {
       if (sitemapResponse.ok) {
         const headers = new Headers(sitemapResponse.headers);
         headers.set('Content-Type', 'application/xml; charset=utf-8');
-        headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+        headers.set('Cache-Control', 'public, max-age=21600, stale-while-revalidate=86400');
         headers.delete('set-cookie'); // Remove Supabase cookies
         
         return new Response(sitemapResponse.body, {
@@ -207,7 +179,17 @@ async function handleRequest(request) {
   
   // 5. Blacklisted paths - always origin (never SSR)
   if (isBlacklisted(first)) {
-    return fetch(request);
+    const response = await fetch(request);
+    if (isBot(userAgent)) {
+      const headers = new Headers(response.headers);
+      headers.set('X-Robots-Tag', 'noindex, nofollow');
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+    return response;
   }
   
   // 6. Whitelisted marketing pages - always origin
@@ -227,20 +209,18 @@ async function handleRequest(request) {
   
   // 9. It's a slug! Check if bot
   const isBotRequest = isBot(userAgent);
-  const hasEscapedFragment = url.searchParams.has('_escaped_fragment_');
   
   // For humans, serve SPA
-  if (!isBotRequest && !hasEscapedFragment) {
+  if (!isBotRequest) {
     return fetch(request);
   }
   
   // 10. Bot + Slug = SSR
   const slug = first;
-  const lang = url.searchParams.get('lang') || 'ru';
   
   console.log(`[Worker] SSR for bot: slug=${slug}, ua=${userAgent.substring(0, 50)}`);
   
-  const ssrUrl = `${SSR_FUNCTION_URL}?slug=${encodeURIComponent(slug)}&lang=${encodeURIComponent(lang)}`;
+  const ssrUrl = `${SSR_FUNCTION_URL}/ssr/${encodeURIComponent(slug)}`;
   
   try {
     const ssrResponse = await fetch(ssrUrl, {
