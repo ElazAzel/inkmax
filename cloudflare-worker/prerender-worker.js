@@ -1,36 +1,76 @@
 /**
  * Cloudflare Worker for SEO/AEO/GEO Bot Routing
  * 
- * Routes search engine bots and AI crawlers to our SSR Edge Function
+ * Routes search engine bots and AI crawlers to SSR Edge Function
  * while serving the normal SPA to human users.
  * 
- * Deploy: wrangler deploy
- * Test: curl -A "Googlebot" https://lnkmx.my/your-slug
+ * Architecture:
+ * - WHITELIST: Marketing pages (not slugs)
+ * - BLACKLIST: Private pages (never SSR, never index)
+ * - SLUG: Single-segment paths not in whitelist/blacklist -> SSR for bots
+ * - SITEMAP: /sitemap.xml -> proxy to generate-sitemap
  */
 
-// Edge Function URL for server-side rendering
-const SSR_FUNCTION_URL = 'https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/ssr-render';
+// Supabase Edge Function URL (combined sitemap + SSR)
+const SUPABASE_PROJECT = 'pphdcfxucfndmwulpfwv';
+const FUNCTION_URL = `https://${SUPABASE_PROJECT}.supabase.co/functions/v1/generate-sitemap`;
+// Both SSR and Sitemap use the same function now (slug param triggers SSR mode)
+const SSR_FUNCTION_URL = FUNCTION_URL;
+const SITEMAP_FUNCTION_URL = FUNCTION_URL;
 
-// Bot User-Agent patterns for detection
-const BOT_AGENTS = [
+// WHITELIST: Marketing/static pages - NOT treated as slugs
+// These pages have their own SPA routes and don't need SSR from render-page
+const WHITELIST_PAGES = new Set([
+  '',           // root /
+  'pricing',
+  'gallery',
+  'experts',
+  'alternatives',
+  'terms',
+  'privacy',
+  'payment-terms',
+  'contact',
+  'bento',
+  'legacy',
+]);
+
+// BLACKLIST: Private pages - never SSR, never index
+// These should return SPA as-is, worker doesn't touch them
+const BLACKLIST_PREFIXES = [
+  'auth',
+  'dashboard',
+  'dashboard-v2',
+  'editor',
+  'crm',
+  'admin',
+  'api',
+  'settings',
+  'install',
+  'team',
+  'join',
+  'p',
+  'collab',
+  'event-scanner',
+];
+
+// Bot User-Agent patterns for SSR routing
+const BOT_PATTERNS = [
   // Search Engine Crawlers
   'googlebot',
   'bingbot',
-  'yandex',
-  'baiduspider',
+  'yandexbot',
   'duckduckbot',
+  'baiduspider',
   'slurp',           // Yahoo
   'sogou',
   'exabot',
-  'facebot',         // Facebook
-  'ia_archiver',     // Alexa
   
   // AI & Answer Engines (AEO/GEO)
-  'chatgpt-user',
   'gptbot',
+  'chatgpt-user',
   'claude-web',
   'anthropic-ai',
-  'perplexity',
+  'perplexitybot',
   'you.com',
   'cohere-ai',
   'meta-externalagent',
@@ -46,94 +86,73 @@ const BOT_AGENTS = [
   'telegrambot',
   'whatsapp',
   'discordbot',
-  'vkshare',
 ];
 
-// File extensions to ignore (static assets)
-const IGNORED_EXTENSIONS = [
-  '.js', '.css', '.xml', '.less', '.png', '.jpg', '.jpeg', '.gif', '.pdf',
-  '.doc', '.txt', '.ico', '.rss', '.zip', '.mp3', '.rar', '.exe', '.wmv',
-  '.avi', '.ppt', '.mpg', '.mpeg', '.tif', '.wav', '.mov', '.psd', '.ai',
-  '.xls', '.mp4', '.m4a', '.swf', '.dat', '.dmg', '.iso', '.flv', '.m4v',
-  '.torrent', '.woff', '.woff2', '.ttf', '.eot', '.svg', '.webp', '.webm',
-  '.avif', '.map', '.json', '.wasm'
-];
-
-// Paths to exclude from SSR
-const EXCLUDED_PATHS = [
-  '/api/',
-  '/dashboard',
-  '/crm',
-  '/auth',
-  '/login',
-  '/signup',
-  '/editor',
-  '/_',
-  '/admin',
-  '/.well-known',
-  '/install',
-  '/join/',
-  '/team/',
-  '/p/',
-  '/event-scanner',
-  '/legacy',
-];
-
-// Static pages that don't need SSR (already have good static HTML)
-const STATIC_PAGES = [
-  '/',
-  '/gallery',
-  '/pricing',
-  '/alternatives',
-  '/experts',
-  '/terms',
-  '/privacy',
-  '/payment-terms',
-  '/bento',
-];
+// Static file extensions - never process
+const STATIC_EXTENSIONS = new Set([
+  '.js', '.css', '.xml', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif',
+  '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot', '.map', '.json',
+  '.pdf', '.zip', '.mp3', '.mp4', '.webm', '.wasm',
+]);
 
 /**
- * Check if the request is from a bot
+ * Check if User-Agent is a bot
  */
 function isBot(userAgent) {
   if (!userAgent) return false;
   const ua = userAgent.toLowerCase();
-  return BOT_AGENTS.some(bot => ua.includes(bot));
+  return BOT_PATTERNS.some(pattern => ua.includes(pattern));
 }
 
 /**
- * Check if the path should be excluded from SSR
+ * Parse pathname into segments
  */
-function shouldExclude(pathname) {
-  // Check excluded paths
-  if (EXCLUDED_PATHS.some(path => pathname.startsWith(path))) {
-    return true;
-  }
-  
-  // Check file extensions
-  const ext = pathname.substring(pathname.lastIndexOf('.'));
-  if (IGNORED_EXTENSIONS.includes(ext.toLowerCase())) {
-    return true;
-  }
-  
-  return false;
+function parsePathname(pathname) {
+  // Remove leading/trailing slashes and split
+  const clean = pathname.replace(/^\/+|\/+$/g, '');
+  if (!clean) return { segments: [], first: '' };
+  const segments = clean.split('/');
+  return { segments, first: segments[0].toLowerCase() };
 }
 
 /**
- * Check if the path is a static page
+ * Check if path is a static file
  */
-function isStaticPage(pathname) {
-  return STATIC_PAGES.includes(pathname) || 
-         pathname.startsWith('/experts/');
+function isStaticFile(pathname) {
+  const lastDot = pathname.lastIndexOf('.');
+  if (lastDot === -1) return false;
+  const ext = pathname.substring(lastDot).toLowerCase();
+  return STATIC_EXTENSIONS.has(ext);
 }
 
 /**
- * Extract slug from pathname
+ * Check if path is blacklisted (private)
  */
-function extractSlug(pathname) {
-  // Remove leading slash and any trailing slashes
-  const slug = pathname.replace(/^\/+|\/+$/g, '');
-  return slug || null;
+function isBlacklisted(firstSegment) {
+  return BLACKLIST_PREFIXES.includes(firstSegment);
+}
+
+/**
+ * Check if path is whitelisted (marketing page)
+ */
+function isWhitelisted(firstSegment) {
+  return WHITELIST_PAGES.has(firstSegment);
+}
+
+/**
+ * Check if path is a valid slug (single segment, not whitelist/blacklist)
+ */
+function isSlug(segments, firstSegment) {
+  // Must be exactly one segment
+  if (segments.length !== 1) return false;
+  // Must not be empty
+  if (!firstSegment) return false;
+  // Must not be whitelist or blacklist
+  if (isWhitelisted(firstSegment)) return false;
+  if (isBlacklisted(firstSegment)) return false;
+  // Must not look like a file
+  if (firstSegment.includes('.')) return false;
+  return true;
 }
 
 /**
@@ -141,41 +160,89 @@ function extractSlug(pathname) {
  */
 async function handleRequest(request) {
   const url = new URL(request.url);
-  const userAgent = request.headers.get('User-Agent') || '';
   const pathname = url.pathname;
+  const userAgent = request.headers.get('User-Agent') || '';
   
-  // Skip excluded paths and static assets
-  if (shouldExclude(pathname)) {
+  // 1. Skip static files - always origin
+  if (isStaticFile(pathname)) {
     return fetch(request);
   }
   
-  // Check for _escaped_fragment_ (legacy but still used)
+  // 2. Handle /sitemap.xml specially - proxy to generate-sitemap
+  if (pathname === '/sitemap.xml') {
+    try {
+      const sitemapResponse = await fetch(SITEMAP_FUNCTION_URL, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/xml',
+          'User-Agent': userAgent,
+        },
+      });
+      
+      if (sitemapResponse.ok) {
+        const headers = new Headers(sitemapResponse.headers);
+        headers.set('Content-Type', 'application/xml; charset=utf-8');
+        headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+        headers.delete('set-cookie'); // Remove Supabase cookies
+        
+        return new Response(sitemapResponse.body, {
+          status: 200,
+          headers,
+        });
+      }
+    } catch (error) {
+      console.error('[Worker] Sitemap proxy error:', error);
+    }
+    // Fallback to origin static sitemap
+    return fetch(request);
+  }
+  
+  // 3. Handle /robots.txt - origin
+  if (pathname === '/robots.txt') {
+    return fetch(request);
+  }
+  
+  // 4. Parse path
+  const { segments, first } = parsePathname(pathname);
+  
+  // 5. Blacklisted paths - always origin (never SSR)
+  if (isBlacklisted(first)) {
+    return fetch(request);
+  }
+  
+  // 6. Whitelisted marketing pages - always origin
+  if (isWhitelisted(first)) {
+    return fetch(request);
+  }
+  
+  // 7. Multi-segment paths (e.g., /experts/beauty) - origin
+  if (segments.length > 1) {
+    return fetch(request);
+  }
+  
+  // 8. Check if this is a slug
+  if (!isSlug(segments, first)) {
+    return fetch(request);
+  }
+  
+  // 9. It's a slug! Check if bot
+  const isBotRequest = isBot(userAgent);
   const hasEscapedFragment = url.searchParams.has('_escaped_fragment_');
   
-  // Only SSR for bots or escaped fragment requests
-  if (!isBot(userAgent) && !hasEscapedFragment) {
+  // For humans, serve SPA
+  if (!isBotRequest && !hasEscapedFragment) {
     return fetch(request);
   }
   
-  // Static pages don't need SSR - they have good HTML already
-  if (isStaticPage(pathname)) {
-    return fetch(request);
-  }
-  
-  // Extract slug for user pages
-  const slug = extractSlug(pathname);
-  if (!slug) {
-    return fetch(request);
-  }
-  
-  // Get language from query params
+  // 10. Bot + Slug = SSR
+  const slug = first;
   const lang = url.searchParams.get('lang') || 'ru';
   
-  // Build SSR URL
+  console.log(`[Worker] SSR for bot: slug=${slug}, ua=${userAgent.substring(0, 50)}`);
+  
   const ssrUrl = `${SSR_FUNCTION_URL}?slug=${encodeURIComponent(slug)}&lang=${encodeURIComponent(lang)}`;
   
   try {
-    // Fetch SSR content from Edge Function
     const ssrResponse = await fetch(ssrUrl, {
       method: 'GET',
       headers: {
@@ -184,40 +251,30 @@ async function handleRequest(request) {
       },
     });
     
-    // Check if SSR returned a valid response
-    if (ssrResponse.ok) {
-      // Clone response and add custom headers
-      const responseHeaders = new Headers(ssrResponse.headers);
-      responseHeaders.set('X-SSR-Rendered', 'true');
-      responseHeaders.set('X-SSR-Slug', slug);
-      
-      // Ensure proper content type
-      responseHeaders.set('Content-Type', 'text/html; charset=utf-8');
-      
-      return new Response(ssrResponse.body, {
-        status: ssrResponse.status,
-        statusText: ssrResponse.statusText,
-        headers: responseHeaders,
-      });
-    }
+    // Return SSR response with proper status (including 404)
+    const responseHeaders = new Headers(ssrResponse.headers);
+    responseHeaders.set('X-SSR-Rendered', 'true');
+    responseHeaders.set('X-SSR-Slug', slug);
+    responseHeaders.delete('set-cookie'); // Remove Supabase cookies
     
-    // If SSR fails (404 for unpublished pages, etc.), fall back to origin
-    console.log(`SSR returned status ${ssrResponse.status} for slug: ${slug}`);
-    return fetch(request);
-    
+    return new Response(ssrResponse.body, {
+      status: ssrResponse.status,
+      statusText: ssrResponse.statusText,
+      headers: responseHeaders,
+    });
   } catch (error) {
-    // On any error, fall back to origin
-    console.error('SSR error:', error.message);
+    console.error('[Worker] SSR error:', error);
+    // On error, fallback to origin SPA
     return fetch(request);
   }
 }
 
-// Event listener for Cloudflare Worker (legacy)
+// Legacy event listener
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
 });
 
-// For Cloudflare Workers with modules syntax (wrangler 2.x+)
+// ES modules export
 export default {
   async fetch(request, env, ctx) {
     return handleRequest(request);
