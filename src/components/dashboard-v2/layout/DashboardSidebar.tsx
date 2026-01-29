@@ -148,7 +148,7 @@ export const DashboardSidebar = memo(function DashboardSidebar({
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col h-screen bg-card/50 backdrop-blur-xl border-r border-border/30 transition-all duration-300",
+        "hidden md:flex flex-col h-screen sticky top-0 bg-card/50 backdrop-blur-xl border-r border-border/30 transition-all duration-300 shrink-0",
         collapsed ? "w-16" : "w-64"
       )}
     >
