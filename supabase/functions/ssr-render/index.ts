@@ -17,7 +17,7 @@ function escapeHtml(text: string): string {
 }
 
 serve(async (req: Request) => {
-  console.log('SSR function v6:', req.url);
+  console.log('SSR function v7:', req.url);
   
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
