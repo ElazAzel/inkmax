@@ -3,7 +3,7 @@
  * 
  * Modes:
  * 1. SITEMAP (default): GET /generate-sitemap -> sitemap.xml
- * 2. SSR: GET /generate-sitemap?slug=xxx&lang=ru -> HTML page for bots
+ * 2. SSR: GET /generate-sitemap/ssr/{slug} -> HTML page for bots
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
@@ -94,6 +94,52 @@ function truncate(text: string, maxLength: number): string {
   return clean.substring(0, maxLength - 3) + '...';
 }
 
+function normalizeText(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function findFirstText(value: unknown): string | null {
+  if (!value) return null;
+  if (typeof value === 'string') {
+    const cleaned = normalizeText(value);
+    return cleaned ? cleaned : null;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const found = findFirstText(item);
+      if (found) return found;
+    }
+  } else if (typeof value === 'object') {
+    for (const item of Object.values(value)) {
+      const found = findFirstText(item);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function collectTextSnippets(page: PageData, blocks: BlockData[]): string[] {
+  const snippets: string[] = [];
+  if (page.description) {
+    const cleaned = normalizeText(page.description);
+    if (cleaned) snippets.push(cleaned);
+  }
+  for (const block of blocks) {
+    const blockText = findFirstText(block.content);
+    if (blockText) snippets.push(blockText);
+    if (block.title) {
+      const titleText = normalizeText(block.title);
+      if (titleText) snippets.push(titleText);
+    }
+  }
+  return snippets;
+}
+
+function buildMetaDescription(snippets: string[]): string {
+  const combined = snippets.find(Boolean) || '';
+  return truncate(normalizeText(combined), 160);
+}
+
 async function generateETag(content: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(content);
@@ -153,9 +199,10 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
   const blocks = (blocksData || []) as BlockData[];
 
   const displayName = escapeHtml(page.title || '@' + slug);
-  const rawDesc = page.description || '';
-  const cleanDesc = stripMarkdownLinks(rawDesc);
-  const metaDesc = escapeHtml(truncate(cleanDesc, 160));
+  const snippets = collectTextSnippets(page, blocks);
+  const primaryOfferOrBio = snippets[0] || 'Profile';
+  const cleanDesc = stripMarkdownLinks(primaryOfferOrBio);
+  const metaDesc = escapeHtml(buildMetaDescription(snippets));
   const canonical = `${BASE_URL}/${slug}`;
   const avatar = page.avatar_url || `${BASE_URL}/og-image.png`;
   const niche = page.niche || 'business';
@@ -163,12 +210,16 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
   let bodyContent = '';
   const links: { url: string; title: string }[] = [];
   
+  let textSectionsCount = 0;
   for (const b of blocks.slice(0, 15)) {
     const blockTitle = b.title ? escapeHtml(b.title) : '';
     const content = b.content;
     
     if (b.type === 'text' && content?.text) {
-      bodyContent += `<section><p>${escapeHtml(String(content.text))}</p></section>\n`;
+      if (textSectionsCount < 2) {
+        bodyContent += `<section><p>${escapeHtml(String(content.text))}</p></section>\n`;
+        textSectionsCount += 1;
+      }
     } else if (b.type === 'link' && content?.url) {
       const linkUrl = escapeHtml(String(content.url));
       const linkTitle = blockTitle || linkUrl;
@@ -212,8 +263,8 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
         "@type": "WebPage",
         "@id": canonical,
         "url": canonical,
-        "name": `${page.title || '@' + slug} - LinkMAX`,
-        "description": cleanDesc.slice(0, 160),
+        "name": `${page.title || '@' + slug} - ${primaryOfferOrBio} | LinkMAX`,
+        "description": metaDesc,
         "inLanguage": lang,
         "isPartOf": { "@type": "WebSite", "name": "LinkMAX", "url": BASE_URL }
       },
@@ -229,7 +280,7 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
         "name": page.title || '@' + slug,
         "url": canonical,
         "image": avatar,
-        "description": cleanDesc.slice(0, 300)
+        "description": truncate(cleanDesc, 300)
       }
     ]
   };
@@ -239,13 +290,13 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${displayName} - LinkMAX</title>
+  <title>${displayName} - ${escapeHtml(primaryOfferOrBio)} | LinkMAX</title>
   <meta name="description" content="${metaDesc}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${canonical}">
   
-  <meta property="og:type" content="profile">
-  <meta property="og:title" content="${displayName}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="${displayName} - ${escapeHtml(primaryOfferOrBio)}">
   <meta property="og:description" content="${metaDesc}">
   <meta property="og:url" content="${canonical}">
   <meta property="og:image" content="${avatar}">
@@ -253,7 +304,7 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
   <meta property="og:locale" content="${lang === 'ru' ? 'ru_RU' : lang === 'kk' ? 'kk_KZ' : 'en_US'}">
   
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${displayName}">
+  <meta name="twitter:title" content="${displayName} - ${escapeHtml(primaryOfferOrBio)}">
   <meta name="twitter:description" content="${metaDesc}">
   <meta name="twitter:image" content="${avatar}">
   
@@ -428,8 +479,12 @@ serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const slug = url.searchParams.get('slug');
     const lang = url.searchParams.get('lang') || 'ru';
+    const ssrPrefix = '/functions/v1/generate-sitemap/ssr/';
+    const pathname = url.pathname;
+    const slug = pathname.startsWith(ssrPrefix)
+      ? decodeURIComponent(pathname.slice(ssrPrefix.length)).replace(/^\/+|\/+$/g, '')
+      : null;
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;

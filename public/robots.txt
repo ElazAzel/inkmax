@@ -1,6 +1,3 @@
-# lnkmx.my robots.txt
-# Canonical Domain: https://lnkmx.my
-
 User-agent: *
 Allow: /
 Disallow: /api/
@@ -8,17 +5,9 @@ Disallow: /admin
 Disallow: /dashboard
 Disallow: /dashboard-v2
 Disallow: /auth
-Disallow: /auth/
 Disallow: /install
-Disallow: /join/
 Disallow: /team/
-Disallow: /p/
 Disallow: /crm
-Disallow: /crm/
-Disallow: /event-scanner
-Disallow: /legacy
 Disallow: /editor
 Disallow: /settings
-
-# Dynamic Sitemap
 Sitemap: https://lnkmx.my/sitemap.xml
