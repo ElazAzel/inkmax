@@ -9,13 +9,18 @@ import { cn } from '@/lib/utils';
 
 interface DownloadBlockProps {
   block: DownloadBlockType;
+  onClick?: () => void;
 }
 
-export const DownloadBlock = memo(function DownloadBlock({ block }: DownloadBlockProps) {
+export const DownloadBlock = memo(function DownloadBlock({ block, onClick }: DownloadBlockProps) {
   const { t, i18n } = useTranslation();
   
   const handleDownload = () => {
-    window.open(block.fileUrl, '_blank', 'noopener,noreferrer');
+    if (onClick) onClick();
+    // Small delay to ensure tracking request is sent
+    setTimeout(() => {
+      window.open(block.fileUrl, '_blank', 'noopener,noreferrer');
+    }, 10);
   };
 
   const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);

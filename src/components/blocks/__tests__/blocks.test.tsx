@@ -93,10 +93,13 @@ describe('Block Components', () => {
     });
 
     it('opens platform URL on click', () => {
+      vi.useFakeTimers();
       render(<SocialsBlock block={fixtures.mockSocialsBlock} />);
       const instagramBtn = screen.getByLabelText('Instagram');
       fireEvent.click(instagramBtn);
+      vi.advanceTimersByTime(15);
       expect(window.open).toHaveBeenCalledWith('https://instagram.com/test', '_blank', 'noopener,noreferrer');
+      vi.useRealTimers();
     });
   });
 
