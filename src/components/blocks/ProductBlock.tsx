@@ -25,10 +25,11 @@ import { toast } from 'sonner';
 
 interface ProductBlockProps {
   block: ProductBlockType;
+  onClick?: () => void;
 }
 
 
-export const ProductBlock = memo(function ProductBlockComponent({ block }: ProductBlockProps) {
+export const ProductBlock = memo(function ProductBlockComponent({ block, onClick }: ProductBlockProps) {
   const { t, i18n } = useTranslation();
   const isMobile = useIsMobile();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -194,7 +195,10 @@ export const ProductBlock = memo(function ProductBlockComponent({ block }: Produ
         backgroundColor: block.blockStyle?.backgroundColor,
         backgroundImage: block.blockStyle?.backgroundGradient,
       }}
-      onClick={() => setIsDetailOpen(true)}
+      onClick={() => {
+        if (onClick) onClick();
+        setIsDetailOpen(true);
+      }}
     >
       <div className="flex gap-3 p-4">
         {/* Compact image */}

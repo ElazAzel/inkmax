@@ -197,7 +197,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       return (
         <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
-            <SocialsBlock block={block} />
+            <SocialsBlock block={block} onPlatformClick={handleTrackClick} />
           </Suspense>
         </TrackableWrapper>
       );
@@ -221,7 +221,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       return (
         <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
-            <ProductBlock block={block} />
+            <ProductBlock block={block} onClick={handleTrackClick} />
           </Suspense>
         </TrackableWrapper>
       );
@@ -229,7 +229,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       return (
         <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
-            <VideoBlock block={block} />
+            <VideoBlock block={block} onClick={handleTrackClick} />
           </Suspense>
         </TrackableWrapper>
       );
@@ -269,7 +269,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       return (
         <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
-            <DownloadBlock block={block} />
+            <DownloadBlock block={block} onClick={handleTrackClick} />
           </Suspense>
         </TrackableWrapper>
       );
