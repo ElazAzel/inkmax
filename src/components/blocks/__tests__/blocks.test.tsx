@@ -59,11 +59,15 @@ describe('Block Components', () => {
       expect(screen.getByText('Test Link')).toBeInTheDocument();
     });
 
-    it('opens URL on click', () => {
+    it('opens URL on click', async () => {
+      vi.useFakeTimers();
       render(<LinkBlock block={fixtures.mockLinkBlock} />);
       const button = screen.getByRole('button');
       fireEvent.click(button);
+      // Wait for setTimeout to complete
+      vi.advanceTimersByTime(20);
       expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer');
+      vi.useRealTimers();
     });
   });
 
