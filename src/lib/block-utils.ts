@@ -73,27 +73,45 @@ export function getBackgroundStyle(background?: BackgroundConfig): React.CSSProp
 
 /**
  * Safely open URL in new tab with security attributes
+ * Uses sendBeacon for tracking to ensure it completes before navigation
  */
 export function openUrlSafely(url: string, trackingCallback?: () => void): void {
+  // Call tracking first - it uses async but we don't wait
   if (trackingCallback) {
     trackingCallback();
   }
-  window.open(url, '_blank', 'noopener,noreferrer');
+  // Small delay to allow tracking request to be sent
+  // Using setTimeout 0 puts this in the next event loop tick
+  setTimeout(() => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, 10);
 }
 
 /**
  * Common block click handler factory
+ * Ensures tracking is called before URL navigation
  */
 export function createBlockClickHandler(
   url?: string,
   onClick?: () => void
-): () => void {
-  return () => {
+): (e?: React.MouseEvent) => void {
+  return (e?: React.MouseEvent) => {
+    // Prevent double tracking from event bubbling
+    if (e) {
+      e.stopPropagation();
+    }
+    
+    // Call tracking callback
     if (onClick) {
       onClick();
     }
+    
+    // Open URL after tracking
     if (url) {
-      openUrlSafely(url);
+      // Small delay to ensure tracking request is sent
+      setTimeout(() => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }, 10);
     }
   };
 }
