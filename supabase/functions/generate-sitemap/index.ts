@@ -1,5 +1,12 @@
 /**
- * Combined Sitemap + SSR Edge Function
+ * Combined Sitemap + SSR Edge Function v2.1
+ * 
+ * Enhanced for SEO/GEO/AEO:
+ * - Answer Block for AI extraction
+ * - Key Facts for citation
+ * - FAQPage, LocalBusiness, Person/Organization schemas
+ * - Proper 404 for missing slugs
+ * - GEO signals (areaServed, location)
  * 
  * Modes:
  * 1. SITEMAP (default): GET /generate-sitemap -> sitemap.xml
@@ -19,6 +26,7 @@ import {
   resolveLanguage,
   stripMarkdownLinks,
   truncate,
+  buildHreflangLinks,
 } from './seo-helpers.ts';
 import { buildGalleryHtml, buildLandingHtml, type GalleryItem, type LanguageKey } from './ssr-templates.ts';
 
@@ -50,21 +58,9 @@ const NICHE_TAGS = [
 ];
 
 const GALLERY_FILTERS = [
-  'beauty',
-  'fitness',
-  'food',
-  'education',
-  'art',
-  'music',
-  'tech',
-  'business',
-  'health',
-  'fashion',
-  'travel',
-  'realestate',
-  'events',
-  'services',
-  'other',
+  'beauty', 'fitness', 'food', 'education', 'art', 'music',
+  'tech', 'business', 'health', 'fashion', 'travel', 'realestate',
+  'events', 'services', 'other',
 ];
 
 // Types
@@ -93,7 +89,7 @@ interface SitemapPage {
   avatar_url: string | null;
 }
 
-// ============ SSR HANDLER ============
+// ============ PROFILE SSR HANDLER ============
 
 // deno-lint-ignore no-explicit-any
 async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lang: LanguageKey): Promise<Response> {
@@ -110,18 +106,35 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
 
   if (!page || pageError) {
     console.log('[SSR] Page not found:', slug);
+    const notFoundContent = {
+      ru: { title: 'Страница не найдена', body: 'Запрашиваемая страница не существует или была удалена.', home: 'На главную' },
+      en: { title: 'Page Not Found', body: 'The page you are looking for does not exist or has been removed.', home: 'Go to homepage' },
+      kk: { title: 'Бет табылмады', body: 'Сіз іздеген бет жоқ немесе жойылған.', home: 'Басты бетке' },
+    };
+    const c = notFoundContent[lang] || notFoundContent.ru;
+    
     const html404 = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
   <meta charset="UTF-8">
-  <title>Not Found - LinkMAX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${c.title} - lnkmx</title>
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Page not found">
+  <meta name="description" content="${c.body}">
+  <style>
+    body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f8f9fa; }
+    .container { text-align: center; padding: 40px; }
+    h1 { font-size: 4rem; margin: 0; color: #333; }
+    p { color: #666; margin: 1rem 0 2rem; }
+    a { display: inline-block; padding: 12px 24px; background: #0f62fe; color: #fff; text-decoration: none; border-radius: 8px; }
+  </style>
 </head>
 <body>
-  <h1>404 - Page Not Found</h1>
-  <p>The page you are looking for does not exist or has been removed.</p>
-  <a href="${BASE_URL}/">Go to homepage</a>
+  <div class="container">
+    <h1>404</h1>
+    <p>${c.body}</p>
+    <a href="${BASE_URL}/">${c.home}</a>
+  </div>
 </body>
 </html>`;
     return new Response(html404, { 
@@ -152,20 +165,22 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
   const niche = page.niche || 'business';
   const location = extractLocationFromBlocks(blocks, null);
   const entityId = `${canonical}#entity`;
-  const hreflangLinks = LANGUAGES.map((langKey) => `<link rel="alternate" hreflang="${langKey}" href="${canonical}?lang=${langKey}">`)
-    .concat(`<link rel="alternate" hreflang="x-default" href="${canonical}">`)
-    .join('\n  ');
+  const hreflangLinks = buildHreflangLinks(BASE_URL, `/${slug}`, ['ru', 'en', 'kk']);
 
-  let bodyContent = '';
+  // Extract links, FAQ, services for structured content
   const links: { url: string; title: string }[] = [];
-  
+  const faqItems: { q: string; a: string }[] = [];
+  const services: { name: string; description?: string; price?: string }[] = [];
+  const keyFacts: string[] = [];
+  let bodyContent = '';
   let textSectionsCount = 0;
-  for (const b of blocks.slice(0, 15)) {
+
+  for (const b of blocks.slice(0, 20)) {
     const blockTitle = b.title ? escapeHtml(b.title) : '';
     const content = b.content;
     
     if (b.type === 'text' && content?.text) {
-      if (textSectionsCount < 2) {
+      if (textSectionsCount < 3) {
         bodyContent += `<section><p>${escapeHtml(String(content.text))}</p></section>\n`;
         textSectionsCount += 1;
       }
@@ -173,88 +188,188 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
       const linkUrl = escapeHtml(String(content.url));
       const linkTitle = blockTitle || linkUrl;
       links.push({ url: linkUrl, title: linkTitle });
-    } else if (b.type === 'header' && blockTitle) {
-      bodyContent += `<h2>${blockTitle}</h2>\n`;
     } else if (b.type === 'faq' && content?.items && Array.isArray(content.items)) {
-      bodyContent += '<section itemscope itemtype="https://schema.org/FAQPage">\n';
       for (const item of (content.items as Array<{question?: string; answer?: string}>).slice(0, 5)) {
-        const q = escapeHtml(String(item.question || ''));
-        const a = escapeHtml(String(item.answer || ''));
+        const q = String(item.question || '');
+        const a = String(item.answer || '');
         if (q && a) {
-          bodyContent += `<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-  <h3 itemprop="name">${q}</h3>
-  <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-    <p itemprop="text">${a}</p>
-  </div>
-</div>\n`;
+          faqItems.push({ q, a });
         }
       }
-      bodyContent += '</section>\n';
-    } else if (blockTitle) {
-      bodyContent += `<h2>${blockTitle}</h2>\n`;
+    } else if (b.type === 'pricing' && content?.items && Array.isArray(content.items)) {
+      for (const item of (content.items as Array<{name?: string; description?: string; price?: number}>).slice(0, 6)) {
+        if (item.name) {
+          services.push({
+            name: String(item.name),
+            description: item.description ? String(item.description) : undefined,
+            price: item.price ? String(item.price) : undefined,
+          });
+        }
+      }
+    } else if (b.type === 'booking') {
+      keyFacts.push(lang === 'ru' ? 'Онлайн-запись' : lang === 'kk' ? 'Онлайн жазылу' : 'Online booking');
+    } else if (blockTitle && b.type !== 'profile') {
+      bodyContent += `<h3>${blockTitle}</h3>\n`;
     }
   }
 
+  // Add key facts based on content
+  if (location) keyFacts.push(location);
+  if (services.length > 0) keyFacts.push(`${services.length} ${lang === 'ru' ? 'услуг' : lang === 'kk' ? 'қызмет' : 'services'}`);
+  if (links.length > 0) keyFacts.push(`${links.length} ${lang === 'ru' ? 'ссылок' : lang === 'kk' ? 'сілтеме' : 'links'}`);
+
+  // Generate Answer Block summary
+  const answerSummary = cleanDesc 
+    ? `${displayName} - ${truncate(cleanDesc, 150)}${location ? `. ${lang === 'ru' ? 'Локация' : 'Location'}: ${location}` : ''}`
+    : `${displayName}${niche ? ` - ${niche}` : ''}${location ? ` (${location})` : ''}`;
+
+  // Schema.org
+  const schemaType = niche === 'business' || niche === 'consulting' || services.length > 0 ? 'Organization' : 'Person';
+  
+  const mainEntitySchema: Record<string, unknown> = {
+    '@type': schemaType,
+    '@id': entityId,
+    'name': page.title || '@' + slug,
+    'url': canonical,
+    'image': avatar,
+    'description': truncate(cleanDesc, 300),
+  };
+  
+  if (location) {
+    mainEntitySchema['areaServed'] = location;
+    mainEntitySchema['address'] = { '@type': 'PostalAddress', 'addressLocality': location };
+  }
+
+  const jsonLdGraph: Record<string, unknown>[] = [
+    {
+      '@type': 'ProfilePage',
+      '@id': canonical,
+      'url': canonical,
+      'name': `${page.title || '@' + slug} - ${primaryOfferOrBio} | lnkmx`,
+      'description': metaDesc,
+      'inLanguage': lang,
+      'isPartOf': { '@type': 'WebSite', 'name': 'lnkmx', 'url': BASE_URL },
+      'mainEntity': { '@id': entityId },
+      'dateModified': page.updated_at || new Date().toISOString(),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': BASE_URL },
+        { '@type': 'ListItem', 'position': 2, 'name': page.title || slug, 'item': canonical }
+      ]
+    },
+    mainEntitySchema,
+  ];
+
+  // Add FAQPage schema if has FAQ
+  if (faqItems.length > 0) {
+    jsonLdGraph.push({
+      '@type': 'FAQPage',
+      '@id': `${canonical}#faq`,
+      'mainEntity': faqItems.map(item => ({
+        '@type': 'Question',
+        'name': item.q,
+        'acceptedAnswer': { '@type': 'Answer', 'text': item.a }
+      }))
+    });
+  }
+
+  // Add Service schemas
+  if (services.length > 0) {
+    jsonLdGraph.push({
+      '@type': 'ItemList',
+      '@id': `${canonical}#services`,
+      'itemListElement': services.map((s, i) => ({
+        '@type': 'ListItem',
+        'position': i + 1,
+        'item': {
+          '@type': 'Service',
+          'name': s.name,
+          ...(s.description ? { 'description': s.description } : {}),
+          ...(s.price ? { 'offers': { '@type': 'Offer', 'price': s.price, 'priceCurrency': 'KZT' } } : {}),
+          'provider': { '@id': entityId }
+        }
+      }))
+    });
+  }
+
+  const jsonLd = { '@context': 'https://schema.org', '@graph': jsonLdGraph };
+
+  // Links HTML
   let linksHtml = '';
   if (links.length > 0) {
-    linksHtml = '<nav aria-label="Links"><ul>\n';
+    linksHtml = '<nav aria-label="Links"><h2>' + (lang === 'ru' ? 'Ссылки' : lang === 'kk' ? 'Сілтемелер' : 'Links') + '</h2><ul>\n';
     for (const link of links.slice(0, 10)) {
       linksHtml += `  <li><a href="${link.url}" rel="noopener">${link.title}</a></li>\n`;
     }
     linksHtml += '</ul></nav>\n';
   }
 
-  const schemaType = niche === 'business' || niche === 'consulting' ? 'Organization' : 'Person';
-  const pageSchemaType = schemaType === 'Organization' ? 'ProfilePage' : 'ProfilePage';
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": pageSchemaType,
-        "@id": canonical,
-        "url": canonical,
-        "name": `${page.title || '@' + slug} - ${primaryOfferOrBio} | LinkMAX`,
-        "description": metaDesc,
-        "inLanguage": lang,
-        "isPartOf": { "@type": "WebSite", "name": "LinkMAX", "url": BASE_URL },
-        "mainEntity": { "@id": entityId }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
-          { "@type": "ListItem", "position": 2, "name": page.title || slug, "item": canonical }
-        ]
-      },
-      {
-        "@type": schemaType,
-        "@id": entityId,
-        "name": page.title || '@' + slug,
-        "url": canonical,
-        "image": avatar,
-        "description": truncate(cleanDesc, 300),
-        ...(location ? { "areaServed": location } : {})
-      }
-    ]
-  };
+  // FAQ HTML
+  let faqHtml = '';
+  if (faqItems.length > 0) {
+    faqHtml = `<section id="faq" itemscope itemtype="https://schema.org/FAQPage">
+  <h2>${lang === 'ru' ? 'Вопросы и ответы' : lang === 'kk' ? 'Сұрақтар мен жауаптар' : 'FAQ'}</h2>
+  <dl>\n`;
+    for (const item of faqItems) {
+      faqHtml += `    <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <dt itemprop="name">${escapeHtml(item.q)}</dt>
+      <dd itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <span itemprop="text">${escapeHtml(item.a)}</span>
+      </dd>
+    </div>\n`;
+    }
+    faqHtml += `  </dl>
+</section>\n`;
+  }
+
+  // Services HTML
+  let servicesHtml = '';
+  if (services.length > 0) {
+    servicesHtml = `<section id="services">
+  <h2>${lang === 'ru' ? 'Услуги' : lang === 'kk' ? 'Қызметтер' : 'Services'}</h2>
+  <ul>\n`;
+    for (const s of services) {
+      servicesHtml += `    <li itemscope itemtype="https://schema.org/Service">
+      <strong itemprop="name">${escapeHtml(s.name)}</strong>
+      ${s.description ? `<p itemprop="description">${escapeHtml(s.description)}</p>` : ''}
+      ${s.price ? `<span itemprop="offers" itemscope itemtype="https://schema.org/Offer"><span itemprop="price">${escapeHtml(s.price)}</span> <meta itemprop="priceCurrency" content="KZT"></span>` : ''}
+    </li>\n`;
+    }
+    servicesHtml += `  </ul>
+</section>\n`;
+  }
+
+  // Key Facts HTML
+  let keyFactsHtml = '';
+  if (keyFacts.length > 0) {
+    keyFactsHtml = `<section aria-label="Key Facts">
+  <ul class="key-facts">\n`;
+    for (const fact of keyFacts) {
+      keyFactsHtml += `    <li>✓ ${escapeHtml(fact)}</li>\n`;
+    }
+    keyFactsHtml += `  </ul>
+</section>\n`;
+  }
 
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${displayName} - ${escapeHtml(primaryOfferOrBio)} | LinkMAX</title>
+  <title>${displayName} - ${escapeHtml(primaryOfferOrBio)} | lnkmx</title>
   <meta name="description" content="${metaDesc}">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="${canonical}">
   ${hreflangLinks}
   
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="profile">
   <meta property="og:title" content="${displayName} - ${escapeHtml(primaryOfferOrBio)}">
   <meta property="og:description" content="${metaDesc}">
   <meta property="og:url" content="${canonical}">
   <meta property="og:image" content="${avatar}">
-  <meta property="og:site_name" content="LinkMAX">
+  <meta property="og:site_name" content="lnkmx">
   <meta property="og:locale" content="${getOgLocale(lang)}">
   
   <meta name="twitter:card" content="summary_large_image">
@@ -262,28 +377,55 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
   <meta name="twitter:description" content="${metaDesc}">
   <meta name="twitter:image" content="${avatar}">
   
+  <meta name="ai-summary" content="${escapeHtml(answerSummary)}">
+  
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-    h1 { font-size: 2em; margin-bottom: 0.5em; }
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 700px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #111; }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; font-size: 1.3rem; color: #333; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+    h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; }
+    .answer-block { background: #f8f9fa; border-left: 4px solid #0f62fe; padding: 16px; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+    .key-facts { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 1rem 0; }
+    .key-facts li { background: #e8f0fe; padding: 6px 12px; border-radius: 16px; font-size: 0.9rem; }
     nav ul { list-style: none; padding: 0; }
-    nav li { margin: 0.5em 0; }
-    a { color: #0066cc; }
-    footer { margin-top: 2em; padding-top: 1em; border-top: 1px solid #eee; }
+    nav li { margin: 0.75rem 0; }
+    nav a { color: #0f62fe; text-decoration: none; font-weight: 500; }
+    nav a:hover { text-decoration: underline; }
+    dl dt { font-weight: 600; margin-top: 1rem; }
+    dl dd { margin-left: 0; color: #555; }
+    .location { color: #666; font-size: 0.95rem; margin-top: 0.5rem; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee; text-align: center; color: #888; font-size: 0.9rem; }
+    footer a { color: #0f62fe; }
+    img.avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; }
   </style>
 </head>
 <body>
-  <main>
-    <header>
-      <h1>${displayName}</h1>
-      ${cleanDesc ? `<p>${escapeHtml(cleanDesc)}</p>` : ''}
-      ${location ? `<p><strong>Location:</strong> ${escapeHtml(location)}</p>` : ''}
+  <main itemscope itemtype="https://schema.org/${schemaType}">
+    <header id="about">
+      ${avatar !== DEFAULT_OG_IMAGE ? `<img src="${avatar}" alt="${displayName}" class="avatar" itemprop="image" loading="eager">` : ''}
+      <h1 itemprop="name">${displayName}</h1>
+      ${niche ? `<p itemprop="jobTitle">${escapeHtml(niche)}</p>` : ''}
+      ${location ? `<p class="location" itemprop="areaServed">📍 ${escapeHtml(location)}</p>` : ''}
+      <link itemprop="url" href="${canonical}">
     </header>
-    <article>${bodyContent}</article>
+
+    <!-- Answer Block for AI extraction -->
+    <section class="answer-block" aria-label="Summary">
+      <p itemprop="description">${escapeHtml(answerSummary)}</p>
+    </section>
+
+    ${keyFactsHtml}
+    ${bodyContent ? `<section aria-label="About">${bodyContent}</section>` : ''}
+    ${servicesHtml}
     ${linksHtml}
+    ${faqHtml}
   </main>
-  <footer><p>Created with <a href="${BASE_URL}/">LinkMAX</a></p></footer>
+  
+  <footer>
+    <p>${lang === 'ru' ? 'Создано на' : lang === 'kk' ? 'Жасалған' : 'Created with'} <a href="${BASE_URL}/">lnkmx.my</a></p>
+  </footer>
 </body>
 </html>`;
 
@@ -299,7 +441,8 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
   });
 }
 
-// deno-lint-ignore no-explicit-any
+// ============ LANDING SSR HANDLER ============
+
 async function handleLandingSSR(lang: LanguageKey): Promise<Response> {
   const html = buildLandingHtml(lang, BASE_URL);
   return new Response(html, {
@@ -312,6 +455,8 @@ async function handleLandingSSR(lang: LanguageKey): Promise<Response> {
     },
   });
 }
+
+// ============ GALLERY SSR HANDLER ============
 
 // deno-lint-ignore no-explicit-any
 async function handleGallerySSR(supabase: SupabaseClient<any>, lang: LanguageKey, niche: string | null): Promise<Response> {
@@ -327,7 +472,7 @@ async function handleGallerySSR(supabase: SupabaseClient<any>, lang: LanguageKey
 
   const { data: pagesData } = await query
     .order('gallery_likes', { ascending: false })
-    .limit(12);
+    .limit(20);
 
   const items = (pagesData || []) as GalleryItem[];
   const html = buildGalleryHtml(lang, BASE_URL, items, niche);
@@ -368,9 +513,9 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <!--
-  lnkmx.my Dynamic Sitemap
+  lnkmx.my Dynamic Sitemap v2.1
   Generated: ${new Date().toISOString()}
-  Total URLs: ${STATIC_PAGES.length + NICHE_TAGS.length + pages.length}
+  Total URLs: ${STATIC_PAGES.length + NICHE_TAGS.length + GALLERY_FILTERS.length + pages.length}
   Canonical Domain: ${BASE_URL}
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -378,6 +523,7 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 `;
 
+  // Static pages
   for (const page of STATIC_PAGES) {
     const url = page.loc === '/' ? BASE_URL + '/' : BASE_URL + page.loc;
     sitemap += `  <url>
@@ -396,6 +542,7 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
 `;
   }
 
+  // Niche tags (/experts/*)
   for (const tag of NICHE_TAGS) {
     sitemap += `  <url>
     <loc>${BASE_URL}/experts/${tag}</loc>
@@ -412,6 +559,7 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
 `;
   }
 
+  // Gallery filters
   for (const niche of GALLERY_FILTERS) {
     sitemap += `  <url>
     <loc>${BASE_URL}/gallery?niche=${niche}</loc>
@@ -420,7 +568,7 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
     <priority>0.5</priority>
 `;
     for (const lang of LANGUAGES) {
-      sitemap += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${BASE_URL}/gallery?niche=${niche}&lang=${lang}"/>
+      sitemap += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${BASE_URL}/gallery?niche=${niche}&amp;lang=${lang}"/>
 `;
     }
     sitemap += `    <xhtml:link rel="alternate" hreflang="x-default" href="${BASE_URL}/gallery?niche=${niche}"/>
@@ -428,7 +576,8 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
 `;
   }
 
-  const reservedSlugs = new Set(['admin', 'dashboard', 'auth', 'api', 'install', 'join', 'team', 'p', 'crm']);
+  // User pages
+  const reservedSlugs = new Set(['admin', 'dashboard', 'auth', 'api', 'install', 'join', 'team', 'p', 'crm', 'settings', 'editor']);
   for (const page of pages) {
     if (!page.slug || reservedSlugs.has(page.slug.toLowerCase())) continue;
     
