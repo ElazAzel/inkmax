@@ -23,11 +23,11 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
   const removeMessenger = (index: number) => {
     onChange({
       ...formData,
-      messengers: messengers.filter((_: any, i: number) => i !== index),
+      messengers: messengers.filter((_: unknown, i: number) => i !== index),
     });
   };
 
-  const updateMessenger = (index: number, field: string, value: any) => {
+  const updateMessenger = (index: number, field: string, value: unknown) => {
     const updated = [...messengers];
     updated[index] = { ...updated[index], [field]: value };
     onChange({ ...formData, messengers: updated });
@@ -43,7 +43,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
       />
 
       <ArrayFieldList label={t('fields.messengers', 'Messengers')} items={messengers} onAdd={addMessenger}>
-        {messengers.map((messenger: any, index: number) => (
+        {messengers.map((messenger: unknown, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}

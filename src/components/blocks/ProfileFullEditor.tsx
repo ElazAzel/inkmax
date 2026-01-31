@@ -1,3 +1,4 @@
+import type { CoverHeight, CoverGradient, AvatarSize, ShadowStyle, AvatarPosition } from "@/types/profile-editor";
 /**
  * ProfileFullEditor - Unified full-screen editor for the top profile section
  * Opens as a drawer on mobile, dialog on desktop
@@ -324,7 +325,7 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                     <button
                       key={height.value}
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, coverHeight: height.value as any }))}
+                      onClick={() => setFormData(prev => ({ ...prev, coverHeight: height.value as CoverHeight }))}
                       className={cn(
                         "py-3 rounded-xl border-2 text-sm font-medium transition-all",
                         formData.coverHeight === height.value 
@@ -347,7 +348,7 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                       <button
                         key={gradient.value}
                         type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, coverGradient: gradient.value as any }))}
+                        onClick={() => setFormData(prev => ({ ...prev, coverGradient: gradient.value as CoverGradient }))}
                         className={cn(
                           "aspect-[2/1] rounded-xl border-2 transition-all",
                           gradient.preview,
@@ -401,7 +402,7 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                     <button
                       key={size.value}
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, avatarSize: size.value as any }))}
+                      onClick={() => setFormData(prev => ({ ...prev, avatarSize: size.value as AvatarSize }))}
                       className={cn(
                         "flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all",
                         formData.avatarSize === size.value 
@@ -441,7 +442,7 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                     <button
                       key={shadow.value}
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, shadowStyle: shadow.value as any }))}
+                      onClick={() => setFormData(prev => ({ ...prev, shadowStyle: shadow.value as ShadowStyle }))}
                       className={cn(
                         "py-2.5 rounded-xl border-2 text-xs font-medium transition-all",
                         formData.shadowStyle === shadow.value 
@@ -543,7 +544,7 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                     <button
                       key={pos.value}
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, avatarPosition: pos.value as any }))}
+                      onClick={() => setFormData(prev => ({ ...prev, avatarPosition: pos.value as AvatarPosition }))}
                       className={cn(
                         "py-3 rounded-xl border-2 text-sm font-medium transition-all",
                         formData.avatarPosition === pos.value 

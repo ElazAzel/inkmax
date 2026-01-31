@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 import type { SupportedLanguage, MultilingualString } from '@/lib/i18n-helpers';
+import type { TranslatableObject, TranslatedBlock } from "@/types/language-context";
 import { isMultilingualString } from '@/lib/i18n-helpers';
 
 interface LanguageContextType {
   currentLanguage: SupportedLanguage;
   setCurrentLanguage: (lang: SupportedLanguage) => void;
   isTranslating: boolean;
-  translateBlocksToLanguage: (blocks: any[], targetLang: SupportedLanguage) => Promise<any[]>;
+  translateBlocksToLanguage: (blocks: TranslatedBlock[], targetLang: SupportedLanguage) => Promise<TranslatedBlock[]>;
   autoTranslateEnabled: boolean;
   setAutoTranslateEnabled: (enabled: boolean) => void;
 }
@@ -54,7 +55,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const setCurrentLanguage = useCallback((lang: SupportedLanguage) => {
     // Normalize in case 'kz' is passed
-    const normalizedLang = lang === 'kz' as any ? 'kk' : lang;
+    const normalizedLang = lang === "kz" ? 'kk' : lang;
     setCurrentLanguageState(normalizedLang);
     i18n.changeLanguage(normalizedLang);
     localStorage.setItem('i18nextLng', normalizedLang);
@@ -92,9 +93,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Recursively translate all multilingual fields in an object
   const translateObject = async (
-    obj: any,
+    obj: TranslatableObject,
     targetLang: SupportedLanguage
-  ): Promise<any> => {
+  ): Promise<TranslatableObject> => {
     if (!obj || typeof obj !== 'object') return obj;
 
     // If it's a MultilingualString
@@ -126,7 +127,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
 
     // If it's a regular object, recursively translate
-    const result: any = {};
+    const result: Record<string, unknown> = {};
     for (const key of Object.keys(obj)) {
       result[key] = await translateObject(obj[key], targetLang);
     }
@@ -135,9 +136,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Translate all blocks to target language
   const translateBlocksToLanguage = useCallback(async (
-    blocks: any[],
+    blocks: TranslatedBlock[],
     targetLang: SupportedLanguage
-  ): Promise<any[]> => {
+  ): Promise<TranslatedBlock[]> => {
     if (!blocks?.length || !autoTranslateEnabled) return blocks;
 
     setIsTranslating(true);

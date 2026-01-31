@@ -28,11 +28,11 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
   const removeTestimonial = (index: number) => {
     onChange({
       ...formData,
-      testimonials: testimonials.filter((_: any, i: number) => i !== index),
+      testimonials: testimonials.filter((_: unknown, i: number) => i !== index),
     });
   };
 
-  const updateTestimonial = (index: number, field: string, value: any) => {
+  const updateTestimonial = (index: number, field: string, value: unknown) => {
     const updated = [...testimonials];
     updated[index] = { ...updated[index], [field]: value };
     onChange({ ...formData, testimonials: updated });
@@ -48,7 +48,7 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
       />
 
       <ArrayFieldList label={t('fields.testimonials', 'Testimonials')} items={testimonials} onAdd={addTestimonial}>
-        {testimonials.map((testimonial: any, index: number) => (
+        {testimonials.map((testimonial: unknown, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}

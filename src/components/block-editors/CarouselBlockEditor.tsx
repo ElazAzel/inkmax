@@ -23,11 +23,11 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
   const removeImage = (index: number) => {
     onChange({
       ...formData,
-      images: images.filter((_: any, i: number) => i !== index),
+      images: images.filter((_: unknown, i: number) => i !== index),
     });
   };
 
-  const updateImage = (index: number, field: string, value: any) => {
+  const updateImage = (index: number, field: string, value: unknown) => {
     const updated = [...images];
     updated[index] = { ...updated[index], [field]: value };
     onChange({ ...formData, images: updated });
@@ -50,7 +50,7 @@ function CarouselBlockEditorComponent({ formData, onChange }: BaseBlockEditorPro
           </Button>
         </div>
 
-        {images.map((image: any, index: number) => (
+        {images.map((image: unknown, index: number) => (
           <div key={index} className="border border-border rounded-lg p-3 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t('fields.image', 'Image')} {index + 1}</span>
