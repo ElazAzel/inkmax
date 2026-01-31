@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -104,20 +104,16 @@ export function AdminAnalyticsDashboard() {
     t('admin.dayNames.sat')
   ];
 
-  useEffect(() => {
-    loadAnalytics();
-  }, [period]);
-
-  const getPeriodDays = () => {
+  const getPeriodDays = useCallback(() => {
     switch (period) {
       case '7d': return 7;
       case '14d': return 14;
       case '30d': return 30;
       case '90d': return 90;
     }
-  };
+  }, [period]);
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       const days = getPeriodDays();
@@ -373,7 +369,11 @@ export function AdminAnalyticsDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getPeriodDays]);
+
+  useEffect(() => {
+    loadAnalytics();
+  }, [loadAnalytics]);
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';

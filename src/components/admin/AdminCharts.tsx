@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/platform/supabase/client';
@@ -65,9 +65,9 @@ export function AdminCharts() {
 
   useEffect(() => {
     loadChartData();
-  }, [t]);
+  }, [loadChartData]);
 
-  const loadChartData = async () => {
+  const loadChartData = useCallback(async () => {
     setLoading(true);
     await Promise.all([
       loadDailyGrowth(),
@@ -78,7 +78,7 @@ export function AdminCharts() {
       loadBlockTypeStats()
     ]);
     setLoading(false);
-  };
+  }, []);
 
   const loadDailyGrowth = async () => {
     try {

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Globe, Check, Languages, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +12,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import type { SupportedLanguage } from '@/lib/i18n-helpers';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { LanguageContext } from '@/contexts/LanguageContext';
 
 const languages = [
   { code: 'ru' as SupportedLanguage, name: 'Русский', flag: '🇷🇺' },
@@ -36,15 +36,8 @@ export function LanguageSwitcher({
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   
-  // Use language context for auto-translate settings
-  const languageContext = (() => {
-    try {
-      return useLanguage();
-    } catch {
-      // Context not available (used outside provider)
-      return null;
-    }
-  })();
+  // Use language context for auto-translate settings (safely check if available)
+  const languageContext = useContext(LanguageContext);
 
   const isTranslating = externalTranslating || (languageContext?.isTranslating ?? false);
   const autoTranslateEnabled = languageContext?.autoTranslateEnabled ?? false;
