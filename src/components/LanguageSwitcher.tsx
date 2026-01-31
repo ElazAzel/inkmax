@@ -12,7 +12,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import type { SupportedLanguage } from '@/lib/i18n-helpers';
-import { LanguageContext } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const languages = [
   { code: 'ru' as SupportedLanguage, name: 'Русский', flag: '🇷🇺' },
@@ -37,7 +37,14 @@ export function LanguageSwitcher({
   const [isOpen, setIsOpen] = useState(false);
   
   // Use language context for auto-translate settings (safely check if available)
-  const languageContext = useContext(LanguageContext);
+  const languageContext = (() => {
+    try {
+      return useLanguage();
+    } catch {
+      // Context not available (used outside provider)
+      return null;
+    }
+  })();
 
   const isTranslating = externalTranslating || (languageContext?.isTranslating ?? false);
   const autoTranslateEnabled = languageContext?.autoTranslateEnabled ?? false;

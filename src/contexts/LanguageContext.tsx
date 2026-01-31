@@ -26,6 +26,8 @@ const normalizeLanguageCode = (lng: string): SupportedLanguage => {
   return 'ru';
 };
 
+export { LanguageContext };
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const { i18n, t } = useTranslation();
   const [currentLanguage, setCurrentLanguageState] = useState<SupportedLanguage>(() => {
