@@ -103,6 +103,21 @@ export default function SEOHead({ language }: SEOHeadProps) {
     const existingSchemas = document.querySelectorAll('script.landing-schema');
     existingSchemas.forEach(el => el.remove());
 
+    const faqItems = [
+      {
+        question: t('landingV5.faq.q1.question'),
+        answer: t('landingV5.faq.q1.answer'),
+      },
+      {
+        question: t('landingV5.faq.q2.question'),
+        answer: t('landingV5.faq.q2.answer'),
+      },
+      {
+        question: t('landingV5.faq.q3.question'),
+        answer: t('landingV5.faq.q3.answer'),
+      },
+    ];
+
     const schemas = [
       // Organization
       {
@@ -141,6 +156,18 @@ export default function SEOHead({ language }: SEOHeadProps) {
           { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' },
           { '@type': 'Offer', name: 'Pro', price: '5', priceCurrency: 'USD' },
         ],
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
       },
     ];
 

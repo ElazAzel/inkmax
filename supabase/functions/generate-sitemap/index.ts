@@ -8,10 +8,23 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { crypto } from 'https://deno.land/std@0.168.0/crypto/mod.ts';
+import {
+  buildMetaDescription,
+  collectTextSnippets,
+  escapeHtml,
+  escapeXml,
+  extractLocationFromBlocks,
+  generateETag,
+  getOgLocale,
+  resolveLanguage,
+  stripMarkdownLinks,
+  truncate,
+} from './seo-helpers.ts';
+import { buildGalleryHtml, buildLandingHtml, type GalleryItem, type LanguageKey } from './ssr-templates.ts';
 
 const BASE_URL = 'https://lnkmx.my';
 const LANGUAGES = ['ru', 'en', 'kk'] as const;
+const DEFAULT_OG_IMAGE = `${BASE_URL}/og-image.png`;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -34,6 +47,24 @@ const NICHE_TAGS = [
   'beauty', 'fitness', 'health', 'education', 'consulting',
   'coaching', 'design', 'marketing', 'music', 'photo', 'tech',
   'food', 'travel', 'fashion', 'art', 'realty', 'services', 'events', 'business', 'other'
+];
+
+const GALLERY_FILTERS = [
+  'beauty',
+  'fitness',
+  'food',
+  'education',
+  'art',
+  'music',
+  'tech',
+  'business',
+  'health',
+  'fashion',
+  'travel',
+  'realestate',
+  'events',
+  'services',
+  'other',
 ];
 
 // Types
@@ -62,97 +93,10 @@ interface SitemapPage {
   avatar_url: string | null;
 }
 
-// ============ UTILITY FUNCTIONS ============
-
-function escapeHtml(text: string): string {
-  if (!text) return '';
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}
-
-function stripMarkdownLinks(text: string): string {
-  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-}
-
-function truncate(text: string, maxLength: number): string {
-  if (!text) return '';
-  const clean = stripMarkdownLinks(text);
-  if (clean.length <= maxLength) return clean;
-  return clean.substring(0, maxLength - 3) + '...';
-}
-
-function normalizeText(text: string): string {
-  return text.replace(/\s+/g, ' ').trim();
-}
-
-function findFirstText(value: unknown): string | null {
-  if (!value) return null;
-  if (typeof value === 'string') {
-    const cleaned = normalizeText(value);
-    return cleaned ? cleaned : null;
-  }
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const found = findFirstText(item);
-      if (found) return found;
-    }
-  } else if (typeof value === 'object') {
-    for (const item of Object.values(value)) {
-      const found = findFirstText(item);
-      if (found) return found;
-    }
-  }
-  return null;
-}
-
-function collectTextSnippets(page: PageData, blocks: BlockData[]): string[] {
-  const snippets: string[] = [];
-  if (page.description) {
-    const cleaned = normalizeText(page.description);
-    if (cleaned) snippets.push(cleaned);
-  }
-  for (const block of blocks) {
-    const blockText = findFirstText(block.content);
-    if (blockText) snippets.push(blockText);
-    if (block.title) {
-      const titleText = normalizeText(block.title);
-      if (titleText) snippets.push(titleText);
-    }
-  }
-  return snippets;
-}
-
-function buildMetaDescription(snippets: string[]): string {
-  const combined = snippets.find(Boolean) || '';
-  return truncate(normalizeText(combined), 160);
-}
-
-async function generateETag(content: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(content);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return `"${hashHex.substring(0, 16)}"`;
-}
-
 // ============ SSR HANDLER ============
 
 // deno-lint-ignore no-explicit-any
-async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: string): Promise<Response> {
+async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lang: LanguageKey): Promise<Response> {
   console.log('[SSR] Rendering slug:', slug, 'lang:', lang);
 
   const { data: pageData, error: pageError } = await supabase
@@ -204,8 +148,13 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
   const cleanDesc = stripMarkdownLinks(primaryOfferOrBio);
   const metaDesc = escapeHtml(buildMetaDescription(snippets));
   const canonical = `${BASE_URL}/${slug}`;
-  const avatar = page.avatar_url || `${BASE_URL}/og-image.png`;
+  const avatar = page.avatar_url || DEFAULT_OG_IMAGE;
   const niche = page.niche || 'business';
+  const location = extractLocationFromBlocks(blocks, null);
+  const entityId = `${canonical}#entity`;
+  const hreflangLinks = LANGUAGES.map((langKey) => `<link rel="alternate" hreflang="${langKey}" href="${canonical}?lang=${langKey}">`)
+    .concat(`<link rel="alternate" hreflang="x-default" href="${canonical}">`)
+    .join('\n  ');
 
   let bodyContent = '';
   const links: { url: string; title: string }[] = [];
@@ -256,17 +205,19 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
   }
 
   const schemaType = niche === 'business' || niche === 'consulting' ? 'Organization' : 'Person';
+  const pageSchemaType = schemaType === 'Organization' ? 'ProfilePage' : 'ProfilePage';
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "WebPage",
+        "@type": pageSchemaType,
         "@id": canonical,
         "url": canonical,
         "name": `${page.title || '@' + slug} - ${primaryOfferOrBio} | LinkMAX`,
         "description": metaDesc,
         "inLanguage": lang,
-        "isPartOf": { "@type": "WebSite", "name": "LinkMAX", "url": BASE_URL }
+        "isPartOf": { "@type": "WebSite", "name": "LinkMAX", "url": BASE_URL },
+        "mainEntity": { "@id": entityId }
       },
       {
         "@type": "BreadcrumbList",
@@ -277,10 +228,12 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
       },
       {
         "@type": schemaType,
+        "@id": entityId,
         "name": page.title || '@' + slug,
         "url": canonical,
         "image": avatar,
-        "description": truncate(cleanDesc, 300)
+        "description": truncate(cleanDesc, 300),
+        ...(location ? { "areaServed": location } : {})
       }
     ]
   };
@@ -294,6 +247,7 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
   <meta name="description" content="${metaDesc}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${canonical}">
+  ${hreflangLinks}
   
   <meta property="og:type" content="website">
   <meta property="og:title" content="${displayName} - ${escapeHtml(primaryOfferOrBio)}">
@@ -301,7 +255,7 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
   <meta property="og:url" content="${canonical}">
   <meta property="og:image" content="${avatar}">
   <meta property="og:site_name" content="LinkMAX">
-  <meta property="og:locale" content="${lang === 'ru' ? 'ru_RU' : lang === 'kk' ? 'kk_KZ' : 'en_US'}">
+  <meta property="og:locale" content="${getOgLocale(lang)}">
   
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${displayName} - ${escapeHtml(primaryOfferOrBio)}">
@@ -324,6 +278,7 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
     <header>
       <h1>${displayName}</h1>
       ${cleanDesc ? `<p>${escapeHtml(cleanDesc)}</p>` : ''}
+      ${location ? `<p><strong>Location:</strong> ${escapeHtml(location)}</p>` : ''}
     </header>
     <article>${bodyContent}</article>
     ${linksHtml}
@@ -341,6 +296,50 @@ async function handleSSR(supabase: SupabaseClient<any>, slug: string, lang: stri
       'X-Robots-Tag': 'index, follow',
       'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
     }
+  });
+}
+
+// deno-lint-ignore no-explicit-any
+async function handleLandingSSR(lang: LanguageKey): Promise<Response> {
+  const html = buildLandingHtml(lang, BASE_URL);
+  return new Response(html, {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'text/html; charset=utf-8',
+      'X-Robots-Tag': 'index, follow',
+      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+    },
+  });
+}
+
+// deno-lint-ignore no-explicit-any
+async function handleGallerySSR(supabase: SupabaseClient<any>, lang: LanguageKey, niche: string | null): Promise<Response> {
+  let query = supabase
+    .from('pages')
+    .select('slug, title, description, avatar_url, niche')
+    .eq('is_published', true)
+    .eq('is_in_gallery', true);
+
+  if (niche) {
+    query = query.eq('niche', niche);
+  }
+
+  const { data: pagesData } = await query
+    .order('gallery_likes', { ascending: false })
+    .limit(12);
+
+  const items = (pagesData || []) as GalleryItem[];
+  const html = buildGalleryHtml(lang, BASE_URL, items, niche);
+
+  return new Response(html, {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'text/html; charset=utf-8',
+      'X-Robots-Tag': 'index, follow',
+      'Cache-Control': 'public, s-maxage=900, stale-while-revalidate=86400',
+    },
   });
 }
 
@@ -413,6 +412,22 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
 `;
   }
 
+  for (const niche of GALLERY_FILTERS) {
+    sitemap += `  <url>
+    <loc>${BASE_URL}/gallery?niche=${niche}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+`;
+    for (const lang of LANGUAGES) {
+      sitemap += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${BASE_URL}/gallery?niche=${niche}&lang=${lang}"/>
+`;
+    }
+    sitemap += `    <xhtml:link rel="alternate" hreflang="x-default" href="${BASE_URL}/gallery?niche=${niche}"/>
+  </url>
+`;
+  }
+
   const reservedSlugs = new Set(['admin', 'dashboard', 'auth', 'api', 'install', 'join', 'team', 'p', 'crm']);
   for (const page of pages) {
     if (!page.slug || reservedSlugs.has(page.slug.toLowerCase())) continue;
@@ -479,19 +494,26 @@ serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const lang = url.searchParams.get('lang') || 'ru';
+    const lang = resolveLanguage(url.searchParams.get('lang'), req.headers.get('accept-language')) as LanguageKey;
     const ssrPrefix = '/functions/v1/generate-sitemap/ssr/';
     const pathname = url.pathname;
-    const slug = pathname.startsWith(ssrPrefix)
+    const ssrTarget = pathname.startsWith(ssrPrefix)
       ? decodeURIComponent(pathname.slice(ssrPrefix.length)).replace(/^\/+|\/+$/g, '')
       : null;
+    const niche = url.searchParams.get('niche');
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (slug) {
-      return await handleSSR(supabase, slug, lang);
+    if (ssrTarget) {
+      if (ssrTarget === 'landing') {
+        return await handleLandingSSR(lang);
+      }
+      if (ssrTarget === 'gallery') {
+        return await handleGallerySSR(supabase, lang, niche);
+      }
+      return await handleProfileSSR(supabase, ssrTarget, lang);
     }
 
     return await handleSitemap(supabase, req);
