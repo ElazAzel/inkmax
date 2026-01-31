@@ -2,9 +2,9 @@
  * Gallery v1.3 - Mobile-first community gallery with performance optimizations
  * iOS-style design with filters, skeleton loading, and one-tap copy
  */
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Users, 
@@ -29,27 +29,36 @@ import { SkeletonCard, SkeletonGalleryGrid, SkeletonStats } from '@/components/u
 import { CommunityGallery } from '@/components/gallery/CommunityGallery';
 import { Leaderboard } from '@/components/gallery/Leaderboard';
 import { TopReferrers } from '@/components/gallery/TopReferrers';
-import { NicheFilter } from '@/components/gallery/NicheFilter';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useGallery } from '@/hooks/useGallery';
 import { NICHES, NICHE_ICONS } from '@/lib/niches';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
+import { StructuredData } from '@/components/seo/StructuredData';
 
 export default function Gallery() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { pages, loading, likePage } = useGallery();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedNiche, setSelectedNiche] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'gallery' | 'leaderboard'>('gallery');
-  const canonical = 'https://lnkmx.my/gallery';
-  const seoTitle = t('gallery.seo.title', 'lnkmx Gallery — Link in Bio Examples & Templates');
-  const seoDescription = t(
-    'gallery.seo.description',
-    'Explore real lnkmx link in bio pages by creators and businesses. Find templates, niches, and inspiration for your mini-site.'
-  );
+  const nicheLabel = selectedNiche ? t(`niches.${selectedNiche}`, selectedNiche) : null;
+  const canonical = selectedNiche
+    ? `https://lnkmx.my/gallery?niche=${selectedNiche}`
+    : 'https://lnkmx.my/gallery';
+  const seoTitle = selectedNiche
+    ? t('gallery.seo.nicheTitle', { niche: nicheLabel, defaultValue: `lnkmx Gallery — ${nicheLabel}` })
+    : t('gallery.seo.title', 'lnkmx Gallery — Link in Bio Examples & Templates');
+  const seoDescription = selectedNiche
+    ? t('gallery.seo.nicheDescription', { niche: nicheLabel, defaultValue: `Explore ${nicheLabel} pages on lnkmx.` })
+    : t(
+        'gallery.seo.description',
+        'Explore real lnkmx link in bio pages by creators and businesses. Find templates, niches, and inspiration for your mini-site.'
+      );
+  const seoHighlights = t('gallery.seoIntro.highlights', { returnObjects: true }) as string[];
 
   // Quick stats - memoized for performance
   const totalLikes = useMemo(() => 
@@ -71,6 +80,50 @@ export default function Gallery() {
     .sort((a, b) => (b.gallery_likes || 0) - (a.gallery_likes || 0))
     .slice(0, 5), [pages]);
 
+  const gallerySchema = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        name: seoTitle,
+        description: seoDescription,
+        url: canonical,
+        inLanguage: i18n.language,
+      },
+      {
+        '@type': 'ItemList',
+        itemListElement: featuredPages.map((page, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          url: `https://lnkmx.my/${page.slug}`,
+          name: page.title || page.slug,
+        })),
+      },
+    ],
+  }), [seoTitle, seoDescription, canonical, featuredPages, i18n.language]);
+
+  useEffect(() => {
+    const nicheParam = searchParams.get('niche');
+    if (nicheParam && NICHES.includes(nicheParam as (typeof NICHES)[number])) {
+      setSelectedNiche(nicheParam);
+      return;
+    }
+    if (!nicheParam) {
+      setSelectedNiche(null);
+    }
+  }, [searchParams]);
+
+  const updateNiche = useCallback((niche: string | null) => {
+    setSelectedNiche(niche);
+    const nextParams = new URLSearchParams(searchParams);
+    if (niche) {
+      nextParams.set('niche', niche);
+    } else {
+      nextParams.delete('niche');
+    }
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   // Handlers - memoized
   const handleCopyTemplate = useCallback((pageSlug: string) => {
     toast.success(t('gallery.templateCopied', 'Шаблон скопирован!'), {
@@ -90,12 +143,13 @@ export default function Gallery() {
         canonical={canonical}
         currentLanguage={i18n.language}
         alternates={[
-          { hreflang: 'ru', href: `${canonical}?lang=ru` },
-          { hreflang: 'en', href: `${canonical}?lang=en` },
-          { hreflang: 'kk', href: `${canonical}?lang=kk` },
+          { hreflang: 'ru', href: `${canonical}${canonical.includes('?') ? '&' : '?'}lang=ru` },
+          { hreflang: 'en', href: `${canonical}${canonical.includes('?') ? '&' : '?'}lang=en` },
+          { hreflang: 'kk', href: `${canonical}${canonical.includes('?') ? '&' : '?'}lang=kk` },
           { hreflang: 'x-default', href: canonical },
         ]}
       />
+      <StructuredData id="gallery-schema" data={gallerySchema} />
       <div className="min-h-screen bg-background pb-20">
       {/* Header - Sticky glass effect */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/10">
@@ -179,6 +233,23 @@ export default function Gallery() {
 
       {activeTab === 'gallery' && (
         <>
+          {/* SEO intro */}
+          <section className="px-5 pt-4">
+            <div className="rounded-2xl border border-border/40 bg-card/60 p-5 space-y-3">
+              <h2 className="text-base font-semibold">{t('gallery.seoIntro.title')}</h2>
+              <p className="text-sm text-muted-foreground">{t('gallery.seoIntro.subtitle')}</p>
+              <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+                {seoHighlights.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <div className="pt-2">
+                <h3 className="text-sm font-semibold">{t('gallery.seoIntro.locationTitle')}</h3>
+                <p className="text-sm text-muted-foreground">{t('gallery.seoIntro.locationBody')}</p>
+              </div>
+            </div>
+          </section>
+
           {/* Search */}
           <div className="px-5 py-3">
             <div className="relative">
@@ -196,7 +267,7 @@ export default function Gallery() {
           <div className="px-5 pb-3 overflow-x-auto scrollbar-hide">
             <div className="flex gap-2 min-w-max">
               <button
-                onClick={() => setSelectedNiche(null)}
+                onClick={() => updateNiche(null)}
                 className={cn(
                   "h-9 px-4 rounded-full text-sm font-bold whitespace-nowrap transition-all",
                   !selectedNiche 
@@ -209,7 +280,7 @@ export default function Gallery() {
               {NICHES.slice(0, 10).map((niche) => (
                 <button
                   key={niche}
-                  onClick={() => setSelectedNiche(niche)}
+                  onClick={() => updateNiche(niche)}
                   className={cn(
                     "h-9 px-4 rounded-full text-sm font-bold whitespace-nowrap transition-all flex items-center gap-1.5",
                     selectedNiche === niche

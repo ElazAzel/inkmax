@@ -7,6 +7,9 @@ Disallow: /dashboard-v2
 Disallow: /auth
 Disallow: /install
 Disallow: /team/
+Disallow: /join
+Disallow: /p/
+Disallow: /collab/
 Disallow: /crm
 Disallow: /editor
 Disallow: /settings
