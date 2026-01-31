@@ -69,24 +69,39 @@ git log origin/main..main --oneline
 git diff origin/main...main --stat
 ```
 
-### Step 3: Deployment (Ready)
+### Step 3: GitHub Actions Setup (Required for CI/CD)
+**Setup Instructions:**
+1. Go to GitHub repo → Settings → Secrets and variables → Actions
+2. Create new secret: `CLOUDFLARE_API_TOKEN`
+   - Get token from: https://dash.cloudflare.com/profile/api-tokens
+   - Required permissions: Workers (Edit), Account (Read)
+3. Verify `account_id` in `cloudflare-worker/wrangler.toml` matches your Cloudflare account
+
+**Deployment Methods:**
+
 ```bash
-# Deploy current main branch
-# Method depends on your CI/CD setup:
+# Option 1: Automatic (GitHub Actions) — RECOMMENDED
+# - Just push to main branch
+# - Workflow runs automatically
+# - Workflow file: .github/workflows/deploy.yml
 
-# Option 1: GitHub Actions (if configured)
-# - Push to main
-# - CI/CD pipeline runs tests
-# - Auto-deploys to production
+# Option 2: Manual GitHub Actions Trigger
+# - Go to GitHub repo → Actions → Build and Deploy → Run workflow
 
-# Option 2: Manual Deployment
-npm run build
-npm run deploy  # or your deployment command
+# Option 3: Local Manual Deployment
+cd cloudflare-worker
+export CLOUDFLARE_API_TOKEN=your_token_here
+wrangler deploy
 
-# Option 3: Docker Deployment
+# Option 4: Docker Deployment (for main app only)
 docker build -t inkmax:latest .
 docker push inkmax:latest
 ```
+
+**Troubleshooting:**
+- "Authentication error [code: 10000]": Check `CLOUDFLARE_API_TOKEN` has correct permissions
+- "account_id does not match": Verify `account_id` in `wrangler.toml` matches your Cloudflare account
+- Workflow fails: Check GitHub Actions logs for details
 
 ### Step 4: Smoke Tests (After Deployment)
 ```bash
@@ -130,6 +145,13 @@ docker push inkmax:latest
 - ✅ All documentation updated
 - ✅ Changes reviewed
 - ✅ Backup created (if needed)
+
+### GitHub Actions Workflow Status
+- ✅ Workflow created: `.github/workflows/deploy.yml`
+- ✅ Build job: Tests and creates dist artifact
+- ✅ Deploy job: Deploys Cloudflare Worker when build succeeds
+- ⏳ Requires: `CLOUDFLARE_API_TOKEN` secret in GitHub Settings
+- 🔐 API Token: Store securely in repository secrets (never commit)
 
 ### Known Issues (Non-Blocking)
 - ⚠️ DashboardV2 chunk size: 2.22 MB
