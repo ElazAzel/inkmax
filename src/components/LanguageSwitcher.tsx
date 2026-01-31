@@ -36,15 +36,15 @@ export function LanguageSwitcher({
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   
-  // Use language context for auto-translate settings (safely check if available)
-  const languageContext = (() => {
-    try {
-      return useLanguage();
-    } catch {
-      // Context not available (used outside provider)
-      return null;
-    }
-  })();
+  // Always call the hook, but handle the context safely
+  let languageContext;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    languageContext = useLanguage();
+  } catch {
+    // Context not available (used outside provider)
+    languageContext = null;
+  }
 
   const isTranslating = externalTranslating || (languageContext?.isTranslating ?? false);
   const autoTranslateEnabled = languageContext?.autoTranslateEnabled ?? false;

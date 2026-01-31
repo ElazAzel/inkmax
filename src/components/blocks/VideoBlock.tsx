@@ -13,7 +13,7 @@ interface VideoBlockProps {
 function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | null {
   try {
     if (platform === 'youtube') {
-      const videoIdMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+      const videoIdMatch = url.match(/(?:youtube\.com\/(?:[^\\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\\/\s]{11})/);
       const videoId = videoIdMatch ? videoIdMatch[1] : null;
       return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
     } else if (platform === 'vimeo') {

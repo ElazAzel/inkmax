@@ -80,9 +80,10 @@ function SortableBlockItem({ block, index, totalCount, onDelete, onEdit, onMoveU
         return `Соцсети: ${block.title ? getTranslatedString(block.title, currentLang) : 'Социальные сети'}`;
       case 'product':
         return `Товар: ${getTranslatedString(block.name, currentLang)}`;
-      case 'text':
+      case 'text': {
         const content = getTranslatedString(block.content, currentLang);
         return `Текст: ${content.slice(0, 30)}...`;
+      }
       case 'image':
         return `Изображение: ${block.alt ? getTranslatedString(block.alt, currentLang) : 'Без описания'}`;
       case 'video':

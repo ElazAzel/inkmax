@@ -158,7 +158,7 @@ export function AdminAnalyticsDashboard() {
       const sessionIds = new Set<string>();
       
       events.forEach(e => {
-        const meta = e.metadata as Record<string, any> | null;
+        const meta = e.metadata as Record<string, unknown> | null;
         // Support both naming conventions: visitorId/sessionId and visitor_id/session_id
         if (meta?.visitorId) visitorIds.add(meta.visitorId);
         if (meta?.visitor_id) visitorIds.add(meta.visitor_id);
@@ -187,7 +187,7 @@ export function AdminAnalyticsDashboard() {
         const dayVisitors = new Set<string>();
         const daySessions = new Set<string>();
         dayEvents.forEach(e => {
-          const meta = e.metadata as Record<string, any> | null;
+          const meta = e.metadata as Record<string, unknown> | null;
           if (meta?.visitor_id) dayVisitors.add(meta.visitor_id);
           if (meta?.session_id) daySessions.add(meta.session_id);
         });
@@ -235,7 +235,7 @@ export function AdminAnalyticsDashboard() {
       // Device breakdown - support both device and device_type
       const deviceCounts: Record<string, number> = { desktop: 0, mobile: 0, tablet: 0, unknown: 0 };
       events.forEach(e => {
-        const meta = e.metadata as Record<string, any> | null;
+        const meta = e.metadata as Record<string, unknown> | null;
         const device = meta?.device || meta?.device_type || 'unknown';
         deviceCounts[device] = (deviceCounts[device] || 0) + 1;
       });
@@ -250,7 +250,7 @@ export function AdminAnalyticsDashboard() {
       // Source breakdown - support both source and referrer_source
       const sourceCounts: Record<string, number> = {};
       events.forEach(e => {
-        const meta = e.metadata as Record<string, any> | null;
+        const meta = e.metadata as Record<string, unknown> | null;
         const source = meta?.source || meta?.referrer_source || 'direct';
         sourceCounts[source] = (sourceCounts[source] || 0) + 1;
       });
@@ -301,7 +301,7 @@ export function AdminAnalyticsDashboard() {
       const blockClickCounts: Record<string, { type: string; clicks: number }> = {};
       events.forEach(e => {
         if (!e.block_id || e.event_type !== 'click') return;
-        const meta = e.metadata as Record<string, any> | null;
+        const meta = e.metadata as Record<string, unknown> | null;
         if (!blockClickCounts[e.block_id]) {
           blockClickCounts[e.block_id] = { type: meta?.block_type || 'Unknown', clicks: 0 };
         }

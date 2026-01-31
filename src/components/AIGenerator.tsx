@@ -16,8 +16,8 @@ interface AIGeneratorProps {
   type: 'magic-title' | 'sales-copy' | 'seo' | 'ai-builder';
   isOpen: boolean;
   onClose: () => void;
-  onResult: (result: any) => void;
-  currentData?: any;
+  onResult: (result: string | Record<string, unknown>) => void;
+  currentData?: Record<string, unknown>;
 }
 
 export function AIGenerator({ type, isOpen, onClose, onResult, currentData }: AIGeneratorProps) {
@@ -48,7 +48,7 @@ export function AIGenerator({ type, isOpen, onClose, onResult, currentData }: AI
 
     setLoading(true);
     try {
-      let requestBody: any = { type };
+      const requestBody: Record<string, unknown> = { type };
 
       switch (type) {
         case 'magic-title':

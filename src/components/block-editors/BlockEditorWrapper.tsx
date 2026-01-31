@@ -16,11 +16,11 @@ import { cn } from '@/lib/utils';
 import { AnimationSettings } from '@/components/editor/AnimationSettings';
 import { PaidContentSettings } from './PaidContentSettings';
 import { getTextEffectClass } from '@/lib/block-styling';
-import type { BlockStyle, BlockSizePreset, BlockFontFamily } from '@/types/page';
+import type { Block, BlockStyle, BlockSizePreset, BlockFontFamily } from '@/types/page';
 
 export interface BaseBlockEditorProps {
-  formData: any;
-  onChange: (updates: any) => void;
+  formData: Block;
+  onChange: (updates: Partial<Block>) => void;
 }
 
 interface BlockEditorWrapperProps {
