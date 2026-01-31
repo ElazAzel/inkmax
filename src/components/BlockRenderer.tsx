@@ -211,11 +211,11 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       );
     case 'image':
       return (
-        <div className={animationClass} style={animationStyle}>
+        <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
-            <ImageBlock block={block} />
+            <ImageBlock block={block} onClick={handleTrackClick} />
           </Suspense>
-        </div>
+        </TrackableWrapper>
       );
     case 'product':
       return (
@@ -237,7 +237,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       return (
         <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
-            <CarouselBlock block={block} />
+            <CarouselBlock block={block} onClick={handleTrackClick} />
           </Suspense>
         </TrackableWrapper>
       );
@@ -253,7 +253,7 @@ export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPr
       return (
         <TrackableWrapper>
           <Suspense fallback={<BlockSkeleton />}>
-            <MessengerBlock block={block} pageOwnerId={pageOwnerId} />
+            <MessengerBlock block={block} pageOwnerId={pageOwnerId} onClick={handleTrackClick} />
           </Suspense>
         </TrackableWrapper>
       );
