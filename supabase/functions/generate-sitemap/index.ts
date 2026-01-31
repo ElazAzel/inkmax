@@ -1,5 +1,5 @@
 /**
- * Combined Sitemap + SSR Edge Function v2.1
+ * Combined Sitemap + SSR Edge Function v2.2
  * 
  * Enhanced for SEO/GEO/AEO:
  * - Answer Block for AI extraction
@@ -7,10 +7,12 @@
  * - FAQPage, LocalBusiness, Person/Organization schemas
  * - Proper 404 for missing slugs
  * - GEO signals (areaServed, location)
+ * - SSR for landing, gallery, and all user profiles
+ * - Support for multiple SSR path patterns
  * 
  * Modes:
  * 1. SITEMAP (default): GET /generate-sitemap -> sitemap.xml
- * 2. SSR: GET /generate-sitemap/ssr/{slug} -> HTML page for bots
+ * 2. SSR: GET /generate-sitemap/ssr/{target} -> HTML page for bots
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
@@ -644,18 +646,37 @@ serve(async (req) => {
   try {
     const url = new URL(req.url);
     const lang = resolveLanguage(url.searchParams.get('lang'), req.headers.get('accept-language')) as LanguageKey;
-    const ssrPrefix = '/functions/v1/generate-sitemap/ssr/';
     const pathname = url.pathname;
-    const ssrTarget = pathname.startsWith(ssrPrefix)
-      ? decodeURIComponent(pathname.slice(ssrPrefix.length)).replace(/^\/+|\/+$/g, '')
-      : null;
     const niche = url.searchParams.get('niche');
+    
+    // Multiple SSR path patterns for robustness
+    const ssrPatterns = [
+      '/functions/v1/generate-sitemap/ssr/',
+      '/generate-sitemap/ssr/',
+      '/ssr/',
+    ];
+    
+    let ssrTarget: string | null = null;
+    for (const prefix of ssrPatterns) {
+      if (pathname.startsWith(prefix)) {
+        ssrTarget = decodeURIComponent(pathname.slice(prefix.length)).replace(/^\/+|\/+$/g, '');
+        break;
+      }
+    }
+    
+    // Also check query param fallback for SSR
+    if (!ssrTarget && url.searchParams.has('ssr')) {
+      ssrTarget = url.searchParams.get('ssr') || null;
+    }
+
+    console.log(`[Router] pathname=${pathname}, ssrTarget=${ssrTarget}, lang=${lang}`);
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     if (ssrTarget) {
+      console.log(`[SSR] Rendering target: ${ssrTarget}`);
       if (ssrTarget === 'landing') {
         return await handleLandingSSR(lang);
       }
