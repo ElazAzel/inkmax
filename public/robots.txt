@@ -1,7 +1,12 @@
 # lnkmx.my Robots.txt
 # Last updated: 2026-01-31
+# Dynamic SEO/GEO/AEO optimized
 
-# Allow all bots to access public content
+# Sitemap location - Dynamic with full content indexing
+Sitemap: https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/generate-sitemap
+Sitemap: https://lnkmx.my/sitemap.xml
+
+# Default rules for all bots
 User-agent: *
 Allow: /
 Disallow: /api/
@@ -17,6 +22,15 @@ Disallow: /collab/
 Disallow: /crm
 Disallow: /editor
 Disallow: /settings
+Disallow: /*.js
+Disallow: /*.css
+Disallow: /?*
+Allow: /$
+Allow: /gallery$
+Allow: /pricing$
+Allow: /alternatives$
+Allow: /terms$
+Allow: /privacy$
 
 # Search Engine Crawlers - Full Access
 User-agent: Googlebot

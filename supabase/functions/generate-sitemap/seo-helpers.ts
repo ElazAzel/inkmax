@@ -126,3 +126,33 @@ export function extractLocationFromBlocks(blocks: Array<{ content: Record<string
   }
   return fallback || null;
 }
+
+export function isSearchBot(userAgent: string): boolean {
+  if (!userAgent) return false;
+  const ua = userAgent.toLowerCase();
+  
+  // Search engine bots
+  const searchBots = ['googlebot', 'bingbot', 'yandexbot', 'duckduckbot', 'applebot', 'slurp', 'exabot'];
+  
+  // AI/LLM crawlers (critical for AEO)
+  const aiBots = ['gptbot', 'oai-searchbot', 'perplexitybot', 'claude-web', 'anthropic-ai', 'cohere-ai', 
+                  'meta-externalagent', 'amazonbot', 'ccbot', 'youbot', 'bytespider'];
+  
+  // Social media preview bots (OG/Twitter cards)
+  const socialBots = ['twitterbot', 'linkedinbot', 'facebookexternalhit', 'facebot', 'slackbot', 'telegrambot', 'whatsapp', 'discordbot'];
+  
+  // Generic crawler indicators
+  const crawlerIndicators = ['crawler', 'spider', 'bot', 'scraper', 'fetcher'];
+  
+  const allBots = [...searchBots, ...aiBots, ...socialBots, ...crawlerIndicators];
+  return allBots.some(bot => ua.includes(bot));
+}
+
+export function shouldReturnSSR(headers: Record<string, string>, path: string): boolean {
+  // Always SSR for certain paths
+  if (path === '/' || path === '/gallery' || path.match(/^\/[a-z0-9\-]+$/i)) {
+    const userAgent = headers['user-agent'] || '';
+    return isSearchBot(userAgent);
+  }
+  return false;
+}
