@@ -19,7 +19,7 @@ const SSR_FUNCTION_URL = FUNCTION_URL;
 const SITEMAP_FUNCTION_URL = FUNCTION_URL;
 
 // WHITELIST: Marketing/static pages - NOT treated as slugs
-// These pages have their own SPA routes and don't need SSR from render-page
+// These pages have their own SPA routes
 const WHITELIST_PAGES = new Set([
   '',           // root /
   'pricing',
@@ -134,6 +134,7 @@ async function handleRequest(request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const userAgent = request.headers.get('User-Agent') || '';
+  const queryString = url.search || '';
   
   // 1. Skip static files - always origin
   if (isStaticFile(pathname)) {
@@ -174,10 +175,38 @@ async function handleRequest(request) {
     return fetch(request);
   }
   
-  // 4. Parse path
+  // 4. Bot-friendly SSR for landing + gallery
+  if (isBot(userAgent) && (pathname === '/' || pathname === '/gallery')) {
+    const target = pathname === '/' ? 'landing' : 'gallery';
+    const ssrUrl = `${SSR_FUNCTION_URL}/ssr/${target}${queryString}`;
+    try {
+      const ssrResponse = await fetch(ssrUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/html',
+          'User-Agent': userAgent,
+          'Accept-Language': request.headers.get('Accept-Language') || '',
+        },
+      });
+      const responseHeaders = new Headers(ssrResponse.headers);
+      responseHeaders.set('X-SSR-Rendered', 'true');
+      responseHeaders.set('X-SSR-Target', target);
+      responseHeaders.delete('set-cookie');
+      return new Response(ssrResponse.body, {
+        status: ssrResponse.status,
+        statusText: ssrResponse.statusText,
+        headers: responseHeaders,
+      });
+    } catch (error) {
+      console.error('[Worker] SSR error (landing/gallery):', error);
+      return fetch(request);
+    }
+  }
+
+  // 5. Parse path
   const { segments, first } = parsePathname(pathname);
   
-  // 5. Blacklisted paths - always origin (never SSR)
+  // 6. Blacklisted paths - always origin (never SSR)
   if (isBlacklisted(first)) {
     const response = await fetch(request);
     if (isBot(userAgent)) {
@@ -192,22 +221,22 @@ async function handleRequest(request) {
     return response;
   }
   
-  // 6. Whitelisted marketing pages - always origin
+  // 7. Whitelisted marketing pages - always origin
   if (isWhitelisted(first)) {
     return fetch(request);
   }
   
-  // 7. Multi-segment paths (e.g., /experts/beauty) - origin
+  // 8. Multi-segment paths (e.g., /experts/beauty) - origin
   if (segments.length > 1) {
     return fetch(request);
   }
   
-  // 8. Check if this is a slug
+  // 9. Check if this is a slug
   if (!isSlug(segments, first)) {
     return fetch(request);
   }
   
-  // 9. It's a slug! Check if bot
+  // 10. It's a slug! Check if bot
   const isBotRequest = isBot(userAgent);
   
   // For humans, serve SPA
@@ -215,12 +244,12 @@ async function handleRequest(request) {
     return fetch(request);
   }
   
-  // 10. Bot + Slug = SSR
+  // 11. Bot + Slug = SSR
   const slug = first;
   
   console.log(`[Worker] SSR for bot: slug=${slug}, ua=${userAgent.substring(0, 50)}`);
   
-  const ssrUrl = `${SSR_FUNCTION_URL}/ssr/${encodeURIComponent(slug)}`;
+  const ssrUrl = `${SSR_FUNCTION_URL}/ssr/${encodeURIComponent(slug)}${queryString}`;
   
   try {
     const ssrResponse = await fetch(ssrUrl, {
@@ -228,6 +257,7 @@ async function handleRequest(request) {
       headers: {
         'Accept': 'text/html',
         'User-Agent': userAgent,
+        'Accept-Language': request.headers.get('Accept-Language') || '',
       },
     });
     
