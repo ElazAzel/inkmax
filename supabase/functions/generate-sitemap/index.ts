@@ -1,14 +1,17 @@
 /**
- * Combined Sitemap + SSR Edge Function v2.2
+ * Combined Sitemap + SSR Edge Function v2.3 (GEO/AEO Optimized)
  * 
- * Enhanced for SEO/GEO/AEO:
- * - Answer Block for AI extraction
- * - Key Facts for citation
+ * Enhanced for SEO/GEO/AEO without external dependencies:
+ * - Answer Block for AI extraction (GPTBot, Claude, Perplexity)
+ * - Key Facts for atomic citation
  * - FAQPage, LocalBusiness, Person/Organization schemas
  * - Proper 404 for missing slugs
- * - GEO signals (areaServed, location)
+ * - GEO signals (areaServed, location, knowsAbout)
  * - SSR for landing, gallery, and all user profiles
  * - Support for multiple SSR path patterns
+ * - llms.txt and ai-summary meta tags for AI crawlers
+ * 
+ * Works independently - Cloudflare Worker is optional routing layer.
  * 
  * Modes:
  * 1. SITEMAP (default): GET /generate-sitemap -> sitemap.xml
@@ -219,11 +222,13 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
   if (location) keyFacts.push(location);
   if (services.length > 0) keyFacts.push(`${services.length} ${lang === 'ru' ? 'услуг' : lang === 'kk' ? 'қызмет' : 'services'}`);
   if (links.length > 0) keyFacts.push(`${links.length} ${lang === 'ru' ? 'ссылок' : lang === 'kk' ? 'сілтеме' : 'links'}`);
+  if (faqItems.length > 0) keyFacts.push(`FAQ: ${faqItems.length} ${lang === 'ru' ? 'ответов' : lang === 'kk' ? 'жауап' : 'answers'}`);
 
-  // Generate Answer Block summary
+  // Generate Answer Block summary for AI extraction
+  const nicheLabel = niche && niche !== 'other' ? niche : '';
   const answerSummary = cleanDesc 
-    ? `${displayName} - ${truncate(cleanDesc, 150)}${location ? `. ${lang === 'ru' ? 'Локация' : 'Location'}: ${location}` : ''}`
-    : `${displayName}${niche ? ` - ${niche}` : ''}${location ? ` (${location})` : ''}`;
+    ? `${displayName}${nicheLabel ? ` - ${nicheLabel}` : ''}: ${truncate(cleanDesc, 150)}${location ? `. ${lang === 'ru' ? 'Локация' : lang === 'kk' ? 'Орналасуы' : 'Location'}: ${location}` : ''}`
+    : `${displayName}${nicheLabel ? ` - ${nicheLabel}` : ''}${location ? ` (${location})` : ''} ${lang === 'ru' ? 'на lnkmx.my' : lang === 'kk' ? 'lnkmx.my сайтында' : 'on lnkmx.my'}`;
 
   // Schema.org
   const schemaType = niche === 'business' || niche === 'consulting' || services.length > 0 ? 'Organization' : 'Person';
@@ -650,8 +655,10 @@ serve(async (req) => {
     const niche = url.searchParams.get('niche');
     
     // Multiple SSR path patterns for robustness
+    // Supports: /ssr/landing, /generate-sitemap/ssr/landing, /functions/v1/generate-sitemap/ssr/landing
     const ssrPatterns = [
       '/functions/v1/generate-sitemap/ssr/',
+      '/v1/generate-sitemap/ssr/',
       '/generate-sitemap/ssr/',
       '/ssr/',
     ];

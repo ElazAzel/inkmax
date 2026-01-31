@@ -10,6 +10,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FreemiumWatermark } from '@/components/FreemiumWatermark';
 import { EnhancedSEOHead } from '@/components/seo/EnhancedSEOHead';
 import { CrawlerFriendlyContent } from '@/components/seo/CrawlerFriendlyContent';
+import { GEOEnhancedContent } from '@/components/seo/GEOEnhancedContent';
 import { PublicPageSkeleton } from '@/components/public/PublicPageSkeleton';
 import { PublicPageError } from '@/components/public/PublicPageError';
 import { decompressPageData } from '@/lib/compression';
@@ -173,6 +174,12 @@ export default function PublicPage() {
         blocks={displayBlocks}
         slug={slug || ''}
         updatedAt={new Date().toISOString()}
+      />
+      
+      {/* GEO Enhanced Content - visible to crawlers even with JS enabled */}
+      <GEOEnhancedContent 
+        blocks={displayBlocks}
+        slug={slug || ''}
       />
       
     <AnalyticsProvider pageId={pageData?.id} enabled={!!slug}>
