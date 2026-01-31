@@ -185,7 +185,7 @@ export function EventsPanel({ isPremium }: EventsPanelProps) {
       };
 
       if (formatType === 'xlsx' && isPremium) {
-        exportToExcel(exportData);
+        await exportToExcel(exportData);
         toast.success(t('events.exportSuccess', 'Экспорт в Excel завершен'));
       } else {
         exportToCSV(exportData);

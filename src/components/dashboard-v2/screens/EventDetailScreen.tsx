@@ -355,7 +355,7 @@ export const EventDetailScreen = memo(function EventDetailScreen() {
 
     setExporting(true);
     try {
-      exportToExcel({
+      await exportToExcel({
         eventTitle: event.title,
         registrations: fullRegistrations,
         formFields: event.formSchema,
