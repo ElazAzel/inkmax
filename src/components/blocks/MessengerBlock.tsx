@@ -9,9 +9,10 @@ import { cn } from '@/lib/utils';
 interface MessengerBlockProps {
   block: MessengerBlockType;
   pageOwnerId?: string;
+  onClick?: () => void;
 }
 
-export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId }: MessengerBlockProps) {
+export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId, onClick }: MessengerBlockProps) {
   const { i18n } = useTranslation();
   const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
 
@@ -47,6 +48,9 @@ export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId 
   };
 
   const handleMessengerClick = async (platform: string, username: string, message?: string) => {
+    // Track analytics click
+    onClick?.();
+    
     if (pageOwnerId) {
       try {
         await supabase.functions.invoke('create-lead', {
@@ -64,7 +68,10 @@ export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId 
     }
     
     const url = getMessengerUrl(platform, username, message);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    // Delay to ensure tracking request is sent before navigation
+    setTimeout(() => {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }, 15);
   };
 
   const messengers = block.messengers || [];

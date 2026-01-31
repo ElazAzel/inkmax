@@ -7,9 +7,10 @@ import type { ImageBlock as ImageBlockType } from '@/types/page';
 
 interface ImageBlockProps {
   block: ImageBlockType;
+  onClick?: () => void;
 }
 
-export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBlockProps) {
+export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: ImageBlockProps) {
   const { i18n } = useTranslation();
   const alt = getTranslatedString(block.alt, i18n.language as SupportedLanguage);
   const caption = getTranslatedString(block.caption, i18n.language as SupportedLanguage);
@@ -37,7 +38,11 @@ export const ImageBlock = memo(function ImageBlockComponent({ block }: ImageBloc
 
   const handleClick = () => {
     if (block.link) {
-      window.open(block.link, '_blank', 'noopener,noreferrer');
+      onClick?.();
+      // Delay to ensure tracking request is sent before navigation
+      setTimeout(() => {
+        window.open(block.link, '_blank', 'noopener,noreferrer');
+      }, 15);
     }
   };
 

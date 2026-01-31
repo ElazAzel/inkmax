@@ -14,9 +14,10 @@ import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers'
 
 interface CarouselBlockProps {
   block: CarouselBlockType;
+  onClick?: () => void;
 }
 
-export const CarouselBlock = memo(function CarouselBlockComponent({ block }: CarouselBlockProps) {
+export const CarouselBlock = memo(function CarouselBlockComponent({ block, onClick }: CarouselBlockProps) {
   const { i18n, t } = useTranslation();
   const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
 
@@ -26,7 +27,11 @@ export const CarouselBlock = memo(function CarouselBlockComponent({ block }: Car
 
   const handleImageClick = (link?: string) => {
     if (link) {
-      window.open(link, '_blank', 'noopener,noreferrer');
+      onClick?.();
+      // Delay to ensure tracking request is sent before navigation
+      setTimeout(() => {
+        window.open(link, '_blank', 'noopener,noreferrer');
+      }, 15);
     }
   };
 
