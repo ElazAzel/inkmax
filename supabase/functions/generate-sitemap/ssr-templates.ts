@@ -1,3 +1,8 @@
+import { escapeHtml, getOgLocale, buildHreflangLinks } from './seo-helpers.ts';
+
+const DEFAULT_OG_IMAGE = 'https://lnkmx.my/og-image.png';
+
+type LanguageKey = 'ru' | 'en' | 'kk';
 /**
  * SSR Templates v2.0 - Enhanced for SEO/GEO/AEO
  * 
@@ -34,6 +39,18 @@ type LandingContent = {
   answers: { q: string; a: string }[];
   faqTitle: string;
   faq: { q: string; a: string }[];
+};
+
+type GalleryContent = {
+  title: string;
+  description: string;
+  h1: string;
+  subtitle: string;
+  highlightsTitle: string;
+  highlights: string[];
+  locationTitle: string;
+  locationBody: string;
+  topProfilesTitle: string;
   keyFactsTitle: string;
   keyFacts: string[];
   answerBlock: string;
@@ -41,6 +58,15 @@ type LandingContent = {
 
 const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
   ru: {
+    title: 'lnkmx — Micro-Business OS | Конструктор страниц + CRM',
+    description:
+      'Операционная система для микро-бизнеса: AI-конструктор страниц, встроенная CRM, формы заявок и Telegram-уведомления. Запуск за 2 минуты без кода.',
+    h1: 'Micro-Business OS для микро-бизнеса',
+    subtitle: 'Мини-сайт, CRM и заявки в одном месте — без кода и сложной настройки.',
+    cta: 'Создать бесплатно',
+    aboutTitle: 'Что такое lnkmx',
+    aboutBody:
+      'lnkmx — это конструктор страниц и CRM, который превращает соцсети в полноценную точку продаж. Создайте страницу, принимайте заявки, управляйте клиентами и получайте аналитику.',
     title: 'lnkmx - Micro-Business OS | Конструктор страниц + CRM',
     description:
       'Операционная система для микро-бизнеса: AI-конструктор страниц, встроенная CRM, формы заявок и Telegram-уведомления. Запуск за 2 минуты без кода.',
@@ -56,6 +82,11 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
     whereList: ['Казахстан, Россия, Кыргызстан', 'Алматы, Астана, Шымкент', 'Онлайн и офлайн сервисы'],
     answersTitle: 'Короткие ответы',
     answers: [
+      { q: 'Как быстро запустить страницу?', a: '2 минуты: ответьте на вопросы — AI соберёт страницу.' },
+      { q: 'Есть ли встроенная CRM?', a: 'Да, заявки и клиенты сохраняются в одном месте.' },
+      { q: 'Подходит ли для локального бизнеса?', a: 'Да, можно указать город и контакты, подключить карту и запись.' },
+    ],
+    faqTitle: 'FAQ',
       { q: 'Как быстро запустить страницу?', a: '2 минуты: ответьте на вопросы - AI соберёт страницу.' },
       { q: 'Есть ли встроенная CRM?', a: 'Да, заявки и клиенты сохраняются в одном месте.' },
       { q: 'Подходит ли для локального бизнеса?', a: 'Да, можно указать город и контакты, подключить карту и запись.' },
@@ -65,6 +96,14 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
       { q: 'Нужен ли дизайнер?', a: 'Нет, готовые блоки и AI помогут запуститься без дизайнера.' },
       { q: 'Можно ли менять язык?', a: 'Да, поддерживаются RU/EN/KK и переключение языков.' },
       { q: 'Есть ли бесплатный тариф?', a: 'Да, можно стартовать бесплатно и перейти на Pro при росте.' },
+    ],
+  },
+  en: {
+    title: 'lnkmx — Micro-Business OS | Page Builder + CRM',
+    description:
+      'Operating system for micro-business: AI page builder, built-in CRM, lead forms and Telegram notifications. Launch in 2 minutes with no code.',
+    h1: 'Micro-Business OS for creators & small business',
+    subtitle: 'Landing page, CRM, and lead capture in one place — no code needed.',
       { q: 'Как работает CRM?', a: 'Все заявки с вашей страницы автоматически сохраняются в CRM с возможностью комментариев и статусов.' },
       { q: 'Есть ли интеграция с Telegram?', a: 'Да, вы получаете уведомления о новых заявках прямо в Telegram.' },
     ],
@@ -99,11 +138,24 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
       { q: 'Is there a CRM included?', a: 'Yes, all leads and customers stay in one dashboard.' },
       { q: 'Is it good for local business?', a: 'Yes, add city, map, and booking to get local leads.' },
     ],
+    faqTitle: 'FAQ',
     faqTitle: 'Frequently Asked Questions',
     faq: [
       { q: 'Do I need a designer?', a: 'No, ready-made blocks and AI handle the layout.' },
       { q: 'Can I switch languages?', a: 'Yes, RU/EN/KK are supported with easy switching.' },
       { q: 'Is there a free plan?', a: 'Yes, start free and upgrade when you grow.' },
+    ],
+  },
+  kk: {
+    title: 'lnkmx — Micro-Business OS | Бет конструкторы + CRM',
+    description:
+      'Микро-бизнеске арналған операциялық жүйе: AI бет конструкторы, ішкі CRM, өтінім формалары және Telegram хабарламалары. 2 минутта кодсыз іске қосыңыз.',
+    h1: 'Микро-бизнеске арналған Micro-Business OS',
+    subtitle: 'Мини-сайт, CRM және өтінімдер — бір жерде, кодсыз.',
+    cta: 'Тегін бастау',
+    aboutTitle: 'lnkmx деген не',
+    aboutBody:
+      'lnkmx — парақша құрастырушы және CRM. Әлеуметтік желідегі трафикті сатылымға айналдырып, өтінімдерді жинап, клиенттерді басқаруға көмектеседі.',
       { q: 'How does CRM work?', a: 'All leads from your page are automatically saved to CRM with comments and status tracking.' },
       { q: 'Is there Telegram integration?', a: 'Yes, you get instant notifications about new leads in Telegram.' },
     ],
@@ -134,6 +186,7 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
     whereList: ['Қазақстан, Ресей, Қырғызстан', 'Алматы, Астана, Шымкент', 'Онлайн және офлайн қызметтер'],
     answersTitle: 'Қысқа жауаптар',
     answers: [
+      { q: 'Қаншалықты тез іске қосамын?', a: '2 минутта: бірнеше сұраққа жауап бересіз — AI парақшаны құрады.' },
       { q: 'Қаншалықты тез іске қосамын?', a: '2 минутта: бірнеше сұраққа жауап бересіз - AI парақшаны құрады.' },
       { q: 'CRM бар ма?', a: 'Иә, барлық өтінімдер бір жүйеде сақталады.' },
       { q: 'Жергілікті бизнеске жарай ма?', a: 'Иә, қала, карта және жазылу функцияларын қосуға болады.' },
@@ -143,6 +196,13 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
       { q: 'Дизайнер керек пе?', a: 'Жоқ, дайын блоктар мен AI көмектеседі.' },
       { q: 'Тілді ауыстыруға бола ма?', a: 'Иә, RU/EN/KK тілдері қолжетімді.' },
       { q: 'Тегін тариф бар ма?', a: 'Иә, тегін бастауға болады.' },
+    ],
+  },
+};
+
+const GALLERY_CONTENT: Record<LanguageKey, GalleryContent> = {
+  ru: {
+    title: 'Галерея lnkmx — примеры link in bio и мини-сайтов',
       { q: 'CRM қалай жұмыс істейді?', a: 'Барлық өтінімдер автоматты түрде CRM-ге сақталады.' },
       { q: 'Telegram интеграциясы бар ма?', a: 'Иә, жаңа өтінімдер туралы Telegram-да хабарлама аласыз.' },
     ],
@@ -187,6 +247,11 @@ const GALLERY_CONTENT: Record<LanguageKey, GalleryContent> = {
     highlights: ['Топовые страницы по лайкам и просмотрам', 'Примеры по нишам: beauty, education, consulting и др.', 'Готовые структуры блоков и CTA'],
     locationTitle: 'Локальная релевантность',
     locationBody:
+      'В галерее много локальных бизнесов — можно искать примеры по вашему городу или стране и быстро адаптировать их под себя.',
+    topProfilesTitle: 'Популярные профили',
+  },
+  en: {
+    title: 'lnkmx Gallery — link in bio examples and templates',
       'В галерее много локальных бизнесов - можно искать примеры по вашему городу или стране и быстро адаптировать их под себя.',
     topProfilesTitle: 'Популярные профили',
     keyFactsTitle: 'Ключевые факты о галерее',
@@ -208,6 +273,11 @@ const GALLERY_CONTENT: Record<LanguageKey, GalleryContent> = {
     highlights: ['Top pages by likes and views', 'Niche examples: beauty, education, consulting, and more', 'Ready-to-use block structures and CTAs'],
     locationTitle: 'Local relevance',
     locationBody:
+      'Many pages are built for local businesses — find examples from your city or country and adapt them fast.',
+    topProfilesTitle: 'Top profiles',
+  },
+  kk: {
+    title: 'lnkmx галереясы — link in bio мысалдары мен мини-сайттар',
       'Many pages are built for local businesses - find examples from your city or country and adapt them fast.',
     topProfilesTitle: 'Top profiles',
     keyFactsTitle: 'Key facts about gallery',
@@ -229,6 +299,12 @@ const GALLERY_CONTENT: Record<LanguageKey, GalleryContent> = {
     highlights: ['Лайк пен қаралымы көп үздік беттер', 'Beauty, education, consulting сияқты нишалар', 'Дайын блок құрылымдары және CTA'],
     locationTitle: 'Жергілікті өзектілік',
     locationBody:
+      'Галереяда жергілікті бизнеске арналған көп беттер бар — өз қалаңызға лайық үлгілерді табыңыз.',
+    topProfilesTitle: 'Танымал профильдер',
+  },
+};
+
+type GalleryItem = {
       'Галереяда жергілікті бизнеске арналған көп беттер бар - өз қалаңызға лайық үлгілерді табыңыз.',
     topProfilesTitle: 'Танымал профильдер',
     keyFactsTitle: 'Галерея туралы негізгі фактілер',
@@ -260,6 +336,8 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
   const hreflangLinks = buildHreflangLinks(baseUrl, '/', ['ru', 'en', 'kk']);
 
   const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
     '@type': 'FAQPage',
     '@id': `${baseUrl}/#faq`,
     mainEntity: content.faq.map((item) => ({
@@ -294,6 +372,13 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
         url: `${baseUrl}/`,
         logo: `${baseUrl}/favicon.jpg`,
         areaServed: content.whereList,
+      },
+      {
+        '@type': 'SoftwareApplication',
+        name: 'lnkmx - Micro-Business OS',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web',
+        description: content.description,
         sameAs: ['https://t.me/lnkmx_app'],
       },
       {
@@ -321,6 +406,7 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${escapeHtml(content.title)}</title>
   <meta name="description" content="${escapeHtml(content.description)}">
+  <meta name="robots" content="index, follow">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <link rel="canonical" href="${baseUrl}/">
   ${hreflangLinks}
@@ -335,6 +421,17 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
   <meta name="twitter:title" content="${escapeHtml(content.title)}">
   <meta name="twitter:description" content="${escapeHtml(content.description)}">
   <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}">
+  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; color: #111; background: #fff; }
+    main { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; font-size: 1.5rem; }
+    ul { padding-left: 1.2rem; }
+    .answers dt { font-weight: 600; margin-top: 0.75rem; }
+    .answers dd { margin-left: 0; margin-bottom: 0.5rem; color: #444; }
+    .cta { margin-top: 1.5rem; }
+    .cta a { display: inline-block; padding: 12px 18px; border-radius: 999px; background: #0f62fe; color: #fff; text-decoration: none; }
   <meta name="twitter:site" content="@lnkmx_app">
   <meta name="ai-summary" content="${escapeHtml(content.answerBlock)}">
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
@@ -394,11 +491,18 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
 
     <section>
       <h2>${escapeHtml(content.answersTitle)}</h2>
+      <dl class="answers">
       <dl class="faq">
         ${content.answers.map((item) => `<dt>${escapeHtml(item.q)}</dt><dd>${escapeHtml(item.a)}</dd>`).join('')}
       </dl>
     </section>
 
+    <section>
+      <h2>${escapeHtml(content.faqTitle)}</h2>
+      <dl class="answers">
+        ${content.faq.map((item) => `<dt>${escapeHtml(item.q)}</dt><dd>${escapeHtml(item.a)}</dd>`).join('')}
+      </dl>
+    </section>
     <section id="faq" itemscope itemtype="https://schema.org/FAQPage">
       <h2>${escapeHtml(content.faqTitle)}</h2>
       <dl class="faq">
@@ -431,6 +535,7 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
   const canonicalUrl = `${baseUrl}/gallery${querySuffix}`;
   const hreflangLinks = buildHreflangLinks(baseUrl, `/gallery${querySuffix}`, ['ru', 'en', 'kk']);
 
+  const itemList = items.slice(0, 10).map((item, index) => ({
   const nicheLabel = niche || 'all';
   const title = niche 
     ? `${content.title} - ${nicheLabel}` 
@@ -449,6 +554,14 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
     '@graph': [
       {
         '@type': 'CollectionPage',
+        name: content.title,
+        description: content.description,
+        url: canonicalUrl,
+        inLanguage: lang,
+      },
+      {
+        '@type': 'ItemList',
+        itemListElement: itemList,
         '@id': canonicalUrl,
         name: title,
         description: content.description,
@@ -470,17 +583,33 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(content.title)}</title>
   <title>${escapeHtml(title)}</title>
   <meta name="description" content="${escapeHtml(content.description)}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${canonicalUrl}">
   ${hreflangLinks}
   <meta property="og:type" content="website">
+  <meta property="og:title" content="${escapeHtml(content.title)}">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(content.description)}">
   <meta property="og:url" content="${canonicalUrl}">
   <meta property="og:image" content="${DEFAULT_OG_IMAGE}">
   <meta property="og:locale" content="${locale}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeHtml(content.title)}">
+  <meta name="twitter:description" content="${escapeHtml(content.description)}">
+  <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}">
+  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; color: #111; background: #fff; }
+    main { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; font-size: 1.4rem; }
+    ul { padding-left: 1.2rem; }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .card { border: 1px solid #eee; border-radius: 12px; padding: 12px; }
+    .card a { color: #0f62fe; text-decoration: none; font-weight: 600; }
   <meta property="og:site_name" content="lnkmx">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
@@ -511,6 +640,10 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
 <body>
   <main>
     <header>
+      <h1>${escapeHtml(content.h1)}</h1>
+      <p>${escapeHtml(content.subtitle)}</p>
+    </header>
+
       <h1>${escapeHtml(content.h1)}${niche ? ` - ${escapeHtml(nicheLabel)}` : ''}</h1>
       <p>${escapeHtml(content.subtitle)}</p>
     </header>
@@ -538,6 +671,14 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
       <p>${escapeHtml(content.locationBody)}</p>
     </section>
 
+    <section>
+      <h2>${escapeHtml(content.topProfilesTitle)}</h2>
+      <div class="grid">
+        ${items.slice(0, 10).map((item) => `
+          <article class="card">
+            <a href="${baseUrl}/${item.slug}">${escapeHtml(item.title || item.slug)}</a>
+            <p>${escapeHtml(item.description || '')}</p>
+            <p><small>${escapeHtml(item.niche || '')}</small></p>
     <section aria-label="${content.topProfilesTitle}">
       <h2>${escapeHtml(content.topProfilesTitle)}</h2>
       <div class="grid">
@@ -560,4 +701,5 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
 </html>`;
 }
 
+export type { GalleryItem, LanguageKey };
 export { LANDING_CONTENT, GALLERY_CONTENT };
