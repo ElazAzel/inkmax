@@ -1,6 +1,7 @@
 /**
  * Analytics Service
  * Handles all analytics tracking operations
+ * @version 2.1 - Fixed UUID validation for block_id
  */
 
 import { supabase } from '@/platform/supabase/client';
