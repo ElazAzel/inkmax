@@ -47,17 +47,58 @@ const BLACKLIST_PREFIXES = [
 ];
 
 // Bot User-Agent patterns for SSR routing
+// Comprehensive list of search engines, AI crawlers, and social media bots
 const BOT_PATTERNS = [
   // Search Engine Crawlers
   'googlebot',
   'bingbot',
   'yandexbot',
   'duckduckbot',
+  'baiduspider',
+  'sogou',
+  'exabot',
+  'facebot',
+  'ia_archiver',
+  
+  // AI/LLM Crawlers (Critical for AEO)
   'gptbot',
   'chatgpt-user',
+  'oai-searchbot',
   'perplexitybot',
   'claude-web',
+  'anthropic-ai',
+  'cohere-ai',
+  'meta-externalagent',
+  'meta-externalfetcher',
+  'bytespider',
+  'amazonbot',
+  'ai2bot',
+  'diffbot',
+  'omgilibot',
+  'omgili',
+  'ccbot',
+  'youbot',
+  
+  // Social Media & Preview Bots
   'applebot',
+  'twitterbot',
+  'linkedinbot',
+  'slackbot',
+  'telegrambot',
+  'whatsapp',
+  'discordbot',
+  'pinterestbot',
+  'redditbot',
+  
+  // SEO & Monitoring Tools
+  'ahrefs',
+  'semrush',
+  'mj12bot',
+  'dotbot',
+  'petalbot',
+  'seznambot',
+  'rogerbot',
+  'screaming frog',
 ];
 
 // Static file extensions - never process
