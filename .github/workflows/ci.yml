@@ -22,7 +22,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install --prefer-offline --no-audit
+        run: npm ci
 
       - name: Lint
         run: npm run lint
@@ -54,7 +54,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install --prefer-offline --no-audit
+        run: npm ci
 
       - name: Run unit tests
         run: npm test -- --run
@@ -75,7 +75,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install --prefer-offline --no-audit
+        run: npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -99,7 +99,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install --prefer-offline --no-audit
+        run: npm ci
 
       - name: Build
         run: npm run build
