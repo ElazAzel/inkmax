@@ -1539,7 +1539,20 @@
     "empty": "No pages found",
     "seo": {
       "title": "lnkmx Gallery - link in bio examples & templates",
-      "description": "Real lnkmx pages from creators and businesses. Browse niches, templates, and inspiration."
+      "description": "Real lnkmx pages from creators and businesses. Browse niches, templates, and inspiration.",
+      "nicheTitle": "lnkmx Gallery — {{niche}}",
+      "nicheDescription": "Explore lnkmx pages in the {{niche}} niche: templates, ideas, and structure."
+    },
+    "seoIntro": {
+      "title": "How to use the gallery",
+      "subtitle": "We gathered the best pages and templates so you can quickly pick a structure for your niche.",
+      "highlights": [
+        "Top pages by likes and views",
+        "Niches: beauty, education, consulting, and more",
+        "Ready-made blocks and CTAs"
+      ],
+      "locationTitle": "Local relevance",
+      "locationBody": "Find examples from your city or country and adapt them for your business."
     }
   },
   "errors": {
@@ -3001,6 +3014,31 @@
         "3": "Built-in CRM: manage leads and clients",
         "4": "Mini-site + lead forms + Telegram notifications",
         "5": "Taplink & Linktree alternative with CRM features"
+      }
+    },
+    "aeo": {
+      "badge": "AEO + GEO",
+      "title": "Short answers for humans and bots",
+      "subtitle": "Semantic blocks explain what you do and where you work in seconds.",
+      "what": {
+        "title": "What is lnkmx",
+        "body": "lnkmx is a page builder + CRM for micro-business. Build a mini-site, collect leads, and manage clients in one place."
+      },
+      "for": {
+        "title": "Who it is for",
+        "list": ["Experts and consultants", "Small businesses and studios", "Creators and course makers", "Event organizers"]
+      },
+      "where": {
+        "title": "Where it works",
+        "list": ["Kazakhstan, Russia, Kyrgyzstan", "Almaty, Astana, Shymkent", "Online and offline services"]
+      },
+      "answers": {
+        "title": "Quick answers",
+        "items": [
+          { "q": "How fast can I launch?", "a": "In 2 minutes: AI builds a page from your answers." },
+          { "q": "Is there a CRM for leads?", "a": "Yes, all leads are stored and managed in one place." },
+          { "q": "Is it good for local businesses?", "a": "Yes, add city, map, and booking to capture local demand." }
+        ]
       }
     },
     "faq": {
