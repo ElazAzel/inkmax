@@ -41,7 +41,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
-import { getTranslatedString, createMultilingualString, isMultilingualString, type SupportedLanguage, type MultilingualString } from '@/lib/i18n-helpers';
+import { getI18nText, createMultilingualString, isMultilingualString, type SupportedLanguage, type MultilingualString } from '@/lib/i18n-helpers';
 import { compressImage } from '@/lib/image-compression';
 import { supabase } from '@/platform/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -130,11 +130,11 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
   }, [block]);
 
   const name = typeof formData.name === 'object' 
-    ? getTranslatedString(formData.name, currentLang)
+    ? getI18nText(formData.name, currentLang)
     : formData.name || '';
   
   const bio = typeof formData.bio === 'object'
-    ? getTranslatedString(formData.bio, currentLang)
+    ? getI18nText(formData.bio, currentLang)
     : formData.bio || '';
 
   const initials = name

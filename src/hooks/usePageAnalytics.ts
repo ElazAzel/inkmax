@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/platform/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { startOfDay, startOfWeek, startOfMonth, subDays, subWeeks, subMonths, format, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval } from 'date-fns';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { useTranslation } from 'react-i18next';
 
 export interface AnalyticsEvent {
@@ -188,10 +188,10 @@ export function usePageAnalytics() {
         const currentLang = i18n.language as SupportedLanguage;
         blocks.forEach(block => {
           const content = block.content as any;
-          // Use getTranslatedString to handle MultilingualString objects
+          // Use getI18nText to handle MultilingualString objects
           const rawTitle = block.title || content?.title || content?.name || block.type;
           const blockTitle = typeof rawTitle === 'object' 
-            ? getTranslatedString(rawTitle, currentLang) 
+            ? getI18nText(rawTitle, currentLang) 
             : rawTitle;
           
           blockStatsMap.set(block.id, {

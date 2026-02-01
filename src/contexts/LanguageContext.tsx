@@ -2,15 +2,15 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
-import type { SupportedLanguage, MultilingualString } from '@/lib/i18n-helpers';
+import type { MultilingualString } from '@/lib/i18n-helpers';
 import type { TranslatableObject, TranslatedBlock } from "@/types/language-context";
-import { isMultilingualString } from '@/lib/i18n-helpers';
+import { isI18nText, isMultilingualString, getI18nText } from '@/lib/i18n-helpers';
 
 interface LanguageContextType {
-  currentLanguage: SupportedLanguage;
-  setCurrentLanguage: (lang: SupportedLanguage) => void;
+  currentLanguage: string;
+  setCurrentLanguage: (lang: string) => void;
   isTranslating: boolean;
-  translateBlocksToLanguage: (blocks: TranslatedBlock[], targetLang: SupportedLanguage) => Promise<TranslatedBlock[]>;
+  translateBlocksToLanguage: (blocks: TranslatedBlock[], targetLang: string) => Promise<TranslatedBlock[]>;
   autoTranslateEnabled: boolean;
   setAutoTranslateEnabled: (enabled: boolean) => void;
 }
@@ -18,7 +18,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 // Normalize language code (handles 'kz' -> 'kk' migration)
-const normalizeLanguageCode = (lng: string): SupportedLanguage => {
+const normalizeLanguageCode = (lng: string): string => {
   if (!lng) return 'ru';
   const code = lng.substring(0, 2).toLowerCase();
   if (code === 'kz') return 'kk';
@@ -31,7 +31,7 @@ export { LanguageContext };
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const { i18n, t } = useTranslation();
-  const [currentLanguage, setCurrentLanguageState] = useState<SupportedLanguage>(() => {
+  const [currentLanguage, setCurrentLanguageState] = useState<string>(() => {
     // Migrate 'kz' to 'kk' on init
     const stored = localStorage.getItem('i18nextLng');
     if (stored === 'kz') {
@@ -48,12 +48,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // Sync with i18n
   useEffect(() => {
     const lang = normalizeLanguageCode(i18n.language);
-    if (['ru', 'en', 'kk'].includes(lang)) {
-      setCurrentLanguageState(lang);
-    }
+    setCurrentLanguageState(lang);
   }, [i18n.language]);
 
-  const setCurrentLanguage = useCallback((lang: SupportedLanguage) => {
+  const setCurrentLanguage = useCallback((lang: string) => {
     // Normalize in case 'kz' is passed
     const normalizedLang = lang === "kz" ? 'kk' : lang;
     setCurrentLanguageState(normalizedLang);
@@ -69,8 +67,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // Translate a single text to target language
   const translateText = async (
     text: string,
-    sourceLanguage: SupportedLanguage,
-    targetLanguage: SupportedLanguage
+    sourceLanguage: string,
+    targetLanguage: string
   ): Promise<string | null> => {
     if (!text?.trim()) return null;
     
@@ -94,24 +92,24 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // Recursively translate all multilingual fields in an object
   const translateObject = async (
     obj: TranslatableObject,
-    targetLang: SupportedLanguage
+    targetLang: string
   ): Promise<TranslatableObject> => {
     if (!obj || typeof obj !== 'object') return obj;
 
-    // If it's a MultilingualString
-    if (isMultilingualString(obj)) {
+    // If it's a multilingual object (I18nText or legacy MultilingualString)
+    if (isI18nText(obj) || isMultilingualString(obj)) {
       // If target language already has content, return as is
-      if (obj[targetLang]?.trim()) {
+      if (obj[targetLang] && String(obj[targetLang]).trim()) {
         return obj;
       }
 
-      // Find source language with content
-      const sourceLangs: SupportedLanguage[] = ['ru', 'en', 'kk'];
-      const sourceLang = sourceLangs.find(lang => obj[lang]?.trim());
-      
+      // Find any source language with content
+      const keys = Object.keys(obj);
+      const sourceLang = keys.find(k => obj[k] && String(obj[k]).trim());
       if (!sourceLang) return obj;
 
-      const translated = await translateText(obj[sourceLang]!, sourceLang, targetLang);
+      const sourceText = String(obj[sourceLang]);
+      const translated = await translateText(sourceText, sourceLang, targetLang);
       if (translated) {
         return { ...obj, [targetLang]: translated };
       }

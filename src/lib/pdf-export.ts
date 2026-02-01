@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { format } from 'date-fns';
 import { ru, kk, enUS } from 'date-fns/locale';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { EventFormField } from '@/types/page';
 
 interface Registration {
@@ -374,7 +374,7 @@ export function calculateEventAnalytics(
   );
 
   choiceFields.forEach(field => {
-    const fieldLabel = getTranslatedString(field.label_i18n, language) || field.id;
+    const fieldLabel = getI18nText(field.label_i18n, language) || field.id;
     const optionCounts = new Map<string, number>();
     
     // Initialize all options with 0
@@ -396,7 +396,7 @@ export function calculateEventAnalytics(
     const options = field.options?.map(opt => {
       const count = optionCounts.get(opt.id) || 0;
       return {
-        label: getTranslatedString(opt.label_i18n, language) || opt.id,
+        label: getI18nText(opt.label_i18n, language) || opt.id,
         count,
         percentage: totalAnswers > 0 ? (count / totalAnswers) * 100 : 0,
       };

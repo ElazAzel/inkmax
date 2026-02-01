@@ -3,7 +3,7 @@
  * Returns error message if validation fails, null if valid
  */
 
-import { isMultilingualString, getTranslatedString } from '@/lib/i18n-helpers';
+import { isMultilingualString, getI18nText } from '@/lib/i18n-helpers';
 import type {
   BlockFormData,
   LinkBlockData,
@@ -34,9 +34,9 @@ function normalizeToString(value: unknown): string {
   if (typeof value === 'string') return value;
   if (isMultilingualString(value)) {
     // Get any non-empty translation
-    return getTranslatedString(value, 'en') || 
-           getTranslatedString(value, 'ru') || 
-           getTranslatedString(value, 'kk') || '';
+    return getI18nText(value, 'en') || 
+           getI18nText(value, 'ru') || 
+           getI18nText(value, 'kk') || '';
   }
   return String(value);
 }

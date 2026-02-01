@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Instagram, Twitter, Youtube, Facebook, Linkedin, Globe, Link2 } from 'lucide-react';
 import { getButtonClass, createBlockClickHandler, getBackgroundStyle } from '@/lib/block-utils';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { extractDomain, getGoogleFaviconUrl, getDirectFaviconUrl } from '@/lib/favicon-utils';
 import { getBlockStyles, hasCustomBlockStyle } from '@/lib/block-styling';
 import { cn } from '@/lib/utils';
@@ -53,7 +53,7 @@ export const LinkBlock = memo(function LinkBlockComponent({ block, onClick }: Li
     : Link2;
 
   const handleClick = createBlockClickHandler(block.url, onClick);
-  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+  const title = getI18nText(block.title, i18n.language as SupportedLanguage);
   const shouldShowFavicon = faviconSrc && !faviconError;
   
   const handleFaviconError = () => {

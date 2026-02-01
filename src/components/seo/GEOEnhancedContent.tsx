@@ -15,7 +15,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Block, FAQBlock, PricingBlock, EventBlock } from '@/types/page';
-import { getTranslatedString } from '@/lib/i18n-helpers';
+import { getI18nText } from '@/lib/i18n-helpers';
 import { extractProfileFromBlocks } from '@/lib/seo-utils';
 import { generateAnswerBlock } from '@/lib/seo/answer-block';
 import { generateKeyFacts } from '@/lib/seo/key-facts';
@@ -155,9 +155,9 @@ export function GEOEnhancedContent({ blocks, slug }: GEOEnhancedContentProps) {
               itemType="https://schema.org/Service"
               itemProp="makesOffer"
             >
-              <h4 itemProp="name">{getTranslatedString(item.name, language)}</h4>
+              <h4 itemProp="name">{getI18nText(item.name, language)}</h4>
               {item.description && (
-                <p itemProp="description">{getTranslatedString(item.description, language)}</p>
+                <p itemProp="description">{getI18nText(item.description, language)}</p>
               )}
               <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
                 <data itemProp="price" value={item.price}>{item.price}</data>
@@ -180,9 +180,9 @@ export function GEOEnhancedContent({ blocks, slug }: GEOEnhancedContentProps) {
               itemScope 
               itemType="https://schema.org/Event"
             >
-              <h4 itemProp="name">{getTranslatedString(event.title, language)}</h4>
+              <h4 itemProp="name">{getI18nText(event.title, language)}</h4>
               {event.description && (
-                <p itemProp="description">{getTranslatedString(event.description, language)}</p>
+                <p itemProp="description">{getI18nText(event.description, language)}</p>
               )}
               {event.startAt && (
                 <time itemProp="startDate" dateTime={event.startAt}>
@@ -218,13 +218,13 @@ export function GEOEnhancedContent({ blocks, slug }: GEOEnhancedContentProps) {
               itemType="https://schema.org/Question"
               itemProp="mainEntity"
             >
-              <h4 itemProp="name">{getTranslatedString(item.question, language)}</h4>
+              <h4 itemProp="name">{getI18nText(item.question, language)}</h4>
               <div 
                 itemScope 
                 itemType="https://schema.org/Answer"
                 itemProp="acceptedAnswer"
               >
-                <p itemProp="text">{getTranslatedString(item.answer, language)}</p>
+                <p itemProp="text">{getI18nText(item.answer, language)}</p>
               </div>
             </div>
           ))}
