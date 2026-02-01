@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { VideoBlock as VideoBlockType } from '@/types/page';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { cn } from '@/lib/utils';
 
 interface VideoBlockProps {
@@ -29,7 +29,7 @@ function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | 
 
 export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: VideoBlockProps) {
   const { i18n } = useTranslation();
-  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+  const title = getI18nText(block.title, i18n.language as SupportedLanguage);
   const embedUrl = getVideoEmbedUrl(block.url, block.platform);
   
   const aspectRatioClass = {

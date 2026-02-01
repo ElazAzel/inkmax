@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { parseRichText } from '@/lib/rich-text-parser';
 import { getBlockStyles, hasCustomBlockStyle } from '@/lib/block-styling';
 import type { TextBlock as TextBlockType } from '@/types/page';
@@ -12,7 +12,7 @@ interface TextBlockProps {
 
 export const TextBlock = memo(function TextBlockComponent({ block }: TextBlockProps) {
   const { i18n } = useTranslation();
-  const content = getTranslatedString(block.content, i18n.language as SupportedLanguage);
+  const content = getI18nText(block.content, i18n.language as SupportedLanguage);
   const parsedContent = parseRichText(content);
   
   const alignmentClass = block.alignment === 'center' ? 'text-center' 

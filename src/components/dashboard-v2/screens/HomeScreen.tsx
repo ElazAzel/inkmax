@@ -26,7 +26,7 @@ import { StatusBadge } from '../common/StatusBadge';
 import { ActionCard } from '../common/ActionCard';
 import { LoadingSkeleton } from '../common/LoadingSkeleton';
 import { cn } from '@/lib/utils';
-import { getTranslatedString } from '@/lib/i18n-helpers';
+import { getI18nText } from '@/lib/i18n-helpers';
 import type { PageData, ProfileBlock } from '@/types/page';
 
 interface HomeScreenProps {
@@ -65,7 +65,7 @@ export const HomeScreen = memo(function HomeScreen({
   const rawName = profileBlock?.name;
   const name = rawName
     ? typeof rawName === 'object'
-      ? getTranslatedString(rawName, i18n.language as 'ru' | 'en' | 'kk') || t('dashboard.home.myPage', 'Моя страница')
+      ? getI18nText(rawName, i18n.language as 'ru' | 'en' | 'kk') || t('dashboard.home.myPage', 'Моя страница')
       : rawName
     : t('dashboard.home.myPage', 'Моя страница');
   const avatarUrl = profileBlock?.avatar || '';

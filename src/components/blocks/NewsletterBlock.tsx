@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { supabase } from '@/platform/supabase/client';
 
 interface NewsletterBlockProps {
@@ -21,9 +21,9 @@ export const NewsletterBlock = memo(function NewsletterBlock({ block, pageOwnerI
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
-  const description = getTranslatedString(block.description, i18n.language as SupportedLanguage);
-  const buttonText = getTranslatedString(block.buttonText, i18n.language as SupportedLanguage) || t('actions.subscribe', 'Subscribe');
+  const title = getI18nText(block.title, i18n.language as SupportedLanguage);
+  const description = getI18nText(block.description, i18n.language as SupportedLanguage);
+  const buttonText = getI18nText(block.buttonText, i18n.language as SupportedLanguage) || t('actions.subscribe', 'Subscribe');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

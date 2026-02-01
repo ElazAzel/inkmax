@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { MessageCircle, Send } from 'lucide-react';
 import type { MessengerBlock as MessengerBlockType } from '@/types/page';
 import { supabase } from '@/platform/supabase/client';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { cn } from '@/lib/utils';
 
 interface MessengerBlockProps {
@@ -14,7 +14,7 @@ interface MessengerBlockProps {
 
 export const MessengerBlock = memo(function MessengerBlock({ block, pageOwnerId, onClick }: MessengerBlockProps) {
   const { i18n } = useTranslation();
-  const title = getTranslatedString(block.title, i18n.language as SupportedLanguage);
+  const title = getI18nText(block.title, i18n.language as SupportedLanguage);
 
   const getMessengerIcon = (platform: string) => {
     const icons: Record<string, string> = {

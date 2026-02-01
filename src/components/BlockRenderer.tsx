@@ -4,7 +4,7 @@ import type { PremiumTier } from '@/hooks/usePremiumStatus';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getAnimationClass, getAnimationStyle } from '@/lib/animation-utils';
 import { useAnalytics } from '@/hooks/useAnalyticsTracking';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { useTranslation } from 'react-i18next';
 import { PaidBlockWrapper } from '@/components/blocks/PaidBlockWrapper';
 
@@ -129,7 +129,7 @@ function getBlockTitle(block: Block, lang: SupportedLanguage): string {
   }
   
   if (!rawTitle) return block.type;
-  return typeof rawTitle === 'object' ? getTranslatedString(rawTitle, lang) : String(rawTitle);
+  return typeof rawTitle === 'object' ? getI18nText(rawTitle, lang) : String(rawTitle);
 }
 
 export function BlockRenderer({ block, isPreview, pageOwnerId, pageId, isOwnerPremium, ownerTier }: BlockRendererProps) {

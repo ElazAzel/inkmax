@@ -4,7 +4,7 @@
  */
 import ExcelJS from 'exceljs';
 import { format } from 'date-fns';
-import { getTranslatedString, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { EventFormField } from '@/types/page';
 
 interface Registration {
@@ -65,7 +65,7 @@ export async function exportToExcel({
     for (const field of formFields) {
       // Skip layout fields
       if (['section_header', 'description', 'media'].includes(field.type)) continue;
-      const label = getTranslatedString(field.label_i18n, language) || field.id;
+      const label = getI18nText(field.label_i18n, language) || field.id;
       fieldHeaders.push(label);
       fieldMap.set(field.id, field);
     }
@@ -195,7 +195,7 @@ export function exportToCSV({
   if (includeAnswers && formFields.length > 0) {
     for (const field of formFields) {
       if (['section_header', 'description', 'media'].includes(field.type)) continue;
-      fieldHeaders.push(getTranslatedString(field.label_i18n, language) || field.id);
+      fieldHeaders.push(getI18nText(field.label_i18n, language) || field.id);
       fieldMap.set(field.id, field);
     }
   }
@@ -275,7 +275,7 @@ function formatAnswer(answer: unknown, field: EventFormField, language: Supporte
   if (Array.isArray(answer)) {
     return answer.map(id => {
       const option = field.options?.find(o => o.id === id);
-      return option ? getTranslatedString(option.label_i18n, language) : id;
+      return option ? getI18nText(option.label_i18n, language) : id;
     }).join('; ');
   }
 
@@ -283,7 +283,7 @@ function formatAnswer(answer: unknown, field: EventFormField, language: Supporte
   if (typeof answer === 'string' && field.options?.length) {
     const option = field.options.find(o => o.id === answer);
     if (option) {
-      return getTranslatedString(option.label_i18n, language);
+      return getI18nText(option.label_i18n, language);
     }
   }
 

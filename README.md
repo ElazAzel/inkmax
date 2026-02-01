@@ -45,7 +45,7 @@ The project follows Clean Architecture principles with separation of concerns.
 ## Key Features
 
 ### Page Builder
-- 28 block types (profile, links, products, forms, booking, etc.)
+- **28 block types** (profile, links, products, forms, booking, events, etc.)
 - Drag-and-drop reordering
 - AI-powered content generation
 - Theme customization
@@ -55,18 +55,33 @@ The project follows Clean Architecture principles with separation of concerns.
 - Lead capture and management
 - Telegram notifications
 - Page analytics (views, clicks, conversions)
-- Heatmap tracking
+- Real-time dashboard with filters
+- Device & source breakdown
 
 ### Social Features
 - Gallery showcase
-- Template marketplace
+- Template marketplace (50+ templates)
 - Collaboration (shoutouts)
+- Community (Telegram channels)
 - Friends & activity feed
 
 ### Monetization
-- Free/Pro/Business tiers
+- Free/Pro/Business/Enterprise tiers
 - Linkkon token economy
 - Template sales
+- Paid content gates
+
+## Documentation
+
+📚 **Platform Documentation:**
+- [📖 PLATFORM-DOCUMENTATION.md](./docs/PLATFORM-DOCUMENTATION.md) - Complete platform overview
+- [🧩 BLOCKS-REFERENCE.md](./docs/BLOCKS-REFERENCE.md) - All 28 blocks with examples
+- [📋 BLOCKS-AUDIT.md](./docs/BLOCKS-AUDIT.md) - Full audit of all blocks
+
+**Other Resources:**
+- [🏗️ Architecture](./docs/architecture.md) - System design
+- [🔒 Security](./docs/SECURITY.md) - Security measures
+- [⚡ Performance](./docs/performance.md) - Performance metrics
 
 ## Database Schema
 
