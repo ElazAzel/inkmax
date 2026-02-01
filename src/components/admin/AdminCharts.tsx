@@ -63,11 +63,7 @@ export function AdminCharts() {
   const [socialStats, setSocialStats] = useState<SocialStatsData[]>([]);
   const [blockTypeStats, setBlockTypeStats] = useState<{ name: string; count: number; color: string }[]>([]);
 
-  useEffect(() => {
-    loadChartData();
-  }, [loadChartData]);
-
-  const loadChartData = useCallback(async () => {
+  const loadChartData = async () => {
     setLoading(true);
     await Promise.all([
       loadDailyGrowth(),
@@ -78,7 +74,7 @@ export function AdminCharts() {
       loadBlockTypeStats()
     ]);
     setLoading(false);
-  }, []);
+  };
 
   const loadDailyGrowth = async () => {
     try {
@@ -289,6 +285,10 @@ export function AdminCharts() {
       console.error('Error loading block type stats:', error);
     }
   };
+
+  useEffect(() => {
+    void loadChartData();
+  }, []);
 
   if (loading) {
     return (
