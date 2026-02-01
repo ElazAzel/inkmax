@@ -152,6 +152,11 @@ export function AdminAnalyticsDashboard() {
       const prevViews = prevEvents.filter(e => e.event_type === 'view').length;
       const prevClicks = prevEvents.filter(e => e.event_type === 'click').length;
       const prevShares = prevEvents.filter(e => e.event_type === 'share').length;
+      // Helper function for safe metadata access
+      const getString = (obj: Record<string, unknown> | null | undefined, key: string): string | undefined => {
+        const val = obj?.[key];
+        return typeof val === 'string' ? val : undefined;
+      };
 
       // Extract unique visitors and sessions from metadata
       const visitorIds = new Set<string>();
@@ -160,10 +165,11 @@ export function AdminAnalyticsDashboard() {
       events.forEach(e => {
         const meta = e.metadata as Record<string, unknown> | null;
         // Support both naming conventions: visitorId/sessionId and visitor_id/session_id
-        if (meta?.visitorId) visitorIds.add(meta.visitorId);
-        if (meta?.visitor_id) visitorIds.add(meta.visitor_id);
-        if (meta?.sessionId) sessionIds.add(meta.sessionId);
-        if (meta?.session_id) sessionIds.add(meta.session_id);
+        const visitorId = getString(meta, 'visitorId') || getString(meta, 'visitor_id');
+        const sessionId = getString(meta, 'sessionId') || getString(meta, 'session_id');
+        
+        if (visitorId) visitorIds.add(visitorId);
+        if (sessionId) sessionIds.add(sessionId);
       });
 
       // Calculate trends
@@ -188,8 +194,10 @@ export function AdminAnalyticsDashboard() {
         const daySessions = new Set<string>();
         dayEvents.forEach(e => {
           const meta = e.metadata as Record<string, unknown> | null;
-          if (meta?.visitor_id) dayVisitors.add(meta.visitor_id);
-          if (meta?.session_id) daySessions.add(meta.session_id);
+          const visitorId = getString(meta, 'visitor_id');
+          const sessionId = getString(meta, 'session_id');
+          if (visitorId) dayVisitors.add(visitorId);
+          if (sessionId) daySessions.add(sessionId);
         });
 
         return {
@@ -236,7 +244,7 @@ export function AdminAnalyticsDashboard() {
       const deviceCounts: Record<string, number> = { desktop: 0, mobile: 0, tablet: 0, unknown: 0 };
       events.forEach(e => {
         const meta = e.metadata as Record<string, unknown> | null;
-        const device = meta?.device || meta?.device_type || 'unknown';
+        const device = getString(meta, 'device') || getString(meta, 'device_type') || 'unknown';
         deviceCounts[device] = (deviceCounts[device] || 0) + 1;
       });
 
@@ -251,7 +259,7 @@ export function AdminAnalyticsDashboard() {
       const sourceCounts: Record<string, number> = {};
       events.forEach(e => {
         const meta = e.metadata as Record<string, unknown> | null;
-        const source = meta?.source || meta?.referrer_source || 'direct';
+        const source = getString(meta, 'source') || getString(meta, 'referrer_source') || 'direct';
         sourceCounts[source] = (sourceCounts[source] || 0) + 1;
       });
 
@@ -303,7 +311,7 @@ export function AdminAnalyticsDashboard() {
         if (!e.block_id || e.event_type !== 'click') return;
         const meta = e.metadata as Record<string, unknown> | null;
         if (!blockClickCounts[e.block_id]) {
-          blockClickCounts[e.block_id] = { type: meta?.block_type || 'Unknown', clicks: 0 };
+          blockClickCounts[e.block_id] = { type: getString(meta, 'block_type') || 'Unknown', clicks: 0 };
         }
         blockClickCounts[e.block_id].clicks++;
       });
