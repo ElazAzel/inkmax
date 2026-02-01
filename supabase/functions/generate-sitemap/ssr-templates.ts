@@ -222,7 +222,6 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    '@type': 'FAQPage',
     '@id': `${baseUrl}/#faq`,
     mainEntity: content.faq.map((item) => ({
       '@type': 'Question',
@@ -552,14 +551,6 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
       <p>${escapeHtml(content.locationBody)}</p>
     </section>
 
-    <section>
-      <h2>${escapeHtml(content.topProfilesTitle)}</h2>
-      <div class="grid">
-        ${items.slice(0, 10).map((item) => `
-          <article class="card">
-            <a href="${baseUrl}/${item.slug}">${escapeHtml(item.title || item.slug)}</a>
-            <p>${escapeHtml(item.description || '')}</p>
-            <p><small>${escapeHtml(item.niche || '')}</small></p>
     <section aria-label="${content.topProfilesTitle}">
       <h2>${escapeHtml(content.topProfilesTitle)}</h2>
       <div class="grid">
@@ -582,5 +573,4 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
 </html>`;
 }
 
-export type { GalleryItem, LanguageKey };
 export { LANDING_CONTENT, GALLERY_CONTENT };

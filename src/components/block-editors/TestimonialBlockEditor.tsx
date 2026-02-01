@@ -48,7 +48,7 @@ function TestimonialBlockEditorComponent({ formData, onChange }: BaseBlockEditor
       />
 
       <ArrayFieldList label={t('fields.testimonials', 'Testimonials')} items={testimonials} onAdd={addTestimonial}>
-        {testimonials.map((testimonial: unknown, index: number) => (
+        {testimonials.map((testimonial: any, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}

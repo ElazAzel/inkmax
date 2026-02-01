@@ -55,7 +55,7 @@ function FormBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) 
       />
 
       <ArrayFieldList label={t('fields.formFields', 'Form Fields')} items={fields} onAdd={addField}>
-        {fields.map((field: unknown, index: number) => (
+        {fields.map((field: any, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}

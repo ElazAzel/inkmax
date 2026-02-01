@@ -43,7 +43,7 @@ function SocialsBlockEditorComponent({ formData, onChange }: BaseBlockEditorProp
       />
 
       <ArrayFieldList label={t('fields.socialPlatforms', 'Social Platforms')} items={platforms} onAdd={addPlatform}>
-        {platforms.map((platform: unknown, index: number) => (
+        {platforms.map((platform: any, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}

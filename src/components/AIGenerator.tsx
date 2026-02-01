@@ -16,7 +16,7 @@ interface AIGeneratorProps {
   type: 'magic-title' | 'sales-copy' | 'seo' | 'ai-builder';
   isOpen: boolean;
   onClose: () => void;
-  onResult: (result: string | Record<string, unknown>) => void;
+  onResult: (result: any) => void;
   currentData?: Record<string, unknown>;
 }
 
