@@ -1,10 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/platform/supabase/client';
+import { AnalyticsFilterPanel, AnalyticsFilters } from './AnalyticsFilterPanel';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ComposedChart
@@ -85,6 +86,11 @@ export function AdminAnalyticsDashboard() {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'7d' | '14d' | '30d' | '90d'>('30d');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [filters, setFilters] = useState<AnalyticsFilters>({
+    devices: [],
+    sources: [],
+    pages: [],
+  });
 
   const getDateLocale = () => {
     switch (i18n.language) {
@@ -152,11 +158,6 @@ export function AdminAnalyticsDashboard() {
       const prevViews = prevEvents.filter(e => e.event_type === 'view').length;
       const prevClicks = prevEvents.filter(e => e.event_type === 'click').length;
       const prevShares = prevEvents.filter(e => e.event_type === 'share').length;
-      // Helper function for safe metadata access
-      const getString = (obj: Record<string, unknown> | null | undefined, key: string): string | undefined => {
-        const val = obj?.[key];
-        return typeof val === 'string' ? val : undefined;
-      };
 
       // Extract unique visitors and sessions from metadata
       const visitorIds = new Set<string>();
@@ -383,6 +384,62 @@ export function AdminAnalyticsDashboard() {
     loadAnalytics();
   }, [loadAnalytics]);
 
+  // Helper function for safe metadata access
+  const getString = (obj: Record<string, unknown> | null | undefined, key: string): string | undefined => {
+    const val = obj?.[key];
+    return typeof val === 'string' ? val : undefined;
+  };
+
+  // Memoize filter functions before early returns
+  const applyFilters = useCallback(
+    (data: AnalyticsData, activeFilters: AnalyticsFilters): AnalyticsData => {
+      // If no filters selected, return all data
+      if (
+        activeFilters.devices.length === 0 &&
+        activeFilters.sources.length === 0 &&
+        activeFilters.pages.length === 0
+      ) {
+        return data;
+      }
+
+      return {
+        ...data,
+        eventsByDevice: data.eventsByDevice.filter(
+          d => activeFilters.devices.length === 0 || activeFilters.devices.includes(d.name.toLowerCase())
+        ),
+        eventsBySource: data.eventsBySource.filter(
+          s => activeFilters.sources.length === 0 || activeFilters.sources.includes(s.name.toLowerCase())
+        ),
+        topPages: data.topPages.filter(
+          p => activeFilters.pages.length === 0 || activeFilters.pages.includes(p.slug)
+        ),
+        topBlocks: data.topBlocks.slice(0, 10),
+      };
+    },
+    []
+  );
+
+  // Get available filter options - memoized before returns
+  const filteredAnalytics = useMemo(
+    () => analytics ? applyFilters(analytics, filters) : null,
+    [analytics, filters, applyFilters]
+  );
+
+  const availableDevices = useMemo(
+    () => analytics?.eventsByDevice.map(d => d.name.toLowerCase()) || [],
+    [analytics]
+  );
+
+  const availableSources = useMemo(
+    () => analytics?.eventsBySource.map(s => s.name.toLowerCase()) || [],
+    [analytics]
+  );
+
+  const availablePages = useMemo(
+    () => analytics?.topPages.map(p => p.slug) || [],
+    [analytics]
+  );
+
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
@@ -416,11 +473,9 @@ export function AdminAnalyticsDashboard() {
     );
   }
 
-  if (!analytics) {
+  if (!analytics || !filteredAnalytics) {
     return <div className="text-center py-12 text-muted-foreground">{t('admin.noData')}</div>;
   }
-
-  // Translated labels for charts
   const translatedEventsByType = [
     { name: t('admin.views'), count: analytics.totalViews, color: COLORS.views },
     { name: t('admin.clicks'), count: analytics.totalClicks, color: COLORS.clicks },
@@ -429,21 +484,30 @@ export function AdminAnalyticsDashboard() {
 
 return (
     <div className="space-y-4 md:space-y-6">
-      {/* Period Selector - Mobile optimized */}
+      {/* Period Selector & Filters - Mobile optimized */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-xl md:text-2xl font-bold">{t('admin.detailedAnalytics')}</h2>
-        <Select value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
-          <SelectTrigger className="w-full sm:w-[140px] bg-card">
-            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="bg-card border-border">
-            <SelectItem value="7d">{t('admin.period7d')}</SelectItem>
-            <SelectItem value="14d">{t('admin.period14d')}</SelectItem>
-            <SelectItem value="30d">{t('admin.period30d')}</SelectItem>
-            <SelectItem value="90d">{t('admin.period90d')}</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-wrap items-center gap-2">
+          <AnalyticsFilterPanel
+            filters={filters}
+            onFiltersChange={setFilters}
+            availableDevices={availableDevices}
+            availableSources={availableSources}
+            availablePages={availablePages}
+          />
+          <Select value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
+            <SelectTrigger className="w-full sm:w-[140px] bg-card">
+              <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border">
+              <SelectItem value="7d">{t('admin.period7d')}</SelectItem>
+              <SelectItem value="14d">{t('admin.period14d')}</SelectItem>
+              <SelectItem value="30d">{t('admin.period30d')}</SelectItem>
+              <SelectItem value="90d">{t('admin.period90d')}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Key Metrics - Responsive grid */}
@@ -761,7 +825,7 @@ return (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={analytics.eventsByDevice}
+                        data={filteredAnalytics.eventsByDevice}
                         cx="50%"
                         cy="50%"
                         innerRadius={35}
@@ -769,7 +833,7 @@ return (
                         paddingAngle={2}
                         dataKey="count"
                       >
-                        {analytics.eventsByDevice.map((entry, index) => (
+                        {filteredAnalytics.eventsByDevice.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -778,7 +842,7 @@ return (
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-1.5 mt-2">
-                  {analytics.eventsByDevice.map((item) => (
+                  {filteredAnalytics.eventsByDevice.map((item) => (
                     <div key={item.name} className="flex items-center justify-between text-xs md:text-sm">
                       <div className="flex items-center gap-1.5">
                         {item.name === 'Desktop' && <Monitor className="h-3.5 w-3.5" />}
@@ -806,7 +870,7 @@ return (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={analytics.eventsBySource}
+                        data={filteredAnalytics.eventsBySource}
                         cx="50%"
                         cy="50%"
                         innerRadius={35}
@@ -814,7 +878,7 @@ return (
                         paddingAngle={2}
                         dataKey="count"
                       >
-                        {analytics.eventsBySource.map((entry, index) => (
+                        {filteredAnalytics.eventsBySource.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -823,7 +887,7 @@ return (
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-1.5 mt-2">
-                  {analytics.eventsBySource.map((item) => (
+                  {filteredAnalytics.eventsBySource.map((item) => (
                     <div key={item.name} className="flex items-center justify-between text-xs md:text-sm">
                       <div className="flex items-center gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
@@ -911,10 +975,10 @@ return (
               </CardHeader>
               <CardContent className="p-3 md:p-6 pt-0">
                 <div className="space-y-2 md:space-y-3 max-h-[350px] overflow-y-auto">
-                  {analytics.topPages.length === 0 ? (
+                  {filteredAnalytics.topPages.length === 0 ? (
                     <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">{t('admin.noData')}</p>
                   ) : (
-                    analytics.topPages.map((page, index) => (
+                    filteredAnalytics.topPages.map((page, index) => (
                       <div key={page.page_id} className="flex items-center justify-between py-1.5 md:py-2 border-b border-border/50 last:border-0">
                         <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
                           <span className="text-muted-foreground font-mono text-xs md:text-sm w-5 md:w-6 shrink-0">#{index + 1}</span>
@@ -944,10 +1008,10 @@ return (
               </CardHeader>
               <CardContent className="p-3 md:p-6 pt-0">
                 <div className="space-y-2 md:space-y-3 max-h-[350px] overflow-y-auto">
-                  {analytics.topBlocks.length === 0 ? (
+                  {filteredAnalytics.topBlocks.length === 0 ? (
                     <p className="text-xs md:text-sm text-muted-foreground py-4 text-center">{t('admin.noData')}</p>
                   ) : (
-                    analytics.topBlocks.map((block, index) => (
+                    filteredAnalytics.topBlocks.map((block, index) => (
                       <div key={block.block_id} className="flex items-center justify-between py-1.5 md:py-2 border-b border-border/50 last:border-0">
                         <div className="flex items-center gap-2 md:gap-3">
                           <span className="text-muted-foreground font-mono text-xs md:text-sm w-5 md:w-6">#{index + 1}</span>
