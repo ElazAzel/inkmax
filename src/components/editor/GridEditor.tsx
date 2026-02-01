@@ -28,7 +28,7 @@ import { InlineProfileEditor } from '../blocks/InlineProfileEditor';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { createRowKey } from '@/lib/block-utils';
-import type { Block, ProfileBlock, GridConfig, BlockSizePreset } from '@/types/page';
+import type { Block, ProfileBlock, GridConfig, BlockSizePreset, PageI18nConfig } from '@/types/page';
 import { BLOCK_SIZE_DIMENSIONS } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
@@ -39,6 +39,7 @@ interface GridEditorProps {
   currentTier?: FreeTier;
   premiumTier?: PremiumTier;
   gridConfig?: GridConfig;
+  pageI18n?: PageI18nConfig;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
@@ -349,6 +350,7 @@ export const GridEditor = memo(function GridEditor({
   currentTier = 'free',
   premiumTier,
   gridConfig,
+  pageI18n,
   onInsertBlock,
   onEditBlock,
   onDeleteBlock,

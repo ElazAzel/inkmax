@@ -43,6 +43,10 @@ export const LANGUAGE_DEFINITIONS: Record<LocaleCode, { name: string; flag: stri
  * NEW: Get i18n text with smart fallback chain
  * Unified function for both I18nText and legacy MultilingualString
  *
+ * Overloaded signatures:
+ * 1. For new flexible i18n system: getI18nText(value, lang, fallbacks?)
+ * 2. For legacy MultilingualString: getI18nText(value, language, fallbackLanguage?)
+ *
  * Fallback order:
  * 1. Requested language
  * 2. Default language (usually page.default_language)
@@ -50,18 +54,33 @@ export const LANGUAGE_DEFINITIONS: Record<LocaleCode, { name: string; flag: stri
  * 4. First non-empty translation
  * 5. Empty string
  *
- * @param value - string | I18nText | MultilingualString | undefined
- * @param lang - target language code
- * @param fallbacks - fallback languages in order (default: ['ru'])
  * @returns translated string or empty string (never undefined)
  */
+
+// Overload signatures
 export function getI18nText(
   value: string | I18nText | MultilingualString | undefined | null,
   lang: string,
-  fallbacks: string[] = ['ru']
+  fallbacks?: string[]
+): string;
+export function getI18nText(
+  value: string | MultilingualString | undefined,
+  language: SupportedLanguage,
+  fallbackLanguage?: SupportedLanguage
+): string;
+
+// Implementation
+export function getI18nText(
+  value: string | I18nText | MultilingualString | undefined | null,
+  lang: string,
+  fallbacksOrFallbackLanguage: string[] | string = ['ru']
 ): string {
   if (!value) return '';
   if (typeof value === 'string') return value;
+
+  // Determine if we're using new or legacy API
+  const isLegacy = typeof fallbacksOrFallbackLanguage === 'string';
+  const fallbacks = isLegacy ? [fallbacksOrFallbackLanguage as string] : (fallbacksOrFallbackLanguage as string[]);
 
   // Build the chain: requested lang -> fallbacks -> first non-empty
   const chain = [lang, ...fallbacks];
@@ -71,40 +90,16 @@ export function getI18nText(
     if (translation && translation.trim()) return translation;
   }
 
+  // For legacy API, add additional fallback chain
+  if (isLegacy) {
+    if (value.ru && value.ru.trim() !== '') return value.ru;
+    if (value.en && value.en.trim() !== '') return value.en;
+    if (value.kk && value.kk.trim() !== '') return value.kk;
+  }
+
   // Last resort: first non-empty translation
   const any = Object.values(value).find(v => v && v.trim());
   return any ?? '';
-}
-
-/**
- * LEGACY: Get translated string for current language with fallback
- * @deprecated Use getI18nText() instead for new code
- */
-export function getI18nText(
-  value: string | MultilingualString | undefined,
-  language: SupportedLanguage,
-  fallbackLanguage: SupportedLanguage = 'ru'
-): string {
-  if (!value) return '';
-  
-  // If it's a plain string, return it
-  if (typeof value === 'string') return value;
-  
-  // If it's a multilingual object, get the translation with proper fallback chain
-  const translation = value[language];
-  if (translation && translation.trim() !== '') return translation;
-  
-  // Fallback chain: requested language -> fallback language -> ru -> en -> kk -> first non-empty value
-  const fallbackValue = value[fallbackLanguage];
-  if (fallbackValue && fallbackValue.trim() !== '') return fallbackValue;
-  
-  if (value.ru && value.ru.trim() !== '') return value.ru;
-  if (value.en && value.en.trim() !== '') return value.en;
-  if (value.kk && value.kk.trim() !== '') return value.kk;
-  
-  // Return first non-empty value
-  const nonEmpty = Object.values(value).find(v => v && v.trim() !== '');
-  return nonEmpty || '';
 }
 
 /**
@@ -175,18 +170,6 @@ export function createEmptyI18nText(locales: string[] = ['ru', 'en', 'kk']): I18
     result[locale] = '';
   }
   return result;
-}
-
-/**
- * LEGACY: Create empty multilingual string
- * @deprecated Use createEmptyI18nText() or ensureI18nText()
- */
-export function createMultilingualString(initialValue = ''): MultilingualString {
-  return {
-    ru: initialValue,
-    en: '',
-    kk: '',
-  };
 }
 
 /**

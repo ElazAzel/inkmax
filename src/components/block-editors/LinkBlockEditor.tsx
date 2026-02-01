@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, LANGUAGE_DEFINITIONS  } from '@/lib/i18n-helpers';
 import { AIButton } from '@/components/form-fields/AIButton';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { generateMagicTitle } from '@/lib/ai-helpers';
@@ -14,8 +14,15 @@ import { validateLinkBlock } from '@/lib/block-validators';
 import { getBestFaviconUrl, extractDomain, getGoogleFaviconUrl } from '@/lib/favicon-utils';
 import { RefreshCw, Link2 } from 'lucide-react';
 
-function LinkBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+function LinkBlockEditorComponent({ formData, onChange, pageI18n }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
   const [aiLoading, setAiLoading] = useState(false);
   const [faviconLoading, setFaviconLoading] = useState(false);
   const [faviconPreview, setFaviconPreview] = useState<string | null>(null);

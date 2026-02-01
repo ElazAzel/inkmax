@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { GridEditor } from './GridEditor';
-import type { Block, GridConfig } from '@/types/page';
+import type { Block, GridConfig, PageI18nConfig } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
 
@@ -10,6 +10,7 @@ interface PreviewEditorProps {
   currentTier?: FreeTier;
   premiumTier?: PremiumTier;
   gridConfig?: GridConfig;
+  pageI18n?: PageI18nConfig;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
@@ -25,6 +26,7 @@ export const PreviewEditor = memo(function PreviewEditor({
   currentTier = 'free',
   premiumTier,
   gridConfig,
+  pageI18n,
   onInsertBlock,
   onEditBlock,
   onDeleteBlock,
@@ -39,6 +41,7 @@ export const PreviewEditor = memo(function PreviewEditor({
       currentTier={currentTier}
       premiumTier={premiumTier}
       gridConfig={gridConfig}
+      pageI18n={pageI18n}
       onInsertBlock={onInsertBlock}
       onEditBlock={onEditBlock}
       onDeleteBlock={onDeleteBlock}

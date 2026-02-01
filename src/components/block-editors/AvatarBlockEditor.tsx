@@ -2,7 +2,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, LANGUAGE_DEFINITIONS  } from '@/lib/i18n-helpers';
 import type { AvatarBlock, AvatarFrameStyle } from '@/types/page';
 import { withBlockEditor } from './BlockEditorWrapper';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,13 @@ interface AvatarBlockEditorProps {
 
 function AvatarBlockEditorComponent({ formData, onChange }: AvatarBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
   const [frameOpen, setFrameOpen] = useState(false);
   
   return (

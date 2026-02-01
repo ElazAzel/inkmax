@@ -182,6 +182,7 @@ export default function Dashboard() {
             saveStatus={dashboard.saveStatus}
             editorHistory={editorHistory}
             pageNiche={dashboard.pageData?.niche}
+            pageI18n={dashboard.pageData?.i18n}
             onInsertBlock={dashboard.blockEditor.handleInsertBlock}
             onEditBlock={dashboard.blockEditor.handleEditBlock}
             onDeleteBlock={dashboard.blockEditor.handleDeleteBlock}
@@ -270,6 +271,7 @@ export default function Dashboard() {
         <BlockEditor
           block={dashboard.blockEditor.editingBlock}
           isOpen={dashboard.blockEditor.editorOpen}
+          pageI18n={dashboard.pageData?.i18n}
           onClose={dashboard.blockEditor.closeEditor}
           onSave={dashboard.blockEditor.handleSaveBlock}
         />

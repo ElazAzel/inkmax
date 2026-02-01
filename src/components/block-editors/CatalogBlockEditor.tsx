@@ -11,19 +11,27 @@ import { Plus, Trash2, GripVertical, ImageIcon, FolderOpen } from 'lucide-react'
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
 import { MediaUpload } from '@/components/form-fields/MediaUpload';
-import type { CatalogBlock, CatalogItem, CatalogCategory, Currency } from '@/types/page';
-import { createMultilingualString, isMultilingualString, getI18nText } from '@/lib/i18n-helpers';
+import type { CatalogBlock, CatalogItem, CatalogCategory, Currency, PageI18nConfig } from '@/types/page';
+import { createMultilingualString, isMultilingualString, getI18nText, LANGUAGE_DEFINITIONS } from '@/lib/i18n-helpers';
 import { cn } from '@/lib/utils';
 
 interface CatalogBlockEditorProps {
   formData: Partial<CatalogBlock>;
   onChange: (data: Partial<CatalogBlock>) => void;
+  pageI18n?: PageI18nConfig;
 }
 
-export function CatalogBlockEditor({ formData, onChange }: CatalogBlockEditorProps) {
+export function CatalogBlockEditor({ formData, onChange, pageI18n }: CatalogBlockEditorProps) {
   const { t, i18n } = useTranslation();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'items' | 'categories'>('items');
+
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
 
   const items = formData.items || [];
   const categories = formData.categories || [];
@@ -109,6 +117,7 @@ export function CatalogBlockEditor({ formData, onChange }: CatalogBlockEditorPro
         value={typeof formData.title === 'string' ? createMultilingualString(formData.title) : (formData.title || createMultilingualString(''))}
         onChange={(value) => onChange({ title: value })}
         placeholder={t('blocks.catalog.titlePlaceholder', 'Наше меню')}
+        availableLanguages={availableLanguages}
       />
 
       {/* Layout */}
@@ -183,6 +192,7 @@ export function CatalogBlockEditor({ formData, onChange }: CatalogBlockEditorPro
                         value={typeof category.name === 'string' ? createMultilingualString(category.name) : category.name}
                         onChange={(value) => updateCategory(category.id, { name: value })}
                         placeholder={t('blocks.catalog.categoryNamePlaceholder', 'Название категории')}
+                        availableLanguages={availableLanguages}
                       />
                     </div>
                     <Button
@@ -330,6 +340,7 @@ export function CatalogBlockEditor({ formData, onChange }: CatalogBlockEditorPro
                           value={typeof item.name === 'string' ? createMultilingualString(item.name) : item.name}
                           onChange={(value) => updateItem(item.id, { name: value })}
                           placeholder={t('blocks.catalog.itemNamePlaceholder', 'Название позиции')}
+                          availableLanguages={availableLanguages}
                         />
 
                         {/* Description */}
@@ -339,6 +350,7 @@ export function CatalogBlockEditor({ formData, onChange }: CatalogBlockEditorPro
                           onChange={(value) => updateItem(item.id, { description: value })}
                           placeholder={t('blocks.catalog.itemDescriptionPlaceholder', 'Описание позиции')}
                           type="textarea"
+                          availableLanguages={availableLanguages}
                         />
 
                         {/* Price */}

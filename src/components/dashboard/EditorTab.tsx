@@ -26,7 +26,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguage } from '@/contexts/LanguageContext';
-import type { Block, GridConfig } from '@/types/page';
+import type { Block, GridConfig, PageI18nConfig } from '@/types/page';
 import type { FreeTier } from '@/hooks/useFreemiumLimits';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
 import type { EditorHistoryType } from '@/hooks/useEditorHistory';
@@ -41,6 +41,7 @@ interface EditorTabProps {
   saveStatus: SaveStatus;
   editorHistory: EditorHistoryType;
   pageNiche?: string;
+  pageI18n?: PageI18nConfig;
   onInsertBlock: (blockType: string, position: number) => void;
   onEditBlock: (block: Block) => void;
   onDeleteBlock: (id: string) => void;
@@ -63,6 +64,7 @@ export const EditorTab = memo(function EditorTab({
   saveStatus,
   editorHistory,
   pageNiche,
+  pageI18n,
   onInsertBlock,
   onEditBlock,
   onDeleteBlock,
@@ -264,6 +266,7 @@ export const EditorTab = memo(function EditorTab({
           currentTier={currentTier}
           premiumTier={premiumTier}
           gridConfig={gridConfig}
+          pageI18n={pageI18n}
           onInsertBlock={onInsertBlock}
           onEditBlock={onEditBlock}
           onDeleteBlock={handleDeleteBlock}

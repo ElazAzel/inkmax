@@ -34,8 +34,15 @@ const fromLocalInputValue = (value: string) => {
   return date.toISOString();
 };
 
-function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+function EventBlockEditorComponent({ formData, onChange, pageI18n }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
   const { isPremium } = usePremiumStatus();
   const [showGoogleImport, setShowGoogleImport] = useState(false);
   const [activeTab, setActiveTab] = useState<'info' | 'form' | 'settings'>('info');
