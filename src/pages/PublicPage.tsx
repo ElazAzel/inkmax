@@ -84,9 +84,9 @@ export default function PublicPage() {
     }
 
     // Translate blocks to current language
-    translateBlocksToLanguage(pageData.blocks, currentLanguage).then((blocks) => {
-      if (blocks !== pageData.blocks) {
-        setTranslatedBlocks(blocks);
+    translateBlocksToLanguage(pageData.blocks as any[], currentLanguage).then((translated) => {
+      if (translated !== pageData.blocks as any) {
+        setTranslatedBlocks(translated as any);
       }
     });
   }, [pageData?.blocks, currentLanguage, translateBlocksToLanguage, autoTranslateEnabled]);

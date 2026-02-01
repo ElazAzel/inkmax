@@ -186,9 +186,6 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
   const niche = page.niche || 'business';
   const location = extractLocationFromBlocks(blocks, null);
   const entityId = `${canonical}#entity`;
-  const hreflangLinks = LANGUAGES.map((langKey) => `<link rel="alternate" hreflang="${langKey}" href="${canonical}?lang=${langKey}">`)
-    .concat(`<link rel="alternate" hreflang="x-default" href="${canonical}">`)
-    .join('\n  ');
   const hreflangLinks = buildHreflangLinks(BASE_URL, `/${slug}`, ['ru', 'en', 'kk']);
 
   // Extract links, FAQ, services for structured content
@@ -332,39 +329,6 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
     linksHtml += '</ul></nav>\n';
   }
 
-  const schemaType = niche === 'business' || niche === 'consulting' ? 'Organization' : 'Person';
-  const pageSchemaType = schemaType === 'Organization' ? 'ProfilePage' : 'ProfilePage';
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": pageSchemaType,
-        "@id": canonical,
-        "url": canonical,
-        "name": `${page.title || '@' + slug} - ${primaryOfferOrBio} | LinkMAX`,
-        "description": metaDesc,
-        "inLanguage": lang,
-        "isPartOf": { "@type": "WebSite", "name": "LinkMAX", "url": BASE_URL },
-        "mainEntity": { "@id": entityId }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
-          { "@type": "ListItem", "position": 2, "name": page.title || slug, "item": canonical }
-        ]
-      },
-      {
-        "@type": schemaType,
-        "@id": entityId,
-        "name": page.title || '@' + slug,
-        "url": canonical,
-        "image": avatar,
-        "description": truncate(cleanDesc, 300),
-        ...(location ? { "areaServed": location } : {})
-      }
-    ]
-  };
   // FAQ HTML
   let faqHtml = '';
   if (faqItems.length > 0) {
@@ -710,17 +674,10 @@ serve(async (req) => {
   try {
     const url = new URL(req.url);
     const lang = resolveLanguage(url.searchParams.get('lang'), req.headers.get('accept-language')) as LanguageKey;
-    const ssrPrefix = '/functions/v1/generate-sitemap/ssr/';
-    const pathname = url.pathname;
-    const ssrTarget = pathname.startsWith(ssrPrefix)
-      ? decodeURIComponent(pathname.slice(ssrPrefix.length)).replace(/^\/+|\/+$/g, '')
-      : null;
-    const niche = url.searchParams.get('niche');
     const pathname = url.pathname;
     const niche = url.searchParams.get('niche');
     
     // Multiple SSR path patterns for robustness
-    // Supports: /ssr/landing, /generate-sitemap/ssr/landing, /functions/v1/generate-sitemap/ssr/landing
     const ssrPatterns = [
       '/functions/v1/generate-sitemap/ssr/',
       '/v1/generate-sitemap/ssr/',

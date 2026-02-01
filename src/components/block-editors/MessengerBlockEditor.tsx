@@ -43,7 +43,7 @@ function MessengerBlockEditorComponent({ formData, onChange }: BaseBlockEditorPr
       />
 
       <ArrayFieldList label={t('fields.messengers', 'Messengers')} items={messengers} onAdd={addMessenger}>
-        {messengers.map((messenger: unknown, index: number) => (
+        {messengers.map((messenger: any, index: number) => (
           <ArrayFieldItem
             key={index}
             index={index}

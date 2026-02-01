@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
-import type { MultilingualString } from '@/lib/i18n-helpers';
-import type { TranslatableObject, TranslatedBlock } from "@/types/language-context";
+import type { MultilingualString, SupportedLanguage } from '@/lib/i18n-helpers';
+import type { TranslatedBlock } from "@/types/language-context";
 import { isI18nText, isMultilingualString, getI18nText } from '@/lib/i18n-helpers';
 
 interface LanguageContextType {
@@ -91,9 +91,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Recursively translate all multilingual fields in an object
   const translateObject = async (
-    obj: TranslatableObject,
+    obj: any,
     targetLang: string
-  ): Promise<TranslatableObject> => {
+  ): Promise<any> => {
     if (!obj || typeof obj !== 'object') return obj;
 
     // If it's a multilingual object (I18nText or legacy MultilingualString)
@@ -127,16 +127,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     // If it's a regular object, recursively translate
     const result: Record<string, unknown> = {};
     for (const key of Object.keys(obj)) {
-      result[key] = await translateObject(obj[key], targetLang);
+      result[key] = await translateObject(obj[key] as any, targetLang);
     }
     return result;
   };
 
   // Translate all blocks to target language
   const translateBlocksToLanguage = useCallback(async (
-    blocks: TranslatedBlock[],
-    targetLang: SupportedLanguage
-  ): Promise<TranslatedBlock[]> => {
+    blocks: any[],
+    targetLang: string
+  ): Promise<any[]> => {
     if (!blocks?.length || !autoTranslateEnabled) return blocks;
 
     setIsTranslating(true);
@@ -148,13 +148,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
       // Check if any field needs translation
       for (const block of blocks) {
-        const content = block.content;
+        const content = block.content as any;
         if (!content) continue;
 
         for (const field of fieldsToCheck) {
           if (content[field] && isMultilingualString(content[field])) {
             const ml = content[field] as MultilingualString;
-            if (!ml[targetLang]?.trim() && (ml.ru?.trim() || ml.en?.trim() || ml.kk?.trim())) {
+            if (!ml[targetLang as keyof MultilingualString]?.trim() && (ml.ru?.trim() || ml.en?.trim() || ml.kk?.trim())) {
               needsTranslation = true;
               break;
             }
@@ -163,11 +163,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         
         // Check nested items (for FAQ, pricing, etc.)
         if (content.items && Array.isArray(content.items)) {
-          for (const item of content.items) {
+          for (const item of content.items as any[]) {
             for (const field of fieldsToCheck) {
               if (item[field] && isMultilingualString(item[field])) {
                 const ml = item[field] as MultilingualString;
-                if (!ml[targetLang]?.trim() && (ml.ru?.trim() || ml.en?.trim() || ml.kk?.trim())) {
+                if (!ml[targetLang as keyof MultilingualString]?.trim() && (ml.ru?.trim() || ml.en?.trim() || ml.kk?.trim())) {
                   needsTranslation = true;
                   break;
                 }
