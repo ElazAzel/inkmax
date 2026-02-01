@@ -316,6 +316,7 @@ serve(async (req) => {
 Текст на русском, профессиональный. Return ONLY valid JSON, no markdown.`;
         userPrompt = `Создай полную страницу для ниши: ${input.niche}. Имя: ${input.name}. Детали: ${input.details || 'нет'}`;
         break;
+      }
 
       case 'personalize-template':
         systemPrompt = `Ты AI для персонализации шаблонов страниц. Получаешь шаблон и информацию о бизнесе.
@@ -348,7 +349,6 @@ Return ONLY valid JSON, no markdown.`;
 
 Персонализируй этот шаблон. Сохрани те же типы и количество блоков, обнови только контент.`;
         break;
-      }
 
       case 'search':
         systemPrompt = `Ты - умный поисковой помощник. Отвечай на вопросы пользователя кратко, информативно и полезно. 

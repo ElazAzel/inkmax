@@ -58,65 +58,28 @@ export const LANGUAGE_DEFINITIONS: Record<LocaleCode, { name: string; flag: stri
 export function getI18nText(
   value: string | I18nText | MultilingualString | undefined | null,
   lang: string,
-  fallbacks: string[] = ['ru']
+  fallbacks: string[] | string = ['ru']
 ): string {
   if (!value) return '';
   if (typeof value === 'string') return value;
 
+  // Handle both new API (array) and legacy API (single fallback string)
+  const fallbackArray = Array.isArray(fallbacks) ? fallbacks : [fallbacks];
+  
   // Build the chain: requested lang -> fallbacks -> first non-empty
-  const chain = [lang, ...fallbacks];
+  const chain = [lang, ...fallbackArray];
   
   for (const locale of chain) {
-    const translation = value[locale];
-    if (translation && translation.trim()) return translation;
+    const translation = value[locale as keyof typeof value];
+    if (translation && typeof translation === 'string' && translation.trim()) return translation;
   }
 
   // Last resort: first non-empty translation
-  const any = Object.values(value).find(v => v && v.trim());
+  const any = Object.values(value).find(v => typeof v === 'string' && v && v.trim());
   return any ?? '';
 }
 
-/**
- * LEGACY: Get translated string for current language with fallback
- * @deprecated Use getI18nText() instead for new code
- */
-export function getI18nText(
-  value: string | MultilingualString | undefined,
-  language: SupportedLanguage,
-  fallbackLanguage: SupportedLanguage = 'ru'
-): string {
-  if (!value) return '';
-  
-  // If it's a plain string, return it
-  if (typeof value === 'string') return value;
-  
-  // If it's a multilingual object, get the translation with proper fallback chain
-  const translation = value[language];
-  if (translation && translation.trim() !== '') return translation;
-  
-  // Fallback chain: requested language -> fallback language -> ru -> en -> kk -> first non-empty value
-  const fallbackValue = value[fallbackLanguage];
-  if (fallbackValue && fallbackValue.trim() !== '') return fallbackValue;
-  
-  if (value.ru && value.ru.trim() !== '') return value.ru;
-  if (value.en && value.en.trim() !== '') return value.en;
-  if (value.kk && value.kk.trim() !== '') return value.kk;
-  
-  // Return first non-empty value
-  const nonEmpty = Object.values(value).find(v => v && v.trim() !== '');
-  return nonEmpty || '';
-}
-
-/**
- * Create empty multilingual string
- */
-export function createMultilingualString(initialValue = ''): MultilingualString {
-  return {
-    ru: initialValue,
-    en: '',
-    kk: '',
-  };
-}
+// createMultilingualString is defined below with deprecation notice
 
 /**
  * Check if value is multilingual (I18nText or legacy MultilingualString)
