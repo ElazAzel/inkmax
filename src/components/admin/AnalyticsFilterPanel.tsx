@@ -235,7 +235,7 @@ export function AnalyticsFilterPanel({
                 </span>
               </div>
               <Select>
-                <SelectTrigger size="sm" className="text-xs">
+                <SelectTrigger className="text-xs">
                   <SelectValue placeholder="Выберите страницу..." />
                 </SelectTrigger>
                 <SelectContent>
