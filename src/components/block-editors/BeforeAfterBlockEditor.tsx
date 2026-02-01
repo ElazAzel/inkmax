@@ -13,6 +13,13 @@ interface BeforeAfterBlockEditorProps {
 
 export function BeforeAfterBlockEditor({ formData, onChange }: BeforeAfterBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
 
   return (
     <div className="space-y-4">

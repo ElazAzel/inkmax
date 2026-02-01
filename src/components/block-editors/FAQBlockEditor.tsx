@@ -5,19 +5,27 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import type { FAQBlock, FAQItem } from '@/types/page';
-import { createMultilingualString, getI18nText } from '@/lib/i18n-helpers';
+import type { FAQBlock, FAQItem, PageI18nConfig } from '@/types/page';
+import { createMultilingualString, getI18nText, LANGUAGE_DEFINITIONS } from '@/lib/i18n-helpers';
 import { cn } from '@/lib/utils';
 
 interface FAQBlockEditorProps {
   formData: Partial<FAQBlock>;
   onChange: (data: Partial<FAQBlock>) => void;
+  pageI18n?: PageI18nConfig;
 }
 
-export function FAQBlockEditor({ formData, onChange }: FAQBlockEditorProps) {
+export function FAQBlockEditor({ formData, onChange, pageI18n }: FAQBlockEditorProps) {
   const { t, i18n } = useTranslation();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const currentLang = i18n.language as 'ru' | 'en' | 'kk';
+
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
 
   const items = formData.items || [];
 
@@ -58,6 +66,7 @@ export function FAQBlockEditor({ formData, onChange }: FAQBlockEditorProps) {
         value={typeof formData.title === 'string' ? createMultilingualString(formData.title) : (formData.title || createMultilingualString(''))}
         onChange={(value) => onChange({ title: value })}
         placeholder={t('blocks.faq.titlePlaceholder', 'Частые вопросы')}
+        availableLanguages={availableLanguages}
       />
 
       {/* Items */}
@@ -118,6 +127,7 @@ export function FAQBlockEditor({ formData, onChange }: FAQBlockEditorProps) {
                       value={typeof item.question === 'string' ? createMultilingualString(item.question) : item.question}
                       onChange={(value) => updateItem(item.id, { question: value })}
                       placeholder={t('blocks.faq.questionPlaceholder', 'Введите вопрос')}
+                      availableLanguages={availableLanguages}
                     />
 
                     <MultilingualInput
@@ -126,6 +136,7 @@ export function FAQBlockEditor({ formData, onChange }: FAQBlockEditorProps) {
                       onChange={(value) => updateItem(item.id, { answer: value })}
                       placeholder={t('blocks.faq.answerPlaceholder', 'Введите ответ')}
                       type="textarea"
+                      availableLanguages={availableLanguages}
                     />
                   </div>
                 )}

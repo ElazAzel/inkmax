@@ -6,10 +6,17 @@ import { validateDownloadBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { FileUpload } from '@/components/form-fields/FileUpload';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, LANGUAGE_DEFINITIONS  } from '@/lib/i18n-helpers';
 
-function DownloadBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+function DownloadBlockEditorComponent({ formData, onChange, pageI18n }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
   
   const handleFileInfoChange = (info: { fileName: string; fileSize: string }) => {
     onChange({ 

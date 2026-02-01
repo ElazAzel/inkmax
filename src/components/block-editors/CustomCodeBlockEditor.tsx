@@ -6,7 +6,7 @@ import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper
 import { validateCustomCodeBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, LANGUAGE_DEFINITIONS  } from '@/lib/i18n-helpers';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,7 +17,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 const CATEGORY_ICONS = { games: Gamepad2, calculators: Calculator, timers: Timer, engagement: Heart, business: Briefcase, social: Users };
 
-function CustomCodeBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+function CustomCodeBlockEditorComponent({ formData, onChange, pageI18n }: BaseBlockEditorProps) {
   const { t, i18n } = useTranslation();
   const [showPreview, setShowPreview] = useState(false);
   const [showTemplates, setShowTemplates] = useState(!formData.html);

@@ -10,19 +10,27 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Plus, Trash2, GripVertical, Star, Clock, Lightbulb } from 'lucide-react';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
-import type { PricingBlock, PricingItem, Currency, ServiceType } from '@/types/page';
-import { createMultilingualString, getI18nText } from '@/lib/i18n-helpers';
+import type { PricingBlock, PricingItem, Currency, ServiceType, PageI18nConfig } from '@/types/page';
+import { createMultilingualString, getI18nText, LANGUAGE_DEFINITIONS } from '@/lib/i18n-helpers';
 import { cn } from '@/lib/utils';
 
 interface PricingBlockEditorProps {
   formData: Partial<PricingBlock>;
   onChange: (data: Partial<PricingBlock>) => void;
+  pageI18n?: PageI18nConfig;
 }
 
-export function PricingBlockEditor({ formData, onChange }: PricingBlockEditorProps) {
+export function PricingBlockEditor({ formData, onChange, pageI18n }: PricingBlockEditorProps) {
   const { t, i18n } = useTranslation();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const currentLang = i18n.language as 'ru' | 'en' | 'kk';
+
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
 
   const SERVICE_TYPES: { value: ServiceType; labelKey: string; emoji: string }[] = [
     { value: 'haircut', labelKey: 'pricingBlock.haircut', emoji: '💇' },
@@ -87,6 +95,7 @@ export function PricingBlockEditor({ formData, onChange }: PricingBlockEditorPro
         value={typeof formData.title === 'string' ? createMultilingualString(formData.title) : (formData.title || createMultilingualString(''))}
         onChange={(value) => onChange({ title: value })}
         placeholder={t('blocks.pricing.titlePlaceholder', 'Мои услуги')}
+        availableLanguages={availableLanguages}
       />
 
       <div className="space-y-2">
@@ -143,8 +152,8 @@ export function PricingBlockEditor({ formData, onChange }: PricingBlockEditorPro
                         </Select>
                       </div>
 
-                      <MultilingualInput label={t('pricingBlock.name', 'Название')} value={typeof item.name === 'string' ? createMultilingualString(item.name) : item.name} onChange={(value) => updateItem(item.id, { name: value })} placeholder={t('pricingBlock.namePlaceholder', 'Стрижка мужская')} />
-                      <MultilingualInput label={t('pricingBlock.description', 'Описание')} value={typeof item.description === 'string' ? createMultilingualString(item.description) : (item.description || createMultilingualString(''))} onChange={(value) => updateItem(item.id, { description: value })} type="textarea" />
+                      <MultilingualInput label={t('pricingBlock.name', 'Название')} value={typeof item.name === 'string' ? createMultilingualString(item.name) : item.name} onChange={(value) => updateItem(item.id, { name: value })} placeholder={t('pricingBlock.namePlaceholder', 'Стрижка мужская')} availableLanguages={availableLanguages} />
+                      <MultilingualInput label={t('pricingBlock.description', 'Описание')} value={typeof item.description === 'string' ? createMultilingualString(item.description) : (item.description || createMultilingualString(''))} onChange={(value) => updateItem(item.id, { description: value })} type="textarea" availableLanguages={availableLanguages} />
 
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-2">

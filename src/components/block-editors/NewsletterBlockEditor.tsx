@@ -2,10 +2,17 @@ import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper
 import { validateNewsletterBlock } from '@/lib/block-validators';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, LANGUAGE_DEFINITIONS  } from '@/lib/i18n-helpers';
 
-function NewsletterBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+function NewsletterBlockEditorComponent({ formData, onChange, pageI18n }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
 
   return (
     <div className="space-y-4">

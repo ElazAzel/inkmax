@@ -4,7 +4,7 @@ import { MediaUpload } from '@/components/form-fields/MediaUpload';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { useTranslation } from 'react-i18next';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { migrateToMultilingual } from '@/lib/i18n-helpers';
+import { migrateToMultilingual, LANGUAGE_DEFINITIONS  } from '@/lib/i18n-helpers';
 import { FrameGridSelector } from '@/components/editor/FramePreview';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, Crown, Lock } from 'lucide-react';
@@ -16,8 +16,15 @@ import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 
-function ProfileBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps) {
+function ProfileBlockEditorComponent({ formData, onChange, pageI18n }: BaseBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
   const navigate = useNavigate();
   const [frameOpen, setFrameOpen] = useState(false);
   const { canUseVerificationBadge, canUsePremiumFrames, canUseAdvancedThemes, currentTier } = useFreemiumLimits();

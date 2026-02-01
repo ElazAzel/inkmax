@@ -14,6 +14,13 @@ interface CountdownBlockEditorProps {
 
 export function CountdownBlockEditor({ formData, onChange }: CountdownBlockEditorProps) {
   const { t } = useTranslation();
+  
+  // Derive available languages from pageI18n if available
+  const availableLanguages = pageI18n?.languages.map(code => ({
+    code,
+    name: LANGUAGE_DEFINITIONS[code]?.name || code,
+    flag: LANGUAGE_DEFINITIONS[code]?.flag,
+  }));
 
   // Format date for datetime-local input
   const formatDateForInput = (dateString?: string) => {
