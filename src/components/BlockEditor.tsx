@@ -20,7 +20,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { X, Check, ChevronLeft } from 'lucide-react';
-import type { Block } from '@/types/page';
+import type { Block, PageI18nConfig } from '@/types/page';
 
 // Lazy load all block editors for code splitting
 const ProfileBlockEditor = lazy(() => import('./block-editors/ProfileBlockEditor').then(m => ({ default: m.ProfileBlockEditor })));
@@ -55,11 +55,12 @@ const EventBlockEditor = lazy(() => import('./block-editors/EventBlockEditor').t
 interface BlockEditorProps {
   block: Block | null;
   isOpen: boolean;
+  pageI18n?: PageI18nConfig;
   onClose: () => void;
   onSave: (updates: Partial<Block>) => void;
 }
 
-export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps) {
+export function BlockEditor({ block, isOpen, pageI18n, onClose, onSave }: BlockEditorProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [formData, setFormData] = useState<any>(() => block ? { ...block } : {});
@@ -82,6 +83,7 @@ export function BlockEditor({ block, isOpen, onClose, onSave }: BlockEditorProps
     const commonProps = {
       formData,
       onChange: setFormData,
+      pageI18n,
     };
 
     // Loading fallback for lazy-loaded editors - Mobile optimized

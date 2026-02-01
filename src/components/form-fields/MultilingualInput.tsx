@@ -34,6 +34,7 @@ export function MultilingualInput({
   placeholder,
   required = false,
   enableRichText = false,
+  availableLanguages,
 }: MultilingualInputProps) {
   const { t } = useTranslation();
   const [isTranslating, setIsTranslating] = useState(false);
