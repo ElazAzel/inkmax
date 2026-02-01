@@ -538,7 +538,6 @@ async function handleGallerySSR(supabase: SupabaseClient<any>, lang: LanguageKey
 
   const { data: pagesData } = await query
     .order('gallery_likes', { ascending: false })
-    .limit(12);
     .limit(20);
 
   const items = (pagesData || []) as GalleryItem[];
@@ -635,7 +634,6 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
     <priority>0.5</priority>
 `;
     for (const lang of LANGUAGES) {
-      sitemap += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${BASE_URL}/gallery?niche=${niche}&lang=${lang}"/>
       sitemap += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${BASE_URL}/gallery?niche=${niche}&amp;lang=${lang}"/>
 `;
     }
@@ -644,7 +642,6 @@ async function handleSitemap(supabase: SupabaseClient<any>, req: Request): Promi
 `;
   }
 
-  const reservedSlugs = new Set(['admin', 'dashboard', 'auth', 'api', 'install', 'join', 'team', 'p', 'crm']);
   // User pages
   const reservedSlugs = new Set(['admin', 'dashboard', 'auth', 'api', 'install', 'join', 'team', 'p', 'crm', 'settings', 'editor']);
   for (const page of pages) {

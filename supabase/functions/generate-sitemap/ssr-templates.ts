@@ -1,17 +1,5 @@
-import { escapeHtml, getOgLocale, buildHreflangLinks } from './seo-helpers.ts';
-
-const DEFAULT_OG_IMAGE = 'https://lnkmx.my/og-image.png';
-
-type LanguageKey = 'ru' | 'en' | 'kk';
 /**
  * SSR Templates v2.0 - Enhanced for SEO/GEO/AEO
- * 
- * Features:
- * - Answer Block for AI extraction
- * - Key Facts for citation
- * - FAQPage schema
- * - LocalBusiness/Person with areaServed
- * - Semantic HTML structure
  */
 
 import { escapeHtml, getOgLocale, buildHreflangLinks, truncate } from './seo-helpers.ts';
@@ -39,6 +27,9 @@ type LandingContent = {
   answers: { q: string; a: string }[];
   faqTitle: string;
   faq: { q: string; a: string }[];
+  keyFactsTitle: string;
+  keyFacts: string[];
+  answerBlock: string;
 };
 
 type GalleryContent = {
@@ -59,23 +50,12 @@ type GalleryContent = {
 const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
   ru: {
     title: 'lnkmx — Micro-Business OS | Конструктор страниц + CRM',
-    description:
-      'Операционная система для микро-бизнеса: AI-конструктор страниц, встроенная CRM, формы заявок и Telegram-уведомления. Запуск за 2 минуты без кода.',
+    description: 'Операционная система для микро-бизнеса: AI-конструктор страниц, встроенная CRM, формы заявок и Telegram-уведомления. Запуск за 2 минуты без кода.',
     h1: 'Micro-Business OS для микро-бизнеса',
     subtitle: 'Мини-сайт, CRM и заявки в одном месте — без кода и сложной настройки.',
     cta: 'Создать бесплатно',
     aboutTitle: 'Что такое lnkmx',
-    aboutBody:
-      'lnkmx — это конструктор страниц и CRM, который превращает соцсети в полноценную точку продаж. Создайте страницу, принимайте заявки, управляйте клиентами и получайте аналитику.',
-    title: 'lnkmx - Micro-Business OS | Конструктор страниц + CRM',
-    description:
-      'Операционная система для микро-бизнеса: AI-конструктор страниц, встроенная CRM, формы заявок и Telegram-уведомления. Запуск за 2 минуты без кода.',
-    h1: 'Micro-Business OS для микро-бизнеса',
-    subtitle: 'Мини-сайт, CRM и заявки в одном месте - без кода и сложной настройки.',
-    cta: 'Создать бесплатно',
-    aboutTitle: 'Что такое lnkmx',
-    aboutBody:
-      'lnkmx - это конструктор страниц и CRM, который превращает соцсети в полноценную точку продаж. Создайте страницу, принимайте заявки, управляйте клиентами и получайте аналитику.',
+    aboutBody: 'lnkmx — это конструктор страниц и CRM, который превращает соцсети в полноценную точку продаж. Создайте страницу, принимайте заявки, управляйте клиентами и получайте аналитику.',
     forTitle: 'Для кого подходит',
     forList: ['Эксперты и консультанты', 'Малый бизнес и салоны', 'Блогеры и создатели курсов', 'Организаторы событий'],
     whereTitle: 'Где используют',
@@ -86,26 +66,11 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
       { q: 'Есть ли встроенная CRM?', a: 'Да, заявки и клиенты сохраняются в одном месте.' },
       { q: 'Подходит ли для локального бизнеса?', a: 'Да, можно указать город и контакты, подключить карту и запись.' },
     ],
-    faqTitle: 'FAQ',
-      { q: 'Как быстро запустить страницу?', a: '2 минуты: ответьте на вопросы - AI соберёт страницу.' },
-      { q: 'Есть ли встроенная CRM?', a: 'Да, заявки и клиенты сохраняются в одном месте.' },
-      { q: 'Подходит ли для локального бизнеса?', a: 'Да, можно указать город и контакты, подключить карту и запись.' },
-    ],
     faqTitle: 'Часто задаваемые вопросы',
     faq: [
       { q: 'Нужен ли дизайнер?', a: 'Нет, готовые блоки и AI помогут запуститься без дизайнера.' },
       { q: 'Можно ли менять язык?', a: 'Да, поддерживаются RU/EN/KK и переключение языков.' },
       { q: 'Есть ли бесплатный тариф?', a: 'Да, можно стартовать бесплатно и перейти на Pro при росте.' },
-    ],
-  },
-  en: {
-    title: 'lnkmx — Micro-Business OS | Page Builder + CRM',
-    description:
-      'Operating system for micro-business: AI page builder, built-in CRM, lead forms and Telegram notifications. Launch in 2 minutes with no code.',
-    h1: 'Micro-Business OS for creators & small business',
-    subtitle: 'Landing page, CRM, and lead capture in one place — no code needed.',
-      { q: 'Как работает CRM?', a: 'Все заявки с вашей страницы автоматически сохраняются в CRM с возможностью комментариев и статусов.' },
-      { q: 'Есть ли интеграция с Telegram?', a: 'Да, вы получаете уведомления о новых заявках прямо в Telegram.' },
     ],
     keyFactsTitle: 'Ключевые факты',
     keyFacts: [
@@ -116,18 +81,16 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
       'Поддержка RU/EN/KK языков',
       'Аналитика просмотров и кликов',
     ],
-    answerBlock: 'lnkmx - это операционная система для микро-бизнеса, объединяющая AI-конструктор страниц, CRM и аналитику. Позволяет создать профессиональный мини-сайт за 2 минуты без кода, принимать заявки и управлять клиентами.',
+    answerBlock: 'lnkmx — это операционная система для микро-бизнеса, объединяющая AI-конструктор страниц, CRM и аналитику. Позволяет создать профессиональный мини-сайт за 2 минуты без кода, принимать заявки и управлять клиентами.',
   },
   en: {
-    title: 'lnkmx - Micro-Business OS | Page Builder + CRM',
-    description:
-      'Operating system for micro-business: AI page builder, built-in CRM, lead forms and Telegram notifications. Launch in 2 minutes with no code.',
+    title: 'lnkmx — Micro-Business OS | Page Builder + CRM',
+    description: 'Operating system for micro-business: AI page builder, built-in CRM, lead forms and Telegram notifications. Launch in 2 minutes with no code.',
     h1: 'Micro-Business OS for creators & small business',
-    subtitle: 'Landing page, CRM, and lead capture in one place - no code needed.',
+    subtitle: 'Landing page, CRM, and lead capture in one place — no code needed.',
     cta: 'Start free',
     aboutTitle: 'What is lnkmx',
-    aboutBody:
-      'lnkmx is a page builder with CRM that turns social traffic into sales. Build a page, collect leads, manage clients, and track analytics.',
+    aboutBody: 'lnkmx is a page builder with CRM that turns social traffic into sales. Build a page, collect leads, manage clients, and track analytics.',
     forTitle: 'Who it is for',
     forList: ['Experts & consultants', 'Small businesses & studios', 'Creators and course makers', 'Event organizers'],
     whereTitle: 'Where it works best',
@@ -138,26 +101,11 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
       { q: 'Is there a CRM included?', a: 'Yes, all leads and customers stay in one dashboard.' },
       { q: 'Is it good for local business?', a: 'Yes, add city, map, and booking to get local leads.' },
     ],
-    faqTitle: 'FAQ',
     faqTitle: 'Frequently Asked Questions',
     faq: [
       { q: 'Do I need a designer?', a: 'No, ready-made blocks and AI handle the layout.' },
       { q: 'Can I switch languages?', a: 'Yes, RU/EN/KK are supported with easy switching.' },
       { q: 'Is there a free plan?', a: 'Yes, start free and upgrade when you grow.' },
-    ],
-  },
-  kk: {
-    title: 'lnkmx — Micro-Business OS | Бет конструкторы + CRM',
-    description:
-      'Микро-бизнеске арналған операциялық жүйе: AI бет конструкторы, ішкі CRM, өтінім формалары және Telegram хабарламалары. 2 минутта кодсыз іске қосыңыз.',
-    h1: 'Микро-бизнеске арналған Micro-Business OS',
-    subtitle: 'Мини-сайт, CRM және өтінімдер — бір жерде, кодсыз.',
-    cta: 'Тегін бастау',
-    aboutTitle: 'lnkmx деген не',
-    aboutBody:
-      'lnkmx — парақша құрастырушы және CRM. Әлеуметтік желідегі трафикті сатылымға айналдырып, өтінімдерді жинап, клиенттерді басқаруға көмектеседі.',
-      { q: 'How does CRM work?', a: 'All leads from your page are automatically saved to CRM with comments and status tracking.' },
-      { q: 'Is there Telegram integration?', a: 'Yes, you get instant notifications about new leads in Telegram.' },
     ],
     keyFactsTitle: 'Key Facts',
     keyFacts: [
@@ -171,15 +119,13 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
     answerBlock: 'lnkmx is a micro-business operating system combining AI page builder, CRM, and analytics. Create a professional mini-site in 2 minutes without code, collect leads, and manage clients.',
   },
   kk: {
-    title: 'lnkmx - Micro-Business OS | Бет конструкторы + CRM',
-    description:
-      'Микро-бизнеске арналған операциялық жүйе: AI бет конструкторы, ішкі CRM, өтінім формалары және Telegram хабарламалары. 2 минутта кодсыз іске қосыңыз.',
+    title: 'lnkmx — Micro-Business OS | Бет конструкторы + CRM',
+    description: 'Микро-бизнеске арналған операциялық жүйе: AI бет конструкторы, ішкі CRM, өтінім формалары және Telegram хабарламалары. 2 минутта кодсыз іске қосыңыз.',
     h1: 'Микро-бизнеске арналған Micro-Business OS',
-    subtitle: 'Мини-сайт, CRM және өтінімдер - бір жерде, кодсыз.',
+    subtitle: 'Мини-сайт, CRM және өтінімдер — бір жерде, кодсыз.',
     cta: 'Тегін бастау',
     aboutTitle: 'lnkmx деген не',
-    aboutBody:
-      'lnkmx - парақша құрастырушы және CRM. Әлеуметтік желідегі трафикті сатылымға айналдырып, өтінімдерді жинап, клиенттерді басқаруға көмектеседі.',
+    aboutBody: 'lnkmx — парақша құрастырушы және CRM. Әлеуметтік желідегі трафикті сатылымға айналдырып, өтінімдерді жинап, клиенттерді басқаруға көмектеседі.',
     forTitle: 'Кімге арналған',
     forList: ['Сарапшылар мен кеңесшілер', 'Шағын бизнес пен салондар', 'Креаторлар мен курс авторлары', 'Іс-шара ұйымдастырушылар'],
     whereTitle: 'Қай жерде қолданады',
@@ -187,7 +133,6 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
     answersTitle: 'Қысқа жауаптар',
     answers: [
       { q: 'Қаншалықты тез іске қосамын?', a: '2 минутта: бірнеше сұраққа жауап бересіз — AI парақшаны құрады.' },
-      { q: 'Қаншалықты тез іске қосамын?', a: '2 минутта: бірнеше сұраққа жауап бересіз - AI парақшаны құрады.' },
       { q: 'CRM бар ма?', a: 'Иә, барлық өтінімдер бір жүйеде сақталады.' },
       { q: 'Жергілікті бизнеске жарай ма?', a: 'Иә, қала, карта және жазылу функцияларын қосуға болады.' },
     ],
@@ -197,124 +142,63 @@ const LANDING_CONTENT: Record<LanguageKey, LandingContent> = {
       { q: 'Тілді ауыстыруға бола ма?', a: 'Иә, RU/EN/KK тілдері қолжетімді.' },
       { q: 'Тегін тариф бар ма?', a: 'Иә, тегін бастауға болады.' },
     ],
-  },
-};
-
-const GALLERY_CONTENT: Record<LanguageKey, GalleryContent> = {
-  ru: {
-    title: 'Галерея lnkmx — примеры link in bio и мини-сайтов',
-      { q: 'CRM қалай жұмыс істейді?', a: 'Барлық өтінімдер автоматты түрде CRM-ге сақталады.' },
-      { q: 'Telegram интеграциясы бар ма?', a: 'Иә, жаңа өтінімдер туралы Telegram-да хабарлама аласыз.' },
-    ],
     keyFactsTitle: 'Негізгі фактілер',
     keyFacts: [
-      'Бетті 2 минутта іске қосу',
-      '25+ блок түрі',
-      'Өтінімдерге арналған ішкі CRM',
+      'Парақшаны 2 минутта іске қосу',
+      '25+ блок түрлері',
+      'Өтінімдерге арналған CRM',
       'Telegram хабарламалары',
       'RU/EN/KK тілдерін қолдау',
-      'Қаралымдар мен кликтер аналитикасы',
+      'Көрулер мен басулар аналитикасы',
     ],
-    answerBlock: 'lnkmx - бұл AI бет конструкторы, CRM және аналитиканы біріктіретін микро-бизнес операциялық жүйесі. 2 минутта кодсыз кәсіби мини-сайт жасап, өтінімдерді жинап, клиенттерді басқаруға болады.',
+    answerBlock: 'lnkmx — AI бет конструкторы, CRM және аналитиканы біріктіретін микро-бизнес операциялық жүйесі. 2 минутта кодсыз кәсіби мини-сайт жасап, өтінімдерді жинап, клиенттерді басқарыңыз.',
   },
 };
 
 // ============ GALLERY CONTENT ============
 
-type GalleryContent = {
-  title: string;
-  description: string;
-  h1: string;
-  subtitle: string;
-  highlightsTitle: string;
-  highlights: string[];
-  locationTitle: string;
-  locationBody: string;
-  topProfilesTitle: string;
-  keyFactsTitle: string;
-  keyFacts: string[];
-  answerBlock: string;
-};
-
 const GALLERY_CONTENT: Record<LanguageKey, GalleryContent> = {
   ru: {
-    title: 'Галерея lnkmx - примеры link in bio и мини-сайтов',
-    description:
-      'Подборка лучших страниц lnkmx: ниши, шаблоны, идеи. Посмотрите, как выглядят реальные профили и какие блоки используют.',
+    title: 'Галерея lnkmx — примеры link in bio и мини-сайтов',
+    description: 'Подборка лучших страниц lnkmx: ниши, шаблоны, идеи. Посмотрите, как выглядят реальные профили.',
     h1: 'Галерея страниц lnkmx',
     subtitle: 'Смотрите реальные профили, вдохновляйтесь нишами и копируйте решения.',
     highlightsTitle: 'Что вы найдёте в галерее',
-    highlights: ['Топовые страницы по лайкам и просмотрам', 'Примеры по нишам: beauty, education, consulting и др.', 'Готовые структуры блоков и CTA'],
+    highlights: ['Топовые страницы по лайкам', 'Примеры по нишам: beauty, education, consulting', 'Готовые структуры блоков'],
     locationTitle: 'Локальная релевантность',
-    locationBody:
-      'В галерее много локальных бизнесов — можно искать примеры по вашему городу или стране и быстро адаптировать их под себя.',
+    locationBody: 'В галерее много локальных бизнесов — можно искать примеры по вашему городу.',
     topProfilesTitle: 'Популярные профили',
+    keyFactsTitle: 'Ключевые факты о галерее',
+    keyFacts: ['Сотни реальных примеров', '15+ категорий ниш', 'Фильтрация по популярности', 'Примеры из Казахстана и СНГ'],
+    answerBlock: 'Галерея lnkmx — это коллекция реальных link in bio страниц от экспертов, бизнесов и креаторов.',
   },
   en: {
     title: 'lnkmx Gallery — link in bio examples and templates',
-      'В галерее много локальных бизнесов - можно искать примеры по вашему городу или стране и быстро адаптировать их под себя.',
-    topProfilesTitle: 'Популярные профили',
-    keyFactsTitle: 'Ключевые факты о галерее',
-    keyFacts: [
-      'Сотни реальных примеров страниц',
-      '15+ категорий ниш',
-      'Фильтрация по популярности',
-      'Примеры из Казахстана и СНГ',
-    ],
-    answerBlock: 'Галерея lnkmx - это коллекция реальных link in bio страниц от экспертов, бизнесов и креаторов. Здесь можно найти вдохновение, готовые шаблоны и примеры по нишам.',
-  },
-  en: {
-    title: 'lnkmx Gallery - link in bio examples and templates',
-    description:
-      'Discover top lnkmx pages: niches, templates, and inspiration. See how real profiles are built and which blocks convert best.',
+    description: 'Discover top lnkmx pages: niches, templates, and inspiration.',
     h1: 'lnkmx Gallery',
     subtitle: 'Browse real profiles, explore niches, and copy proven layouts.',
     highlightsTitle: 'What you get inside',
-    highlights: ['Top pages by likes and views', 'Niche examples: beauty, education, consulting, and more', 'Ready-to-use block structures and CTAs'],
+    highlights: ['Top pages by likes and views', 'Niche examples: beauty, education, consulting', 'Ready-to-use block structures'],
     locationTitle: 'Local relevance',
-    locationBody:
-      'Many pages are built for local businesses — find examples from your city or country and adapt them fast.',
+    locationBody: 'Many pages are built for local businesses — find examples from your city or country.',
     topProfilesTitle: 'Top profiles',
+    keyFactsTitle: 'Key facts about gallery',
+    keyFacts: ['Hundreds of real page examples', '15+ niche categories', 'Filter by popularity', 'Examples from Kazakhstan and CIS'],
+    answerBlock: 'lnkmx Gallery is a collection of real link in bio pages from experts, businesses, and creators.',
   },
   kk: {
     title: 'lnkmx галереясы — link in bio мысалдары мен мини-сайттар',
-      'Many pages are built for local businesses - find examples from your city or country and adapt them fast.',
-    topProfilesTitle: 'Top profiles',
-    keyFactsTitle: 'Key facts about gallery',
-    keyFacts: [
-      'Hundreds of real page examples',
-      '15+ niche categories',
-      'Filter by popularity',
-      'Examples from Kazakhstan and CIS',
-    ],
-    answerBlock: 'lnkmx Gallery is a collection of real link in bio pages from experts, businesses, and creators. Find inspiration, ready-made templates, and niche examples.',
-  },
-  kk: {
-    title: 'lnkmx галереясы - link in bio мысалдары мен мини-сайттар',
-    description:
-      'lnkmx үздік парақшалары: нишалар, шаблондар, идеялар. Нақты профильдер қалай жасалатынын көріңіз.',
+    description: 'lnkmx үздік парақшалары: нишалар, шаблондар, идеялар.',
     h1: 'lnkmx парақшалар галереясы',
     subtitle: 'Нақты профильдерді қарап, нишалардан шабыт алыңыз.',
     highlightsTitle: 'Галереядан не табасыз',
-    highlights: ['Лайк пен қаралымы көп үздік беттер', 'Beauty, education, consulting сияқты нишалар', 'Дайын блок құрылымдары және CTA'],
+    highlights: ['Лайк пен қаралымы көп үздік беттер', 'Beauty, education, consulting сияқты нишалар', 'Дайын блок құрылымдары'],
     locationTitle: 'Жергілікті өзектілік',
-    locationBody:
-      'Галереяда жергілікті бизнеске арналған көп беттер бар — өз қалаңызға лайық үлгілерді табыңыз.',
-    topProfilesTitle: 'Танымал профильдер',
-  },
-};
-
-type GalleryItem = {
-      'Галереяда жергілікті бизнеске арналған көп беттер бар - өз қалаңызға лайық үлгілерді табыңыз.',
+    locationBody: 'Галереяда жергілікті бизнеске арналған көп беттер бар.',
     topProfilesTitle: 'Танымал профильдер',
     keyFactsTitle: 'Галерея туралы негізгі фактілер',
-    keyFacts: [
-      'Жүздеген нақты бет мысалдары',
-      '15+ ниша санаттары',
-      'Танымалдылығы бойынша сүзу',
-      'Қазақстан мен ТМД елдерінен мысалдар',
-    ],
-    answerBlock: 'lnkmx галереясы - бұл сарапшылар, бизнестер және креаторлардан нақты link in bio беттерінің жинағы.',
+    keyFacts: ['Жүздеген нақты бет мысалдары', '15+ ниша санаттары', 'Танымалдылығы бойынша сүзу', 'Қазақстан мен ТМД елдерінен мысалдар'],
+    answerBlock: 'lnkmx галереясы — бұл сарапшылар, бизнестер және креаторлардан нақты link in bio беттерінің жинағы.',
   },
 };
 
@@ -535,11 +419,8 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
   const canonicalUrl = `${baseUrl}/gallery${querySuffix}`;
   const hreflangLinks = buildHreflangLinks(baseUrl, `/gallery${querySuffix}`, ['ru', 'en', 'kk']);
 
-  const itemList = items.slice(0, 10).map((item, index) => ({
   const nicheLabel = niche || 'all';
-  const title = niche 
-    ? `${content.title} - ${nicheLabel}` 
-    : content.title;
+  const title = niche ? `${content.title} - ${nicheLabel}` : content.title;
 
   const itemList = items.slice(0, 20).map((item, index) => ({
     '@type': 'ListItem',

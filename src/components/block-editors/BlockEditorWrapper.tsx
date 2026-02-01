@@ -19,8 +19,8 @@ import { getTextEffectClass } from '@/lib/block-styling';
 import type { Block, BlockStyle, BlockSizePreset, BlockFontFamily } from '@/types/page';
 
 export interface BaseBlockEditorProps {
-  formData: Block;
-  onChange: (updates: Partial<Block>) => void;
+  formData: any;
+  onChange: (updates: any) => void;
 }
 
 interface BlockEditorWrapperProps {
