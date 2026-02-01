@@ -14,21 +14,23 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
+import { LANGUAGE_DEFINITIONS } from '@/lib/i18n-helpers';
 
 import ru from '@/i18n/locales/ru.json';
 import en from '@/i18n/locales/en.json';
 import kk from '@/i18n/locales/kk.json';
 
-type LanguageCode = 'ru' | 'en' | 'kk';
 type TranslationData = Record<string, unknown>;
 
 interface FlattenedKey {
   key: string;
-  ru: string;
-  en: string;
-  kk: string;
-  missingIn: LanguageCode[];
+  values: Record<string, string>;
+  missingIn: string[];
 }
+
+// Dynamically get available languages from loaded i18n files
+const AVAILABLE_LANGUAGES = ['ru', 'en', 'kk'] as const;
+type LanguageCode = typeof AVAILABLE_LANGUAGES[number];
 
 // Flatten nested JSON object to dot notation keys
 function flattenObject(obj: TranslationData, prefix = ''): Record<string, string> {
@@ -47,31 +49,37 @@ function flattenObject(obj: TranslationData, prefix = ''): Record<string, string
   return result;
 }
 
-// Get all unique keys from all languages
-function getAllKeys(translations: Record<LanguageCode, TranslationData>): FlattenedKey[] {
-  const flatRu = flattenObject(translations.ru);
-  const flatEn = flattenObject(translations.en);
-  const flatKk = flattenObject(translations.kk);
+// Get all unique keys from all languages (dynamically supports any langs)
+function getAllKeys(
+  translations: Record<string, TranslationData>,
+  languages: string[]
+): FlattenedKey[] {
+  const flattened: Record<string, Record<string, string>> = {};
   
-  const allKeys = new Set([
-    ...Object.keys(flatRu),
-    ...Object.keys(flatEn),
-    ...Object.keys(flatKk),
-  ]);
+  // Flatten each language
+  languages.forEach(lang => {
+    flattened[lang] = flattenObject(translations[lang] || {});
+  });
   
+  // Get all unique keys
+  const allKeys = new Set<string>();
+  languages.forEach(lang => {
+    Object.keys(flattened[lang]).forEach(k => allKeys.add(k));
+  });
+  
+  // Build FlattenedKey array
   return Array.from(allKeys).sort().map(key => {
-    const missingIn: LanguageCode[] = [];
-    if (!flatRu[key]) missingIn.push('ru');
-    if (!flatEn[key]) missingIn.push('en');
-    if (!flatKk[key]) missingIn.push('kk');
+    const values: Record<string, string> = {};
+    const missingIn: string[] = [];
     
-    return {
-      key,
-      ru: flatRu[key] || '',
-      en: flatEn[key] || '',
-      kk: flatKk[key] || '',
-      missingIn,
-    };
+    languages.forEach(lang => {
+      values[lang] = flattened[lang][key] || '';
+      if (!flattened[lang][key]) {
+        missingIn.push(lang);
+      }
+    });
+    
+    return { key, values, missingIn };
   });
 }
 
@@ -101,15 +109,26 @@ export default function AdminTranslations() {
   );
   const { isAdmin, loading } = useAdminAuth();
   
-  const [translations, setTranslations] = useState<Record<LanguageCode, TranslationData>>({
-    ru: JSON.parse(JSON.stringify(ru)),
-    en: JSON.parse(JSON.stringify(en)),
-    kk: JSON.parse(JSON.stringify(kk)),
+  // Support for dynamic languages from LANGUAGE_DEFINITIONS
+  const languages = useMemo(() => {
+    return Object.keys(LANGUAGE_DEFINITIONS).filter(code => 
+      AVAILABLE_LANGUAGES.includes(code as LanguageCode)
+    );
+  }, []);
+  
+  const [translations, setTranslations] = useState<Record<string, TranslationData>>(() => {
+    const init: Record<string, TranslationData> = {};
+    (AVAILABLE_LANGUAGES as readonly string[]).forEach(lang => {
+      if (lang === 'ru') init.ru = JSON.parse(JSON.stringify(ru));
+      else if (lang === 'en') init.en = JSON.parse(JSON.stringify(en));
+      else if (lang === 'kk') init.kk = JSON.parse(JSON.stringify(kk));
+    });
+    return init;
   });
   
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState<'all' | 'missing'>('all');
-  const [selectedLang, setSelectedLang] = useState<LanguageCode>('ru');
+  const [selectedLang, setSelectedLang] = useState<string>(languages[0] || 'ru');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -118,16 +137,19 @@ export default function AdminTranslations() {
     }
   }, [loading, isAdmin, navigate]);
 
-  const allKeys = useMemo(() => getAllKeys(translations), [translations]);
+  const allKeys = useMemo(
+    () => getAllKeys(translations, languages),
+    [translations, languages]
+  );
   
   const filteredKeys = useMemo(() => {
     return allKeys.filter(item => {
       // Search filter
       const matchesSearch = !searchQuery || 
         item.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.ru.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.kk.toLowerCase().includes(searchQuery.toLowerCase());
+        Object.values(item.values).some(v => 
+          v.toLowerCase().includes(searchQuery.toLowerCase())
+        );
       
       // Missing filter
       const matchesMissing = filterMode === 'all' || item.missingIn.length > 0;
@@ -138,15 +160,17 @@ export default function AdminTranslations() {
 
   const stats = useMemo(() => {
     const total = allKeys.length;
-    const missingRu = allKeys.filter(k => k.missingIn.includes('ru')).length;
-    const missingEn = allKeys.filter(k => k.missingIn.includes('en')).length;
-    const missingKk = allKeys.filter(k => k.missingIn.includes('kk')).length;
+    const statsByLang: Record<string, number> = {};
     const complete = allKeys.filter(k => k.missingIn.length === 0).length;
     
-    return { total, missingRu, missingEn, missingKk, complete };
-  }, [allKeys]);
+    languages.forEach(lang => {
+      statsByLang[lang] = allKeys.filter(k => k.missingIn.includes(lang)).length;
+    });
+    
+    return { total, complete, byLang: statsByLang };
+  }, [allKeys, languages]);
 
-  const handleValueChange = (key: string, lang: LanguageCode, value: string) => {
+  const handleValueChange = (key: string, lang: string, value: string) => {
     setTranslations(prev => {
       const updated = { ...prev };
       updated[lang] = JSON.parse(JSON.stringify(prev[lang]));
@@ -155,17 +179,18 @@ export default function AdminTranslations() {
     });
   };
 
-  const copyToClipboard = async (lang: LanguageCode) => {
+  const copyToClipboard = async (lang: string) => {
     try {
       const json = JSON.stringify(translations[lang], null, 2);
       await navigator.clipboard.writeText(json);
-      toast.success(`JSON для ${lang.toUpperCase()} скопирован`);
+      const langName = LANGUAGE_DEFINITIONS[lang]?.name || lang.toUpperCase();
+      toast.success(`JSON для ${langName} скопирован`);
     } catch {
       toast.error('Не удалось скопировать');
     }
   };
 
-  const downloadJSON = (lang: LanguageCode) => {
+  const downloadJSON = (lang: string) => {
     const json = JSON.stringify(translations[lang], null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -174,22 +199,24 @@ export default function AdminTranslations() {
     a.download = `${lang}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    const langName = LANGUAGE_DEFINITIONS[lang]?.name || lang.toUpperCase();
     toast.success(`Файл ${lang}.json скачан`);
   };
 
-  const copyMissingKeys = async (lang: LanguageCode) => {
+  const copyMissingKeys = async (lang: string) => {
     const missing = allKeys.filter(k => k.missingIn.includes(lang));
     const result: TranslationData = {};
     
     missing.forEach(item => {
       // Use value from another language as placeholder
-      const placeholder = item.ru || item.en || item.kk || `[${item.key}]`;
+      const placeholder = Object.values(item.values).find(v => v) || `[${item.key}]`;
       setNestedValue(result, item.key, `[TODO] ${placeholder}`);
     });
     
     try {
       await navigator.clipboard.writeText(JSON.stringify(result, null, 2));
-      toast.success(`${missing.length} отсутствующих ключей для ${lang.toUpperCase()} скопировано`);
+      const langName = LANGUAGE_DEFINITIONS[lang]?.name || lang.toUpperCase();
+      toast.success(`${missing.length} отсутствующих ключей для ${langName} скопировано`);
     } catch {
       toast.error('Не удалось скопировать');
     }
@@ -214,7 +241,8 @@ export default function AdminTranslations() {
         return updated;
       });
       
-      toast.success(`JSON для ${selectedLang.toUpperCase()} импортирован`);
+      const langName = LANGUAGE_DEFINITIONS[selectedLang]?.name || selectedLang.toUpperCase();
+      toast.success(`JSON для ${langName} импортирован`);
     } catch (error) {
       toast.error('Ошибка парсинга JSON файла');
       console.error('Import error:', error);
@@ -246,11 +274,13 @@ export default function AdminTranslations() {
   }
 
   const resetToOriginal = () => {
-    setTranslations({
-      ru: JSON.parse(JSON.stringify(ru)),
-      en: JSON.parse(JSON.stringify(en)),
-      kk: JSON.parse(JSON.stringify(kk)),
+    const init: Record<string, TranslationData> = {};
+    (AVAILABLE_LANGUAGES as readonly string[]).forEach(lang => {
+      if (lang === 'ru') init.ru = JSON.parse(JSON.stringify(ru));
+      else if (lang === 'en') init.en = JSON.parse(JSON.stringify(en));
+      else if (lang === 'kk') init.kk = JSON.parse(JSON.stringify(kk));
     });
+    setTranslations(init);
     toast.success('Переводы сброшены к исходным');
   };
 
@@ -274,12 +304,13 @@ export default function AdminTranslations() {
         canonical={canonical}
         currentLanguage={i18n.language}
         indexable={false}
-        alternates={[
-          { hreflang: 'ru', href: `${canonical}?lang=ru` },
-          { hreflang: 'en', href: `${canonical}?lang=en` },
-          { hreflang: 'kk', href: `${canonical}?lang=kk` },
-          { hreflang: 'x-default', href: canonical },
-        ]}
+        alternates={languages.map(lang => ({
+          hreflang: lang,
+          href: `${canonical}?lang=${lang}`
+        })).concat({
+          hreflang: 'x-default',
+          href: canonical
+        })}
       />
       <div className="min-h-screen bg-background">
       {/* Header */}
@@ -313,24 +344,20 @@ export default function AdminTranslations() {
               <p className="text-sm text-muted-foreground">Полные</p>
             </CardContent>
           </Card>
-          <Card className={stats.missingRu > 0 ? 'border-destructive' : ''}>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-orange-500">{stats.missingRu}</div>
-              <p className="text-sm text-muted-foreground">Нет в RU</p>
-            </CardContent>
-          </Card>
-          <Card className={stats.missingEn > 0 ? 'border-destructive' : ''}>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-orange-500">{stats.missingEn}</div>
-              <p className="text-sm text-muted-foreground">Нет в EN</p>
-            </CardContent>
-          </Card>
-          <Card className={stats.missingKk > 0 ? 'border-destructive' : ''}>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-orange-500">{stats.missingKk}</div>
-              <p className="text-sm text-muted-foreground">Нет в KK</p>
-            </CardContent>
-          </Card>
+          {languages.map(lang => {
+            const missing = stats.byLang[lang] || 0;
+            const langDef = LANGUAGE_DEFINITIONS[lang] || {};
+            return (
+              <Card key={lang} className={missing > 0 ? 'border-destructive' : ''}>
+                <CardContent className="pt-4">
+                  <div className="text-2xl font-bold text-orange-500">{missing}</div>
+                  <p className="text-sm text-muted-foreground">
+                    {langDef.flag} Нет в {lang.toUpperCase()}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Controls */}
@@ -371,27 +398,22 @@ export default function AdminTranslations() {
         </Card>
 
         {/* Language Tabs */}
-        <Tabs value={selectedLang} onValueChange={(v) => setSelectedLang(v as LanguageCode)}>
-          <div className="flex items-center justify-between mb-4">
+        <Tabs value={selectedLang} onValueChange={setSelectedLang}>
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
             <TabsList>
-              <TabsTrigger value="ru" className="gap-2">
-                🇷🇺 Русский
-                {stats.missingRu > 0 && (
-                  <Badge variant="destructive" className="ml-1">{stats.missingRu}</Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="en" className="gap-2">
-                🇬🇧 English
-                {stats.missingEn > 0 && (
-                  <Badge variant="destructive" className="ml-1">{stats.missingEn}</Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="kk" className="gap-2">
-                🇰🇿 Қазақша
-                {stats.missingKk > 0 && (
-                  <Badge variant="destructive" className="ml-1">{stats.missingKk}</Badge>
-                )}
-              </TabsTrigger>
+              {languages.map(lang => {
+                const langDef = LANGUAGE_DEFINITIONS[lang] || {};
+                const missing = stats.byLang[lang] || 0;
+                return (
+                  <TabsTrigger key={lang} value={lang} className="gap-2">
+                    <span>{langDef.flag}</span>
+                    <span>{langDef.name || lang.toUpperCase()}</span>
+                    {missing > 0 && (
+                      <Badge variant="destructive" className="ml-1">{missing}</Badge>
+                    )}
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
             
             <div className="flex flex-wrap gap-2">
@@ -425,7 +447,7 @@ export default function AdminTranslations() {
             </div>
           </div>
 
-          {(['ru', 'en', 'kk'] as LanguageCode[]).map(lang => (
+          {languages.map(lang => (
             <TabsContent key={lang} value={lang}>
               <Card>
                 <CardHeader>
@@ -454,27 +476,29 @@ export default function AdminTranslations() {
                                 <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
                               ) : (
                                 <Badge variant="destructive" className="text-xs flex-shrink-0">
-                                  Нет в: {item.missingIn.join(', ').toUpperCase()}
+                                  Нет в: {item.missingIn.map(l => l.toUpperCase()).join(', ')}
                                 </Badge>
                               )}
                             </div>
                             <Input
-                              value={item[lang]}
+                              value={item.values[lang] || ''}
                               onChange={(e) => handleValueChange(item.key, lang, e.target.value)}
-                              placeholder={`[Отсутствует] ${item.ru || item.en || item.kk || ''}`}
+                              placeholder={`[Отсутствует] ${Object.values(item.values).find(v => v) || ''}`}
                               className={item.missingIn.includes(lang) ? 'border-destructive' : ''}
                             />
                             {/* Show other language values for reference */}
-                            <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
-                              {lang !== 'ru' && item.ru && (
-                                <span>🇷🇺 {item.ru.slice(0, 50)}{item.ru.length > 50 ? '...' : ''}</span>
-                              )}
-                              {lang !== 'en' && item.en && (
-                                <span>🇬🇧 {item.en.slice(0, 50)}{item.en.length > 50 ? '...' : ''}</span>
-                              )}
-                              {lang !== 'kk' && item.kk && (
-                                <span>🇰🇿 {item.kk.slice(0, 50)}{item.kk.length > 50 ? '...' : ''}</span>
-                              )}
+                            <div className="mt-2 flex gap-4 text-xs text-muted-foreground flex-wrap">
+                              {languages.map(otherLang => {
+                                if (otherLang === lang) return null;
+                                const val = item.values[otherLang];
+                                if (!val) return null;
+                                const otherDef = LANGUAGE_DEFINITIONS[otherLang] || {};
+                                return (
+                                  <span key={otherLang}>
+                                    {otherDef.flag} {val.slice(0, 50)}{val.length > 50 ? '...' : ''}
+                                  </span>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>

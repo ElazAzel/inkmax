@@ -108,44 +108,46 @@ export function MultilingualInput({
           {label}
           {required && <span className="text-destructive ml-1">*</span>}
         </Label>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={handleTranslate}
-          disabled={isTranslating || !value[activeTab]?.trim()}
-          className="h-7 px-2 text-xs gap-1.5"
-          title={t('ai.translateToOthers', 'Перевести на другие языки')}
-        >
-          {isTranslating ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <Languages className="h-3.5 w-3.5" />
-          )}
-          <span className="hidden sm:inline">{t('ai.translate', 'Перевести')}</span>
-        </Button>
+        {langs.length > 1 && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleTranslate}
+            disabled={isTranslating || !normalized[activeTab]?.trim()}
+            className="h-7 px-2 text-xs gap-1.5"
+            title={t('ai.translateToOthers', 'Перевести на другие языки')}
+          >
+            {isTranslating ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Languages className="h-3.5 w-3.5" />
+            )}
+            <span className="hidden sm:inline">{t('ai.translate', 'Перевести')}</span>
+          </Button>
+        )}
       </div>
-      <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as SupportedLanguage)}>
-        <TabsList className="grid w-full grid-cols-3">
-          {LANGUAGES.map((lang) => (
-            <TabsTrigger key={lang.code} value={lang.code} className="gap-1.5">
-              <span>{lang.flag}</span>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className={`w-full grid-cols-${Math.min(langs.length, 4)}`} style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(langs.length, 4)}, 1fr)` }}>
+          {langs.map((lang) => (
+            <TabsTrigger key={lang.code} value={lang.code} className="gap-1.5 text-xs sm:text-sm">
+              <span>{lang.flag || '📝'}</span>
               <span className="hidden sm:inline">{lang.name}</span>
             </TabsTrigger>
           ))}
         </TabsList>
-        {LANGUAGES.map((lang) => (
+        {langs.map((lang) => (
           <TabsContent key={lang.code} value={lang.code} className="mt-2">
             {enableRichText ? (
               <RichTextEditor
-                value={value[lang.code] || ''}
+                value={normalized[lang.code] || ''}
                 onChange={(text) => handleChange(lang.code, text)}
                 placeholder={placeholder ? `${placeholder} (${lang.name})` : undefined}
                 type={type}
               />
             ) : (
               <InputComponent
-                value={value[lang.code] || ''}
+                value={normalized[lang.code] || ''}
                 onChange={(e) => handleChange(lang.code, e.target.value)}
                 placeholder={placeholder ? `${placeholder} (${lang.name})` : undefined}
                 className={type === 'textarea' ? 'min-h-[100px]' : ''}

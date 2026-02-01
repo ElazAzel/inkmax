@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useState, useContext } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import { Globe, Check, Languages, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,20 +11,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
-import type { SupportedLanguage } from '@/lib/i18n-helpers';
+import { LANGUAGE_DEFINITIONS } from '@/lib/i18n-helpers';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const languages = [
-  { code: 'ru' as SupportedLanguage, name: 'Русский', flag: '🇷🇺' },
-  { code: 'en' as SupportedLanguage, name: 'English', flag: '🇺🇸' },
-  { code: 'kk' as SupportedLanguage, name: 'Қазақша', flag: '🇰🇿' },
-];
-
 interface LanguageSwitcherProps {
-  onLanguageChange?: (from: SupportedLanguage, to: SupportedLanguage) => void;
+  onLanguageChange?: (from: string, to: string) => void;
   showAutoTranslate?: boolean;
   isTranslating?: boolean;
   onAutoTranslate?: () => void;
+  // Optional: show only specific languages
+  availableLanguages?: string[];
 }
 
 export function LanguageSwitcher({ 
@@ -32,6 +28,7 @@ export function LanguageSwitcher({
   showAutoTranslate = false,
   isTranslating: externalTranslating = false,
   onAutoTranslate,
+  availableLanguages,
 }: LanguageSwitcherProps) {
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -49,8 +46,20 @@ export function LanguageSwitcher({
   const isTranslating = externalTranslating || (languageContext?.isTranslating ?? false);
   const autoTranslateEnabled = languageContext?.autoTranslateEnabled ?? false;
 
-  const handleLanguageChange = (langCode: SupportedLanguage) => {
-    const prevLang = i18n.language as SupportedLanguage;
+  // Build available languages list dynamically
+  const languages = useMemo(() => {
+    const codes = availableLanguages || Object.keys(LANGUAGE_DEFINITIONS);
+    return codes
+      .map(code => ({
+        code,
+        name: LANGUAGE_DEFINITIONS[code]?.name || code,
+        flag: LANGUAGE_DEFINITIONS[code]?.flag || '📝',
+      }))
+      .filter(Boolean);
+  }, [availableLanguages]);
+
+  const handleLanguageChange = (langCode: string) => {
+    const prevLang = i18n.language;
     
     // Use context if available
     if (languageContext) {
