@@ -105,7 +105,9 @@
     "left": "Слева",
     "center": "По центру",
     "right": "Справа",
-    "buttonText": "Текст кнопки"
+    "buttonText": "Текст кнопки",
+    "requiredRussian": "Обязательное поле для русского языка",
+    "requiredPrimary": "Обязательное поле для основного языка"
   },
   "hints": {
     "bioLinks": "Совет: добавляйте ссылки в формате [текст](url)",
@@ -1568,7 +1570,16 @@
     "autoTranslate": "Автоперевод",
     "autoTranslated": "Контент автоматически переведён",
     "translating": "Перевод...",
-    "translationError": "Ошибка автоперевода"
+    "translationError": "Ошибка автоперевода",
+    "addLanguage": "Добавить язык",
+    "searchLanguage": "Поиск языка...",
+    "noLanguageFound": "Язык не найден",
+    "additionalLanguages": "Дополнительные языки:",
+    "selectLanguage": "Выберите язык",
+    "contentLanguage": "Язык контента",
+    "uiLanguage": "Язык интерфейса",
+    "flexibleMultilingual": "Гибкая мультиязычность",
+    "anyLanguageSupported": "Поддерживается любой язык"
   },
   "share": {
     "shareLink": "Поделиться",
