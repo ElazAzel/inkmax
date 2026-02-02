@@ -105,7 +105,9 @@
     "left": "Сол жақта",
     "center": "Ортада",
     "right": "Оң жақта",
-    "buttonText": "Батырма мәтіні"
+    "buttonText": "Батырма мәтіні",
+    "requiredRussian": "Орыс тілі үшін міндетті өріс",
+    "requiredPrimary": "Негізгі тіл үшін міндетті өріс"
   },
   "hints": {
     "bioLinks": "Кеңес: сілтемелерді [мәтін](url) форматында қосыңыз",
@@ -1568,7 +1570,16 @@
     "autoTranslate": "Автоаударма",
     "autoTranslated": "Мазмұн автоматты түрде аударылды",
     "translating": "Аударуда...",
-    "translationError": "Аударма қатесі"
+    "translationError": "Аударма қатесі",
+    "addLanguage": "Тіл қосу",
+    "searchLanguage": "Тіл іздеу...",
+    "noLanguageFound": "Тіл табылмады",
+    "additionalLanguages": "Қосымша тілдер:",
+    "selectLanguage": "Тілді таңдаңыз",
+    "contentLanguage": "Мазмұн тілі",
+    "uiLanguage": "Интерфейс тілі",
+    "flexibleMultilingual": "Икемді көптілділік",
+    "anyLanguageSupported": "Кез келген тіл қолдайды"
   },
   "share": {
     "shareLink": "Бөлісу",

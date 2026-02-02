@@ -1,6 +1,6 @@
 /**
- * MultilingualInput - supports flexible languages
- * Updated to use the new I18nText system while maintaining backward compatibility
+ * Flexible Multilingual Input - supports any number of languages
+ * Replaces the hardcoded 3-language MultilingualInput
  */
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
@@ -8,13 +8,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Languages, Loader2, Plus, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Languages, Loader2, Plus, X, Globe } from 'lucide-react';
 import { 
-  LANGUAGES, 
-  LANGUAGE_DEFINITIONS,
-  type MultilingualString, 
-  type I18nText,
+  type I18nText, 
   type LocaleCode,
+  LANGUAGE_DEFINITIONS,
+  getI18nText,
 } from '@/lib/i18n-helpers';
 import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
@@ -34,7 +34,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 
-// Extended language definitions
+// Extended language definitions with more languages
 const ALL_LANGUAGES: Record<LocaleCode, { name: string; flag: string }> = {
   ...LANGUAGE_DEFINITIONS,
   tr: { name: 'Türkçe', flag: '🇹🇷' },
@@ -47,33 +47,59 @@ const ALL_LANGUAGES: Record<LocaleCode, { name: string; flag: string }> = {
   ja: { name: '日本語', flag: '🇯🇵' },
   ko: { name: '한국어', flag: '🇰🇷' },
   ar: { name: 'العربية', flag: '🇸🇦' },
+  hi: { name: 'हिन्दी', flag: '🇮🇳' },
   uz: { name: "O'zbekcha", flag: '🇺🇿' },
   uk: { name: 'Українська', flag: '🇺🇦' },
+  be: { name: 'Беларуская', flag: '🇧🇾' },
   az: { name: 'Azərbaycan', flag: '🇦🇿' },
   ky: { name: 'Кыргызча', flag: '🇰🇬' },
   tg: { name: 'Тоҷикӣ', flag: '🇹🇯' },
+  hy: { name: 'Հայերdelays', flag: '🇦🇲' },
+  ka: { name: 'ქართული', flag: '🇬🇪' },
   pl: { name: 'Polski', flag: '🇵🇱' },
+  nl: { name: 'Nederlands', flag: '🇳🇱' },
+  cs: { name: 'Čeština', flag: '🇨🇿' },
+  sv: { name: 'Svenska', flag: '🇸🇪' },
+  da: { name: 'Dansk', flag: '🇩🇰' },
+  fi: { name: 'Suomi', flag: '🇫🇮' },
+  no: { name: 'Norsk', flag: '🇳🇴' },
+  el: { name: 'Ελληνικά', flag: '🇬🇷' },
+  he: { name: 'עברית', flag: '🇮🇱' },
+  th: { name: 'ไทย', flag: '🇹🇭' },
   vi: { name: 'Tiếng Việt', flag: '🇻🇳' },
+  id: { name: 'Bahasa Indonesia', flag: '🇮🇩' },
+  ms: { name: 'Bahasa Melayu', flag: '🇲🇾' },
+  ro: { name: 'Română', flag: '🇷🇴' },
+  bg: { name: 'Български', flag: '🇧🇬' },
+  hr: { name: 'Hrvatski', flag: '🇭🇷' },
+  sr: { name: 'Српски', flag: '🇷🇸' },
+  sk: { name: 'Slovenčina', flag: '🇸🇰' },
+  sl: { name: 'Slovenščina', flag: '🇸🇮' },
+  et: { name: 'Eesti', flag: '🇪🇪' },
+  lv: { name: 'Latviešu', flag: '🇱🇻' },
+  lt: { name: 'Lietuvių', flag: '🇱🇹' },
 };
 
-// Default languages
-const DEFAULT_LANGUAGE_CODES: LocaleCode[] = ['ru', 'en', 'kk'];
+// Default languages to show
+const DEFAULT_LANGUAGES: LocaleCode[] = ['ru', 'en', 'kk'];
 
-interface MultilingualInputProps {
+interface FlexibleMultilingualInputProps {
   label: string;
-  value: MultilingualString | I18nText;
-  onChange: (value: MultilingualString | I18nText) => void;
+  value: I18nText;
+  onChange: (value: I18nText) => void;
   type?: 'input' | 'textarea';
   placeholder?: string;
   required?: boolean;
   enableRichText?: boolean;
-  /** Allow adding more languages beyond the default 3 */
+  /** Languages to show by default */
+  defaultLanguages?: LocaleCode[];
+  /** Allow adding more languages */
   allowAddLanguages?: boolean;
-  /** Primary language (required field) */
+  /** Primary/required language */
   primaryLanguage?: LocaleCode;
 }
 
-export function MultilingualInput({
+export function FlexibleMultilingualInput({
   label,
   value,
   onChange,
@@ -81,17 +107,16 @@ export function MultilingualInput({
   placeholder,
   required = false,
   enableRichText = false,
-  allowAddLanguages = false,
+  defaultLanguages = DEFAULT_LANGUAGES,
+  allowAddLanguages = true,
   primaryLanguage = 'ru',
-}: MultilingualInputProps) {
+}: FlexibleMultilingualInputProps) {
   const { t } = useTranslation();
   
-  // Determine active languages from value + defaults
+  // Active languages - includes defaults + any languages that have content
   const [activeLanguages, setActiveLanguages] = useState<LocaleCode[]>(() => {
-    const existingLangs = Object.keys(value || {}).filter(k => 
-      (value as I18nText)[k]?.trim()
-    );
-    const combined = new Set([...DEFAULT_LANGUAGE_CODES, ...existingLangs]);
+    const existing = Object.keys(value || {}).filter(k => value[k]?.trim());
+    const combined = new Set([...defaultLanguages, ...existing]);
     return Array.from(combined);
   });
   
@@ -120,21 +145,24 @@ export function MultilingualInput({
   };
 
   const handleRemoveLanguage = (langCode: LocaleCode) => {
-    if (DEFAULT_LANGUAGE_CODES.includes(langCode)) return;
+    // Can't remove primary language
+    if (langCode === primaryLanguage) return;
     
     setActiveLanguages(prev => prev.filter(l => l !== langCode));
     
-    const newValue = { ...value } as I18nText;
+    // Clear the content for this language
+    const newValue = { ...value };
     delete newValue[langCode];
     onChange(newValue);
     
+    // Switch tab if needed
     if (activeTab === langCode) {
       setActiveTab(primaryLanguage);
     }
   };
 
   const handleTranslate = async () => {
-    const sourceText = (value as I18nText)[activeTab];
+    const sourceText = value[activeTab];
     if (!sourceText?.trim()) {
       toast.error(t('ai.noTextToTranslate', 'Введите текст для перевода'));
       return;
@@ -173,7 +201,7 @@ export function MultilingualInput({
   const getLanguageInfo = (code: LocaleCode) => 
     ALL_LANGUAGES[code] || { name: code.toUpperCase(), flag: '🏳️' };
 
-  // Grid columns based on language count
+  // Determine grid columns based on number of languages
   const getGridCols = () => {
     const count = activeLanguages.length;
     if (count <= 3) return 'grid-cols-3';
@@ -195,7 +223,7 @@ export function MultilingualInput({
             variant="ghost"
             size="sm"
             onClick={handleTranslate}
-            disabled={isTranslating || !(value as I18nText)[activeTab]?.trim()}
+            disabled={isTranslating || !value[activeTab]?.trim()}
             className="h-7 px-2 text-xs gap-1.5"
             title={t('ai.translateToOthers', 'Перевести на другие языки')}
           >
@@ -253,8 +281,7 @@ export function MultilingualInput({
         <TabsList className={`grid w-full ${getGridCols()}`}>
           {activeLanguages.map((langCode) => {
             const lang = getLanguageInfo(langCode);
-            const hasContent = !!(value as I18nText)[langCode]?.trim();
-            const isDefault = DEFAULT_LANGUAGE_CODES.includes(langCode);
+            const hasContent = !!value[langCode]?.trim();
             
             return (
               <TabsTrigger 
@@ -267,7 +294,7 @@ export function MultilingualInput({
                 {hasContent && (
                   <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-primary rounded-full" />
                 )}
-                {!isDefault && allowAddLanguages && (
+                {langCode !== primaryLanguage && activeLanguages.length > 1 && (
                   <button
                     type="button"
                     onClick={(e) => {
@@ -291,14 +318,14 @@ export function MultilingualInput({
             <TabsContent key={langCode} value={langCode} className="mt-2">
               {enableRichText ? (
                 <RichTextEditor
-                  value={(value as I18nText)[langCode] || ''}
+                  value={value[langCode] || ''}
                   onChange={(text) => handleChange(langCode, text)}
                   placeholder={placeholder ? `${placeholder} (${lang.name})` : undefined}
                   type={type}
                 />
               ) : (
                 <InputComponent
-                  value={(value as I18nText)[langCode] || ''}
+                  value={value[langCode] || ''}
                   onChange={(e) => handleChange(langCode, e.target.value)}
                   placeholder={placeholder ? `${placeholder} (${lang.name})` : undefined}
                   className={type === 'textarea' ? 'min-h-[100px]' : ''}
@@ -306,13 +333,31 @@ export function MultilingualInput({
               )}
               {langCode === primaryLanguage && required && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t('fields.requiredRussian', 'Обязательное поле для русского языка')}
+                  {t('fields.requiredPrimary', 'Обязательное поле для основного языка')}
                 </p>
               )}
             </TabsContent>
           );
         })}
       </Tabs>
+
+      {activeLanguages.length > defaultLanguages.length && (
+        <div className="flex flex-wrap gap-1">
+          <span className="text-xs text-muted-foreground">
+            {t('language.additionalLanguages', 'Дополнительные языки:')}
+          </span>
+          {activeLanguages
+            .filter(l => !defaultLanguages.includes(l))
+            .map(langCode => {
+              const lang = getLanguageInfo(langCode);
+              return (
+                <Badge key={langCode} variant="secondary" className="text-xs gap-1">
+                  {lang.flag} {langCode.toUpperCase()}
+                </Badge>
+              );
+            })}
+        </div>
+      )}
 
       {enableRichText && (
         <p className="text-xs text-muted-foreground">
@@ -322,3 +367,6 @@ export function MultilingualInput({
     </div>
   );
 }
+
+// Re-export for backward compatibility
+export { FlexibleMultilingualInput as I18nInput };

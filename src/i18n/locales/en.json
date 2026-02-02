@@ -105,7 +105,9 @@
     "left": "Left",
     "center": "Center",
     "right": "Right",
-    "buttonText": "Button Text"
+    "buttonText": "Button Text",
+    "requiredRussian": "Required field for Russian language",
+    "requiredPrimary": "Required field for primary language"
   },
   "hints": {
     "bioLinks": "Tip: Add links with [text](url) format",
@@ -1568,7 +1570,16 @@
     "autoTranslate": "Auto-translate",
     "autoTranslated": "Content auto-translated",
     "translating": "Translating...",
-    "translationError": "Translation error"
+    "translationError": "Translation error",
+    "addLanguage": "Add language",
+    "searchLanguage": "Search language...",
+    "noLanguageFound": "Language not found",
+    "additionalLanguages": "Additional languages:",
+    "selectLanguage": "Select language",
+    "contentLanguage": "Content language",
+    "uiLanguage": "Interface language",
+    "flexibleMultilingual": "Flexible multilingual",
+    "anyLanguageSupported": "Any language supported"
   },
   "share": {
     "shareLink": "Share",
