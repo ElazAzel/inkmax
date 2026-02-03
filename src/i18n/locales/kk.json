@@ -1,4 +1,17 @@
 {
+  "translation": {
+    "selectLanguages": "Тілдерді таңдау",
+    "targetLanguages": "Аударма тілдері",
+    "selectDescription": "Контентіңіз қандай тілдерге аударылатынын таңдаңыз. Ағылшын тілі міндетті.",
+    "selectAll": "Барлығын таңдау",
+    "selectNone": "Таңдауды алып тастау",
+    "selected": "Таңдалды",
+    "edit": "Өзгерту",
+    "source": "Дереккөз",
+    "englishMandatory": "Халықаралық аудитория үшін ағылшын тілі міндетті",
+    "translateNow": "Аудару",
+    "browserLanguageDetected": "Браузер тілі: {{language}}"
+  },
   "textEffects": {
     "none": "Эффектсіз",
     "shimmer": "✨ Жарқырау",
@@ -1569,6 +1582,7 @@
   "language": {
     "autoTranslate": "Автоаударма",
     "autoTranslated": "Мазмұн автоматты түрде аударылды",
+    "autoTranslatedTo": "Аударылды: {{languages}}",
     "translating": "Аударуда...",
     "translationError": "Аударма қатесі",
     "addLanguage": "Тіл қосу",
@@ -1579,7 +1593,9 @@
     "contentLanguage": "Мазмұн тілі",
     "uiLanguage": "Интерфейс тілі",
     "flexibleMultilingual": "Икемді көптілділік",
-    "anyLanguageSupported": "Кез келген тіл қолдайды"
+    "anyLanguageSupported": "Кез келген тіл қолдайды",
+    "showMoreLanguages": "Тағы {{count}} тіл",
+    "moreLanguages": "Басқа тілдер"
   },
   "share": {
     "shareLink": "Бөлісу",

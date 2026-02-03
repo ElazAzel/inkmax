@@ -1,4 +1,17 @@
 {
+  "translation": {
+    "selectLanguages": "Выбрать языки",
+    "targetLanguages": "Языки перевода",
+    "selectDescription": "Выберите языки, на которые будет переведён ваш контент. Английский обязателен.",
+    "selectAll": "Выбрать все",
+    "selectNone": "Снять выбор",
+    "selected": "Выбрано",
+    "edit": "Изменить",
+    "source": "Источник",
+    "englishMandatory": "Английский обязателен для международной аудитории",
+    "translateNow": "Перевести",
+    "browserLanguageDetected": "Определён язык браузера: {{language}}"
+  },
   "textEffects": {
     "none": "Без эффекта",
     "shimmer": "✨ Переливание",
@@ -1569,6 +1582,7 @@
   "language": {
     "autoTranslate": "Автоперевод",
     "autoTranslated": "Контент автоматически переведён",
+    "autoTranslatedTo": "Переведено на: {{languages}}",
     "translating": "Перевод...",
     "translationError": "Ошибка автоперевода",
     "addLanguage": "Добавить язык",
@@ -1579,7 +1593,9 @@
     "contentLanguage": "Язык контента",
     "uiLanguage": "Язык интерфейса",
     "flexibleMultilingual": "Гибкая мультиязычность",
-    "anyLanguageSupported": "Поддерживается любой язык"
+    "anyLanguageSupported": "Поддерживается любой язык",
+    "showMoreLanguages": "Ещё {{count}} языков",
+    "moreLanguages": "Другие языки"
   },
   "share": {
     "shareLink": "Поделиться",
