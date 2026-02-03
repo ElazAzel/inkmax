@@ -1,16 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { useState, useMemo } from 'react';
-import { Globe, Check, Languages, Loader2, Sparkles, Plus, Search } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Globe, Check, Languages, Loader2, Sparkles, Plus, Search, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
@@ -18,6 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import type { LocaleCode } from '@/lib/i18n-helpers';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { TranslationLanguageSelector, getLanguageInfo } from '@/components/translation/TranslationLanguageSelector';
 
 // Extended language list - covers major world languages
 const ALL_LANGUAGES: { code: LocaleCode; name: string; flag: string }[] = [
@@ -112,11 +111,35 @@ export function LanguageSwitcher({
 
   const isTranslating = externalTranslating || (languageContext?.isTranslating ?? false);
   const autoTranslateEnabled = languageContext?.autoTranslateEnabled ?? false;
+  const browserLanguage = languageContext?.browserLanguage;
+  const targetTranslationLanguages = languageContext?.targetTranslationLanguages ?? ['en'];
+  const [showTranslationSettings, setShowTranslationSettings] = useState(false);
+
+  // Show browser language notification on first load
+  useEffect(() => {
+    if (browserLanguage && languageContext) {
+      const hasShownNotification = localStorage.getItem('browserLangNotificationShown');
+      if (!hasShownNotification && browserLanguage !== 'en') {
+        // Auto-set browser language as current language on first visit
+        const storedLang = localStorage.getItem('i18nextLng');
+        if (!storedLang) {
+          languageContext.setCurrentLanguage(browserLanguage);
+        }
+        localStorage.setItem('browserLangNotificationShown', 'true');
+      }
+    }
+  }, [browserLanguage, languageContext]);
 
   // Filter and organize languages
   const { visibleLanguages, moreLanguages, filteredLanguages } = useMemo(() => {
-    const visible = ALL_LANGUAGES.filter(l => DEFAULT_VISIBLE_CODES.includes(l.code));
-    const more = ALL_LANGUAGES.filter(l => !DEFAULT_VISIBLE_CODES.includes(l.code));
+    // Prioritize browser language in visible list
+    let visibleCodes = [...DEFAULT_VISIBLE_CODES];
+    if (browserLanguage && !visibleCodes.includes(browserLanguage)) {
+      visibleCodes = [browserLanguage, ...visibleCodes];
+    }
+    
+    const visible = ALL_LANGUAGES.filter(l => visibleCodes.includes(l.code));
+    const more = ALL_LANGUAGES.filter(l => !visibleCodes.includes(l.code));
     
     // Filter by search
     const query = searchQuery.toLowerCase().trim();
@@ -128,7 +151,7 @@ export function LanguageSwitcher({
       : [];
     
     return { visibleLanguages: visible, moreLanguages: more, filteredLanguages: filtered };
-  }, [searchQuery]);
+  }, [searchQuery, browserLanguage]);
 
   const handleLanguageChange = (langCode: LocaleCode) => {
     const prevLang = i18n.language as LocaleCode;
@@ -300,10 +323,22 @@ export function LanguageSwitcher({
           )}
         </ScrollArea>
         
-        {/* Auto-translate toggle */}
+        {/* Auto-translate section */}
         {languageContext && (
           <>
             <DropdownMenuSeparator className="my-1" />
+            
+            {/* Browser language indicator */}
+            {browserLanguage && browserLanguage !== i18n.language && (
+              <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
+                <Globe className="h-3 w-3" />
+                {t('translation.browserLanguageDetected', 'Язык браузера: {{language}}', { 
+                  language: getLanguageInfo(browserLanguage).name 
+                })}
+              </div>
+            )}
+            
+            {/* Auto-translate toggle */}
             <div
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg",
@@ -326,6 +361,37 @@ export function LanguageSwitcher({
                 className="scale-90"
               />
             </div>
+
+            {/* Translation languages settings */}
+            {autoTranslateEnabled && (
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowTranslationSettings(true);
+                  setIsOpen(false);
+                }}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer",
+                  "transition-all duration-200",
+                  "hover:bg-muted/50"
+                )}
+              >
+                <Settings2 className="h-4 w-4 text-muted-foreground" />
+                <span className="flex-1 text-sm text-muted-foreground">
+                  {t('translation.selectLanguages', 'Выбрать языки')}
+                </span>
+                <div className="flex gap-0.5">
+                  {targetTranslationLanguages.slice(0, 3).map(code => (
+                    <span key={code} className="text-xs">{getLanguageInfo(code).flag}</span>
+                  ))}
+                  {targetTranslationLanguages.length > 3 && (
+                    <Badge variant="secondary" className="text-[10px] h-4 px-1">
+                      +{targetTranslationLanguages.length - 3}
+                    </Badge>
+                  )}
+                </div>
+              </DropdownMenuItem>
+            )}
           </>
         )}
         
@@ -361,6 +427,19 @@ export function LanguageSwitcher({
           </>
         )}
       </DropdownMenuContent>
+
+      {/* Translation Language Selector Dialog */}
+      {languageContext && (
+        <TranslationLanguageSelector
+          selectedLanguages={targetTranslationLanguages}
+          onSelectionChange={(langs) => languageContext.setTargetTranslationLanguages(langs)}
+          sourceLanguage={i18n.language as LocaleCode}
+          isTranslating={isTranslating}
+          compact={false}
+          open={showTranslationSettings}
+          onOpenChange={setShowTranslationSettings}
+        />
+      )}
     </DropdownMenu>
   );
 }

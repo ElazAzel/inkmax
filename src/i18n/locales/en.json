@@ -1,4 +1,17 @@
 {
+  "translation": {
+    "selectLanguages": "Select languages",
+    "targetLanguages": "Translation languages",
+    "selectDescription": "Choose which languages your content will be translated to. English is mandatory.",
+    "selectAll": "Select all",
+    "selectNone": "Deselect all",
+    "selected": "Selected",
+    "edit": "Edit",
+    "source": "Source",
+    "englishMandatory": "English is mandatory for international audience",
+    "translateNow": "Translate",
+    "browserLanguageDetected": "Browser language: {{language}}"
+  },
   "textEffects": {
     "none": "No effect",
     "shimmer": "✨ Shimmer",
@@ -1569,6 +1582,7 @@
   "language": {
     "autoTranslate": "Auto-translate",
     "autoTranslated": "Content auto-translated",
+    "autoTranslatedTo": "Translated to: {{languages}}",
     "translating": "Translating...",
     "translationError": "Translation error",
     "addLanguage": "Add language",
@@ -1579,7 +1593,9 @@
     "contentLanguage": "Content language",
     "uiLanguage": "Interface language",
     "flexibleMultilingual": "Flexible multilingual",
-    "anyLanguageSupported": "Any language supported"
+    "anyLanguageSupported": "Any language supported",
+    "showMoreLanguages": "{{count}} more languages",
+    "moreLanguages": "More languages"
   },
   "share": {
     "shareLink": "Share",
