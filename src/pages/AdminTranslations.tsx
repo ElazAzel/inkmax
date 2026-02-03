@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Shield, ArrowLeft, Search, Copy, Download, AlertTriangle,
-  CheckCircle, Languages, Loader2, Upload, RefreshCw
+  CheckCircle, Languages, Loader2, Upload, RefreshCw, Plus
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
@@ -110,6 +110,12 @@ export default function AdminTranslations() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState<'all' | 'missing'>('all');
   const [selectedLang, setSelectedLang] = useState<LanguageCode>('ru');
+  const [newKey, setNewKey] = useState('');
+  const [newValues, setNewValues] = useState<Record<LanguageCode, string>>({
+    ru: '',
+    en: '',
+    kk: '',
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -153,6 +159,32 @@ export default function AdminTranslations() {
       setNestedValue(updated[lang], key, value);
       return updated;
     });
+  };
+
+  const handleAddKey = () => {
+    const trimmedKey = newKey.trim();
+    if (!trimmedKey) {
+      toast.error('Введите ключ');
+      return;
+    }
+
+    if (allKeys.some(item => item.key === trimmedKey)) {
+      toast.error('Такой ключ уже существует');
+      return;
+    }
+
+    setTranslations(prev => {
+      const updated = { ...prev };
+      (['ru', 'en', 'kk'] as LanguageCode[]).forEach(lang => {
+        updated[lang] = JSON.parse(JSON.stringify(prev[lang]));
+        setNestedValue(updated[lang], trimmedKey, newValues[lang].trim());
+      });
+      return updated;
+    });
+
+    setNewKey('');
+    setNewValues({ ru: '', en: '', kk: '' });
+    toast.success('Новый ключ добавлен');
   };
 
   const copyToClipboard = async (lang: LanguageCode) => {
@@ -367,6 +399,47 @@ export default function AdminTranslations() {
                 </Button>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Add Key */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Добавить новый ключ</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex flex-col md:flex-row gap-3">
+              <Input
+                placeholder="Например: profile.actions.follow"
+                value={newKey}
+                onChange={(e) => setNewKey(e.target.value)}
+                className="md:flex-[2]"
+              />
+              <Button onClick={handleAddKey} className="md:self-start">
+                <Plus className="h-4 w-4 mr-1" />
+                Добавить ключ
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Input
+                placeholder="Русский перевод"
+                value={newValues.ru}
+                onChange={(e) => setNewValues(prev => ({ ...prev, ru: e.target.value }))}
+              />
+              <Input
+                placeholder="English translation"
+                value={newValues.en}
+                onChange={(e) => setNewValues(prev => ({ ...prev, en: e.target.value }))}
+              />
+              <Input
+                placeholder="Қазақша аударма"
+                value={newValues.kk}
+                onChange={(e) => setNewValues(prev => ({ ...prev, kk: e.target.value }))}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Можно оставить язык пустым — ключ появится как отсутствующий в статистике.
+            </p>
           </CardContent>
         </Card>
 
