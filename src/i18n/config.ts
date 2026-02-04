@@ -4,6 +4,19 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import ru from './locales/ru.json';
 import en from './locales/en.json';
 import kk from './locales/kk.json';
+import de from './locales/de.json';
+import uk from './locales/uk.json';
+import uz from './locales/uz.json';
+import be from './locales/be.json';
+import es from './locales/es.json';
+import fr from './locales/fr.json';
+import it from './locales/it.json';
+import pt from './locales/pt.json';
+import zh from './locales/zh.json';
+import tr from './locales/tr.json';
+import ja from './locales/ja.json';
+import ko from './locales/ko.json';
+import ar from './locales/ar.json';
 import { validateTranslations } from './validation';
 
 // Migrate 'kz' to 'kk' if stored in localStorage
@@ -23,26 +36,26 @@ migrateKzToKk();
 // Normalize language code to supported codes
 const normalizeLanguage = (lng: string): string => {
   if (!lng) return 'ru';
-  
+
   // Extract base language code (e.g., 'ru-RU' -> 'ru')
   const langCode = lng.substring(0, 2).toLowerCase();
-  
+
   // Map 'kz' to 'kk' (Kazakh ISO code)
   if (langCode === 'kz') return 'kk';
-  
+
   // Russian
   if (langCode === 'ru') return 'ru';
-  
+
   // Kazakh
   if (langCode === 'kk') return 'kk';
-  
+
   // English
   if (langCode === 'en') return 'en';
-  
+
   // CIS region languages default to Russian
   const cisLanguages = ['uk', 'be', 'uz', 'ky', 'tg', 'az', 'hy', 'ka', 'mo', 'ro'];
   if (cisLanguages.includes(langCode)) return 'ru';
-  
+
   // Rest of the world defaults to English
   return 'en';
 };
@@ -59,17 +72,17 @@ const customLanguageDetector = {
 
     // Check if user manually selected language (stored in localStorage)
     let stored = localStorage.getItem('i18nextLng');
-    
+
     // Migrate 'kz' to 'kk' on read
     if (stored === 'kz') {
       stored = 'kk';
       localStorage.setItem('i18nextLng', 'kk');
     }
-    
+
     if (stored && ['ru', 'en', 'kk'].includes(stored)) {
       return stored;
     }
-    
+
     // Auto-detect from browser language
     const browserLang = navigator.language || navigator.languages?.[0] || '';
     return normalizeLanguage(browserLang);
@@ -93,8 +106,21 @@ i18n
       ru: { translation: ru },
       en: { translation: en },
       kk: { translation: kk },
+      de: { translation: de },
+      uk: { translation: uk },
+      uz: { translation: uz },
+      be: { translation: be },
+      es: { translation: es },
+      fr: { translation: fr },
+      it: { translation: it },
+      pt: { translation: pt },
+      zh: { translation: zh },
+      tr: { translation: tr },
+      ja: { translation: ja },
+      ko: { translation: ko },
+      ar: { translation: ar },
     },
-    supportedLngs: ['ru', 'en', 'kk'],
+    supportedLngs: ['ru', 'en', 'kk', 'de', 'uk', 'uz', 'be', 'es', 'fr', 'it', 'pt', 'zh', 'tr', 'ja', 'ko', 'ar'],
     nonExplicitSupportedLngs: true,
     load: 'languageOnly',
     fallbackLng: {
@@ -112,10 +138,10 @@ i18n
     },
     // Handling missing keys
     saveMissing: import.meta.env.DEV,
-    missingKeyHandler: import.meta.env.DEV 
+    missingKeyHandler: import.meta.env.DEV
       ? (lngs, ns, key, fallbackValue) => {
-          console.warn(`[i18n] Missing key: "${key}" for languages: [${lngs.join(', ')}], namespace: "${ns}"`);
-        }
+        console.warn(`[i18n] Missing key: "${key}" for languages: [${lngs.join(', ')}], namespace: "${ns}"`);
+      }
       : undefined,
     // Return key if missing (instead of empty string)
     returnEmptyString: false,
@@ -127,7 +153,7 @@ if (import.meta.env.DEV) {
   console.log('[i18n] Initialized with language:', i18n.language);
   console.log('[i18n] Supported languages:', ['ru', 'en', 'kk']);
   console.log('[i18n] Resources loaded:', Object.keys(i18n.options.resources || {}));
-  
+
   // Validate all translations and show missing keys
   validateTranslations();
 }
@@ -140,11 +166,11 @@ i18n.on('languageChanged', (lng) => {
     i18n.changeLanguage(normalized);
     return;
   }
-  
+
   if (import.meta.env.DEV) {
     console.log('[i18n] Language changed to:', lng);
   }
-  
+
   // Update HTML lang attribute
   document.documentElement.lang = lng;
 });
