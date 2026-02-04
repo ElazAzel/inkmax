@@ -4,13 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Shield, ArrowLeft, Search, Copy, Download, AlertTriangle,
-  CheckCircle, Languages, Loader2, Upload, RefreshCw, Plus
+  CheckCircle, Languages, Loader2, Upload, RefreshCw, Plus,
+  Globe, ChevronDown, ChevronRight, Trash2, FileJson, Check
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
@@ -19,16 +24,75 @@ import ru from '@/i18n/locales/ru.json';
 import en from '@/i18n/locales/en.json';
 import kk from '@/i18n/locales/kk.json';
 
-type LanguageCode = 'ru' | 'en' | 'kk';
 type TranslationData = Record<string, unknown>;
 
-interface FlattenedKey {
-  key: string;
-  ru: string;
-  en: string;
-  kk: string;
-  missingIn: LanguageCode[];
-}
+// All available languages with metadata
+const ALL_LANGUAGES = [
+  // Core languages (always visible)
+  { code: 'en', name: 'English', flag: '🇬🇧', region: 'core' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺', region: 'core' },
+  { code: 'kk', name: 'Қазақша', flag: '🇰🇿', region: 'core' },
+  // CIS
+  { code: 'uk', name: 'Українська', flag: '🇺🇦', region: 'cis' },
+  { code: 'be', name: 'Беларуская', flag: '🇧🇾', region: 'cis' },
+  { code: 'uz', name: "O'zbekcha", flag: '🇺🇿', region: 'cis' },
+  { code: 'az', name: 'Azərbaycan', flag: '🇦🇿', region: 'cis' },
+  { code: 'ky', name: 'Кыргызча', flag: '🇰🇬', region: 'cis' },
+  { code: 'tg', name: 'Тоҷикӣ', flag: '🇹🇯', region: 'cis' },
+  { code: 'hy', name: 'Հայdelays', flag: '🇦🇲', region: 'cis' },
+  { code: 'ka', name: 'ქართული', flag: '🇬🇪', region: 'cis' },
+  // Europe
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪', region: 'europe' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', region: 'europe' },
+  { code: 'es', name: 'Español', flag: '🇪🇸', region: 'europe' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹', region: 'europe' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹', region: 'europe' },
+  { code: 'pl', name: 'Polski', flag: '🇵🇱', region: 'europe' },
+  { code: 'nl', name: 'Nederlands', flag: '🇳🇱', region: 'europe' },
+  { code: 'cs', name: 'Čeština', flag: '🇨🇿', region: 'europe' },
+  { code: 'sv', name: 'Svenska', flag: '🇸🇪', region: 'europe' },
+  { code: 'da', name: 'Dansk', flag: '🇩🇰', region: 'europe' },
+  { code: 'fi', name: 'Suomi', flag: '🇫🇮', region: 'europe' },
+  { code: 'no', name: 'Norsk', flag: '🇳🇴', region: 'europe' },
+  { code: 'el', name: 'Ελληνικά', flag: '🇬🇷', region: 'europe' },
+  { code: 'ro', name: 'Română', flag: '🇷🇴', region: 'europe' },
+  { code: 'bg', name: 'Български', flag: '🇧🇬', region: 'europe' },
+  { code: 'hr', name: 'Hrvatski', flag: '🇭🇷', region: 'europe' },
+  { code: 'sr', name: 'Српски', flag: '🇷🇸', region: 'europe' },
+  { code: 'sk', name: 'Slovenčina', flag: '🇸🇰', region: 'europe' },
+  { code: 'sl', name: 'Slovenščina', flag: '🇸🇮', region: 'europe' },
+  { code: 'et', name: 'Eesti', flag: '🇪🇪', region: 'europe' },
+  { code: 'lv', name: 'Latviešu', flag: '🇱🇻', region: 'europe' },
+  { code: 'lt', name: 'Lietuvių', flag: '🇱🇹', region: 'europe' },
+  { code: 'hu', name: 'Magyar', flag: '🇭🇺', region: 'europe' },
+  // Turkic
+  { code: 'tr', name: 'Türkçe', flag: '🇹🇷', region: 'turkic' },
+  { code: 'tk', name: 'Türkmençe', flag: '🇹🇲', region: 'turkic' },
+  // Asia
+  { code: 'zh', name: '中文', flag: '🇨🇳', region: 'asia' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵', region: 'asia' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷', region: 'asia' },
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳', region: 'asia' },
+  { code: 'th', name: 'ไทย', flag: '🇹🇭', region: 'asia' },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', region: 'asia' },
+  { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩', region: 'asia' },
+  { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾', region: 'asia' },
+  // Middle East
+  { code: 'ar', name: 'العربية', flag: '🇸🇦', region: 'middle_east' },
+  { code: 'he', name: 'עברית', flag: '🇮🇱', region: 'middle_east' },
+  { code: 'fa', name: 'فارسی', flag: '🇮🇷', region: 'middle_east' },
+];
+
+const REGIONS: Record<string, string> = {
+  core: '⭐ Core',
+  cis: '🌍 CIS',
+  europe: '🇪🇺 Europe',
+  turkic: '🌙 Turkic',
+  asia: '🌏 Asia',
+  middle_east: '🌍 Middle East',
+};
+
+const CORE_LANGUAGES = ['en', 'ru', 'kk'];
 
 // Flatten nested JSON object to dot notation keys
 function flattenObject(obj: TranslationData, prefix = ''): Record<string, string> {
@@ -47,34 +111,6 @@ function flattenObject(obj: TranslationData, prefix = ''): Record<string, string
   return result;
 }
 
-// Get all unique keys from all languages
-function getAllKeys(translations: Record<LanguageCode, TranslationData>): FlattenedKey[] {
-  const flatRu = flattenObject(translations.ru);
-  const flatEn = flattenObject(translations.en);
-  const flatKk = flattenObject(translations.kk);
-  
-  const allKeys = new Set([
-    ...Object.keys(flatRu),
-    ...Object.keys(flatEn),
-    ...Object.keys(flatKk),
-  ]);
-  
-  return Array.from(allKeys).sort().map(key => {
-    const missingIn: LanguageCode[] = [];
-    if (!flatRu[key]) missingIn.push('ru');
-    if (!flatEn[key]) missingIn.push('en');
-    if (!flatKk[key]) missingIn.push('kk');
-    
-    return {
-      key,
-      ru: flatRu[key] || '',
-      en: flatEn[key] || '',
-      kk: flatKk[key] || '',
-      missingIn,
-    };
-  });
-}
-
 // Set nested value by dot notation key
 function setNestedValue(obj: TranslationData, key: string, value: string): void {
   const parts = key.split('.');
@@ -90,32 +126,84 @@ function setNestedValue(obj: TranslationData, key: string, value: string): void 
   current[parts[parts.length - 1]] = value;
 }
 
+// Copy structure from source with empty values
+function copyStructureEmpty(src: TranslationData): TranslationData {
+  const dest: TranslationData = {};
+  for (const key of Object.keys(src)) {
+    if (typeof src[key] === 'object' && src[key] !== null && !Array.isArray(src[key])) {
+      dest[key] = copyStructureEmpty(src[key] as TranslationData);
+    } else {
+      dest[key] = '';
+    }
+  }
+  return dest;
+}
+
+// Group keys by namespace
+function groupKeysByNamespace(keys: string[]): Record<string, string[]> {
+  const groups: Record<string, string[]> = {};
+  for (const key of keys) {
+    const namespace = key.split('.')[0];
+    if (!groups[namespace]) {
+      groups[namespace] = [];
+    }
+    groups[namespace].push(key);
+  }
+  return groups;
+}
+
+// Deep merge function
+function mergeDeep(target: TranslationData, source: TranslationData): TranslationData {
+  const result = { ...target };
+  
+  for (const key of Object.keys(source)) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      if (target[key] && typeof target[key] === 'object') {
+        result[key] = mergeDeep(target[key] as TranslationData, source[key] as TranslationData);
+      } else {
+        result[key] = source[key];
+      }
+    } else {
+      result[key] = source[key];
+    }
+  }
+  
+  return result;
+}
+
 export default function AdminTranslations() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const canonical = 'https://lnkmx.my/admin/translations';
   const seoTitle = t('adminTranslations.seo.title', 'lnkmx Admin Translations');
-  const seoDescription = t(
-    'adminTranslations.seo.description',
-    'Internal translation management for lnkmx.'
-  );
+  const seoDescription = t('adminTranslations.seo.description', 'Internal translation management for lnkmx.');
   const { isAdmin, loading } = useAdminAuth();
   
-  const [translations, setTranslations] = useState<Record<LanguageCode, TranslationData>>({
+  // State: translations data for all active languages
+  const [translations, setTranslations] = useState<Record<string, TranslationData>>({
     ru: JSON.parse(JSON.stringify(ru)),
     en: JSON.parse(JSON.stringify(en)),
     kk: JSON.parse(JSON.stringify(kk)),
   });
   
+  // State: active languages (can add more)
+  const [activeLanguages, setActiveLanguages] = useState<string[]>(['en', 'ru', 'kk']);
+  const [selectedLang, setSelectedLang] = useState<string>('en');
+  
+  // UI state
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState<'all' | 'missing'>('all');
-  const [selectedLang, setSelectedLang] = useState<LanguageCode>('ru');
-  const [newKey, setNewKey] = useState('');
-  const [newValues, setNewValues] = useState<Record<LanguageCode, string>>({
-    ru: '',
-    en: '',
-    kk: '',
-  });
+  const [expandedNamespaces, setExpandedNamespaces] = useState<Set<string>>(new Set(['common', 'blocks']));
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
+  
+  // Dialogs
+  const [addLanguageOpen, setAddLanguageOpen] = useState(false);
+  const [addKeyOpen, setAddKeyOpen] = useState(false);
+  const [newKeyName, setNewKeyName] = useState('');
+  const [newKeyValues, setNewKeyValues] = useState<Record<string, string>>({});
+  const [languageSearch, setLanguageSearch] = useState('');
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -124,81 +212,167 @@ export default function AdminTranslations() {
     }
   }, [loading, isAdmin, navigate]);
 
-  const allKeys = useMemo(() => getAllKeys(translations), [translations]);
-  
+  // Get all unique keys from all active translations
+  const allKeys = useMemo(() => {
+    const keySet = new Set<string>();
+    for (const lang of activeLanguages) {
+      if (translations[lang]) {
+        Object.keys(flattenObject(translations[lang])).forEach(k => keySet.add(k));
+      }
+    }
+    return Array.from(keySet).sort();
+  }, [translations, activeLanguages]);
+
+  // Filter keys
   const filteredKeys = useMemo(() => {
-    return allKeys.filter(item => {
+    return allKeys.filter(key => {
       // Search filter
-      const matchesSearch = !searchQuery || 
-        item.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.ru.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.kk.toLowerCase().includes(searchQuery.toLowerCase());
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesKey = key.toLowerCase().includes(query);
+        const matchesValue = activeLanguages.some(lang => {
+          const flat = flattenObject(translations[lang] || {});
+          return flat[key]?.toLowerCase().includes(query);
+        });
+        if (!matchesKey && !matchesValue) return false;
+      }
       
       // Missing filter
-      const matchesMissing = filterMode === 'all' || item.missingIn.length > 0;
+      if (filterMode === 'missing') {
+        const hasMissing = activeLanguages.some(lang => {
+          const flat = flattenObject(translations[lang] || {});
+          return !flat[key]?.trim();
+        });
+        if (!hasMissing) return false;
+      }
       
-      return matchesSearch && matchesMissing;
+      return true;
     });
-  }, [allKeys, searchQuery, filterMode]);
+  }, [allKeys, searchQuery, filterMode, translations, activeLanguages]);
 
+  // Group filtered keys by namespace
+  const groupedKeys = useMemo(() => groupKeysByNamespace(filteredKeys), [filteredKeys]);
+
+  // Stats
   const stats = useMemo(() => {
-    const total = allKeys.length;
-    const missingRu = allKeys.filter(k => k.missingIn.includes('ru')).length;
-    const missingEn = allKeys.filter(k => k.missingIn.includes('en')).length;
-    const missingKk = allKeys.filter(k => k.missingIn.includes('kk')).length;
-    const complete = allKeys.filter(k => k.missingIn.length === 0).length;
-    
-    return { total, missingRu, missingEn, missingKk, complete };
-  }, [allKeys]);
+    const result: Record<string, number> = {};
+    for (const lang of activeLanguages) {
+      const flat = flattenObject(translations[lang] || {});
+      let missing = 0;
+      for (const key of allKeys) {
+        if (!flat[key]?.trim()) missing++;
+      }
+      result[lang] = missing;
+    }
+    return result;
+  }, [translations, activeLanguages, allKeys]);
 
-  const handleValueChange = (key: string, lang: LanguageCode, value: string) => {
+  // Get value for a key in a language
+  const getValue = (lang: string, key: string): string => {
+    const flat = flattenObject(translations[lang] || {});
+    return flat[key] || '';
+  };
+
+  // Update value
+  const handleValueChange = (lang: string, key: string, value: string) => {
     setTranslations(prev => {
       const updated = { ...prev };
-      updated[lang] = JSON.parse(JSON.stringify(prev[lang]));
+      updated[lang] = JSON.parse(JSON.stringify(prev[lang] || {}));
       setNestedValue(updated[lang], key, value);
       return updated;
     });
   };
 
+  // Save inline edit
+  const handleSaveEdit = () => {
+    if (editingKey) {
+      handleValueChange(selectedLang, editingKey, editValue);
+      setEditingKey(null);
+      setEditValue('');
+      toast.success('Перевод сохранён');
+    }
+  };
+
+  // Add new language
+  const handleAddLanguage = (langCode: string) => {
+    if (!activeLanguages.includes(langCode)) {
+      setActiveLanguages([...activeLanguages, langCode]);
+      // Initialize with empty structure from English
+      if (!translations[langCode]) {
+        const emptyLang = copyStructureEmpty(translations['en'] || {});
+        setTranslations({ ...translations, [langCode]: emptyLang });
+      }
+      toast.success(`Добавлен язык: ${langCode.toUpperCase()}`);
+    }
+    setAddLanguageOpen(false);
+    setLanguageSearch('');
+  };
+
+  // Remove language
+  const handleRemoveLanguage = (langCode: string) => {
+    if (CORE_LANGUAGES.includes(langCode)) {
+      toast.error('Основные языки нельзя удалить');
+      return;
+    }
+    setActiveLanguages(activeLanguages.filter(l => l !== langCode));
+    if (selectedLang === langCode) {
+      setSelectedLang('en');
+    }
+    toast.success(`Язык ${langCode.toUpperCase()} удалён`);
+  };
+
+  // Add new key
   const handleAddKey = () => {
-    const trimmedKey = newKey.trim();
+    const trimmedKey = newKeyName.trim();
     if (!trimmedKey) {
       toast.error('Введите ключ');
       return;
     }
-
-    if (allKeys.some(item => item.key === trimmedKey)) {
+    if (allKeys.includes(trimmedKey)) {
       toast.error('Такой ключ уже существует');
       return;
     }
 
     setTranslations(prev => {
       const updated = { ...prev };
-      (['ru', 'en', 'kk'] as LanguageCode[]).forEach(lang => {
-        updated[lang] = JSON.parse(JSON.stringify(prev[lang]));
-        setNestedValue(updated[lang], trimmedKey, newValues[lang].trim());
-      });
+      for (const lang of activeLanguages) {
+        updated[lang] = JSON.parse(JSON.stringify(prev[lang] || {}));
+        setNestedValue(updated[lang], trimmedKey, newKeyValues[lang]?.trim() || '');
+      }
       return updated;
     });
 
-    setNewKey('');
-    setNewValues({ ru: '', en: '', kk: '' });
-    toast.success('Новый ключ добавлен');
+    setNewKeyName('');
+    setNewKeyValues({});
+    setAddKeyOpen(false);
+    toast.success('Ключ добавлен');
   };
 
-  const copyToClipboard = async (lang: LanguageCode) => {
-    try {
-      const json = JSON.stringify(translations[lang], null, 2);
-      await navigator.clipboard.writeText(json);
-      toast.success(`JSON для ${lang.toUpperCase()} скопирован`);
-    } catch {
-      toast.error('Не удалось скопировать');
+  // Delete key
+  const handleDeleteKey = (key: string) => {
+    const parts = key.split('.');
+    const updated = { ...translations };
+    
+    for (const lang of activeLanguages) {
+      const langObj = JSON.parse(JSON.stringify(updated[lang] || {}));
+      let current: TranslationData = langObj;
+      
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (!current[parts[i]]) break;
+        current = current[parts[i]] as TranslationData;
+      }
+      
+      delete current[parts[parts.length - 1]];
+      updated[lang] = langObj;
     }
+    
+    setTranslations(updated);
+    toast.success('Ключ удалён');
   };
 
-  const downloadJSON = (lang: LanguageCode) => {
-    const json = JSON.stringify(translations[lang], null, 2);
+  // Export
+  const downloadJSON = (lang: string) => {
+    const json = JSON.stringify(translations[lang] || {}, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -209,24 +383,23 @@ export default function AdminTranslations() {
     toast.success(`Файл ${lang}.json скачан`);
   };
 
-  const copyMissingKeys = async (lang: LanguageCode) => {
-    const missing = allKeys.filter(k => k.missingIn.includes(lang));
-    const result: TranslationData = {};
-    
-    missing.forEach(item => {
-      // Use value from another language as placeholder
-      const placeholder = item.ru || item.en || item.kk || `[${item.key}]`;
-      setNestedValue(result, item.key, `[TODO] ${placeholder}`);
-    });
-    
+  const downloadAllJSON = () => {
+    for (const lang of activeLanguages) {
+      downloadJSON(lang);
+    }
+  };
+
+  const copyToClipboard = async (lang: string) => {
     try {
-      await navigator.clipboard.writeText(JSON.stringify(result, null, 2));
-      toast.success(`${missing.length} отсутствующих ключей для ${lang.toUpperCase()} скопировано`);
+      const json = JSON.stringify(translations[lang] || {}, null, 2);
+      await navigator.clipboard.writeText(json);
+      toast.success(`JSON для ${lang.toUpperCase()} скопирован`);
     } catch {
       toast.error('Не удалось скопировать');
     }
   };
 
+  // Import
   const handleImportClick = () => {
     fileInputRef.current?.click();
   };
@@ -239,51 +412,60 @@ export default function AdminTranslations() {
       const text = await file.text();
       const importedData = JSON.parse(text) as TranslationData;
       
-      // Merge imported data with existing translations
       setTranslations(prev => {
         const updated = { ...prev };
-        updated[selectedLang] = mergeDeep(prev[selectedLang], importedData);
+        updated[selectedLang] = mergeDeep(prev[selectedLang] || {}, importedData);
         return updated;
       });
       
       toast.success(`JSON для ${selectedLang.toUpperCase()} импортирован`);
     } catch (error) {
-      toast.error('Ошибка парсинга JSON файла');
+      toast.error('Ошибка парсинга JSON');
       console.error('Import error:', error);
     }
     
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  // Deep merge function for nested objects
-  function mergeDeep(target: TranslationData, source: TranslationData): TranslationData {
-    const result = { ...target };
-    
-    for (const key of Object.keys(source)) {
-      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        if (target[key] && typeof target[key] === 'object') {
-          result[key] = mergeDeep(target[key] as TranslationData, source[key] as TranslationData);
-        } else {
-          result[key] = source[key];
-        }
-      } else {
-        result[key] = source[key];
-      }
-    }
-    
-    return result;
-  }
-
+  // Reset
   const resetToOriginal = () => {
     setTranslations({
       ru: JSON.parse(JSON.stringify(ru)),
       en: JSON.parse(JSON.stringify(en)),
       kk: JSON.parse(JSON.stringify(kk)),
     });
-    toast.success('Переводы сброшены к исходным');
+    setActiveLanguages(['en', 'ru', 'kk']);
+    setSelectedLang('en');
+    toast.success('Переводы сброшены');
+  };
+
+  // Toggle namespace
+  const toggleNamespace = (ns: string) => {
+    const newExpanded = new Set(expandedNamespaces);
+    if (newExpanded.has(ns)) {
+      newExpanded.delete(ns);
+    } else {
+      newExpanded.add(ns);
+    }
+    setExpandedNamespaces(newExpanded);
+  };
+
+  // Available languages to add
+  const availableToAdd = useMemo(() => {
+    const filtered = ALL_LANGUAGES.filter(l => !activeLanguages.includes(l.code));
+    if (!languageSearch.trim()) return filtered;
+    const query = languageSearch.toLowerCase();
+    return filtered.filter(l => 
+      l.name.toLowerCase().includes(query) || 
+      l.code.toLowerCase().includes(query)
+    );
+  }, [activeLanguages, languageSearch]);
+
+  // Get language info
+  const getLangInfo = (code: string) => {
+    return ALL_LANGUAGES.find(l => l.code === code) || { code, name: code.toUpperCase(), flag: '🏳️', region: 'other' };
   };
 
   if (loading) {
@@ -314,274 +496,434 @@ export default function AdminTranslations() {
         ]}
       />
       <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <Shield className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold flex items-center gap-2">
-              <Languages className="h-5 w-5" />
-              Редактор переводов
-            </h1>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-6 space-y-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <Card>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold">{stats.total}</div>
-              <p className="text-sm text-muted-foreground">Всего ключей</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-green-500">{stats.complete}</div>
-              <p className="text-sm text-muted-foreground">Полные</p>
-            </CardContent>
-          </Card>
-          <Card className={stats.missingRu > 0 ? 'border-destructive' : ''}>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-orange-500">{stats.missingRu}</div>
-              <p className="text-sm text-muted-foreground">Нет в RU</p>
-            </CardContent>
-          </Card>
-          <Card className={stats.missingEn > 0 ? 'border-destructive' : ''}>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-orange-500">{stats.missingEn}</div>
-              <p className="text-sm text-muted-foreground">Нет в EN</p>
-            </CardContent>
-          </Card>
-          <Card className={stats.missingKk > 0 ? 'border-destructive' : ''}>
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-orange-500">{stats.missingKk}</div>
-              <p className="text-sm text-muted-foreground">Нет в KK</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Controls */}
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search */}
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Поиск по ключу или значению..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              
-              {/* Filter */}
-              <div className="flex gap-2">
-                <Button
-                  variant={filterMode === 'all' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setFilterMode('all')}
-                >
-                  Все
-                </Button>
-                <Button
-                  variant={filterMode === 'missing' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setFilterMode('missing')}
-                >
-                  <AlertTriangle className="h-4 w-4 mr-1" />
-                  Только отсутствующие
-                </Button>
-              </div>
+        {/* Header */}
+        <header className="border-b border-border bg-card/95 backdrop-blur-sm sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <Shield className="h-6 w-6 text-primary" />
+              <h1 className="text-xl font-bold flex items-center gap-2">
+                <Languages className="h-5 w-5" />
+                Редактор переводов
+              </h1>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Add Key */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Добавить новый ключ</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex flex-col md:flex-row gap-3">
-              <Input
-                placeholder="Например: profile.actions.follow"
-                value={newKey}
-                onChange={(e) => setNewKey(e.target.value)}
-                className="md:flex-[2]"
-              />
-              <Button onClick={handleAddKey} className="md:self-start">
-                <Plus className="h-4 w-4 mr-1" />
-                Добавить ключ
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <Input
-                placeholder="Русский перевод"
-                value={newValues.ru}
-                onChange={(e) => setNewValues(prev => ({ ...prev, ru: e.target.value }))}
-              />
-              <Input
-                placeholder="English translation"
-                value={newValues.en}
-                onChange={(e) => setNewValues(prev => ({ ...prev, en: e.target.value }))}
-              />
-              <Input
-                placeholder="Қазақша аударма"
-                value={newValues.kk}
-                onChange={(e) => setNewValues(prev => ({ ...prev, kk: e.target.value }))}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Можно оставить язык пустым — ключ появится как отсутствующий в статистике.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Language Tabs */}
-        <Tabs value={selectedLang} onValueChange={(v) => setSelectedLang(v as LanguageCode)}>
-          <div className="flex items-center justify-between mb-4">
-            <TabsList>
-              <TabsTrigger value="ru" className="gap-2">
-                🇷🇺 Русский
-                {stats.missingRu > 0 && (
-                  <Badge variant="destructive" className="ml-1">{stats.missingRu}</Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="en" className="gap-2">
-                🇬🇧 English
-                {stats.missingEn > 0 && (
-                  <Badge variant="destructive" className="ml-1">{stats.missingEn}</Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="kk" className="gap-2">
-                🇰🇿 Қазақша
-                {stats.missingKk > 0 && (
-                  <Badge variant="destructive" className="ml-1">{stats.missingKk}</Badge>
-                )}
-              </TabsTrigger>
-            </TabsList>
-            
-            <div className="flex flex-wrap gap-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                onChange={handleFileImport}
-                className="hidden"
-              />
-              <Button variant="outline" size="sm" onClick={handleImportClick}>
-                <Upload className="h-4 w-4 mr-1" />
-                Импорт JSON
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => copyMissingKeys(selectedLang)}>
-                <AlertTriangle className="h-4 w-4 mr-1" />
-                Отсутствующие
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => copyToClipboard(selectedLang)}>
-                <Copy className="h-4 w-4 mr-1" />
-                Копировать
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => downloadJSON(selectedLang)}>
-                <Download className="h-4 w-4 mr-1" />
-                Скачать
-              </Button>
-              <Button variant="ghost" size="sm" onClick={resetToOriginal}>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={resetToOriginal}>
                 <RefreshCw className="h-4 w-4 mr-1" />
                 Сброс
               </Button>
             </div>
           </div>
+        </header>
 
-          {(['ru', 'en', 'kk'] as LanguageCode[]).map(lang => (
-            <TabsContent key={lang} value={lang}>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    Переводы ({filteredKeys.length} из {allKeys.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[600px]">
-                    <div className="space-y-2">
-                      {filteredKeys.map(item => (
-                        <div 
-                          key={item.key}
-                          className={`flex items-start gap-4 p-3 rounded-lg border ${
-                            item.missingIn.includes(lang) 
-                              ? 'border-destructive bg-destructive/5' 
-                              : 'border-border'
-                          }`}
+        <main className="container mx-auto px-4 py-6 space-y-6">
+          {/* Active Languages */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                Активные языки ({activeLanguages.length})
+              </CardTitle>
+              <CardDescription>Нажмите на язык для редактирования</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {activeLanguages.map((langCode) => {
+                  const lang = getLangInfo(langCode);
+                  const missing = stats[langCode] || 0;
+                  const isSelected = selectedLang === langCode;
+                  const isCore = CORE_LANGUAGES.includes(langCode);
+                  
+                  return (
+                    <div
+                      key={langCode}
+                      className={`
+                        relative group flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all
+                        ${isSelected ? 'border-primary bg-primary/10 ring-2 ring-primary/50' : 'border-border hover:border-primary/50'}
+                      `}
+                      onClick={() => setSelectedLang(langCode)}
+                    >
+                      <span className="text-lg">{lang.flag}</span>
+                      <div>
+                        <div className="font-medium text-sm">{lang.name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {missing > 0 ? (
+                            <span className="text-destructive">{missing} отсутствует</span>
+                          ) : (
+                            <span className="text-green-600 dark:text-green-400">✓ Полный</span>
+                          )}
+                        </div>
+                      </div>
+                      {!isCore && (
+                        <button
+                          className="absolute -top-1 -right-1 hidden group-hover:flex items-center justify-center w-5 h-5 rounded-full bg-destructive text-destructive-foreground"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveLanguage(langCode);
+                          }}
                         >
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-2">
-                              <code className="text-xs bg-muted px-2 py-0.5 rounded font-mono truncate">
-                                {item.key}
-                              </code>
-                              {item.missingIn.length === 0 ? (
-                                <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                              ) : (
-                                <Badge variant="destructive" className="text-xs flex-shrink-0">
-                                  Нет в: {item.missingIn.join(', ').toUpperCase()}
-                                </Badge>
-                              )}
-                            </div>
-                            <Input
-                              value={item[lang]}
-                              onChange={(e) => handleValueChange(item.key, lang, e.target.value)}
-                              placeholder={`[Отсутствует] ${item.ru || item.en || item.kk || ''}`}
-                              className={item.missingIn.includes(lang) ? 'border-destructive' : ''}
-                            />
-                            {/* Show other language values for reference */}
-                            <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
-                              {lang !== 'ru' && item.ru && (
-                                <span>🇷🇺 {item.ru.slice(0, 50)}{item.ru.length > 50 ? '...' : ''}</span>
-                              )}
-                              {lang !== 'en' && item.en && (
-                                <span>🇬🇧 {item.en.slice(0, 50)}{item.en.length > 50 ? '...' : ''}</span>
-                              )}
-                              {lang !== 'kk' && item.kk && (
-                                <span>🇰🇿 {item.kk.slice(0, 50)}{item.kk.length > 50 ? '...' : ''}</span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      
-                      {filteredKeys.length === 0 && (
-                        <div className="text-center py-12 text-muted-foreground">
-                          <Languages className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                          <p>Ключи не найдены</p>
-                        </div>
+                          <Trash2 className="h-3 w-3" />
+                        </button>
                       )}
                     </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          ))}
-        </Tabs>
+                  );
+                })}
+                
+                {/* Add Language Button */}
+                <Dialog open={addLanguageOpen} onOpenChange={setAddLanguageOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="h-auto py-2 px-3">
+                      <Plus className="h-4 w-4 mr-1" />
+                      Добавить язык
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh]">
+                    <DialogHeader>
+                      <DialogTitle>Добавить язык</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          value={languageSearch}
+                          onChange={(e) => setLanguageSearch(e.target.value)}
+                          placeholder="Поиск языка..."
+                          className="pl-10"
+                        />
+                      </div>
+                      <ScrollArea className="h-[400px]">
+                        <div className="space-y-4">
+                          {Object.entries(REGIONS).map(([regionKey, regionName]) => {
+                            const regionLangs = availableToAdd.filter(l => l.region === regionKey);
+                            if (regionLangs.length === 0) return null;
+                            
+                            return (
+                              <div key={regionKey}>
+                                <h4 className="text-sm font-medium text-muted-foreground mb-2">{regionName}</h4>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                  {regionLangs.map((lang) => (
+                                    <Button
+                                      key={lang.code}
+                                      variant="outline"
+                                      className="justify-start h-auto py-2"
+                                      onClick={() => handleAddLanguage(lang.code)}
+                                    >
+                                      <span className="mr-2">{lang.flag}</span>
+                                      <span className="truncate">{lang.name}</span>
+                                      <span className="ml-auto text-xs text-muted-foreground">{lang.code}</span>
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {availableToAdd.length === 0 && (
+                            <div className="text-center py-8 text-muted-foreground">
+                              {languageSearch ? 'Языки не найдены' : 'Все языки добавлены'}
+                            </div>
+                          )}
+                        </div>
+                      </ScrollArea>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Instructions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Инструкция</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p><strong>Редактирование:</strong> Изменяйте переводы прямо в полях ввода</p>
-            <p><strong>Импорт:</strong> Загрузите JSON файл кнопкой "Импорт JSON" — новые ключи добавятся, существующие обновятся</p>
-            <p><strong>Экспорт:</strong> Скачайте или скопируйте JSON и замените файл в <code className="bg-muted px-1 rounded">src/i18n/locales/*.json</code></p>
-            <p><strong>Отсутствующие:</strong> Красные поля и бейджи показывают ключи без перевода</p>
-            <p><strong>Сброс:</strong> Кнопка сброса вернёт исходные переводы из кодовой базы</p>
-            <p className="text-amber-500 pt-2">⚠️ Изменения хранятся в памяти — экспортируйте перед уходом!</p>
-          </CardContent>
-        </Card>
-      </main>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="pt-4">
+                <div className="text-2xl font-bold">{allKeys.length}</div>
+                <p className="text-sm text-muted-foreground">Всего ключей</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-4">
+                <div className="text-2xl font-bold">{activeLanguages.length}</div>
+                <p className="text-sm text-muted-foreground">Языков</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-4">
+                <div className="text-2xl font-bold">{Object.keys(groupedKeys).length}</div>
+                <p className="text-sm text-muted-foreground">Неймспейсов</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-4">
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  {activeLanguages.filter(l => (stats[l] || 0) === 0).length}
+                </div>
+                <p className="text-sm text-muted-foreground">Полных языков</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Controls */}
+          <Card>
+            <CardContent className="pt-4">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Поиск по ключу или значению..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={filterMode === 'all' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFilterMode('all')}
+                  >
+                    Все
+                  </Button>
+                  <Button
+                    variant={filterMode === 'missing' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFilterMode('missing')}
+                  >
+                    <AlertTriangle className="h-4 w-4 mr-1" />
+                    Отсутствующие
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Actions */}
+          <div className="flex flex-wrap gap-2">
+            <Dialog open={addKeyOpen} onOpenChange={setAddKeyOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Plus className="h-4 w-4 mr-1" />
+                  Добавить ключ
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Добавить новый ключ</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Ключ (dot notation)</Label>
+                    <Input
+                      value={newKeyName}
+                      onChange={(e) => setNewKeyName(e.target.value)}
+                      placeholder="e.g., common.newButton"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Переводы</Label>
+                    {activeLanguages.slice(0, 5).map(lang => {
+                      const info = getLangInfo(lang);
+                      return (
+                        <div key={lang} className="flex items-center gap-2">
+                          <span className="w-8 text-center">{info.flag}</span>
+                          <Input
+                            value={newKeyValues[lang] || ''}
+                            onChange={(e) => setNewKeyValues(prev => ({ ...prev, [lang]: e.target.value }))}
+                            placeholder={`${info.name}...`}
+                          />
+                        </div>
+                      );
+                    })}
+                    {activeLanguages.length > 5 && (
+                      <p className="text-xs text-muted-foreground">
+                        + ещё {activeLanguages.length - 5} языков (добавятся пустыми)
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setAddKeyOpen(false)}>Отмена</Button>
+                  <Button onClick={handleAddKey}>Добавить</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleFileImport}
+              className="hidden"
+            />
+            <Button variant="outline" size="sm" onClick={handleImportClick}>
+              <Upload className="h-4 w-4 mr-1" />
+              Импорт JSON ({selectedLang})
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => copyToClipboard(selectedLang)}>
+              <Copy className="h-4 w-4 mr-1" />
+              Копировать ({selectedLang})
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => downloadJSON(selectedLang)}>
+              <FileJson className="h-4 w-4 mr-1" />
+              Скачать ({selectedLang})
+            </Button>
+            <Button variant="outline" size="sm" onClick={downloadAllJSON}>
+              <Download className="h-4 w-4 mr-1" />
+              Скачать все
+            </Button>
+          </div>
+
+          {/* Editor */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  {getLangInfo(selectedLang).flag} Редактирование: {getLangInfo(selectedLang).name}
+                </CardTitle>
+                <Badge variant="outline">{filteredKeys.length} ключей</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="h-[600px]">
+                <div className="p-4 space-y-2">
+                  {Object.entries(groupedKeys).sort().map(([namespace, keys]) => (
+                    <Collapsible
+                      key={namespace}
+                      open={expandedNamespaces.has(namespace)}
+                      onOpenChange={() => toggleNamespace(namespace)}
+                    >
+                      <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg hover:bg-muted/50">
+                        {expandedNamespaces.has(namespace) ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                        <span className="font-medium">{namespace}</span>
+                        <Badge variant="secondary" className="ml-auto">{keys.length}</Badge>
+                      </CollapsibleTrigger>
+                      
+                      <CollapsibleContent className="pl-6 space-y-1 mt-1">
+                        {keys.sort().map((key) => {
+                          const shortKey = key.substring(namespace.length + 1);
+                          const value = getValue(selectedLang, key);
+                          const enValue = getValue('en', key);
+                          const isEmpty = !value.trim();
+                          
+                          return (
+                            <div
+                              key={key}
+                              className={`
+                                group flex items-start gap-3 p-2 rounded-lg border
+                                ${isEmpty ? 'border-destructive/30 bg-destructive/5' : 'border-transparent hover:bg-muted/30'}
+                                ${editingKey === key ? 'ring-2 ring-primary' : ''}
+                              `}
+                            >
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <code className="text-xs text-muted-foreground font-mono truncate">{shortKey}</code>
+                                  {isEmpty ? (
+                                    <AlertTriangle className="h-3 w-3 text-destructive flex-shrink-0" />
+                                  ) : (
+                                    <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" />
+                                  )}
+                                </div>
+                                
+                                {editingKey === key ? (
+                                  <div className="space-y-2">
+                                    {selectedLang !== 'en' && enValue && (
+                                      <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
+                                        <span className="font-medium">🇬🇧 EN:</span> {enValue}
+                                      </div>
+                                    )}
+                                    <Textarea
+                                      value={editValue}
+                                      onChange={(e) => setEditValue(e.target.value)}
+                                      className="min-h-[60px] text-sm"
+                                      autoFocus
+                                    />
+                                    <div className="flex gap-2">
+                                      <Button size="sm" onClick={handleSaveEdit}>
+                                        <Check className="h-3 w-3 mr-1" />
+                                        Сохранить
+                                      </Button>
+                                      <Button size="sm" variant="outline" onClick={() => setEditingKey(null)}>
+                                        Отмена
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div
+                                    className="text-sm cursor-pointer min-h-[24px]"
+                                    onClick={() => {
+                                      setEditingKey(key);
+                                      setEditValue(value);
+                                    }}
+                                  >
+                                    {value || <span className="text-muted-foreground italic">Нажмите чтобы добавить...</span>}
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {enValue && selectedLang !== 'en' && (
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-6 w-6"
+                                    title="Скопировать с EN"
+                                    onClick={() => {
+                                      handleValueChange(selectedLang, key, enValue);
+                                      toast.success('Скопировано с EN');
+                                    }}
+                                  >
+                                    <Copy className="h-3 w-3" />
+                                  </Button>
+                                )}
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-6 w-6 text-destructive"
+                                  title="Удалить ключ"
+                                  onClick={() => handleDeleteKey(key)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ))}
+                  
+                  {filteredKeys.length === 0 && (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <Languages className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>Ключи не найдены</p>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          {/* Instructions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Инструкция</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground space-y-2">
+              <p><strong>1. Добавьте языки:</strong> Кнопка "Добавить язык" → выберите из списка</p>
+              <p><strong>2. Выберите язык:</strong> Кликните на карточку языка для редактирования</p>
+              <p><strong>3. Редактируйте:</strong> Кликните на любой перевод для изменения</p>
+              <p><strong>4. Экспортируйте:</strong> Скачайте JSON и замените в <code className="bg-muted px-1 rounded">src/i18n/locales/</code></p>
+              <p className="text-amber-600 dark:text-amber-400 pt-2">
+                ⚠️ Изменения хранятся в памяти браузера — не забудьте экспортировать!
+              </p>
+            </CardContent>
+          </Card>
+        </main>
       </div>
     </>
   );
