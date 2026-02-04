@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { 
+import {
   Shield, ArrowLeft, Search, Copy, Download, AlertTriangle,
   CheckCircle, Languages, Loader2, Upload, RefreshCw, Plus,
   Globe, ChevronDown, ChevronRight, Trash2, FileJson, Check
@@ -23,6 +23,19 @@ import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 import ru from '@/i18n/locales/ru.json';
 import en from '@/i18n/locales/en.json';
 import kk from '@/i18n/locales/kk.json';
+import de from '@/i18n/locales/de.json';
+import uk from '@/i18n/locales/uk.json';
+import uz from '@/i18n/locales/uz.json';
+import be from '@/i18n/locales/be.json';
+import es from '@/i18n/locales/es.json';
+import fr from '@/i18n/locales/fr.json';
+import it from '@/i18n/locales/it.json';
+import pt from '@/i18n/locales/pt.json';
+import zh from '@/i18n/locales/zh.json';
+import tr from '@/i18n/locales/tr.json';
+import ja from '@/i18n/locales/ja.json';
+import ko from '@/i18n/locales/ko.json';
+import ar from '@/i18n/locales/ar.json';
 
 type TranslationData = Record<string, unknown>;
 
@@ -92,22 +105,22 @@ const REGIONS: Record<string, string> = {
   middle_east: '🌍 Middle East',
 };
 
-const CORE_LANGUAGES = ['en', 'ru', 'kk'];
+const CORE_LANGUAGES = ['en', 'ru', 'kk', 'de', 'uk', 'uz', 'be', 'es', 'fr', 'it', 'pt', 'zh', 'tr', 'ja', 'ko', 'ar'];
 
 // Flatten nested JSON object to dot notation keys
 function flattenObject(obj: TranslationData, prefix = ''): Record<string, string> {
   const result: Record<string, string> = {};
-  
+
   for (const [key, value] of Object.entries(obj)) {
     const newKey = prefix ? `${prefix}.${key}` : key;
-    
+
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       Object.assign(result, flattenObject(value as TranslationData, newKey));
     } else {
       result[newKey] = String(value ?? '');
     }
   }
-  
+
   return result;
 }
 
@@ -115,14 +128,14 @@ function flattenObject(obj: TranslationData, prefix = ''): Record<string, string
 function setNestedValue(obj: TranslationData, key: string, value: string): void {
   const parts = key.split('.');
   let current: TranslationData = obj;
-  
+
   for (let i = 0; i < parts.length - 1; i++) {
     if (!current[parts[i]]) {
       current[parts[i]] = {};
     }
     current = current[parts[i]] as TranslationData;
   }
-  
+
   current[parts[parts.length - 1]] = value;
 }
 
@@ -155,7 +168,7 @@ function groupKeysByNamespace(keys: string[]): Record<string, string[]> {
 // Deep merge function
 function mergeDeep(target: TranslationData, source: TranslationData): TranslationData {
   const result = { ...target };
-  
+
   for (const key of Object.keys(source)) {
     if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
       if (target[key] && typeof target[key] === 'object') {
@@ -167,7 +180,7 @@ function mergeDeep(target: TranslationData, source: TranslationData): Translatio
       result[key] = source[key];
     }
   }
-  
+
   return result;
 }
 
@@ -178,32 +191,45 @@ export default function AdminTranslations() {
   const seoTitle = t('adminTranslations.seo.title', 'lnkmx Admin Translations');
   const seoDescription = t('adminTranslations.seo.description', 'Internal translation management for lnkmx.');
   const { isAdmin, loading } = useAdminAuth();
-  
+
   // State: translations data for all active languages
   const [translations, setTranslations] = useState<Record<string, TranslationData>>({
     ru: JSON.parse(JSON.stringify(ru)),
     en: JSON.parse(JSON.stringify(en)),
     kk: JSON.parse(JSON.stringify(kk)),
+    de: JSON.parse(JSON.stringify(de)),
+    uk: JSON.parse(JSON.stringify(uk)),
+    uz: JSON.parse(JSON.stringify(uz)),
+    be: JSON.parse(JSON.stringify(be)),
+    es: JSON.parse(JSON.stringify(es)),
+    fr: JSON.parse(JSON.stringify(fr)),
+    it: JSON.parse(JSON.stringify(it)),
+    pt: JSON.parse(JSON.stringify(pt)),
+    zh: JSON.parse(JSON.stringify(zh)),
+    tr: JSON.parse(JSON.stringify(tr)),
+    ja: JSON.parse(JSON.stringify(ja)),
+    ko: JSON.parse(JSON.stringify(ko)),
+    ar: JSON.parse(JSON.stringify(ar)),
   });
-  
+
   // State: active languages (can add more)
-  const [activeLanguages, setActiveLanguages] = useState<string[]>(['en', 'ru', 'kk']);
+  const [activeLanguages, setActiveLanguages] = useState<string[]>(['en', 'ru', 'kk', 'de', 'uk', 'uz', 'be', 'es', 'fr', 'it', 'pt', 'zh', 'tr', 'ja', 'ko', 'ar']);
   const [selectedLang, setSelectedLang] = useState<string>('en');
-  
+
   // UI state
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState<'all' | 'missing'>('all');
   const [expandedNamespaces, setExpandedNamespaces] = useState<Set<string>>(new Set(['common', 'blocks']));
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
-  
+
   // Dialogs
   const [addLanguageOpen, setAddLanguageOpen] = useState(false);
   const [addKeyOpen, setAddKeyOpen] = useState(false);
   const [newKeyName, setNewKeyName] = useState('');
   const [newKeyValues, setNewKeyValues] = useState<Record<string, string>>({});
   const [languageSearch, setLanguageSearch] = useState('');
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -236,7 +262,7 @@ export default function AdminTranslations() {
         });
         if (!matchesKey && !matchesValue) return false;
       }
-      
+
       // Missing filter
       if (filterMode === 'missing') {
         const hasMissing = activeLanguages.some(lang => {
@@ -245,7 +271,7 @@ export default function AdminTranslations() {
         });
         if (!hasMissing) return false;
       }
-      
+
       return true;
     });
   }, [allKeys, searchQuery, filterMode, translations, activeLanguages]);
@@ -352,20 +378,20 @@ export default function AdminTranslations() {
   const handleDeleteKey = (key: string) => {
     const parts = key.split('.');
     const updated = { ...translations };
-    
+
     for (const lang of activeLanguages) {
       const langObj = JSON.parse(JSON.stringify(updated[lang] || {}));
       let current: TranslationData = langObj;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         if (!current[parts[i]]) break;
         current = current[parts[i]] as TranslationData;
       }
-      
+
       delete current[parts[parts.length - 1]];
       updated[lang] = langObj;
     }
-    
+
     setTranslations(updated);
     toast.success('Ключ удалён');
   };
@@ -411,19 +437,19 @@ export default function AdminTranslations() {
     try {
       const text = await file.text();
       const importedData = JSON.parse(text) as TranslationData;
-      
+
       setTranslations(prev => {
         const updated = { ...prev };
         updated[selectedLang] = mergeDeep(prev[selectedLang] || {}, importedData);
         return updated;
       });
-      
+
       toast.success(`JSON для ${selectedLang.toUpperCase()} импортирован`);
     } catch (error) {
       toast.error('Ошибка парсинга JSON');
       console.error('Import error:', error);
     }
-    
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -457,8 +483,8 @@ export default function AdminTranslations() {
     const filtered = ALL_LANGUAGES.filter(l => !activeLanguages.includes(l.code));
     if (!languageSearch.trim()) return filtered;
     const query = languageSearch.toLowerCase();
-    return filtered.filter(l => 
-      l.name.toLowerCase().includes(query) || 
+    return filtered.filter(l =>
+      l.name.toLowerCase().includes(query) ||
       l.code.toLowerCase().includes(query)
     );
   }, [activeLanguages, languageSearch]);
@@ -535,7 +561,7 @@ export default function AdminTranslations() {
                   const missing = stats[langCode] || 0;
                   const isSelected = selectedLang === langCode;
                   const isCore = CORE_LANGUAGES.includes(langCode);
-                  
+
                   return (
                     <div
                       key={langCode}
@@ -570,7 +596,7 @@ export default function AdminTranslations() {
                     </div>
                   );
                 })}
-                
+
                 {/* Add Language Button */}
                 <Dialog open={addLanguageOpen} onOpenChange={setAddLanguageOpen}>
                   <DialogTrigger asChild>
@@ -598,7 +624,7 @@ export default function AdminTranslations() {
                           {Object.entries(REGIONS).map(([regionKey, regionName]) => {
                             const regionLangs = availableToAdd.filter(l => l.region === regionKey);
                             if (regionLangs.length === 0) return null;
-                            
+
                             return (
                               <div key={regionKey}>
                                 <h4 className="text-sm font-medium text-muted-foreground mb-2">{regionName}</h4>
@@ -676,7 +702,7 @@ export default function AdminTranslations() {
                     className="pl-10"
                   />
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                   <Button
                     variant={filterMode === 'all' ? 'default' : 'outline'}
@@ -802,14 +828,14 @@ export default function AdminTranslations() {
                         <span className="font-medium">{namespace}</span>
                         <Badge variant="secondary" className="ml-auto">{keys.length}</Badge>
                       </CollapsibleTrigger>
-                      
+
                       <CollapsibleContent className="pl-6 space-y-1 mt-1">
                         {keys.sort().map((key) => {
                           const shortKey = key.substring(namespace.length + 1);
                           const value = getValue(selectedLang, key);
                           const enValue = getValue('en', key);
                           const isEmpty = !value.trim();
-                          
+
                           return (
                             <div
                               key={key}
@@ -828,7 +854,7 @@ export default function AdminTranslations() {
                                     <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" />
                                   )}
                                 </div>
-                                
+
                                 {editingKey === key ? (
                                   <div className="space-y-2">
                                     {selectedLang !== 'en' && enValue && (
@@ -864,7 +890,7 @@ export default function AdminTranslations() {
                                   </div>
                                 )}
                               </div>
-                              
+
                               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 {enValue && selectedLang !== 'en' && (
                                   <Button
@@ -896,7 +922,7 @@ export default function AdminTranslations() {
                       </CollapsibleContent>
                     </Collapsible>
                   ))}
-                  
+
                   {filteredKeys.length === 0 && (
                     <div className="text-center py-12 text-muted-foreground">
                       <Languages className="h-12 w-12 mx-auto mb-4 opacity-50" />

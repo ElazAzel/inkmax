@@ -124,10 +124,11 @@ i18n
     nonExplicitSupportedLngs: true,
     load: 'languageOnly',
     fallbackLng: {
-      'kz': ['kk', 'ru'],
-      'uk': ['ru'],
-      'be': ['ru'],
-      'default': ['ru', 'en']
+      'kz': ['kk', 'en'],
+      'uk': ['en'],
+      'be': ['en'],
+      'uz': ['en'],
+      'default': ['en']
     },
     interpolation: {
       escapeValue: false, // React already escapes
