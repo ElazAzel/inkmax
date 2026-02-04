@@ -63,21 +63,21 @@ export const TRANSLATION_LANGUAGES: { code: LocaleCode; name: string; flag: stri
 export function detectBrowserLanguage(): LocaleCode {
   const browserLang = navigator.language || (navigator as any).userLanguage || 'en';
   const langCode = browserLang.split('-')[0].toLowerCase();
-  
+
   // Check if it's a supported language
   const supported = TRANSLATION_LANGUAGES.find(l => l.code === langCode);
   if (supported) return langCode;
-  
+
   // Fallback to English
   return 'en';
 }
 
 // Get language info by code
 export function getLanguageInfo(code: LocaleCode) {
-  return TRANSLATION_LANGUAGES.find(l => l.code === code) || { 
-    code, 
-    name: code.toUpperCase(), 
-    flag: '🏳️' 
+  return TRANSLATION_LANGUAGES.find(l => l.code === code) || {
+    code,
+    name: code.toUpperCase(),
+    flag: '🏳️'
   };
 }
 
@@ -106,7 +106,7 @@ export function TranslationLanguageSelector({
 }: TranslationLanguageSelectorProps) {
   const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
-  
+
   // Use controlled or uncontrolled state
   const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setIsOpen = (value: boolean) => {
@@ -128,13 +128,13 @@ export function TranslationLanguageSelector({
   // Group languages by region
   const groupedLanguages = useMemo(() => {
     const groups: Record<string, typeof TRANSLATION_LANGUAGES> = {};
-    
+
     for (const lang of TRANSLATION_LANGUAGES) {
       const region = lang.region || 'Other';
       if (!groups[region]) groups[region] = [];
       groups[region].push(lang);
     }
-    
+
     return groups;
   }, []);
 
@@ -143,7 +143,7 @@ export function TranslationLanguageSelector({
     if (code === 'en') return;
     // Can't select source language
     if (code === sourceLanguage) return;
-    
+
     if (ensuredSelection.includes(code)) {
       onSelectionChange(ensuredSelection.filter(l => l !== code));
     } else {
@@ -177,8 +177,8 @@ export function TranslationLanguageSelector({
         {ensuredSelection.map(code => {
           const lang = getLanguageInfo(code);
           return (
-            <Badge 
-              key={code} 
+            <Badge
+              key={code}
               variant={code === 'en' ? 'default' : 'secondary'}
               className="gap-1"
             >
@@ -216,7 +216,7 @@ export function TranslationLanguageSelector({
           </Button>
         </DialogTrigger>
       )}
-      
+
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -230,29 +230,21 @@ export function TranslationLanguageSelector({
 
         {/* Quick actions */}
         <div className="flex items-center gap-2 pb-2 border-b">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleSelectAll}
             className="text-xs"
           >
             {t('translation.selectAll', 'Выбрать все')}
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleSelectNone}
             className="text-xs"
           >
             {t('translation.selectNone', 'Снять выбор')}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleAutoDetectLanguage}
-            className="text-xs"
-          >
-            {t('translation.browserLanguageDetected', 'Определить язык браузера', { language: getLanguageInfo(detectBrowserLanguage()).name })}
           </Button>
           <div className="flex-1" />
           <Badge variant="outline">
@@ -273,7 +265,7 @@ export function TranslationLanguageSelector({
                     const isSelected = ensuredSelection.includes(lang.code);
                     const isSource = lang.code === sourceLanguage;
                     const isMandatory = lang.code === 'en';
-                    
+
                     return (
                       <button
                         key={lang.code}
@@ -341,7 +333,7 @@ export function TranslationLanguageSelector({
               </Badge>
             )}
           </div>
-          
+
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => setIsOpen(false)}>
               {t('common.cancel', 'Отмена')}
