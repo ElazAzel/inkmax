@@ -202,14 +202,24 @@ serve(async (req) => {
             };
         }
 
-        // Save to upload history
-        await supabaseClient.from('language_upload_history').insert({
-            language_code: languageCode,
-            translations,
-            validation_result: validationResult,
-            uploaded_by: user.id,
-            status: validationResult.valid ? 'validated' : 'pending',
-        });
+        // Save to upload history and capture the ID
+        const { data: historyRecord, error: historyError } = await supabaseClient
+            .from('language_upload_history')
+            .insert({
+                language_code: languageCode,
+                translations,
+                validation_result: validationResult,
+                uploaded_by: user.id,
+                status: validationResult.valid ? 'validated' : 'pending',
+            })
+            .select('id')
+            .single();
+
+        if (historyError) {
+            console.error('Error saving upload history:', historyError);
+        }
+
+        const historyId = historyRecord?.id;
 
         // If action is 'apply' and validation is successful, update or insert language
         if (action === 'apply' && validationResult.valid) {
@@ -231,21 +241,28 @@ serve(async (req) => {
                     .eq('language_code', languageCode);
             } else {
                 // Insert new language
+                // Safely access nested properties with type checking
+                const translationsObj = translations as Record<string, unknown>;
+                const commonObj = translationsObj.common as Record<string, unknown> | undefined;
+                const languageName = (typeof commonObj?.languageName === 'string' && commonObj.languageName)
+                    ? commonObj.languageName
+                    : languageCode.toUpperCase();
+
                 await supabaseClient.from('languages').insert({
                     language_code: languageCode,
-                    language_name: translations.common?.languageName || languageCode.toUpperCase(),
+                    language_name: languageName,
                     translations,
                     uploaded_by: user.id,
                 });
             }
 
-            // Mark as applied in history
-            await supabaseClient
-                .from('language_upload_history')
-                .update({ status: 'applied' })
-                .eq('language_code', languageCode)
-                .order('created_at', { ascending: false })
-                .limit(1);
+            // Mark as applied in history using the captured ID
+            if (historyId) {
+                await supabaseClient
+                    .from('language_upload_history')
+                    .update({ status: 'applied' })
+                    .eq('id', historyId);
+            }
         }
 
         return new Response(
@@ -260,8 +277,9 @@ serve(async (req) => {
 
     } catch (error) {
         console.error('Error processing language upload:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Internal server error';
         return new Response(
-            JSON.stringify({ error: error.message || 'Internal server error' }),
+            JSON.stringify({ error: errorMessage }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
     }
