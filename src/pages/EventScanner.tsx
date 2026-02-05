@@ -33,6 +33,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ru, kk, enUS } from 'date-fns/locale';
 import { openPremiumPurchase } from '@/lib/upgrade-utils';
+import { logger } from '@/lib/logger';
 import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
 
 interface ScanResult {
@@ -56,7 +57,7 @@ export default function EventScanner() {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { isPremium, isLoading: premiumLoading } = usePremiumStatus();
-  
+
   const [eventInfo, setEventInfo] = useState<EventInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [scanning, setScanning] = useState(false);
@@ -67,7 +68,7 @@ export default function EventScanner() {
   const [torchOn, setTorchOn] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [cameraReady, setCameraReady] = useState(false);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const controlsRef = useRef<IScannerControls | null>(null);
@@ -80,7 +81,7 @@ export default function EventScanner() {
   useEffect(() => {
     const fetchEventInfo = async () => {
       if (!user || !eventId) return;
-      
+
       try {
         const { data: event, error } = await supabase
           .from('events')
@@ -103,19 +104,19 @@ export default function EventScanner() {
           .eq('status', 'confirmed');
 
         const total = registrations?.length || 0;
-        const checkedIn = registrations?.filter(r => 
+        const checkedIn = registrations?.filter(r =>
           r.event_tickets?.some((t: { status: string }) => t.status === 'used')
         ).length || 0;
 
         setEventInfo({
           id: event.id,
-          title: (event.title_i18n_json as Record<string, string>)?.[i18n.language] || 
-                 (event.title_i18n_json as Record<string, string>)?.ru || 'Event',
+          title: (event.title_i18n_json as Record<string, string>)?.[i18n.language] ||
+            (event.title_i18n_json as Record<string, string>)?.ru || 'Event',
           totalRegistrations: total,
           checkedIn,
         });
       } catch (error) {
-        console.error('Error fetching event:', error);
+        logger.error('Error fetching event:', error, { context: 'EventScanner' });
         toast.error(t('events.fetchError', 'Ошибка загрузки'));
       } finally {
         setLoading(false);
@@ -165,10 +166,10 @@ export default function EventScanner() {
         };
       }
 
-      const registration = ticket.registration as { 
-        id: string; 
-        attendee_name: string; 
-        event_id: string; 
+      const registration = ticket.registration as {
+        id: string;
+        attendee_name: string;
+        event_id: string;
         owner_id: string;
       };
 
@@ -217,9 +218,9 @@ export default function EventScanner() {
       // Mark as used
       const { error: updateError } = await supabase
         .from('event_tickets')
-        .update({ 
-          status: 'used', 
-          checked_in_at: new Date().toISOString() 
+        .update({
+          status: 'used',
+          checked_in_at: new Date().toISOString()
         })
         .eq('id', ticket.id);
 
@@ -244,7 +245,7 @@ export default function EventScanner() {
         timestamp: new Date(),
       };
     } catch (error) {
-      console.error('Check-in error:', error);
+      logger.error('Check-in error:', error, { context: 'EventScanner' });
       return {
         ticketCode,
         attendeeName: '',
@@ -258,7 +259,7 @@ export default function EventScanner() {
   // Process scan result
   const processScan = useCallback(async (code: string) => {
     if (processing || !code.trim()) return;
-    
+
     // Check if already scanned recently
     if (recentScans.some(s => s.ticketCode === code.toUpperCase())) {
       return;
@@ -267,7 +268,7 @@ export default function EventScanner() {
     setProcessing(true);
     const result = await checkInTicket(code.trim());
     setRecentScans(prev => [result, ...prev.slice(0, 9)]);
-    
+
     if (result.success) {
       toast.success(`✓ ${result.attendeeName}`);
       // Vibrate on success
@@ -280,35 +281,35 @@ export default function EventScanner() {
         navigator.vibrate(300);
       }
     }
-    
+
     setProcessing(false);
     setManualCode('');
   }, [processing, recentScans, checkInTicket]);
 
   // Stop camera and cleanup
   const stopCamera = useCallback(() => {
-    console.log('[Scanner] Stopping camera...');
-    
+    logger.debug('[Scanner] Stopping camera...');
+
     if (controlsRef.current) {
       try {
         controlsRef.current.stop();
       } catch (e) {
-        console.warn('[Scanner] Error stopping controls:', e);
+        logger.warn('[Scanner] Error stopping controls:', e);
       }
       controlsRef.current = null;
     }
-    
+
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => {
         track.stop();
       });
       streamRef.current = null;
     }
-    
+
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
-    
+
     setScanning(false);
     setCameraReady(false);
     setTorchOn(false);
@@ -316,26 +317,26 @@ export default function EventScanner() {
 
   // Start camera with QR reader
   const startCamera = useCallback(async () => {
-    console.log('[Scanner] Starting camera...');
-    
+    logger.debug('[Scanner] Starting camera...');
+
     // Cleanup any existing camera first
     stopCamera();
-    
+
     try {
       setCameraError(null);
-      
+
       // Check if we have a video element
       if (!videoRef.current) {
-        console.error('[Scanner] Video element not found');
+        logger.error('[Scanner] Video element not found');
         setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
         setManualMode(true);
         return;
       }
 
       // Step 1: Request camera permission explicitly
-      console.log('[Scanner] Requesting camera permission...');
+      logger.debug('[Scanner] Requesting camera permission...');
       let stream: MediaStream;
-      
+
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
@@ -346,8 +347,8 @@ export default function EventScanner() {
           audio: false,
         });
       } catch (permError) {
-        console.error('[Scanner] Permission error:', permError);
-        
+        logger.error('[Scanner] Permission error:', permError);
+
         if (permError instanceof DOMException) {
           if (permError.name === 'NotAllowedError') {
             setCameraError(t('events.cameraPermissionDenied', 'Разрешите доступ к камере в настройках браузера'));
@@ -361,7 +362,7 @@ export default function EventScanner() {
         } else {
           setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
         }
-        
+
         setManualMode(true);
         return;
       }
@@ -371,31 +372,31 @@ export default function EventScanner() {
         return;
       }
 
-      console.log('[Scanner] Got camera stream, attaching to video...');
+      logger.debug('[Scanner] Got camera stream, attaching to video...');
       streamRef.current = stream;
-      
+
       // Step 2: Attach stream to video element
       videoRef.current.srcObject = stream;
-      
+
       // Wait for video to be ready
       await new Promise<void>((resolve, reject) => {
         const video = videoRef.current!;
-        
+
         const onLoadedMetadata = () => {
           video.removeEventListener('loadedmetadata', onLoadedMetadata);
           video.removeEventListener('error', onError);
           resolve();
         };
-        
+
         const onError = (e: Event) => {
           video.removeEventListener('loadedmetadata', onLoadedMetadata);
           video.removeEventListener('error', onError);
           reject(new Error('Video element error'));
         };
-        
+
         video.addEventListener('loadedmetadata', onLoadedMetadata);
         video.addEventListener('error', onError);
-        
+
         // Timeout fallback
         setTimeout(() => {
           video.removeEventListener('loadedmetadata', onLoadedMetadata);
@@ -405,13 +406,13 @@ export default function EventScanner() {
       });
 
       // Step 3: Play the video
-      console.log('[Scanner] Playing video...');
+      logger.debug('[Scanner] Playing video...');
       try {
         await videoRef.current.play();
       } catch (playError) {
-        console.warn('[Scanner] Video play error (may be fine):', playError);
+        logger.warn('[Scanner] Video play error (may be fine):', { data: { error: playError } });
       }
-      
+
       if (!isMountedRef.current) {
         stopCamera();
         return;
@@ -419,10 +420,10 @@ export default function EventScanner() {
 
       setCameraReady(true);
       setScanning(true);
-      console.log('[Scanner] Camera is ready and streaming');
+      logger.debug('[Scanner] Camera is ready and streaming');
 
       // Step 4: Initialize QR code reader
-      console.log('[Scanner] Initializing QR reader...');
+      logger.debug('[Scanner] Initializing QR reader...');
       if (!readerRef.current) {
         readerRef.current = new BrowserMultiFormatReader();
       }
@@ -433,18 +434,18 @@ export default function EventScanner() {
         (result, error) => {
           if (result) {
             const code = result.getText();
-            console.log('[Scanner] QR Code detected:', code);
+            logger.debug('[Scanner] QR Code detected:', { data: { code } });
             processScan(code);
           }
           // Errors during scanning are normal (no QR in frame), ignore them
         }
       );
-      
+
       controlsRef.current = controls;
-      console.log('[Scanner] QR reader started successfully');
-      
+      logger.debug('[Scanner] QR reader started successfully');
+
     } catch (error) {
-      console.error('[Scanner] Camera error:', error);
+      logger.error('[Scanner] Camera error:', error);
       setCameraError(t('events.cameraError', 'Не удалось запустить камеру'));
       setManualMode(true);
     }
@@ -489,7 +490,7 @@ export default function EventScanner() {
           startCamera();
         }
       }, 500);
-      
+
       return () => clearTimeout(timer);
     }
   }, [loading, premiumLoading, isPremium, eventInfo, manualMode]);
@@ -506,8 +507,8 @@ export default function EventScanner() {
           <p className="text-muted-foreground mb-6 leading-relaxed">
             {t('events.scannerProDescription', 'Отмечайте гостей по QR-кодам на входе')}
           </p>
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="h-14 px-8 rounded-2xl text-base font-bold shadow-xl shadow-primary/30"
             onClick={openPremiumPurchase}
           >
@@ -562,7 +563,7 @@ export default function EventScanner() {
               playsInline
               muted
             />
-            
+
             {/* Loading state */}
             {!cameraReady && (
               <div className="absolute inset-0 flex items-center justify-center bg-black">
@@ -572,7 +573,7 @@ export default function EventScanner() {
                 </div>
               </div>
             )}
-            
+
             {/* Scan overlay */}
             {cameraReady && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -630,7 +631,7 @@ export default function EventScanner() {
                 maxLength={12}
                 disabled={processing}
               />
-              <Button 
+              <Button
                 onClick={() => processScan(manualCode)}
                 disabled={!manualCode.trim() || processing}
               >
@@ -676,7 +677,7 @@ export default function EventScanner() {
             <Clock className="h-4 w-4" />
             {t('events.recentScans', 'Последние сканы')}
           </h3>
-          
+
           <ScrollArea className="h-64">
             {recentScans.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground text-sm">
@@ -685,18 +686,16 @@ export default function EventScanner() {
             ) : (
               <div className="space-y-2">
                 {recentScans.map((scan, idx) => (
-                  <Card 
+                  <Card
                     key={`${scan.ticketCode}-${idx}`}
-                    className={`p-3 flex items-center gap-3 ${
-                      scan.success 
-                        ? 'border-green-500/30 bg-green-500/5' 
-                        : 'border-red-500/30 bg-red-500/5'
-                    }`}
+                    className={`p-3 flex items-center gap-3 ${scan.success
+                      ? 'border-green-500/30 bg-green-500/5'
+                      : 'border-red-500/30 bg-red-500/5'
+                      }`}
                   >
-                    <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                      scan.success ? 'bg-green-500/20' : 'bg-red-500/20'
-                    }`}>
-                      {scan.success 
+                    <div className={`h-8 w-8 rounded-full flex items-center justify-center ${scan.success ? 'bg-green-500/20' : 'bg-red-500/20'
+                      }`}>
+                      {scan.success
                         ? <Check className="h-4 w-4 text-green-500" />
                         : <X className="h-4 w-4 text-red-500" />
                       }

@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { storage } from '@/lib/storage';
 
 interface PerformanceEntry {
   name: string;
@@ -125,7 +126,7 @@ export function usePerformanceMonitor() {
   }, []);
 
   const toggleMonitoring = useCallback((enabled: boolean) => {
-    localStorage.setItem('linkmax_perf_monitor', String(enabled));
+    storage.set('perf_monitor', String(enabled));
   }, []);
 
   return {
@@ -136,7 +137,7 @@ export function usePerformanceMonitor() {
     getRecentEntries,
     clearEntries,
     toggleMonitoring,
-    isEnabled: () => localStorage.getItem('linkmax_perf_monitor') === 'true'
+    isEnabled: () => storage.get<string>('perf_monitor') === 'true'
   };
 }
 

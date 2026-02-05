@@ -7,6 +7,7 @@ import { useAuth } from './useAuth';
 import { usePremiumStatus } from './usePremiumStatus';
 import { supabase } from '@/platform/supabase/client';
 import { logger } from '@/lib/logger';
+import { storage } from '@/lib/storage';
 
 // ============= Types =============
 
@@ -56,7 +57,7 @@ interface PageRow {
 
 // ============= Constants =============
 
-const ACTIVE_PAGE_KEY = 'linkmax_active_page_id';
+const ACTIVE_PAGE_KEY = 'active_page_id';
 
 // ============= Hook =============
 
@@ -132,8 +133,8 @@ export function useMultiPage() {
         canCreate: userPages.length < maxPages,
       });
 
-      // Restore active page from localStorage
-      const savedActiveId = localStorage.getItem(ACTIVE_PAGE_KEY);
+      // Restore active page from storage
+      const savedActiveId = storage.get<string>(ACTIVE_PAGE_KEY);
       if (savedActiveId && userPages.some(p => p.id === savedActiveId)) {
         setActivePageId(savedActiveId);
       } else if (userPages.length > 0) {
@@ -157,7 +158,7 @@ export function useMultiPage() {
   const switchPage = useCallback((pageId: string) => {
     if (pages.some(p => p.id === pageId)) {
       setActivePageId(pageId);
-      localStorage.setItem(ACTIVE_PAGE_KEY, pageId);
+      storage.set(ACTIVE_PAGE_KEY, pageId);
     }
   }, [pages]);
 

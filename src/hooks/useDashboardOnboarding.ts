@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import type { Block } from '@/types/page';
 import type { Niche } from '@/lib/niches';
 
+import { storage } from '@/lib/storage';
+
 const STORAGE_KEYS = {
-  NICHE_COMPLETED: 'linkmax_niche_onboarding_completed',
-  ONBOARDING_COMPLETED: 'linkmax_onboarding_completed',
+  NICHE_COMPLETED: 'niche_onboarding_completed',
+  ONBOARDING_COMPLETED: 'onboarding_completed',
 } as const;
 
 /** Minimum block count to skip AI onboarding (user already has content) */
@@ -39,8 +41,8 @@ export function useDashboardOnboarding({
   useEffect(() => {
     if (!isUserReady || !isPageReady) return;
 
-    const hasCompletedNiche = localStorage.getItem(STORAGE_KEYS.NICHE_COMPLETED);
-    const hasCompletedOnboarding = localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
+    const hasCompletedNiche = storage.get<string>(STORAGE_KEYS.NICHE_COMPLETED);
+    const hasCompletedOnboarding = storage.get<string>(STORAGE_KEYS.ONBOARDING_COMPLETED);
 
     // Skip AI builder onboarding if user already has content (more than 2 blocks)
     const hasExistingContent = blockCount > MIN_BLOCKS_TO_SKIP_ONBOARDING;
@@ -48,10 +50,10 @@ export function useDashboardOnboarding({
     if (hasExistingContent) {
       // Auto-mark as completed if user has content
       if (!hasCompletedNiche) {
-        localStorage.setItem(STORAGE_KEYS.NICHE_COMPLETED, 'true');
+        storage.set(STORAGE_KEYS.NICHE_COMPLETED, 'true');
       }
       if (!hasCompletedOnboarding) {
-        localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
+        storage.set(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
       }
       return;
     }
@@ -64,18 +66,18 @@ export function useDashboardOnboarding({
   }, [isUserReady, isPageReady, blockCount]);
 
   const handleOnboardingComplete = useCallback(() => {
-    localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
+    storage.set(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
     setShowOnboarding(false);
     toast.success(t('dashboard.onboardingComplete', 'Добро пожаловать! Начните создавать свою страницу.'));
   }, [t]);
 
   const handleOnboardingSkip = useCallback(() => {
-    localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
+    storage.set(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
     setShowOnboarding(false);
   }, []);
 
   const handleNicheOnboardingClose = useCallback(() => {
-    localStorage.setItem(STORAGE_KEYS.NICHE_COMPLETED, 'true');
+    storage.set(STORAGE_KEYS.NICHE_COMPLETED, 'true');
     setShowNicheOnboarding(false);
   }, []);
 

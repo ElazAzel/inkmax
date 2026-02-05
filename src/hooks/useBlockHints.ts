@@ -1,27 +1,28 @@
 import { useState, useEffect } from 'react';
+import { storage } from '@/lib/storage';
 
-const STORAGE_KEY = 'linkmax_block_hints_shown';
+const STORAGE_KEY = 'block_hints_shown';
 
 export function useBlockHints() {
   const [shownHints, setShownHints] = useState<Set<string>>(new Set());
   const [activeHint, setActiveHint] = useState<{ blockType: string; blockId: string } | null>(null);
 
-  // Загружаем из localStorage при монтировании
+  // Load from storage on mount
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = storage.get<string[]>(STORAGE_KEY);
       if (stored) {
-        setShownHints(new Set(JSON.parse(stored)));
+        setShownHints(new Set(stored));
       }
     } catch (error) {
       console.error('Failed to load block hints from storage:', error);
     }
   }, []);
 
-  // Сохраняем в localStorage при изменении
+  // Save to storage on change
   const saveToStorage = (hints: Set<string>) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(hints)));
+      storage.set(STORAGE_KEY, Array.from(hints));
     } catch (error) {
       console.error('Failed to save block hints to storage:', error);
     }
@@ -32,7 +33,7 @@ export function useBlockHints() {
   };
 
   const markHintAsShown = (blockType: string) => {
-    const newShownHints = new Set(shownHints);
+    const newShownHints = new Set<string>(shownHints);
     newShownHints.add(blockType);
     setShownHints(newShownHints);
     saveToStorage(newShownHints);
@@ -53,7 +54,7 @@ export function useBlockHints() {
 
   const resetAllHints = () => {
     setShownHints(new Set());
-    localStorage.removeItem(STORAGE_KEY);
+    storage.remove(STORAGE_KEY);
   };
 
   return {

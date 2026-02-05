@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import { supabase } from '@/platform/supabase/client';
+import { storage } from '@/lib/storage';
 
 interface UseDashboardAuthGuardOptions {
   isLoading?: boolean;
@@ -35,7 +36,7 @@ export function useDashboardAuthGuard({
   useEffect(() => {
     if (!user || authLoading) return;
 
-    const pendingTelegramChatId = localStorage.getItem('pending_telegram_chat_id');
+    const pendingTelegramChatId = storage.get<string>('pending_telegram_chat_id');
     if (pendingTelegramChatId) {
       // Save to user profile
       supabase
@@ -47,8 +48,8 @@ export function useDashboardAuthGuard({
         .eq('id', user.id)
         .then(({ error }) => {
           if (!error) {
-            // Clear from localStorage after successful save
-            localStorage.removeItem('pending_telegram_chat_id');
+            // Clear from storage after successful save
+            storage.remove('pending_telegram_chat_id');
             logger.debug('Telegram chat ID saved to profile', { context: 'useDashboardAuthGuard' });
           } else {
             logger.error('Failed to save telegram chat ID', error, { context: 'useDashboardAuthGuard' });

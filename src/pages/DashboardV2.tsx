@@ -63,10 +63,10 @@ export default function DashboardV2() {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { t, i18n } = useTranslation();
-  
+
   // Page versions - hook defined early for onPublish callback
   const pageVersionsRef = useRef<ReturnType<typeof usePageVersions> | null>(null);
-  
+
   // Callback for saving version on each publish
   const handlePublishVersion = useCallback((pageData: import('@/types/page').PageData) => {
     if (pageData?.id && pageVersionsRef.current) {
@@ -78,12 +78,12 @@ export default function DashboardV2() {
       );
     }
   }, []);
-  
+
   // Core state - with onPublish callback for automatic versioning
   const dashboard = useDashboard({ onPublish: handlePublishVersion });
   const multiPage = useMultiPage();
   const { canUseCustomPageBackground } = useFreemiumLimits();
-  
+
   // Editor history
   const editorHistory = useEditorHistory(
     dashboard.pageData?.blocks || [],
@@ -113,7 +113,7 @@ export default function DashboardV2() {
     }
     return 'home';
   }, [searchParams, location.pathname]);
-  
+
   // UI State
   const [migrationKey, setMigrationKey] = useState(0);
   const [templateGalleryOpen, setTemplateGalleryOpen] = useState(false);
@@ -139,7 +139,7 @@ export default function DashboardV2() {
   }, [dashboard]);
 
   const pageVersions = usePageVersions(handleRestoreVersion);
-  
+
   // Keep ref updated for onPublish callback
   useEffect(() => {
     pageVersionsRef.current = pageVersions;
@@ -152,7 +152,9 @@ export default function DashboardV2() {
 
   // Check for new user quick start - show only for users with 2 or fewer blocks
   useEffect(() => {
-    const completed = localStorage.getItem('linkmax_onboarding_completed');
+    // Check using name-spaced key via storage wrapper
+    // Note: onboarding/useDashboardOnboarding uses 'onboarding_completed' key
+    const completed = storage.get('onboarding_completed');
     const blocksCount = dashboard.pageData?.blocks.length || 0;
     // Only show quick start for new users with profile block only or just 1 content block
     if (!completed && blocksCount <= 2) {
@@ -217,13 +219,13 @@ export default function DashboardV2() {
     const handleOpenMarketplace = () => setShowMarketplace(true);
     const handleOpenTokens = () => setShowTokens(true);
     const handleOpenAchievements = () => setShowAchievements(true);
-    
+
     window.addEventListener('openFriends', handleOpenFriends);
     window.addEventListener('openTemplates', handleOpenTemplates);
     window.addEventListener('openMarketplace', handleOpenMarketplace);
     window.addEventListener('openTokens', handleOpenTokens);
     window.addEventListener('openAchievements', handleOpenAchievements);
-    
+
     return () => {
       window.removeEventListener('openFriends', handleOpenFriends);
       window.removeEventListener('openTemplates', handleOpenTemplates);
@@ -244,7 +246,7 @@ export default function DashboardV2() {
         <div className="text-center p-6">
           <h2 className="text-xl font-bold mb-2">{t('dashboard.errors.loadFailed', 'Loading failed')}</h2>
           <p className="text-muted-foreground mb-4">{t('dashboard.errors.loadFailedDesc', 'Could not load page data')}</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-xl"
           >
@@ -565,21 +567,21 @@ export default function DashboardV2() {
         {/* Panels & Dialogs */}
         {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
         {showFriends && <FriendsPanel onClose={() => setShowFriends(false)} />}
-        
+
         <SaveTemplateDialog
           open={showSaveTemplate}
           onClose={() => setShowSaveTemplate(false)}
           blocks={dashboard.pageData.blocks}
           previewContainerId="preview-container"
         />
-        
+
         <MyTemplatesPanel
           open={showMyTemplates}
           onOpenChange={setShowMyTemplates}
           onApplyTemplate={dashboard.handleApplyTemplate}
           currentBlocks={dashboard.pageData.blocks}
         />
-        
+
         <TokensPanel open={showTokens} onOpenChange={setShowTokens} />
 
         <InstallPromptDialog

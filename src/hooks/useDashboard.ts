@@ -17,6 +17,7 @@ import { useDashboardAI } from '@/hooks/useDashboardAI';
 import { useBlockEditor } from '@/hooks/useBlockEditor';
 import { useDailyQuests } from '@/hooks/useDailyQuests';
 import { useTokens } from '@/hooks/useTokens';
+import { storage } from '@/lib/storage';
 import type { Block, ProfileBlock } from '@/types/page';
 import type { UserStats } from '@/types/achievements';
 
@@ -60,7 +61,7 @@ export function useDashboard(options?: UseDashboardOptions) {
 
   // Check achievements when page data or profile changes
   const lastCheckedRef = useRef<string>('');
-  
+
   useEffect(() => {
     if (!pageData?.blocks || achievements.loading) return;
 
@@ -78,17 +79,17 @@ export function useDashboard(options?: UseDashboardOptions) {
       blocksUsed.add(block.type);
     });
 
-    // Check if features were used (stored in localStorage)
-    if (localStorage.getItem('linkmax_ai_used') === 'true') {
+    // Check if features were used (stored in storage)
+    if (storage.get<string>('ai_used') === 'true') {
       featuresUsed.add('ai');
     }
-    if (localStorage.getItem('linkmax_template_used') === 'true') {
+    if (storage.get<string>('template_used') === 'true') {
       featuresUsed.add('template');
     }
-    if (localStorage.getItem('linkmax_chatbot_used') === 'true') {
+    if (storage.get<string>('chatbot_used') === 'true') {
       featuresUsed.add('chatbot');
     }
-    if (localStorage.getItem('linkmax_published') === 'true') {
+    if (storage.get<string>('published') === 'true') {
       featuresUsed.add('published');
     }
 
@@ -96,8 +97,8 @@ export function useDashboard(options?: UseDashboardOptions) {
       blocksUsed,
       totalBlocks: pageData.blocks.length,
       featuresUsed,
-      pageViews: parseInt(localStorage.getItem('linkmax_page_views') || '0', 10),
-      published: localStorage.getItem('linkmax_published') === 'true',
+      pageViews: parseInt(storage.get<string>('page_views') || '0', 10),
+      published: storage.get<string>('published') === 'true',
       friendsCount,
     };
 
@@ -185,17 +186,17 @@ export function useDashboard(options?: UseDashboardOptions) {
   const handleApplyTemplate = useCallback(
     (blocks: Block[]) => {
       // Mark template as used for achievements
-      localStorage.setItem('linkmax_template_used', 'true');
-      
+      storage.set('template_used', 'true');
+
       // Generate unique IDs for all blocks
       const blocksWithIds = blocks.map((block, index) => ({
         ...block,
         id: `${block.type}-${Date.now()}-${index}`,
       }));
-      
+
       // Replace all content blocks at once (keeps profile block)
       pageState.replaceBlocks(blocksWithIds);
-      
+
       // Complete quest
       dailyQuests.markQuestComplete('use_template');
     },

@@ -89,4 +89,10 @@ export default tseslint.config(
   {
     ignores: ["supabase/functions/**"],
   },
+  {
+    files: ["src/i18n/config.ts"],
+    rules: {
+      "no-restricted-globals": "off",
+    },
+  },
 );
