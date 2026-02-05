@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
+import {
   Zap,
   Crown,
   BarChart3,
@@ -41,6 +41,10 @@ import { LinkInBioSection } from '@/components/landing/LinkInBioSection';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 import { SEOLandingHead } from '@/components/landing/SEOLandingHead';
+import { SEOMetaEnhancer } from '@/components/seo/SEOMetaEnhancer';
+import { GEOTagging } from '@/components/seo/GEOTagging';
+import { AEOOptimizer } from '@/components/seo/AEOOptimizer';
+import { AISearchOptimizer } from '@/components/seo/AISearchOptimizer';
 import { cn } from '@/lib/utils';
 import { useLandingAnalytics, useSectionObserver } from '@/hooks/useLandingAnalytics';
 import { useMarketingAnalytics } from '@/hooks/useMarketingAnalytics';
@@ -49,7 +53,7 @@ import { useMarketingAnalytics } from '@/hooks/useMarketingAnalytics';
 function AnimatedGridBackground() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-[0.02]">
-      <div 
+      <div
         className="absolute inset-0"
         style={{
           backgroundImage: `
@@ -180,6 +184,74 @@ export default function Index() {
   return (
     <>
       <SEOLandingHead currentLanguage={i18n.language} />
+      <SEOMetaEnhancer
+        pageUrl="https://lnkmx.my/"
+        pageTitle={t('landing.v4.hero.title', 'Собери страницу, которая приводит клиентов')}
+        pageDescription={t('landing.v4.hero.subtitle', 'AI сделает структуру и тексты. Заявки придут в Telegram. Ты увидишь, что работает.')}
+        imageUrl="https://lnkmx.my/og-image.png"
+        imageAlt="lnkmx - The Micro-Business OS"
+        type="website"
+      />
+      <GEOTagging includeOrganization={true} />
+      <AEOOptimizer
+        pageUrl="https://lnkmx.my/"
+        type="howto"
+        howToName={t('landing.v4.howItWorks.title', 'Как это работает')}
+        howToDescription={t('landing.v4.howItWorks.badge', '2 минуты до результата')}
+        howToSteps={[
+          {
+            name: t('landing.v4.howItWorks.step1.title', 'Расскажи, чем занимаешься'),
+            text: t('landing.v4.howItWorks.step1.desc', 'Выбери нишу и добавь пару фактов о себе'),
+          },
+          {
+            name: t('landing.v4.howItWorks.step2.title', 'AI соберёт страницу'),
+            text: t('landing.v4.howItWorks.step2.desc', 'Структура, тексты, кнопки - редактируй как хочешь'),
+          },
+          {
+            name: t('landing.v4.howItWorks.step3.title', 'Получай заявки'),
+            text: t('landing.v4.howItWorks.step3.desc', 'Ссылка для соцсетей готова, лиды идут в Telegram'),
+          },
+        ]}
+        speakableSections={[
+          '[data-testid="hero-title"]',
+          '[data-testid="hero-description"]',
+        ]}
+      />
+      <AISearchOptimizer
+        pageType="homepage"
+        primaryQuestion="What is lnkmx and what does it do?"
+        primaryAnswer="lnkmx is an AI-powered micro-business operating system that combines a page builder, mini-CRM, and analytics in one platform. It helps freelancers, small businesses, and content creators build landing pages, capture leads, and manage clients efficiently."
+        entityName="lnkmx"
+        entityCategory="Business Tools, AI Page Builder, CRM Software, Link in Bio Tool, Landing Page Builder"
+        useCases={[
+          'Create professional link-in-bio pages',
+          'Build mini landing pages for products/services',
+          'Capture and manage leads with built-in CRM',
+          'Track analytics and conversions',
+          'Receive lead notifications via Telegram',
+          'AI-powered content generation',
+        ]}
+        targetAudience={[
+          'Freelancers and solopreneurs',
+          'Small business owners',
+          'Content creators and influencers',
+          'Service providers',
+          'Local businesses',
+          'Micro-businesses',
+        ]}
+        problemStatement="Managing online presence, building landing pages, and capturing leads is complicated and expensive for micro-businesses and freelancers"
+        solutionStatement="lnkmx provides an all-in-one AI-powered platform that simplifies page creation, lead management, and analytics for micro-businesses at an affordable price"
+        keyFeatures={[
+          'AI-powered page builder with 25+ blocks',
+          'Built-in mini-CRM for lead management',
+          'Real-time analytics and heatmaps',
+          'Telegram integration for instant notifications',
+          'Multi-language support (Russian, English, Kazakh)',
+          'Free plan available',
+          'Mobile-optimized pages',
+          'Custom domains support',
+        ]}
+      />
       <div className="min-h-screen bg-background overflow-x-hidden">
         <AnimatedGridBackground />
 
@@ -188,7 +260,7 @@ export default function Index() {
           <div className="max-w-xl mx-auto">
             <div className="bg-card/90 backdrop-blur-xl border border-border/40 rounded-2xl shadow-lg">
               <div className="px-4 h-14 flex items-center justify-between">
-                <button 
+                <button
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   className="flex items-center group"
                 >
@@ -198,15 +270,15 @@ export default function Index() {
                 </button>
                 <div className="flex items-center gap-2">
                   <LanguageSwitcher />
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={() => handleViewExamples('nav')}
                     className="hidden sm:flex rounded-xl"
                   >
                     {t('landing.nav.examples', 'Примеры')}
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => handleCreatePage('nav')}
                     className="rounded-xl font-semibold shadow-md shadow-primary/20"
                     size="sm"
@@ -243,7 +315,7 @@ export default function Index() {
 
             {/* Primary CTA */}
             <div className="flex flex-col gap-3 max-w-xs mx-auto mb-6">
-              <Button 
+              <Button
                 size="lg"
                 onClick={() => handleCreatePage('hero', 'hero_primary_cta_click')}
                 className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
@@ -251,7 +323,7 @@ export default function Index() {
                 <Sparkles className="h-5 w-5 mr-2" />
                 {t('landing.v4.hero.cta', 'Создать страницу')}
               </Button>
-              <Button 
+              <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleViewExamples('hero', 'hero_secondary_cta_click')}
@@ -335,7 +407,7 @@ export default function Index() {
         </section>
 
         {/* ========== HOW IT WORKS ========== */}
-        <section 
+        <section
           ref={mergeRefs(howItWorksAnim.ref, howItWorksSectionRef)}
           className="py-10 px-5 bg-muted/30"
         >
@@ -373,7 +445,7 @@ export default function Index() {
             </div>
 
             <div className="mt-8 text-center">
-              <Button 
+              <Button
                 size="lg"
                 onClick={() => handleCreatePage('how_it_works')}
                 className="h-12 px-6 rounded-xl font-semibold shadow-lg shadow-primary/20"
@@ -451,8 +523,8 @@ export default function Index() {
                 { name: t('blockTypes.product', 'Товары'), emoji: '🛍️' },
                 { name: t('blockTypes.video', 'Видео'), emoji: '🎬' },
               ].map((block, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className="flex-shrink-0 flex items-center gap-2 py-2 px-3 rounded-xl bg-card border border-border/50 text-sm font-medium"
                 >
                   <span>{block.emoji}</span>
@@ -566,7 +638,7 @@ export default function Index() {
         </section>
 
         {/* ========== PRICING ========== */}
-        <section 
+        <section
           ref={mergeRefs(pricingAnim.ref, pricingSectionRef)}
           className="py-10 px-5"
         >
@@ -605,8 +677,8 @@ export default function Index() {
                     {t('landing.v4.pricing.free.f3', 'Базовая статистика')}
                   </li>
                 </ul>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full h-11 rounded-xl font-semibold"
                   onClick={() => handleCreatePage('pricing_free')}
                 >
@@ -655,7 +727,7 @@ export default function Index() {
                     {t('landing.v4.pricing.pro.f5', 'Без watermark')}
                   </li>
                 </ul>
-                <Button 
+                <Button
                   className="w-full h-11 rounded-xl font-semibold shadow-md shadow-primary/20"
                   onClick={() => handleViewPricing('pricing_pro')}
                 >
@@ -690,7 +762,7 @@ export default function Index() {
               {t('landing.v4.finalCta.subtitle', 'Бесплатно. Без кода. Результат за 2 минуты.')}
             </p>
             <div className="flex flex-col gap-3 max-w-xs mx-auto">
-              <Button 
+              <Button
                 size="lg"
                 onClick={() => handleCreatePage('final_cta')}
                 className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/25"
@@ -698,7 +770,7 @@ export default function Index() {
                 <Sparkles className="h-5 w-5 mr-2" />
                 {t('landing.v4.finalCta.cta', 'Создать страницу')}
               </Button>
-              <Button 
+              <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleViewExamples('final_cta')}
@@ -718,7 +790,7 @@ export default function Index() {
                 lnk<span className="text-primary">mx</span>
               </span>
             </div>
-            
+
             <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground mb-4">
               <button onClick={() => navigate('/alternatives')} className="hover:text-foreground transition-colors">
                 {t('landing.footer.alternatives', 'Сравнение')}
@@ -750,7 +822,7 @@ export default function Index() {
         {/* Floating CTA */}
         {showFloatingCta && (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in fade-in slide-in-from-bottom-4">
-            <Button 
+            <Button
               size="lg"
               onClick={() => handleCreatePage('floating')}
               className="h-12 px-6 rounded-full font-bold shadow-2xl shadow-primary/30"
@@ -767,15 +839,15 @@ export default function Index() {
 
 // ========== COMPONENTS ==========
 
-function StepCard({ 
-  number, 
-  icon, 
-  title, 
-  description 
-}: { 
-  number: string; 
-  icon: React.ReactNode; 
-  title: string; 
+function StepCard({
+  number,
+  icon,
+  title,
+  description
+}: {
+  number: string;
+  icon: React.ReactNode;
+  title: string;
   description: string;
 }) {
   return (
@@ -791,15 +863,15 @@ function StepCard({
   );
 }
 
-function BenefitCard({ 
-  icon, 
-  iconBg, 
-  title, 
-  description 
-}: { 
-  icon: React.ReactNode; 
-  iconBg: string; 
-  title: string; 
+function BenefitCard({
+  icon,
+  iconBg,
+  title,
+  description
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  title: string;
   description: string;
 }) {
   return (
@@ -815,13 +887,13 @@ function BenefitCard({
   );
 }
 
-function UseCaseCard({ 
-  icon, 
-  title, 
-  items 
-}: { 
-  icon: React.ReactNode; 
-  title: string; 
+function UseCaseCard({
+  icon,
+  title,
+  items
+}: {
+  icon: React.ReactNode;
+  title: string;
   items: string[];
 }) {
   return (
