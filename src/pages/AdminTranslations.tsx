@@ -18,6 +18,7 @@ import {
   Globe, ChevronDown, ChevronRight, Trash2, FileJson, Check
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
 import { LanguageUploadDialog } from '@/components/admin/LanguageUploadDialog';
 
@@ -448,12 +449,12 @@ export default function AdminTranslations() {
 
       toast.success(`JSON для ${selectedLang.toUpperCase()} импортирован`);
     } catch (error) {
-      toast.error('Ошибка парсинга JSON');
-      console.error('Import error:', error);
-    }
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      toast.error('Failed to import translations');
+      logger.error('Import error:', error, { context: 'AdminTranslations' });
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 

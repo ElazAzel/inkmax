@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { onCLS, onFID, onLCP, onTTFB, onFCP, Metric } from 'web-vitals';
+import { logger } from '@/lib/logger';
 
 // Web Vitals types
 interface WebVitalsMetric {
@@ -7,6 +9,8 @@ interface WebVitalsMetric {
   rating: 'good' | 'needs-improvement' | 'poor';
   delta: number;
 }
+
+const VITALS_URL = 'https://vitals.vercel-analytics.com/v1/vitals';
 
 // Thresholds for Web Vitals ratings
 const THRESHOLDS = {
@@ -26,16 +30,19 @@ function getRating(name: WebVitalsMetric['name'], value: number): WebVitalsMetri
 
 export function useWebVitals(onReport?: (metric: WebVitalsMetric) => void) {
   const metricsRef = useRef<Map<string, WebVitalsMetric>>(new Map());
-  
+
   const reportMetric = useCallback((metric: WebVitalsMetric) => {
     metricsRef.current.set(metric.name, metric);
-    
+
     // Log in development
-    if (import.meta.env.DEV) {
-      const emoji = metric.rating === 'good' ? '✅' : metric.rating === 'needs-improvement' ? '⚠️' : '❌';
-      console.log(`[WebVitals] ${emoji} ${metric.name}: ${metric.value.toFixed(2)} (${metric.rating})`);
+    if (process.env.NODE_ENV === 'development') {
+      const emoji = metric.rating === 'good' ? '🟢' : metric.rating === 'needs-improvement' ? '🟡' : '🔴';
+      logger.debug(`[WebVitals] ${emoji} ${metric.name}: ${metric.value.toFixed(2)} (${metric.rating})`, {
+        context: 'useWebVitals',
+        data: metric
+      });
     }
-    
+
     onReport?.(metric);
   }, [onReport]);
 
@@ -56,7 +63,7 @@ export function useWebVitals(onReport?: (metric: WebVitalsMetric) => void) {
         });
       }
     });
-    
+
     try {
       lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
     } catch {
@@ -77,7 +84,7 @@ export function useWebVitals(onReport?: (metric: WebVitalsMetric) => void) {
         });
       });
     });
-    
+
     try {
       fidObserver.observe({ type: 'first-input', buffered: true });
     } catch {
@@ -101,7 +108,7 @@ export function useWebVitals(onReport?: (metric: WebVitalsMetric) => void) {
         delta: clsValue,
       });
     });
-    
+
     try {
       clsObserver.observe({ type: 'layout-shift', buffered: true });
     } catch {

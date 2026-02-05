@@ -2,10 +2,10 @@
 # Usage: .\translate-locale.ps1 -Lang "es" -LangName "Spanish"
 
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$Lang,
     
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$LangName
 )
 
@@ -34,7 +34,7 @@ $enPath = Join-Path $PSScriptRoot "..\src\i18n\locales\en.json"
 $enContent = Get-Content $enPath -Raw | ConvertFrom-Json
 
 # Flatten function
-function Flatten-Object {
+function ConvertTo-FlatObject {
     param($obj, $prefix = "")
     
     $result = @{}
@@ -43,11 +43,12 @@ function Flatten-Object {
         $newKey = if ($prefix) { "$prefix.$key" } else { $key }
         
         if ($value -is [PSCustomObject]) {
-            $nested = Flatten-Object -obj $value -prefix $newKey
+            $nested = ConvertTo-FlatObject -obj $value -prefix $newKey
             foreach ($nKey in $nested.Keys) {
                 $result[$nKey] = $nested[$nKey]
             }
-        } else {
+        }
+        else {
             $result[$newKey] = $value
         }
     }
@@ -55,7 +56,7 @@ function Flatten-Object {
 }
 
 # Unflatten function
-function Unflatten-Object {
+function ConvertFrom-FlatObject {
     param($flat)
     
     $result = @{}
@@ -77,19 +78,19 @@ function Unflatten-Object {
 }
 
 # Translate function
-function Translate-Text {
+function Get-TranslatedText {
     param($text, $targetLang)
     
     $body = @{
-        text = $text
-        sourceLanguage = "en"
+        text            = $text
+        sourceLanguage  = "en"
         targetLanguages = @($targetLang)
     } | ConvertTo-Json -Depth 10
     
     $headers = @{
-        "apikey" = $SUPABASE_ANON_KEY
+        "apikey"        = $SUPABASE_ANON_KEY
         "Authorization" = "Bearer $SUPABASE_ANON_KEY"
-        "Content-Type" = "application/json"
+        "Content-Type"  = "application/json"
     }
     
     try {
@@ -100,14 +101,15 @@ function Translate-Text {
             -TimeoutSec 30
         
         return $response.translations.$targetLang
-    } catch {
+    }
+    catch {
         Write-Host "    Error: $_" -ForegroundColor Red
         return $text
     }
 }
 
 # Flatten English locale
-$flatEn = Flatten-Object -obj $enContent
+$flatEn = ConvertTo-FlatObject -obj $enContent
 $totalKeys = $flatEn.Count
 Write-Host "  📊 Total keys: $totalKeys"
 
@@ -122,7 +124,7 @@ foreach ($key in $flatEn.Keys) {
         $count++
         Write-Host "`r  ⏳ Progress: $count/$totalKeys keys" -NoNewline
         
-        $translatedValue = Translate-Text -text $value -targetLang $Lang
+        $translatedValue = Get-TranslatedText -text $value -targetLang $Lang
         $translated[$key] = $translatedValue
         
         # Small delay
@@ -133,7 +135,8 @@ foreach ($key in $flatEn.Keys) {
             Write-Host "`n  ⏸️  Waiting 3s (rate limit)..." -ForegroundColor Yellow
             Start-Sleep -Seconds 3
         }
-    } else {
+    }
+    else {
         $translated[$key] = $value
         $count++
     }
@@ -142,7 +145,7 @@ foreach ($key in $flatEn.Keys) {
 Write-Host "`n  ✅ Translation complete!" -ForegroundColor Green
 
 # Unflatten and save
-$unflattened = Unflatten-Object -flat $translated
+$unflattened = ConvertFrom-FlatObject -flat $translated
 $targetPath = Join-Path $PSScriptRoot "..\src\i18n\locales\$Lang.json"
 
 # Convert to JSON with proper formatting

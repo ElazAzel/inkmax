@@ -102,7 +102,7 @@ export async function applyReferralCode(
       bonusDays: result.bonus_days
     };
   } catch (error) {
-    console.error('Error in applyReferralCode:', error);
+    logger.error('Error in applyReferralCode:', error, { context: 'referral' });
     return { success: false, error: 'invalid_code' };
   }
 }

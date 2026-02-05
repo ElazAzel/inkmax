@@ -46,10 +46,10 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 function detectBrowserLanguage(): LocaleCode {
   const browserLang = navigator.language || (navigator as any).userLanguage || 'en';
   const langCode = browserLang.split('-')[0].toLowerCase();
-  
+
   // Check if it's a known language
   if (LANGUAGE_NAMES[langCode]) return langCode;
-  
+
   // Fallback to English
   return 'en';
 }
@@ -66,10 +66,10 @@ export { LanguageContext };
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const { i18n, t } = useTranslation();
-  
+
   // Detect browser language on mount
   const [browserLanguage] = useState<LocaleCode>(() => detectBrowserLanguage());
-  
+
   const [currentLanguage, setCurrentLanguageState] = useState<LocaleCode>(() => {
     const stored = localStorage.getItem('i18nextLng');
     if (stored === 'kz') {
@@ -77,9 +77,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
     return normalizeLanguageCode(stored || browserLanguage);
   });
-  
+
   const [isTranslating, setIsTranslating] = useState(false);
-  
+
   const [autoTranslateEnabled, setAutoTranslateEnabled] = useState(() => {
     const stored = localStorage.getItem('autoTranslateEnabled');
     return stored !== 'false'; // Default to true
@@ -144,7 +144,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     targetLanguages: LocaleCode[]
   ): Promise<Record<string, string> | null> => {
     if (!text?.trim() || targetLanguages.length === 0) return null;
-    
+
     try {
       const { data, error } = await supabase.functions.invoke('translate-content', {
         body: {
@@ -185,7 +185,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
       const sourceText = String(obj[sourceLang]);
       const translations = await translateText(sourceText, sourceLang, languagesNeedingTranslation);
-      
+
       if (translations) {
         return { ...obj, ...translations };
       }
@@ -224,7 +224,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (!blocks?.length || targetLanguages.length === 0) return blocks;
 
     setIsTranslating(true);
-    
+
     try {
       const fieldsToCheck = ['title', 'description', 'text', 'bio', 'name', 'label', 'caption', 'buttonText', 'question', 'answer'];
       let needsTranslation = false;
@@ -285,7 +285,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       const translatedBlocks = await Promise.all(
         blocks.map(async (block) => {
           if (!block.content) return block;
-          
+
           const translatedContent = await translateObject(block.content, targetLanguages);
           return { ...block, content: translatedContent };
         })
@@ -334,4 +334,8 @@ export function useLanguage() {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
+}
+
+export function useOptionalLanguage() {
+  return useContext(LanguageContext);
 }

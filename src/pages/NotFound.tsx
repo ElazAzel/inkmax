@@ -1,12 +1,14 @@
-import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useLocation, Link } from 'wouter';
+import { logger } from '@/lib/logger';
+import { useTranslation } from 'react-i18next';
 
 const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
+    logger.error('404 Error: User attempted to access non-existent route:', location, { context: 'NotFoundPage' });
+  }, [location]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted">

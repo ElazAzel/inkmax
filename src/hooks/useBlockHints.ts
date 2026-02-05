@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { storage } from '@/lib/storage';
+import { logger } from '@/lib/logger';
+
 
 const STORAGE_KEY = 'block_hints_shown';
 
@@ -15,7 +17,7 @@ export function useBlockHints() {
         setShownHints(new Set(stored));
       }
     } catch (error) {
-      console.error('Failed to load block hints from storage:', error);
+      logger.error('Failed to load block hints from storage:', error, { context: 'useBlockHints' });
     }
   }, []);
 
@@ -24,7 +26,7 @@ export function useBlockHints() {
     try {
       storage.set(STORAGE_KEY, Array.from(hints));
     } catch (error) {
-      console.error('Failed to save block hints to storage:', error);
+      logger.error('Failed to save block hints to storage:', error, { context: 'useBlockHints' });
     }
   };
 

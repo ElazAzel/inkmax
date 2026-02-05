@@ -1,4 +1,5 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
+import { logger } from '@/lib/logger';
 import { storage } from '@/lib/storage';
 
 type SoundType = 'achievement' | 'success' | 'click' | 'add' | 'delete' | 'error';
@@ -59,12 +60,12 @@ export function useSoundEffects() {
     if (!hapticsEnabled) return;
 
     try {
-      if ('vibrate' in navigator) {
+      if (navigator.vibrate) {
         navigator.vibrate(pattern);
       }
     } catch (error) {
-      // Silently fail if vibration is not available
-      console.debug('Haptic feedback unavailable:', error);
+      // Ignore haptic errors
+      logger.debug('Haptic feedback unavailable:', { context: 'useSoundEffects', data: { error } });
     }
   }, []);
 
@@ -110,7 +111,7 @@ export function useSoundEffects() {
       });
     } catch (error) {
       // Silently fail if audio is not available
-      console.debug('Sound effect unavailable:', error);
+      logger.debug('Sound effect unavailable:', { context: 'useSoundEffects', data: { error } });
     }
   }, [getAudioContext, vibrate]);
 

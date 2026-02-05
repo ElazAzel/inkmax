@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/platform/supabase/client';
+import { logger } from '@/lib/logger';
 import { useAuth } from '@/hooks/useAuth';
 import { startOfDay, startOfWeek, startOfMonth, subDays, subWeeks, subMonths, format, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval } from 'date-fns';
 import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
@@ -84,18 +85,18 @@ export function usePageAnalytics() {
   useEffect(() => {
     async function fetchPageId() {
       if (!user) return;
-      
+
       const { data } = await supabase
         .from('pages')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle();
-      
+
       if (data) {
         setPageId(data.id);
       }
     }
-    
+
     fetchPageId();
   }, [user]);
 
@@ -183,17 +184,17 @@ export function usePageAnalytics() {
 
       // Block statistics
       const blockStatsMap = new Map<string, BlockStats>();
-      
+
       if (blocks) {
         const currentLang = i18n.language as SupportedLanguage;
         blocks.forEach(block => {
           const content = block.content as any;
           // Use getI18nText to handle MultilingualString objects
           const rawTitle = block.title || content?.title || content?.name || block.type;
-          const blockTitle = typeof rawTitle === 'object' 
-            ? getI18nText(rawTitle, currentLang) 
+          const blockTitle = typeof rawTitle === 'object'
+            ? getI18nText(rawTitle, currentLang)
             : rawTitle;
-          
+
           blockStatsMap.set(block.id, {
             blockId: block.id,
             blockType: block.type,
@@ -276,7 +277,7 @@ export function usePageAnalytics() {
 
       // Calculate session metrics (estimates based on available data)
       const sessionsWithClicks = events.filter(e => e.event_type === 'click').length;
-      const bounceRate = totalViews > 0 
+      const bounceRate = totalViews > 0
         ? Math.max(0, Math.min(100, ((totalViews - sessionsWithClicks) / totalViews) * 100))
         : 0;
 
@@ -303,13 +304,13 @@ export function usePageAnalytics() {
         .select('id')
         .eq('user_id', user.id)
         .gte('created_at', startDate.toISOString());
-      
+
       const { data: bookings } = await supabase
         .from('bookings')
         .select('id')
         .eq('owner_id', user.id)
         .gte('created_at', startDate.toISOString());
-      
+
       const totalConversions = (leads?.length || 0) + (bookings?.length || 0);
 
       setAnalytics({
@@ -333,7 +334,7 @@ export function usePageAnalytics() {
         totalConversions,
       });
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      logger.error('Error fetching analytics:', error, { context: 'usePageAnalytics' });
     } finally {
       setLoading(false);
     }
@@ -356,13 +357,13 @@ export function usePageAnalytics() {
 
 function generateDailyData(events: AnalyticsEvent[], start: Date, end: Date): TimeSeriesData[] {
   const days = eachDayOfInterval({ start, end });
-  
+
   return days.map(day => {
     const dayStr = format(day, 'yyyy-MM-dd');
-    const dayEvents = events.filter(e => 
+    const dayEvents = events.filter(e =>
       format(new Date(e.created_at), 'yyyy-MM-dd') === dayStr
     );
-    
+
     return {
       date: format(day, 'dd MMM'),
       views: dayEvents.filter(e => e.event_type === 'view').length,
@@ -374,16 +375,16 @@ function generateDailyData(events: AnalyticsEvent[], start: Date, end: Date): Ti
 
 function generateWeeklyData(events: AnalyticsEvent[], start: Date, end: Date): TimeSeriesData[] {
   const weeks = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 });
-  
+
   return weeks.map(weekStart => {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 6);
-    
+
     const weekEvents = events.filter(e => {
       const eventDate = new Date(e.created_at);
       return eventDate >= weekStart && eventDate <= weekEnd;
     });
-    
+
     return {
       date: format(weekStart, 'dd MMM'),
       views: weekEvents.filter(e => e.event_type === 'view').length,
@@ -395,17 +396,17 @@ function generateWeeklyData(events: AnalyticsEvent[], start: Date, end: Date): T
 
 function generateMonthlyData(events: AnalyticsEvent[], start: Date, end: Date): TimeSeriesData[] {
   const months = eachMonthOfInterval({ start, end });
-  
+
   return months.map(monthStart => {
     const monthEnd = new Date(monthStart);
     monthEnd.setMonth(monthEnd.getMonth() + 1);
     monthEnd.setDate(0);
-    
+
     const monthEvents = events.filter(e => {
       const eventDate = new Date(e.created_at);
       return eventDate >= monthStart && eventDate <= monthEnd;
     });
-    
+
     return {
       date: format(monthStart, 'MMM yyyy'),
       views: monthEvents.filter(e => e.event_type === 'view').length,

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from './useAuth';
+import { logger } from '@/lib/logger';
 import { useUserPage, useSavePageMutation, usePublishPageMutation, pageQueryKeys } from '@/hooks/usePageCache';
 import { updatePageNiche } from '@/services/pages';
 import { deleteEventBlock, syncEventBlock } from '@/services/events';
@@ -66,19 +67,19 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
 
   const autoSaveAndPublish = useCallback((data: PageData, context: string) => {
     if (!user) return;
-    
+
     // Increment version for this save request
     saveRequestVersion++;
     const thisRequestVersion = saveRequestVersion;
-    
+
     // Set pending status immediately
     setSaveStatus('pending');
-    
+
     // Clear existing timer
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
     }
-    
+
     // Debounce auto-save and publish with longer delay for stability
     autoSaveTimerRef.current = setTimeout(async () => {
       // Check if this request is still the latest
@@ -86,31 +87,31 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
         // Stale request - a newer save was triggered, skip this one
         return;
       }
-      
+
       try {
         setSaveStatus('saving');
-        
+
         // Ensure block integrity before saving
         const sanitizedData = {
           ...data,
           blocks: deduplicateBlocks(ensureBlockIds(data.blocks)),
         };
-        
+
         // Save first with retry logic
         let retries = 2;
         let lastError: Error | null = null;
         let savedPageId: string | undefined;
-        
+
         while (retries > 0) {
           // Check again before each retry
           if (thisRequestVersion !== saveRequestVersion) {
             return;
           }
-          
+
           try {
-            const result = await savePageMutation.mutateAsync({ 
-              pageData: sanitizedData, 
-              chatbotContext: context 
+            const result = await savePageMutation.mutateAsync({
+              pageData: sanitizedData,
+              chatbotContext: context
             });
             // Get pageId from the saved result
             savedPageId = result.dbPage?.id;
@@ -124,14 +125,14 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
             }
           }
         }
-        
+
         if (retries === 0 && lastError) {
           throw lastError;
         }
-        
+
         // Use saved pageId or fallback to data.id
         const pageIdToUse = savedPageId || data.id;
-        
+
         // Sync event blocks after page is saved (now we have pageId)
         if (pageIdToUse && user?.id) {
           const eventBlocks = sanitizedData.blocks.filter((b) => b.type === 'event');
@@ -141,38 +142,36 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
             }
           }
         }
-        
+
         // Final stale check before publish
         if (thisRequestVersion !== saveRequestVersion) {
           return;
         }
-        
+
         // Then auto-publish
         await publishPageMutation.mutateAsync();
-        
+
         setSaveStatus('saved');
       } catch (error) {
-        console.error('Auto-save/publish error:', error);
-        setSaveStatus('error');
-        // Reset to idle after error display
-        setTimeout(() => setSaveStatus('idle'), 3000);
+        // Silent fail for auto-save/publish
+        logger.error('Auto-save/publish error:', error, { context: 'useCloudPageState' });
       }
     }, 1500); // Optimized debounce time
   }, [user, savePageMutation, publishPageMutation]);
 
   const save = useCallback(async () => {
     if (!user || !pageData) return;
-    
+
     // Clear any pending auto-save
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
     }
-    
+
     try {
       setSaveStatus('saving');
-      await savePageMutation.mutateAsync({ 
-        pageData, 
-        chatbotContext 
+      await savePageMutation.mutateAsync({
+        pageData,
+        chatbotContext
       });
       await publishPageMutation.mutateAsync();
       setSaveStatus('saved');
@@ -185,26 +184,26 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
 
   const publish = useCallback(async () => {
     if (!user || !pageData) return null;
-    
+
     // Clear any pending auto-save
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
     }
-    
+
     try {
       setSaveStatus('saving');
-      await savePageMutation.mutateAsync({ 
-        pageData, 
-        chatbotContext 
+      await savePageMutation.mutateAsync({
+        pageData,
+        chatbotContext
       });
       const slug = await publishPageMutation.mutateAsync();
       setSaveStatus('saved');
-      
+
       // Call onPublish callback to save version
       if (options?.onPublish) {
         options.onPublish(pageData);
       }
-      
+
       return slug;
     } catch (error) {
       setSaveStatus('error');
@@ -214,7 +213,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
 
   const addBlock = useCallback((block: Block, position?: number) => {
     if (!pageData) return;
-    
+
     let newBlocks: Block[];
     if (typeof position === 'number') {
       // Find the profile block index (always at position 0)
@@ -229,7 +228,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
     } else {
       newBlocks = [...pageData.blocks, block];
     }
-    
+
     const newPageData = {
       ...pageData,
       blocks: newBlocks,
@@ -239,7 +238,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
     if (block.type === 'event') {
       void syncEventBlock(block, pageData.id, user?.id);
     }
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish, user]);
@@ -262,7 +261,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
     if (updatedBlock?.type === 'event') {
       void syncEventBlock(updatedBlock, pageData.id, user?.id);
     }
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish, user]);
@@ -279,7 +278,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
     if (blockToDelete?.type === 'event') {
       void deleteEventBlock(blockToDelete.eventId, user?.id);
     }
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish, user]);
@@ -291,7 +290,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
       blocks,
     };
     setPageData(newPageData);
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
@@ -299,19 +298,19 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
   // Replace all content blocks (keep profile block)
   const replaceBlocks = useCallback((newBlocks: Block[]) => {
     if (!pageData) return;
-    
+
     // Keep the profile block
     const profileBlock = pageData.blocks.find(b => b.type === 'profile');
-    const finalBlocks = profileBlock 
+    const finalBlocks = profileBlock
       ? [profileBlock, ...newBlocks.filter(b => b.type !== 'profile')]
       : newBlocks;
-    
+
     const newPageData = {
       ...pageData,
       blocks: finalBlocks,
     };
     setPageData(newPageData);
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
@@ -323,7 +322,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
       theme: { ...pageData.theme, ...theme },
     };
     setPageData(newPageData);
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
@@ -336,7 +335,7 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
       blocks: newBlocks || pageData.blocks,
     };
     setPageData(newPageData);
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
@@ -348,18 +347,18 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
       ...updates,
     };
     setPageData(newPageData);
-    
+
     // Auto-save and publish
     autoSaveAndPublish(newPageData, chatbotContext);
   }, [pageData, chatbotContext, autoSaveAndPublish]);
 
   const updateNiche = useCallback(async (niche: Niche) => {
     if (!user || !pageData) return;
-    
+
     // Update local state immediately
     const newPageData = { ...pageData, niche };
     setPageData(newPageData);
-    
+
     // Save to database
     const { error } = await updatePageNiche(user.id, niche);
     if (error) {
@@ -371,8 +370,8 @@ export function useCloudPageState(options?: UseCloudPageStateOptions) {
 
   const refresh = useCallback(async () => {
     if (user?.id) {
-      await queryClient.invalidateQueries({ 
-        queryKey: pageQueryKeys.userPage(user.id) 
+      await queryClient.invalidateQueries({
+        queryKey: pageQueryKeys.userPage(user.id)
       });
       await refetch();
     }

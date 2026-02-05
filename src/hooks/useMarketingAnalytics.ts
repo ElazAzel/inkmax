@@ -63,7 +63,8 @@ export function useMarketingAnalytics() {
         } as Json,
       });
     } catch (error) {
-      console.debug('Marketing analytics failed:', error);
+      // Silently fail for analytics
+      logger.debug('Marketing analytics failed:', { context: 'useMarketingAnalytics', data: { error } });
     }
   }, []);
 

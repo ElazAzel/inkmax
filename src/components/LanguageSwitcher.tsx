@@ -86,7 +86,7 @@ interface LanguageSwitcherProps {
   showAllLanguages?: boolean;
 }
 
-export function LanguageSwitcher({ 
+export function LanguageSwitcher({
   onLanguageChange,
   showAutoTranslate = false,
   isTranslating: externalTranslating = false,
@@ -98,16 +98,8 @@ export function LanguageSwitcher({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showMoreLanguages, setShowMoreLanguages] = useState(showAllLanguages);
-  
-  // Always call the hook, but handle the context safely
-  let languageContext;
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    languageContext = useLanguage();
-  } catch {
-    // Context not available (used outside provider)
-    languageContext = null;
-  }
+
+  const languageContext = useOptionalLanguage();
 
   const isTranslating = externalTranslating || (languageContext?.isTranslating ?? false);
   const autoTranslateEnabled = languageContext?.autoTranslateEnabled ?? false;
@@ -137,32 +129,32 @@ export function LanguageSwitcher({
     if (browserLanguage && !visibleCodes.includes(browserLanguage)) {
       visibleCodes = [browserLanguage, ...visibleCodes];
     }
-    
+
     const visible = ALL_LANGUAGES.filter(l => visibleCodes.includes(l.code));
     const more = ALL_LANGUAGES.filter(l => !visibleCodes.includes(l.code));
-    
+
     // Filter by search
     const query = searchQuery.toLowerCase().trim();
     const filtered = query
-      ? ALL_LANGUAGES.filter(l => 
-          l.name.toLowerCase().includes(query) || 
-          l.code.toLowerCase().includes(query)
-        )
+      ? ALL_LANGUAGES.filter(l =>
+        l.name.toLowerCase().includes(query) ||
+        l.code.toLowerCase().includes(query)
+      )
       : [];
-    
+
     return { visibleLanguages: visible, moreLanguages: more, filteredLanguages: filtered };
   }, [searchQuery, browserLanguage]);
 
   const handleLanguageChange = (langCode: LocaleCode) => {
     const prevLang = i18n.language as LocaleCode;
-    
+
     // Use context if available
     if (languageContext) {
       languageContext.setCurrentLanguage(langCode);
     } else {
       i18n.changeLanguage(langCode);
     }
-    
+
     setIsOpen(false);
     setSearchQuery('');
     setShowMoreLanguages(false);
@@ -242,8 +234,8 @@ export function LanguageSwitcher({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent 
-        align="end" 
+      <DropdownMenuContent
+        align="end"
         className={cn(
           "w-64 p-1.5",
           "bg-background/95 backdrop-blur-xl",
@@ -284,12 +276,12 @@ export function LanguageSwitcher({
             <>
               {/* Primary languages */}
               {visibleLanguages.map(renderLanguageItem)}
-              
+
               {/* More languages */}
               {moreLanguages.length > 0 && (
                 <>
                   <DropdownMenuSeparator className="my-1" />
-                  
+
                   {showMoreLanguages ? (
                     // Show all languages
                     <>
@@ -322,22 +314,22 @@ export function LanguageSwitcher({
             </>
           )}
         </ScrollArea>
-        
+
         {/* Auto-translate section */}
         {languageContext && (
           <>
             <DropdownMenuSeparator className="my-1" />
-            
+
             {/* Browser language indicator */}
             {browserLanguage && browserLanguage !== i18n.language && (
               <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
                 <Globe className="h-3 w-3" />
-                {t('translation.browserLanguageDetected', 'Язык браузера: {{language}}', { 
-                  language: getLanguageInfo(browserLanguage).name 
+                {t('translation.browserLanguageDetected', 'Язык браузера: {{language}}', {
+                  language: getLanguageInfo(browserLanguage).name
                 })}
               </div>
             )}
-            
+
             {/* Auto-translate toggle */}
             <div
               className={cn(
@@ -394,7 +386,7 @@ export function LanguageSwitcher({
             )}
           </>
         )}
-        
+
         {showAutoTranslate && (
           <>
             <DropdownMenuSeparator className="my-1" />
@@ -418,8 +410,8 @@ export function LanguageSwitcher({
                 <Languages className="h-4 w-4" />
               )}
               <span className="flex-1 text-sm font-medium">
-                {isTranslating 
-                  ? t('ai.translating', 'Перевод...') 
+                {isTranslating
+                  ? t('ai.translating', 'Перевод...')
                   : t('ai.translateNow', 'Перевести сейчас')
                 }
               </span>
