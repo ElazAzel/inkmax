@@ -192,6 +192,8 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
   const links: { url: string; title: string }[] = [];
   const faqItems: { q: string; a: string }[] = [];
   const services: { name: string; description?: string; price?: string }[] = [];
+  const socialLinks: string[] = [];
+  const knowsAbout: string[] = [];
   const keyFacts: string[] = [];
   let bodyContent = '';
   let textSectionsCount = 0;
@@ -229,8 +231,21 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
       }
     } else if (b.type === 'booking') {
       keyFacts.push(lang === 'ru' ? 'Онлайн-запись' : lang === 'kk' ? 'Онлайн жазылу' : 'Online booking');
+    } else if (b.type === 'socials' && content?.platforms && Array.isArray(content.platforms)) {
+      for (const platform of (content.platforms as Array<{url?: string; name?: string}>).slice(0, 10)) {
+        if (platform.url) {
+          socialLinks.push(String(platform.url));
+        }
+      }
     } else if (blockTitle && b.type !== 'profile') {
       bodyContent += `<h3>${blockTitle}</h3>\n`;
+    }
+  }
+
+  // Extract knowsAbout from services
+  for (const s of services) {
+    if (s.name && !knowsAbout.includes(s.name)) {
+      knowsAbout.push(s.name);
     }
   }
 
@@ -257,10 +272,25 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
     'image': avatar,
     'description': truncate(cleanDesc, 300),
   };
-  
+
   if (location) {
     mainEntitySchema['areaServed'] = location;
     mainEntitySchema['address'] = { '@type': 'PostalAddress', 'addressLocality': location };
+  }
+
+  // Add social links for entity linking (sameAs)
+  if (socialLinks.length > 0) {
+    mainEntitySchema['sameAs'] = socialLinks;
+  }
+
+  // Add expertise (knowsAbout)
+  if (knowsAbout.length > 0) {
+    mainEntitySchema['knowsAbout'] = knowsAbout;
+  }
+
+  // Add niche as jobTitle for Person
+  if (schemaType === 'Person' && niche && niche !== 'other') {
+    mainEntitySchema['jobTitle'] = niche;
   }
 
   const jsonLdGraph: Record<string, unknown>[] = [
@@ -426,24 +456,29 @@ async function handleProfileSSR(supabase: SupabaseClient<any>, slug: string, lan
   </style>
 </head>
 <body>
-  <main>
-    <header>
-      <h1>${displayName}</h1>
-      ${cleanDesc ? `<p>${escapeHtml(cleanDesc)}</p>` : ''}
-      ${location ? `<p><strong>Location:</strong> ${escapeHtml(location)}</p>` : ''}
   <main itemscope itemtype="https://schema.org/${schemaType}">
     <header id="about">
       ${avatar !== DEFAULT_OG_IMAGE ? `<img src="${avatar}" alt="${displayName}" class="avatar" itemprop="image" loading="eager">` : ''}
       <h1 itemprop="name">${displayName}</h1>
-      ${niche ? `<p itemprop="jobTitle">${escapeHtml(niche)}</p>` : ''}
+      ${niche && niche !== 'other' ? `<p itemprop="jobTitle">${escapeHtml(niche)}</p>` : ''}
       ${location ? `<p class="location" itemprop="areaServed">📍 ${escapeHtml(location)}</p>` : ''}
       <link itemprop="url" href="${canonical}">
+      ${socialLinks.map(url => `<link itemprop="sameAs" href="${escapeHtml(url)}">`).join('\n      ')}
     </header>
 
     <!-- Answer Block for AI extraction -->
     <section class="answer-block" aria-label="Summary">
       <p itemprop="description">${escapeHtml(answerSummary)}</p>
     </section>
+
+    ${knowsAbout.length > 0 ? `
+    <!-- Expertise for AI citation -->
+    <section aria-label="Expertise">
+      <ul class="key-facts">
+        ${knowsAbout.slice(0, 6).map(skill => `<li itemprop="knowsAbout">${escapeHtml(skill)}</li>`).join('\n        ')}
+      </ul>
+    </section>
+    ` : ''}
 
     ${keyFactsHtml}
     ${bodyContent ? `<section aria-label="About">${bodyContent}</section>` : ''}
