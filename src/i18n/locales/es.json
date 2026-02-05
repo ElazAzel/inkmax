@@ -3053,18 +3053,36 @@
       },
       "for": {
         "title": "Who it is for",
-        "list": ["Experts and consultants", "Small businesses and studios", "Creators and course makers", "Event organizers"]
+        "list": [
+          "Experts and consultants",
+          "Small businesses and studios",
+          "Creators and course makers",
+          "Event organizers"
+        ]
       },
       "where": {
         "title": "Where it works",
-        "list": ["Kazakhstan, Russia, Kyrgyzstan", "Almaty, Astana, Shymkent", "Online and offline services"]
+        "list": [
+          "Kazakhstan, Russia, Kyrgyzstan",
+          "Almaty, Astana, Shymkent",
+          "Online and offline services"
+        ]
       },
       "answers": {
         "title": "Quick answers",
         "items": [
-          { "q": "How fast can I launch?", "a": "In 2 minutes: AI builds a page from your answers." },
-          { "q": "Is there a CRM for leads?", "a": "Yes, all leads are stored and managed in one place." },
-          { "q": "Is it good for local businesses?", "a": "Yes, add city, map, and booking to capture local demand." }
+          {
+            "q": "How fast can I launch?",
+            "a": "In 2 minutes: AI builds a page from your answers."
+          },
+          {
+            "q": "Is there a CRM for leads?",
+            "a": "Yes, all leads are stored and managed in one place."
+          },
+          {
+            "q": "Is it good for local businesses?",
+            "a": "Yes, add city, map, and booking to capture local demand."
+          }
         ]
       }
     },
@@ -3195,5 +3213,73 @@
     "oceanDesc": "Calm sea tones",
     "forest": "Forest",
     "forestDesc": "Natural green shades"
+  },
+  "pricing": {
+    "seo": {
+      "title": "lnkmx Pricing — Plans for Link in Bio & Mini-Sites",
+      "description": "Compare lnkmx plans: free link in bio builder, Pro with AI, CRM, analytics, and custom domains. Transparent pricing in minutes.",
+      "imageAlt": "lnkmx Pricing Plans"
+    },
+    "title": "Pricing",
+    "choosePlan": "Choose the right plan",
+    "description": "Unlock all LinkMAX features for your business",
+    "months": "mo",
+    "savingsText": "Save",
+    "popular": "Popular",
+    "basicDesc": "Start for free",
+    "proDesc": "Everything for professionals and business",
+    "free": {
+      "title": "Free"
+    },
+    "month": "mo",
+    "totalFor": "for",
+    "startFree": "Start for free",
+    "subscribe": "Subscribe",
+    "currentPlan": "Current",
+    "alreadyFree": "Free plan is already active",
+    "comingSoon": "Payment coming soon! Stay tuned.",
+    "tokens": {
+      "title": "Or pay with Linkkon tokens",
+      "balanceDescription": "100 Linkkon = 1 day of Premium. Your balance: {{balance}} tokens",
+      "converting": "Converting...",
+      "buyDay": "Buy 1 day for {{cost}} Linkkon",
+      "buyTokens": "Buy tokens"
+    },
+    "securePayments": "Secure payments",
+    "cancelAnytime": "Cancel anytime",
+    "moneyBack": "14-day money-back guarantee",
+    "companyDetails": {
+      "nameLine": "IP BEEGIN • BIN: 971207300019",
+      "addressLine": "Almaty, st. Sholokhov, 20/7"
+    },
+    "paymentNote": "Payment via RoboKassa",
+    "features": {
+      "basicThemes": "Basic themes",
+      "basicCustomization": "Basic customization (colors, fonts)",
+      "unlimitedLinks": "Unlimited links",
+      "basicBlocks": "Basic blocks (Profile, Link, Text, Photo, Button, Socials)",
+      "messengers": "Messengers and socials",
+      "maps": "Maps (address + map)",
+      "basicStats": "Basic view stats",
+      "qrCode": "Page QR Code",
+      "aiMonthly": "1 AI generation/month",
+      "allBasic": "Everything in BASIC, plus:",
+      "allBlocks": "All 25+ block types unlimited",
+      "proThemes": "Professional themes and animations",
+      "media": "Media: images, video, carousels",
+      "priceLists": "Price lists and catalogs",
+      "scheduler": "Block scheduler",
+      "advancedAnalytics": "Advanced click analytics",
+      "fullCRM": "Full CRM for leads",
+      "telegramNotifications": "Telegram notifications for leads",
+      "forms": "Lead forms",
+      "faq": "FAQ and review blocks",
+      "timers": "Countdown timers",
+      "aiMonthlyPro": "5 AI generations/month"
+    },
+    "limitations": {
+      "watermark": "LinkMAX watermark",
+      "limitedBlocks": "10 blocks maximum"
+    }
   }
 }
