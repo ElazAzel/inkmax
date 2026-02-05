@@ -318,10 +318,12 @@ export default function Index() {
               <Button
                 size="lg"
                 onClick={() => handleCreatePage('hero', 'hero_primary_cta_click')}
-                className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="h-14 rounded-2xl text-base font-bold shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden shimmer group"
               >
-                <Sparkles className="h-5 w-5 mr-2" />
-                {t('landing.v4.hero.cta', 'Создать страницу')}
+                <div className="relative z-10 flex items-center">
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  {t('landing.v4.hero.cta', 'Создать страницу')}
+                </div>
               </Button>
               <Button
                 variant="ghost"
