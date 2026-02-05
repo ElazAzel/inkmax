@@ -33,7 +33,7 @@ export function usePageVersions(onRestore?: (blocks: Block[], theme?: PageTheme,
 
   const fetchVersions = useCallback(async (pageId: string) => {
     if (!pageId) return;
-    
+
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -56,7 +56,7 @@ export function usePageVersions(onRestore?: (blocks: Block[], theme?: PageTheme,
 
       setVersions(mapped);
     } catch (err) {
-      console.error('Failed to fetch versions:', err);
+      logger.error('Failed to fetch versions', err, { context: 'usePageVersions' });
     } finally {
       setLoading(false);
     }
@@ -110,7 +110,7 @@ export function usePageVersions(onRestore?: (blocks: Block[], theme?: PageTheme,
 
       return true;
     } catch (err) {
-      console.error('Failed to save version:', err);
+      logger.error('Failed to save version', err, { context: 'usePageVersions' });
       return false;
     }
   }, [fetchVersions]);

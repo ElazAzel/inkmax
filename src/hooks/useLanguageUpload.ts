@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 export interface ValidationError {
     key: string;
@@ -58,7 +59,7 @@ export function useLanguageUpload() {
 
             setLanguages(data || []);
         } catch (error) {
-            console.error('Error loading languages:', error);
+            logger.error('Error loading languages', error, { context: 'useLanguageUpload' });
             toast.error('Не удалось загрузить языки');
         } finally {
             setLoadingLanguages(false);
@@ -149,7 +150,7 @@ export function useLanguageUpload() {
             return result;
 
         } catch (error) {
-            console.error('Upload error:', error);
+            logger.error('Upload error', error, { context: 'useLanguageUpload' });
             toast.error(error instanceof Error ? error.message : 'Ошибка загрузки файла');
             return null;
         } finally {
@@ -204,7 +205,7 @@ export function useLanguageUpload() {
             return false;
 
         } catch (error) {
-            console.error('Apply error:', error);
+            logger.error('Apply error', error, { context: 'useLanguageUpload' });
             toast.error(error instanceof Error ? error.message : 'Ошибка применения языка');
             return false;
         } finally {
@@ -227,7 +228,7 @@ export function useLanguageUpload() {
             return true;
 
         } catch (error) {
-            console.error('Delete error:', error);
+            logger.error('Delete error', error, { context: 'useLanguageUpload' });
             toast.error('Ошибка удаления языка');
             return false;
         }

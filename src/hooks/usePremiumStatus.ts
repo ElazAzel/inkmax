@@ -35,7 +35,7 @@ export function usePremiumStatus() {
       setInTrial(status.inTrial);
       setTrialEndsAt(status.trialEndsAt);
     } catch (error) {
-      console.error('Error checking premium status:', error);
+      logger.error('Error checking premium status', error, { context: 'usePremiumStatus' });
       setIsPremium(false);
       setTier('free');
       setInTrial(false);

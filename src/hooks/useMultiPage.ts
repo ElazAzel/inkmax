@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from './useAuth';
 import { usePremiumStatus } from './usePremiumStatus';
 import { supabase } from '@/platform/supabase/client';
+import { logger } from '@/lib/logger';
 
 // ============= Types =============
 
@@ -62,7 +63,7 @@ const ACTIVE_PAGE_KEY = 'linkmax_active_page_id';
 export function useMultiPage() {
   const { user } = useAuth();
   const { isPremium, tier } = usePremiumStatus();
-  
+
   const [pages, setPages] = useState<UserPage[]>([]);
   const [activePageId, setActivePageId] = useState<string | null>(null);
   const [limits, setLimits] = useState<PageLimits | null>(null);
@@ -140,7 +141,7 @@ export function useMultiPage() {
       }
 
     } catch (err) {
-      console.error('Error loading pages:', err);
+      logger.error('Error loading pages', err, { context: 'useMultiPage' });
       setError(err instanceof Error ? err.message : 'Failed to load pages');
     } finally {
       setLoading(false);
@@ -169,8 +170,8 @@ export function useMultiPage() {
     // Check limits first
     const currentLimits = limits;
     if (currentLimits && !currentLimits.canCreate) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: 'page_limit_exceeded',
         limits: currentLimits,
       };
@@ -179,7 +180,7 @@ export function useMultiPage() {
     try {
       // Generate a unique slug
       let finalSlug = slug?.toLowerCase().replace(/[^a-z0-9-]/g, '') || '';
-      
+
       if (!finalSlug) {
         finalSlug = `page-${Date.now().toString(36)}`;
       }
@@ -253,7 +254,7 @@ export function useMultiPage() {
         slug: newPage?.slug,
       };
     } catch (err) {
-      console.error('Error creating page:', err);
+      logger.error('Error creating page', err, { context: 'useMultiPage' });
       return {
         success: false,
         error: err instanceof Error ? err.message : 'Failed to create page',
@@ -284,7 +285,7 @@ export function useMultiPage() {
 
       return { success: true };
     } catch (err) {
-      console.error('Error setting primary paid page:', err);
+      logger.error('Error setting primary paid page', err, { context: 'useMultiPage' });
       return {
         success: false,
         error: err instanceof Error ? err.message : 'Failed to set primary paid page',
@@ -327,7 +328,7 @@ export function useMultiPage() {
 
       return { success: true };
     } catch (err) {
-      console.error('Error deleting page:', err);
+      logger.error('Error deleting page', err, { context: 'useMultiPage', data: { pageId } });
       return {
         success: false,
         error: err instanceof Error ? err.message : 'Failed to delete page',
@@ -374,7 +375,7 @@ export function useMultiPage() {
 
       return { success: true };
     } catch (err) {
-      console.error('Error updating slug:', err);
+      logger.error('Error updating slug', err, { context: 'useMultiPage', data: { pageId, newSlug } });
       return {
         success: false,
         error: err instanceof Error ? err.message : 'Failed to update slug',

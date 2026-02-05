@@ -6,6 +6,7 @@ import type { PageData, Block, ProfileBlock, PageTheme, EditorMode, GridConfig }
 import { createDefaultPageData } from '@/lib/constants';
 import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import type { Json } from '@/platform/supabase/types';
+import { logger } from '@/lib/logger';
 
 // ============= Types (exported for backward compatibility) =============
 export interface DbPage {
@@ -138,10 +139,10 @@ function convertDbBlocksToBlocks(dbBlocks: DbBlock[]): Block[] {
  */
 function extractBlockTitle(block: Block, lang: SupportedLanguage = 'ru'): string | null {
   if (!('title' in block) && !('name' in block)) return null;
-  
+
   const rawTitle = 'title' in block ? block.title : ('name' in block ? (block as ProfileBlock).name : null);
   if (!rawTitle) return null;
-  
+
   if (typeof rawTitle === 'string') return rawTitle;
   return getI18nText(rawTitle, lang);
 }
@@ -180,7 +181,7 @@ export async function savePage(
     });
 
     if (upsertError) {
-      console.error('Error upserting page:', upsertError);
+      logger.error('Error upserting page', upsertError, { context: 'pages', data: { userId, slug } });
       return { data: null, error: wrapError(upsertError) };
     }
 
@@ -202,7 +203,7 @@ export async function savePage(
     });
 
     if (blocksError) {
-      console.error('Error saving blocks:', blocksError);
+      logger.error('Error saving blocks', blocksError, { context: 'pages', data: { pageId } });
       return { data: null, error: wrapError(blocksError) };
     }
 
@@ -239,7 +240,7 @@ export async function savePage(
 
     return { data: page as unknown as DbPage, error: null };
   } catch (error) {
-    console.error('Error saving page:', error);
+    logger.error('Error saving page', error, { context: 'pages', data: { userId } });
     return { data: null, error: wrapError(error) };
   }
 }

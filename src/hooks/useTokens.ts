@@ -41,7 +41,7 @@ export function useTokens() {
       const data = await getTokenBalance(user.id);
       setBalance(data);
     } catch (error) {
-      console.error('Error loading balance:', error);
+      logger.error('Error loading balance', error, { context: 'useTokens' });
     } finally {
       setLoading(false);
     }
@@ -78,20 +78,20 @@ export function useTokens() {
         balance: result.newBalance!,
         totalEarned: prev.totalEarned + amount,
       } : null);
-      
+
       const actionLabels = {
         daily_visit: t('tokens.dailyVisit', 'ежедневный вход'),
         add_block: t('tokens.addBlock', 'добавление блока'),
         use_ai: t('tokens.useAi', 'использование AI'),
       };
-      
+
       toast.success(t('tokens.toastEarned', '+{{count}} Linkkon за {{action}}!', {
         count: amount,
         action: actionLabels[actionType],
       }));
       return true;
     }
-    
+
     // Already claimed today - no error toast
     return false;
   }, [user, t]);
@@ -160,7 +160,7 @@ export function useTokens() {
     if (!user) return false;
 
     const { totalPrice } = calculatePriceWithFee(price);
-    
+
     if (!balance || balance.balance < totalPrice) {
       toast.error(t('tokens.insufficientForPurchase', {
         count: Number(totalPrice.toFixed(2)),

@@ -49,9 +49,9 @@ export function useDashboardAuthGuard({
           if (!error) {
             // Clear from localStorage after successful save
             localStorage.removeItem('pending_telegram_chat_id');
-            console.log('Telegram chat ID saved to profile');
+            logger.debug('Telegram chat ID saved to profile', { context: 'useDashboardAuthGuard' });
           } else {
-            console.error('Failed to save telegram chat ID:', error);
+            logger.error('Failed to save telegram chat ID', error, { context: 'useDashboardAuthGuard' });
           }
         });
     }
