@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaticSEOHead } from '@/components/seo/StaticSEOHead';
+import { LanguageUploadDialog } from '@/components/admin/LanguageUploadDialog';
 
 import ru from '@/i18n/locales/ru.json';
 import en from '@/i18n/locales/en.json';
@@ -229,6 +230,7 @@ export default function AdminTranslations() {
   const [newKeyName, setNewKeyName] = useState('');
   const [newKeyValues, setNewKeyValues] = useState<Record<string, string>>({});
   const [languageSearch, setLanguageSearch] = useState('');
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -786,6 +788,10 @@ export default function AdminTranslations() {
               <Upload className="h-4 w-4 mr-1" />
               Импорт JSON ({selectedLang})
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setUploadDialogOpen(true)}>
+              <Upload className="h-4 w-4 mr-1" />
+              Загрузить язык из файла
+            </Button>
             <Button variant="outline" size="sm" onClick={() => copyToClipboard(selectedLang)}>
               <Copy className="h-4 w-4 mr-1" />
               Копировать ({selectedLang})
@@ -950,6 +956,16 @@ export default function AdminTranslations() {
             </CardContent>
           </Card>
         </main>
+
+        {/* Upload Dialog */}
+        <LanguageUploadDialog
+          open={uploadDialogOpen}
+          onOpenChange={setUploadDialogOpen}
+          onSuccess={() => {
+            // Можно добавить логику для обновления переводов
+            toast.success('Язык успешно загружен и применён');
+          }}
+        />
       </div>
     </>
   );
