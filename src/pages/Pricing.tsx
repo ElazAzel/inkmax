@@ -213,14 +213,16 @@ export default function Pricing() {
         </div>
 
         {/* Billing Period Selector */}
-        <div className="flex justify-center mb-8">
-          <div className="inline-flex bg-muted/50 backdrop-blur-xl rounded-2xl p-1.5 gap-1">
-            {([3, 6, 12] as BillingPeriod[]).map(period => <button key={period} onClick={() => setBillingPeriod(period)} className={`relative px-4 sm:px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${billingPeriod === period ? 'bg-card text-foreground shadow-glass' : 'text-muted-foreground hover:text-foreground'}`}>
-              {period} {t('pricing.months', 'мес')}
-              {period === 12 && <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+        {/* Billing Period Selector - Mobile Optimized */}
+        <div className="flex justify-center mb-8 px-4 w-full sm:w-auto">
+          <div className="w-full sm:w-auto grid grid-cols-3 sm:inline-flex bg-muted/50 backdrop-blur-xl rounded-2xl p-1.5 gap-1">
+            {([3, 6, 12] as BillingPeriod[]).map(period => <button key={period} onClick={() => setBillingPeriod(period)} className={`relative px-2 sm:px-6 py-3 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 flex flex-col sm:flex-row items-center justify-center gap-1 ${billingPeriod === period ? 'bg-card text-foreground shadow-glass' : 'text-muted-foreground hover:text-foreground'}`}>
+              <span className="text-base font-bold sm:font-medium sm:text-sm">{period}</span>
+              <span>{t('pricing.months', 'мес')}</span>
+              {period === 12 && <span className="absolute -top-3 -right-1 sm:-top-2 sm:-right-2 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold shadow-sm z-10">
                 -30%
               </span>}
-              {period === 6 && <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">-15%</span>}
+              {period === 6 && <span className="absolute -top-3 -right-1 sm:-top-2 sm:-right-2 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold shadow-sm z-10">-15%</span>}
             </button>)}
           </div>
         </div>
@@ -383,6 +385,31 @@ export default function Pricing() {
           </div>
         </div>
       </main>
+
+      {/* Sticky Mobile CTA - PRO Plan Focus */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-xl border-t border-border/20 md:hidden z-50 pb-safe safe-area-bottom">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{pricingPlans.pro.name}</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-bold text-primary">
+                {isKztPrimary
+                  ? `${pricingPlans.pro.pricesKzt[billingPeriod].toLocaleString()}₸`
+                  : `$${pricingPlans.pro.pricesUsd[billingPeriod].toFixed(2)}`
+                }
+              </span>
+              <span className="text-xs text-muted-foreground">/{t('pricing.month', 'мес')}</span>
+            </div>
+          </div>
+          <Button
+            size="lg"
+            className="rounded-xl shadow-lg shadow-primary/20 bg-gradient-to-r from-violet-500 to-purple-600"
+            onClick={() => handleSelectPlan('pro')}
+          >
+            {t('pricing.subscribe', 'Подписаться')}
+          </Button>
+        </div>
+      </div>
     </div>
   </>;
 }
