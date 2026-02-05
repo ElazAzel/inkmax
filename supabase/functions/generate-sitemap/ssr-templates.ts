@@ -304,17 +304,6 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
   <meta name="twitter:title" content="${escapeHtml(content.title)}">
   <meta name="twitter:description" content="${escapeHtml(content.description)}">
   <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}">
-  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
-  <style>
-    body { font-family: system-ui, sans-serif; margin: 0; color: #111; background: #fff; }
-    main { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
-    h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
-    h2 { margin-top: 2rem; font-size: 1.5rem; }
-    ul { padding-left: 1.2rem; }
-    .answers dt { font-weight: 600; margin-top: 0.75rem; }
-    .answers dd { margin-left: 0; margin-bottom: 0.5rem; color: #444; }
-    .cta { margin-top: 1.5rem; }
-    .cta a { display: inline-block; padding: 12px 18px; border-radius: 999px; background: #0f62fe; color: #fff; text-decoration: none; }
   <meta name="twitter:site" content="@lnkmx_app">
   <meta name="ai-summary" content="${escapeHtml(content.answerBlock)}">
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
@@ -372,20 +361,13 @@ export function buildLandingHtml(lang: LanguageKey, baseUrl: string): string {
       <ul>${content.whereList.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
     </section>
 
-    <section>
+    <section aria-label="${content.answersTitle}">
       <h2>${escapeHtml(content.answersTitle)}</h2>
-      <dl class="answers">
       <dl class="faq">
         ${content.answers.map((item) => `<dt>${escapeHtml(item.q)}</dt><dd>${escapeHtml(item.a)}</dd>`).join('')}
       </dl>
     </section>
 
-    <section>
-      <h2>${escapeHtml(content.faqTitle)}</h2>
-      <dl class="answers">
-        ${content.faq.map((item) => `<dt>${escapeHtml(item.q)}</dt><dd>${escapeHtml(item.a)}</dd>`).join('')}
-      </dl>
-    </section>
     <section id="faq" itemscope itemtype="https://schema.org/FAQPage">
       <h2>${escapeHtml(content.faqTitle)}</h2>
       <dl class="faq">
@@ -429,31 +411,26 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
     image: item.avatar_url || DEFAULT_OG_IMAGE,
   }));
 
+  // Combined ItemList with CollectionPage
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'CollectionPage',
-        name: content.title,
-        description: content.description,
-        url: canonicalUrl,
-        inLanguage: lang,
-      },
-      {
-        '@type': 'ItemList',
-        itemListElement: itemList,
         '@id': canonicalUrl,
         name: title,
         description: content.description,
         url: canonicalUrl,
         inLanguage: lang,
         isPartOf: { '@id': `${baseUrl}/#website` },
+        mainEntity: { '@id': `${canonicalUrl}#itemlist` },
       },
       {
         '@type': 'ItemList',
         '@id': `${canonicalUrl}#itemlist`,
         itemListElement: itemList,
         numberOfItems: items.length,
+        name: content.topProfilesTitle,
       },
     ],
   };
@@ -463,33 +440,17 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHtml(content.title)}</title>
   <title>${escapeHtml(title)}</title>
   <meta name="description" content="${escapeHtml(content.description)}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${canonicalUrl}">
   ${hreflangLinks}
   <meta property="og:type" content="website">
-  <meta property="og:title" content="${escapeHtml(content.title)}">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(content.description)}">
   <meta property="og:url" content="${canonicalUrl}">
   <meta property="og:image" content="${DEFAULT_OG_IMAGE}">
   <meta property="og:locale" content="${locale}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${escapeHtml(content.title)}">
-  <meta name="twitter:description" content="${escapeHtml(content.description)}">
-  <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}">
-  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
-  <style>
-    body { font-family: system-ui, sans-serif; margin: 0; color: #111; background: #fff; }
-    main { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
-    h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
-    h2 { margin-top: 2rem; font-size: 1.4rem; }
-    ul { padding-left: 1.2rem; }
-    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-    .card { border: 1px solid #eee; border-radius: 12px; padding: 12px; }
-    .card a { color: #0f62fe; text-decoration: none; font-weight: 600; }
   <meta property="og:site_name" content="lnkmx">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
@@ -519,11 +480,6 @@ export function buildGalleryHtml(lang: LanguageKey, baseUrl: string, items: Gall
 </head>
 <body>
   <main>
-    <header>
-      <h1>${escapeHtml(content.h1)}</h1>
-      <p>${escapeHtml(content.subtitle)}</p>
-    </header>
-
       <h1>${escapeHtml(content.h1)}${niche ? ` - ${escapeHtml(nicheLabel)}` : ''}</h1>
       <p>${escapeHtml(content.subtitle)}</p>
     </header>
