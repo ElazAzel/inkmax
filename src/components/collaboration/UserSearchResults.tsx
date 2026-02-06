@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { UserPlus, Megaphone } from 'lucide-react';
+import { UserPlus, Megaphone, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { NICHE_ICONS, type Niche } from '@/lib/niches';
 import { useState } from 'react';
+import { getUserPageSlug } from '@/services/friends';
+import { toast } from 'sonner';
 
 export interface UserResult {
   id: string;
@@ -27,62 +29,93 @@ export function UserSearchResults({ users, mode, onCollabRequest, onShoutout }: 
   const { t } = useTranslation();
   const [shoutoutMessage, setShoutoutMessage] = useState('');
 
+  const handleViewPage = async (userId: string) => {
+    const slug = await getUserPageSlug(userId);
+    if (slug) {
+      window.open(`/${slug}`, '_blank');
+    } else {
+      toast.error(t('friends.pageNotPublished', 'Страница не опубликована'));
+    }
+  };
+
   if (users.length === 0) return null;
 
   return (
-    <div className="space-y-2 max-h-48 overflow-y-auto">
+    <div className="space-y-2 max-h-64 overflow-y-auto">
       {users.map(user => (
-        <div key={user.id} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
+        <div key={user.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl border border-border/30">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10 rounded-xl">
               <AvatarImage src={user.avatar_url || ''} />
-              <AvatarFallback>{user.display_name?.[0] || '?'}</AvatarFallback>
+              <AvatarFallback className="rounded-xl bg-primary/10 text-primary">
+                {(user.display_name || user.username || 'U')[0].toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm">{user.display_name || user.username}</p>
+              <p className="text-sm font-medium">{user.display_name || user.username}</p>
               {user.niche && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-[10px] mt-0.5">
                   {NICHE_ICONS[user.niche as Niche]} {t(`niches.${user.niche}`, user.niche)}
                 </Badge>
               )}
             </div>
           </div>
-          {mode === 'collab' ? (
-            <Button size="sm" onClick={() => onCollabRequest?.(user.id)}>
-              <UserPlus className="h-4 w-4" />
+          <div className="flex gap-1">
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={() => handleViewPage(user.id)}
+              className="h-8 w-8 p-0"
+              title={t('friends.viewPage', 'Посмотреть страницу')}
+            >
+              <ExternalLink className="h-4 w-4" />
             </Button>
-          ) : (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button size="sm">
-                  <Megaphone className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {t('collab.shoutoutRecommendTitle', 'Рекомендовать {{name}}', { name: user.display_name || user.username })}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <Textarea
-                    placeholder={t('collab.shoutoutReasonPlaceholder', 'Напишите почему рекомендуете этого человека...')}
-                    value={shoutoutMessage}
-                    onChange={(e) => setShoutoutMessage(e.target.value)}
-                  />
-                  <Button 
-                    className="w-full" 
-                    onClick={() => {
-                      onShoutout?.(user.id, shoutoutMessage);
-                      setShoutoutMessage('');
-                    }}
-                  >
-                    {t('collab.addShoutout', 'Добавить шаут-аут')}
+            
+            {mode === 'collab' ? (
+              <Button size="sm" onClick={() => onCollabRequest?.(user.id)} className="h-8 gap-1">
+                <UserPlus className="h-3 w-3" />
+                {t('collaboration.offer', 'Предложить')}
+              </Button>
+            ) : (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline" className="h-8 gap-1">
+                    <Megaphone className="h-3 w-3" />
+                    {t('collab.recommend', 'Рекомендовать')}
                   </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      {t('collab.shoutoutRecommendTitle', 'Рекомендовать {{name}}', { name: user.display_name || user.username })}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Textarea
+                      placeholder={t('collab.shoutoutReasonPlaceholder', 'Напишите почему рекомендуете этого человека...')}
+                      value={shoutoutMessage}
+                      onChange={(e) => setShoutoutMessage(e.target.value)}
+                      className="min-h-[80px] rounded-xl"
+                      maxLength={200}
+                    />
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground">{shoutoutMessage.length}/200</span>
+                      <Button 
+                        onClick={() => {
+                          onShoutout?.(user.id, shoutoutMessage);
+                          setShoutoutMessage('');
+                        }}
+                        className="gap-1"
+                      >
+                        <Megaphone className="h-4 w-4" />
+                        {t('collab.addShoutout', 'Добавить')}
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
         </div>
       ))}
     </div>

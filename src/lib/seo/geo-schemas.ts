@@ -49,10 +49,13 @@ export function generateGEOSchemas(
   const pageUrl = `https://lnkmx.my/${context.slug}`;
   const now = new Date().toISOString();
   
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+  
   const graph: object[] = [];
   
   // 1. Main Entity (Person/Organization/LocalBusiness)
-  const mainEntity = generateMainEntity(blocks, context, pageUrl);
+  const mainEntity = generateMainEntity(validBlocks, context, pageUrl);
   graph.push(mainEntity);
   
   // 2. WebPage/ProfilePage
@@ -64,7 +67,7 @@ export function generateGEOSchemas(
   graph.push(breadcrumb);
   
   // 4. FAQ Schema
-  const faqBlock = blocks.find(b => b.type === 'faq') as FAQBlock | undefined;
+  const faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
   let faq: object | undefined;
   if (faqBlock?.items?.length) {
     faq = generateFAQSchema(faqBlock, context.language);
@@ -72,7 +75,7 @@ export function generateGEOSchemas(
   }
   
   // 5. Event Schemas
-  const eventBlocks = blocks.filter(b => b.type === 'event') as EventBlock[];
+  const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
   let events: object[] | undefined;
   if (eventBlocks.length > 0) {
     events = generateEventSchemas(eventBlocks, context, pageUrl);
@@ -80,7 +83,7 @@ export function generateGEOSchemas(
   }
   
   // 6. Service Schemas
-  const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   let services: object[] | undefined;
   if (pricingBlock?.items?.length) {
     services = generateServiceSchemas(pricingBlock, context, pageUrl);
@@ -88,7 +91,7 @@ export function generateGEOSchemas(
   }
   
   // 7. HowTo Schema (for booking flow)
-  const hasBooking = blocks.some(b => b.type === 'booking');
+  const hasBooking = validBlocks.some(b => b.type === 'booking');
   let howTo: object | undefined;
   if (hasBooking) {
     howTo = generateHowToSchema(context, pageUrl);

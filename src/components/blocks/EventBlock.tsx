@@ -33,7 +33,7 @@ interface EventBlockProps {
 const SYSTEM_EMAIL_FIELD_ID = 'system_email';
 const DRAFT_TTL_MS = 2 * 60 * 60 * 1000;
 
-type FormValue = string | string[] | boolean | number;
+type FormValue = string | string[] | boolean | number | Record<string, string> | Record<string, string[]>;
 
 export const EventBlock = memo(function EventBlock({
   block,
@@ -170,12 +170,46 @@ export const EventBlock = memo(function EventBlock({
       }
     }
 
+    // Validate email format
+    const email = formValues[SYSTEM_EMAIL_FIELD_ID];
+    if (typeof email === 'string') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        toast.error(t('event.invalidEmail', 'Введите корректный email'));
+        return false;
+      }
+    }
+
+    // Validate URL fields
     const urlFields = eventFields.filter((field) => field.type === 'url');
     for (const field of urlFields) {
       const value = formValues[field.id];
-      if (typeof value === 'string' && value.length > 0 && !value.startsWith('https://')) {
-        toast.error(t('event.urlInvalid', 'URL должен начинаться с https://'));
-        return false;
+      if (typeof value === 'string' && value.length > 0) {
+        try {
+          const url = new URL(value);
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            toast.error(t('event.urlInvalid', 'URL должен начинаться с http:// или https://'));
+            return false;
+          }
+        } catch {
+          toast.error(t('event.urlInvalid', 'Некорректный URL'));
+          return false;
+        }
+      }
+    }
+
+    // Validate phone fields
+    const phoneFields = eventFields.filter((field) => field.type === 'phone');
+    for (const field of phoneFields) {
+      const value = formValues[field.id];
+      if (typeof value === 'string' && value.length > 0) {
+        // Basic phone validation - at least 7 digits
+        const digitsOnly = value.replace(/\D/g, '');
+        if (digitsOnly.length < 7) {
+          const label = getI18nText(field.label_i18n, language) || t('event.phone', 'Телефон');
+          toast.error(t('event.invalidPhone', 'Введите корректный номер телефона') + `: ${label}`);
+          return false;
+        }
       }
     }
 

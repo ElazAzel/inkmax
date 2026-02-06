@@ -120,7 +120,8 @@
     "right": "Right",
     "buttonText": "Button Text",
     "requiredRussian": "Required field for Russian language",
-    "requiredPrimary": "Required field for primary language"
+    "requiredPrimary": "Required field for primary language",
+    "requiredEnglish": "Required field (English is mandatory)"
   },
   "hints": {
     "bioLinks": "Tip: Add links with [text](url) format",
@@ -478,7 +479,18 @@
     "verificationDesc": "Verify your identity to get a badge",
     "verificationPending": "Verification pending",
     "verificationApproved": "Account verified",
-    "verificationRejected": "Verification rejected"
+    "verificationRejected": "Verification rejected",
+    "linkedAccounts": {
+      "title": "Login Methods",
+      "email": "Email",
+      "connected": "Connected",
+      "link": "Link",
+      "unlink": "Unlink",
+      "linkFailed": "Failed to link account",
+      "unlinkFailed": "Failed to unlink account",
+      "unlinkSuccess": "Account unlinked",
+      "cannotUnlinkLast": "You must have at least one login method"
+    }
   },
   "niche": {
     "barber": "Barber",
@@ -1379,7 +1391,13 @@
       "minutes": "minutes",
       "seconds": "seconds"
     },
-    "carousel": "Gallery",
+    "carousel": {
+      "empty": "No images added to carousel"
+    },
+    "video": {
+      "invalidUrl": "Invalid video URL",
+      "checkUrl": "Please check the video URL and try again."
+    },
     "newsletter": "Newsletter",
     "avatar": "Avatar",
     "download": "File",
@@ -1414,6 +1432,10 @@
     },
     "customCode": "Code",
     "scratch": "Scratch",
+    "shoutout": {
+      "recommend": "Recommend",
+      "userNotFound": "User not found"
+    },
     "added": "Block added",
     "deleted": "Block deleted",
     "restored": "Block restored",
@@ -2294,7 +2316,20 @@
     "error": "Error",
     "updateError": "Update failed",
     "deleteError": "Delete failed",
-    "enterName": "Enter team name"
+    "enterName": "Enter team name",
+    "total": "Teams",
+    "owned": "Owned",
+    "member": "Member",
+    "owner": "Owner",
+    "noTeamsHint": "Create a team or join with an invite code",
+    "joinByCode": "By code",
+    "createNew": "Create",
+    "joinTeam": "Join team",
+    "joinTeamDesc": "Enter the invite code from the team owner",
+    "inviteCodePlaceholder": "Invite code (team-xxxxx)",
+    "joinButton": "Join",
+    "createTeamDesc": "Bring together like-minded people for collaboration",
+    "invite": "Invite"
   },
   "friends": {
     "title": "Friends",
@@ -2715,7 +2750,9 @@
     "emailHelp": "Your ticket and confirmation will be sent to this email.",
     "emailRequired": "Email is required",
     "fillRequired": "Please fill required fields",
-    "urlInvalid": "URL must start with https://",
+    "invalidEmail": "Please enter a valid email",
+    "invalidPhone": "Please enter a valid phone number",
+    "urlInvalid": "Invalid URL",
     "selectOption": "Select an option",
     "mediaSection": "Media section is available in Pro",
     "fileUploadPro": "File upload is available in Pro",

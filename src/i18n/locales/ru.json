@@ -120,7 +120,8 @@
     "right": "Справа",
     "buttonText": "Текст кнопки",
     "requiredRussian": "Обязательное поле для русского языка",
-    "requiredPrimary": "Обязательное поле для основного языка"
+    "requiredPrimary": "Обязательное поле для основного языка",
+    "requiredEnglish": "Обязательное поле (английский обязателен)"
   },
   "hints": {
     "bioLinks": "Совет: добавляйте ссылки в формате [текст](url)",
@@ -478,7 +479,18 @@
     "verificationDesc": "Подтвердите личность для получения значка",
     "verificationPending": "Заявка на рассмотрении",
     "verificationApproved": "Аккаунт верифицирован",
-    "verificationRejected": "Заявка отклонена"
+    "verificationRejected": "Заявка отклонена",
+    "linkedAccounts": {
+      "title": "Способы входа",
+      "email": "Почта",
+      "connected": "Подключён",
+      "link": "Подключить",
+      "unlink": "Отключить",
+      "linkFailed": "Не удалось подключить аккаунт",
+      "unlinkFailed": "Не удалось отключить аккаунт",
+      "unlinkSuccess": "Аккаунт отключён",
+      "cannotUnlinkLast": "Необходимо оставить хотя бы один способ входа"
+    }
   },
   "niche": {
     "barber": "Барбер",
@@ -1379,7 +1391,13 @@
       "minutes": "минут",
       "seconds": "секунд"
     },
-    "carousel": "Галерея",
+    "carousel": {
+      "empty": "Добавьте изображения в галерею"
+    },
+    "video": {
+      "invalidUrl": "Неверный URL видео",
+      "checkUrl": "Проверьте ссылку на видео и попробуйте снова."
+    },
     "newsletter": "Рассылка",
     "avatar": "Аватар",
     "download": "Файл",
@@ -1414,6 +1432,10 @@
     },
     "customCode": "Код",
     "scratch": "Скретч",
+    "shoutout": {
+      "recommend": "Рекомендую",
+      "userNotFound": "Пользователь не найден"
+    },
     "added": "Блок добавлен",
     "deleted": "Блок удалён",
     "restored": "Блок восстановлен",
@@ -2294,7 +2316,20 @@
     "error": "Ошибка",
     "updateError": "Ошибка обновления",
     "deleteError": "Ошибка удаления",
-    "enterName": "Введите название команды"
+    "enterName": "Введите название команды",
+    "total": "Команд",
+    "owned": "Владею",
+    "member": "Участник",
+    "owner": "Владелец",
+    "noTeamsHint": "Создайте команду или присоединитесь по коду приглашения",
+    "joinByCode": "По коду",
+    "createNew": "Создать",
+    "joinTeam": "Присоединиться к команде",
+    "joinTeamDesc": "Введите код приглашения от владельца команды",
+    "inviteCodePlaceholder": "Код приглашения (team-xxxxx)",
+    "joinButton": "Присоединиться",
+    "createTeamDesc": "Соберите единомышленников для совместной работы",
+    "invite": "Пригласить"
   },
   "friends": {
     "title": "Друзья",
@@ -2715,7 +2750,9 @@
     "emailHelp": "Билет и подтверждение придут на эту почту.",
     "emailRequired": "Email обязателен",
     "fillRequired": "Заполните обязательные поля",
-    "urlInvalid": "URL должен начинаться с https://",
+    "invalidEmail": "Введите корректный email",
+    "invalidPhone": "Введите корректный номер телефона",
+    "urlInvalid": "Некорректный URL",
     "selectOption": "Выберите вариант",
     "mediaSection": "Медиа-секция доступна в Pro",
     "fileUploadPro": "Загрузка файлов доступна в Pro",

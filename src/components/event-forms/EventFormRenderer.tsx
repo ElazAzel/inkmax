@@ -17,7 +17,7 @@ import { EventFileUpload } from './EventFileUpload';
 import type { EventFormField } from '@/types/page';
 import { cn } from '@/lib/utils';
 
-type FormValue = string | string[] | boolean | number;
+type FormValue = string | string[] | boolean | number | Record<string, string> | Record<string, string[]>;
 
 interface EventFormRendererProps {
   field: EventFormField;
@@ -386,12 +386,96 @@ export const EventFormRenderer = memo(function EventFormRenderer({
     );
   }
 
-  // Grid types (simplified for now)
-  if (field.type === 'grid' || field.type === 'checkbox_grid') {
+  // Grid types
+  if (field.type === 'grid' && field.grid) {
+    const currentValues = typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, string>) : {};
+    
     return (
       <FieldWrapper>
-        <div className="text-sm text-muted-foreground border border-dashed rounded-lg p-4 text-center">
-          {t('event.gridComingSoon', 'Сетка вопросов скоро будет доступна')}
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr>
+                <th className="p-2 text-left text-muted-foreground"></th>
+                {field.grid.columns.map((col) => (
+                  <th key={col.id} className="p-2 text-center font-medium">
+                    {getI18nText(col.label_i18n, language)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {field.grid.rows.map((row) => (
+                <tr key={row.id} className="border-t border-border/50">
+                  <td className="p-2 text-sm">{getI18nText(row.label_i18n, language)}</td>
+                  {field.grid!.columns.map((col) => (
+                    <td key={col.id} className="p-2 text-center">
+                      <input
+                        type="radio"
+                        name={`${field.id}-${row.id}`}
+                        checked={currentValues[row.id] === col.id}
+                        onChange={() => {
+                          onChange({ ...currentValues, [row.id]: col.id });
+                        }}
+                        disabled={disabled}
+                        className="h-4 w-4 accent-primary"
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </FieldWrapper>
+    );
+  }
+
+  if (field.type === 'checkbox_grid' && field.grid) {
+    const currentValues = typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, string[]>) : {};
+    
+    return (
+      <FieldWrapper>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr>
+                <th className="p-2 text-left text-muted-foreground"></th>
+                {field.grid.columns.map((col) => (
+                  <th key={col.id} className="p-2 text-center font-medium">
+                    {getI18nText(col.label_i18n, language)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {field.grid.rows.map((row) => (
+                <tr key={row.id} className="border-t border-border/50">
+                  <td className="p-2 text-sm">{getI18nText(row.label_i18n, language)}</td>
+                  {field.grid!.columns.map((col) => {
+                    const rowValues = currentValues[row.id] || [];
+                    const isChecked = rowValues.includes(col.id);
+                    return (
+                      <td key={col.id} className="p-2 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            const newRowValues = isChecked
+                              ? rowValues.filter((v) => v !== col.id)
+                              : [...rowValues, col.id];
+                            onChange({ ...currentValues, [row.id]: newRowValues });
+                          }}
+                          disabled={disabled}
+                          className="h-4 w-4 accent-primary"
+                        />
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </FieldWrapper>
     );

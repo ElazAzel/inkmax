@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { checkPremiumStatus as checkPremiumStatusService } from '@/services/user';
+import { logger } from '@/lib/logger';
 
 export type PremiumTier = 'free' | 'pro';
 

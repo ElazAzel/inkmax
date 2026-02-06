@@ -19,6 +19,18 @@ import ko from './locales/ko.json';
 import ar from './locales/ar.json';
 import { validateTranslations } from './validation';
 
+// Merge all top-level keys into translation namespace
+// This handles JSON files with structure: { translation: {...}, landingV5: {...}, ... }
+const mergeNamespaces = (json: Record<string, unknown>) => {
+  const { translation, ...rest } = json as { translation: Record<string, unknown>, [key: string]: unknown };
+  return {
+    translation: {
+      ...translation,
+      ...rest
+    }
+  };
+};
+
 // Migrate 'kz' to 'kk' if stored in localStorage
 const migrateKzToKk = () => {
   const stored = localStorage.getItem('i18nextLng');
@@ -33,6 +45,9 @@ const migrateKzToKk = () => {
 // Run migration before i18n init
 migrateKzToKk();
 
+// All supported UI languages
+const SUPPORTED_LANGUAGES = ['ru', 'en', 'kk', 'de', 'uk', 'uz', 'be', 'es', 'fr', 'it', 'pt', 'zh', 'tr', 'ja', 'ko', 'ar'];
+
 // Normalize language code to supported codes
 const normalizeLanguage = (lng: string): string => {
   if (!lng) return 'ru';
@@ -43,34 +58,28 @@ const normalizeLanguage = (lng: string): string => {
   // Map 'kz' to 'kk' (Kazakh ISO code)
   if (langCode === 'kz') return 'kk';
 
-  // Russian
-  if (langCode === 'ru') return 'ru';
+  // If it's a supported language, return it
+  if (SUPPORTED_LANGUAGES.includes(langCode)) return langCode;
 
-  // Kazakh
-  if (langCode === 'kk') return 'kk';
-
-  // English
-  if (langCode === 'en') return 'en';
-
-  // CIS region languages default to Russian
-  const cisLanguages = ['uk', 'be', 'uz', 'ky', 'tg', 'az', 'hy', 'ka', 'mo', 'ro'];
-  if (cisLanguages.includes(langCode)) return 'ru';
-
-  // Rest of the world defaults to English
+  // Default to English for unsupported languages
   return 'en';
 };
 
-// Custom language detector
+// Custom language detector - prioritizes URL params for language switching
 const customLanguageDetector = {
   name: 'customDetector',
   lookup() {
+    // 1. URL parameter has highest priority (for language switching)
     const params = new URLSearchParams(window.location.search);
     const urlLang = params.get('lang') || params.get('lng');
     if (urlLang) {
-      return normalizeLanguage(urlLang);
+      const normalizedUrlLang = normalizeLanguage(urlLang);
+      // Save to localStorage when set via URL
+      localStorage.setItem('i18nextLng', normalizedUrlLang);
+      return normalizedUrlLang;
     }
 
-    // Check if user manually selected language (stored in localStorage)
+    // 2. Check localStorage for user preference
     let stored = localStorage.getItem('i18nextLng');
 
     // Migrate 'kz' to 'kk' on read
@@ -79,11 +88,11 @@ const customLanguageDetector = {
       localStorage.setItem('i18nextLng', 'kk');
     }
 
-    if (stored && ['ru', 'en', 'kk'].includes(stored)) {
+    if (stored && SUPPORTED_LANGUAGES.includes(stored)) {
       return stored;
     }
 
-    // Auto-detect from browser language
+    // 3. Auto-detect from browser language
     const browserLang = navigator.language || navigator.languages?.[0] || '';
     return normalizeLanguage(browserLang);
   },
@@ -103,22 +112,22 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ru: { translation: ru },
-      en: { translation: en },
-      kk: { translation: kk },
-      de: { translation: de },
-      uk: { translation: uk },
-      uz: { translation: uz },
-      be: { translation: be },
-      es: { translation: es },
-      fr: { translation: fr },
-      it: { translation: it },
-      pt: { translation: pt },
-      zh: { translation: zh },
-      tr: { translation: tr },
-      ja: { translation: ja },
-      ko: { translation: ko },
-      ar: { translation: ar },
+      ru: mergeNamespaces(ru),
+      en: mergeNamespaces(en),
+      kk: mergeNamespaces(kk),
+      de: mergeNamespaces(de),
+      uk: mergeNamespaces(uk),
+      uz: mergeNamespaces(uz),
+      be: mergeNamespaces(be),
+      es: mergeNamespaces(es),
+      fr: mergeNamespaces(fr),
+      it: mergeNamespaces(it),
+      pt: mergeNamespaces(pt),
+      zh: mergeNamespaces(zh),
+      tr: mergeNamespaces(tr),
+      ja: mergeNamespaces(ja),
+      ko: mergeNamespaces(ko),
+      ar: mergeNamespaces(ar),
     },
     supportedLngs: ['ru', 'en', 'kk', 'de', 'uk', 'uz', 'be', 'es', 'fr', 'it', 'pt', 'zh', 'tr', 'ja', 'ko', 'ar'],
     nonExplicitSupportedLngs: true,
@@ -133,8 +142,10 @@ i18n
     interpolation: {
       escapeValue: false, // React already escapes
     },
+    ns: ['translation'],
+    defaultNS: 'translation',
     detection: {
-      order: ['localStorage', 'customDetector', 'navigator'],
+      order: ['customDetector'],
       caches: ['localStorage'],
     },
     // Handling missing keys
@@ -152,7 +163,7 @@ i18n
 // Development diagnostics
 if (import.meta.env.DEV) {
   console.log('[i18n] Initialized with language:', i18n.language);
-  console.log('[i18n] Supported languages:', ['ru', 'en', 'kk']);
+  console.log('[i18n] Supported languages:', SUPPORTED_LANGUAGES);
   console.log('[i18n] Resources loaded:', Object.keys(i18n.options.resources || {}));
 
   // Validate all translations and show missing keys
@@ -163,7 +174,7 @@ if (import.meta.env.DEV) {
 i18n.on('languageChanged', (lng) => {
   // Normalize on change
   const normalized = normalizeLanguage(lng);
-  if (normalized !== lng && ['ru', 'en', 'kk'].includes(normalized)) {
+  if (normalized !== lng && SUPPORTED_LANGUAGES.includes(normalized)) {
     i18n.changeLanguage(normalized);
     return;
   }

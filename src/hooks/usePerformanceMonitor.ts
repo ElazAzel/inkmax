@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { storage } from '@/lib/storage';
+import { logger } from '@/lib/logger';
 
 interface PerformanceEntry {
   name: string;

@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { supabase } from '@/platform/supabase/client';
+import { logger } from '@/lib/logger';
 import type { Json } from '@/platform/supabase/types';
 
 export type MarketingEventType =

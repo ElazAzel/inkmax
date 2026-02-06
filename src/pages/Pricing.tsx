@@ -201,7 +201,7 @@ export default function Pricing() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
+      <main className="container mx-auto px-4 py-8 max-w-6xl pb-24 md:pb-8">
         {/* Title Section */}
         <div className="text-center mb-8">
           <h2 data-testid="pricing-title" className="text-3xl sm:text-4xl font-bold mb-4">

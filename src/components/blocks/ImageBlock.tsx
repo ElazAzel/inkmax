@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ExternalLink } from 'lucide-react';
 import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
-import { LazyImage } from '@/components/ui/lazy-image';
 import { cn } from '@/lib/utils';
 import type { ImageBlock as ImageBlockType } from '@/types/page';
 
@@ -16,6 +16,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
   const caption = getI18nText(block.caption, i18n.language as SupportedLanguage);
 
   const isBanner = block.style === 'banner';
+  const hasLink = Boolean(block.link);
 
   const getImageClass = () => {
     switch (block.style) {
@@ -46,26 +47,51 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
     }
   };
 
-  const containerClass = isBanner ? 'w-full' : 'overflow-hidden w-full max-w-md';
+  const containerClass = isBanner ? 'w-full' : 'w-full max-w-md';
 
   return (
     <div className={cn("w-full flex flex-col", alignmentClass)}>
       <div 
         className={cn(
+          "relative group",
           containerClass,
-          getImageClass(),
-          block.link && 'cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all'
+          hasLink && 'cursor-pointer'
         )}
-        onClick={block.link ? handleClick : undefined}
-        role={block.link ? 'link' : undefined}
+        onClick={hasLink ? handleClick : undefined}
+        role={hasLink ? 'link' : undefined}
       >
-        <LazyImage
-          src={block.url}
-          alt={alt || 'Image'}
-          className={cn(isBanner ? 'w-full h-auto' : 'w-full h-auto object-cover')}
-          wrapperClassName={block.style === 'circle' ? 'rounded-full aspect-square' : 'rounded-xl sm:rounded-2xl'}
-          placeholderClassName={block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'}
-        />
+        <div className={cn(
+          "relative overflow-hidden",
+          getImageClass(),
+          hasLink && 'hover:shadow-lg transition-shadow duration-300'
+        )}>
+          <img
+            src={block.url}
+            alt={alt || 'Image'}
+            className={cn(
+              "w-full h-auto",
+              block.style === 'circle' && 'aspect-square object-cover',
+              hasLink && 'transition-all duration-300 group-hover:scale-[1.02] group-hover:brightness-90'
+            )}
+            loading="lazy"
+          />
+          
+          {/* Link indicator overlay */}
+          {hasLink && (
+            <>
+              {/* Gradient overlay on hover */}
+              <div className={cn(
+                "absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none",
+                block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'
+              )} />
+              
+              {/* External link icon */}
+              <div className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-10">
+                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-foreground" />
+              </div>
+            </>
+          )}
+        </div>
       </div>
       {caption && (
         <p className={cn(

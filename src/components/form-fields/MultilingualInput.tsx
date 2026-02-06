@@ -56,8 +56,11 @@ const ALL_LANGUAGES: Record<LocaleCode, { name: string; flag: string }> = {
   vi: { name: 'Tiếng Việt', flag: '🇻🇳' },
 };
 
-// Default languages
-const DEFAULT_LANGUAGE_CODES: LocaleCode[] = ['ru', 'en', 'kk'];
+// Default languages - English is mandatory, others are optional
+const DEFAULT_LANGUAGE_CODES: LocaleCode[] = ['en', 'ru', 'kk'];
+
+// Recommended languages for quick add (most popular)
+const RECOMMENDED_LANGUAGES: LocaleCode[] = ['de', 'fr', 'es', 'tr', 'uz', 'uk', 'zh', 'ar'];
 
 interface MultilingualInputProps {
   label: string;
@@ -67,10 +70,12 @@ interface MultilingualInputProps {
   placeholder?: string;
   required?: boolean;
   enableRichText?: boolean;
-  /** Allow adding more languages beyond the default 3 */
+  /** Allow adding more languages beyond the default - now true by default */
   allowAddLanguages?: boolean;
-  /** Primary language (required field) */
+  /** Primary language (required field) - English is default */
   primaryLanguage?: LocaleCode;
+  /** Show compact mode with fewer default tabs */
+  compact?: boolean;
 }
 
 export function MultilingualInput({
@@ -81,17 +86,23 @@ export function MultilingualInput({
   placeholder,
   required = false,
   enableRichText = false,
-  allowAddLanguages = false,
-  primaryLanguage = 'ru',
+  allowAddLanguages = true,
+  primaryLanguage = 'en',
+  compact = false,
 }: MultilingualInputProps) {
   const { t } = useTranslation();
   
   // Determine active languages from value + defaults
+  // In compact mode, only show languages that have content + primary
   const [activeLanguages, setActiveLanguages] = useState<LocaleCode[]>(() => {
     const existingLangs = Object.keys(value || {}).filter(k => 
       (value as I18nText)[k]?.trim()
     );
-    const combined = new Set([...DEFAULT_LANGUAGE_CODES, ...existingLangs]);
+    // Always include primary language (English)
+    const defaultsToShow = compact 
+      ? [primaryLanguage] 
+      : DEFAULT_LANGUAGE_CODES;
+    const combined = new Set([...defaultsToShow, ...existingLangs]);
     return Array.from(combined);
   });
   
@@ -120,7 +131,8 @@ export function MultilingualInput({
   };
 
   const handleRemoveLanguage = (langCode: LocaleCode) => {
-    if (DEFAULT_LANGUAGE_CODES.includes(langCode)) return;
+    // Can't remove primary language (English is mandatory)
+    if (langCode === primaryLanguage) return;
     
     setActiveLanguages(prev => prev.filter(l => l !== langCode));
     
@@ -254,7 +266,7 @@ export function MultilingualInput({
           {activeLanguages.map((langCode) => {
             const lang = getLanguageInfo(langCode);
             const hasContent = !!(value as I18nText)[langCode]?.trim();
-            const isDefault = DEFAULT_LANGUAGE_CODES.includes(langCode);
+            const isPrimary = langCode === primaryLanguage;
             
             return (
               <TabsTrigger 
@@ -264,10 +276,13 @@ export function MultilingualInput({
               >
                 <span>{lang.flag}</span>
                 <span className="hidden sm:inline text-xs">{lang.name}</span>
-                {hasContent && (
+                {hasContent && !isPrimary && (
                   <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-primary rounded-full" />
                 )}
-                {!isDefault && allowAddLanguages && (
+                {isPrimary && (
+                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-accent-foreground rounded-full" title="Required" />
+                )}
+                {!isPrimary && allowAddLanguages && (
                   <button
                     type="button"
                     onClick={(e) => {
@@ -306,7 +321,7 @@ export function MultilingualInput({
               )}
               {langCode === primaryLanguage && required && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t('fields.requiredRussian', 'Обязательное поле для русского языка')}
+                  {t('fields.requiredEnglish', 'Required field (English is mandatory)')}
                 </p>
               )}
             </TabsContent>

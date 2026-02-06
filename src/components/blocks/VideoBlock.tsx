@@ -28,7 +28,7 @@ function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | 
 }
 
 export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: VideoBlockProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const title = getI18nText(block.title, i18n.language as SupportedLanguage);
   const embedUrl = getVideoEmbedUrl(block.url, block.platform);
   
@@ -40,13 +40,15 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
 
   if (!embedUrl) {
     return (
-      <Card className="bg-card border-border shadow-sm rounded-xl">
+      <Card variant="solid" className="bg-card border-border shadow-sm rounded-xl">
         <CardHeader className="p-3 sm:p-4">
-          <CardTitle className="text-sm text-destructive">Invalid Video URL</CardTitle>
+          <CardTitle className="text-sm text-destructive">
+            {t('blocks.video.invalidUrl', 'Неверный URL видео')}
+          </CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-4 pt-0">
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Please check the video URL and try again.
+            {t('blocks.video.checkUrl', 'Проверьте ссылку на видео и попробуйте снова.')}
           </p>
         </CardContent>
       </Card>
@@ -55,6 +57,7 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
 
   return (
     <Card 
+      variant="solid"
       className="overflow-hidden bg-card border-border shadow-sm rounded-xl"
       onClick={() => onClick?.()}
     >
@@ -64,10 +67,10 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
         </CardHeader>
       )}
       <CardContent className="p-0">
-        <div className={cn("w-full", aspectRatioClass)}>
+        <div className={cn("relative w-full bg-black", aspectRatioClass)}>
           <iframe
             src={embedUrl}
-            className="w-full h-full"
+            className="absolute inset-0 w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             title={title || 'Video'}

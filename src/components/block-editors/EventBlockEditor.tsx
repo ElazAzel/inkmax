@@ -10,13 +10,14 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
 import { CurrencySelect } from '@/components/form-fields/CurrencySelect';
-import { createMultilingualString } from '@/lib/i18n-helpers';
+import { MediaUpload } from '@/components/form-fields/MediaUpload';
+import { createEmptyI18nText, type I18nText } from '@/lib/i18n-helpers';
 import { validateEventBlock } from '@/lib/block-validators';
 import { withBlockEditor, type BaseBlockEditorProps } from './BlockEditorWrapper';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import { GoogleFormImport } from '@/components/crm/GoogleFormImport';
 import { EventFormBuilder } from '@/components/event-forms/EventFormBuilder';
-import { FileText, Settings, ListChecks, Info } from 'lucide-react';
+import { FileText, Settings, ListChecks, Info, ImageIcon } from 'lucide-react';
 import type { EventFormField } from '@/types/page';
 
 const toLocalInputValue = (value?: string) => {
@@ -50,8 +51,8 @@ function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
     const updatedFields = [...fields, ...importedFields];
     const updates: Record<string, unknown> = { formFields: updatedFields };
     
-    if (title && (!formData.title || !formData.title.ru)) {
-      updates.title = createMultilingualString(title);
+    if (title && (!formData.title || !(formData.title as I18nText).en)) {
+      updates.title = { en: title, ru: title, kk: '' };
     }
     
     onChange({ ...formData, ...updates });
@@ -85,26 +86,26 @@ function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
         <TabsContent value="info" className="space-y-4 mt-4">
           <MultilingualInput
             label={t('eventBuilder.title', 'Название события')}
-            value={formData.title || createMultilingualString('')}
+            value={formData.title || createEmptyI18nText(['en'])}
             onChange={(value) => onChange({ ...formData, title: value })}
             placeholder={t('eventBuilder.titlePlaceholder', 'Введите название')}
+            required
           />
 
           <MultilingualInput
             label={t('eventBuilder.description', 'Описание')}
-            value={formData.description || createMultilingualString('')}
+            value={formData.description || createEmptyI18nText(['en'])}
             onChange={(value) => onChange({ ...formData, description: value })}
             placeholder={t('eventBuilder.descriptionPlaceholder', 'Кратко опишите ивент')}
+            type="textarea"
           />
 
-          <div>
-            <Label>{t('eventBuilder.coverUrl', 'Обложка (URL)')}</Label>
-            <Input
-              value={formData.coverUrl || ''}
-              onChange={(e) => onChange({ ...formData, coverUrl: e.target.value })}
-              placeholder="https://"
-            />
-          </div>
+          <MediaUpload
+            label={t('eventBuilder.coverUrl', 'Обложка события')}
+            value={formData.coverUrl || ''}
+            onChange={(value) => onChange({ ...formData, coverUrl: value })}
+            accept="image/*"
+          />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -329,7 +330,7 @@ function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
           {/* Confirmation message */}
           <MultilingualInput
             label={t('eventBuilder.confirmationMessage', 'Сообщение после регистрации')}
-            value={formData.settings?.confirmationMessage_i18n || createMultilingualString('')}
+            value={formData.settings?.confirmationMessage_i18n || createEmptyI18nText(['en'])}
             onChange={(value) =>
               onChange({
                 ...formData,
@@ -342,7 +343,7 @@ function EventBlockEditorComponent({ formData, onChange }: BaseBlockEditorProps)
           {/* Custom button text */}
           <MultilingualInput
             label={t('eventBuilder.buttonText', 'Текст кнопки')}
-            value={formData.buttonText || createMultilingualString('')}
+            value={formData.buttonText || createEmptyI18nText(['en'])}
             onChange={(value) => onChange({ ...formData, buttonText: value })}
             placeholder={t('eventBuilder.buttonTextPlaceholder', 'Зарегистрироваться')}
           />

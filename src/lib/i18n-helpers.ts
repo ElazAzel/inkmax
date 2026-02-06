@@ -45,20 +45,20 @@ export const LANGUAGE_DEFINITIONS: Record<LocaleCode, { name: string; flag: stri
  *
  * Fallback order:
  * 1. Requested language
- * 2. Default language (usually page.default_language)
- * 3. Custom fallbacks array (usually ['ru'])
+ * 2. Default language (English is mandatory)
+ * 3. Custom fallbacks array
  * 4. First non-empty translation
  * 5. Empty string
  *
  * @param value - string | I18nText | MultilingualString | undefined
  * @param lang - target language code
- * @param fallbacks - fallback languages in order (default: ['ru'])
+ * @param fallbacks - fallback languages in order (default: ['en'] - English as primary fallback)
  * @returns translated string or empty string (never undefined)
  */
 export function getI18nText(
   value: string | I18nText | MultilingualString | undefined | null,
   lang: string,
-  fallbacks: string[] | string = ['ru']
+  fallbacks: string[] | string = ['en']
 ): string {
   if (!value) return '';
   if (typeof value === 'string') return value;
@@ -130,9 +130,9 @@ export function toI18nText(
 
 /**
  * Create empty i18n text object
- * @param locales - languages to initialize (default: ['ru', 'en', 'kk'])
+ * @param locales - languages to initialize (default: ['en'] - English is mandatory)
  */
-export function createEmptyI18nText(locales: string[] = ['ru', 'en', 'kk']): I18nText {
+export function createEmptyI18nText(locales: string[] = ['en']): I18nText {
   const result: I18nText = {};
   for (const locale of locales) {
     result[locale] = '';

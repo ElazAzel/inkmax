@@ -175,20 +175,21 @@ export default function LandingV5() {
           <FooterSection />
         </Suspense>
 
-        {/* Floating CTA */}
+        {/* Floating CTA - now with improved positioning to avoid content overlap */}
         {showFloatingCta && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in fade-in slide-in-from-bottom-4">
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 animate-in fade-in slide-in-from-bottom-4 safe-area-bottom">
             <Button 
               size="lg"
               onClick={() => handleCreatePage('floating')}
               className={cn(
-                "h-12 px-6 rounded-full font-bold",
+                "h-11 px-5 rounded-full font-bold text-sm",
                 "bg-gradient-to-r from-primary to-primary/90",
                 "shadow-2xl shadow-primary/30 hover:shadow-primary/40",
-                "hover:scale-[1.02] active:scale-[0.98] transition-all"
+                "hover:scale-[1.02] active:scale-[0.98] transition-all",
+                "backdrop-blur-sm"
               )}
             >
-              <Sparkles className="h-4 w-4 mr-2" />
+              <Sparkles className="h-4 w-4 mr-1.5" />
               {t('landingV5.floatingCta')}
             </Button>
           </div>

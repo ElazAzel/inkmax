@@ -80,8 +80,8 @@ const ALL_LANGUAGES: Record<LocaleCode, { name: string; flag: string }> = {
   lt: { name: 'Lietuvių', flag: '🇱🇹' },
 };
 
-// Default languages to show
-const DEFAULT_LANGUAGES: LocaleCode[] = ['ru', 'en', 'kk'];
+// Default languages to show - English is primary
+const DEFAULT_LANGUAGES: LocaleCode[] = ['en', 'ru', 'kk'];
 
 interface FlexibleMultilingualInputProps {
   label: string;
@@ -95,7 +95,7 @@ interface FlexibleMultilingualInputProps {
   defaultLanguages?: LocaleCode[];
   /** Allow adding more languages */
   allowAddLanguages?: boolean;
-  /** Primary/required language */
+  /** Primary/required language - English by default */
   primaryLanguage?: LocaleCode;
 }
 
@@ -109,7 +109,7 @@ export function FlexibleMultilingualInput({
   enableRichText = false,
   defaultLanguages = DEFAULT_LANGUAGES,
   allowAddLanguages = true,
-  primaryLanguage = 'ru',
+  primaryLanguage = 'en',
 }: FlexibleMultilingualInputProps) {
   const { t } = useTranslation();
   
@@ -333,7 +333,7 @@ export function FlexibleMultilingualInput({
               )}
               {langCode === primaryLanguage && required && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t('fields.requiredPrimary', 'Обязательное поле для основного языка')}
+                  {t('fields.requiredEnglish', 'Required field (English is mandatory)')}
                 </p>
               )}
             </TabsContent>

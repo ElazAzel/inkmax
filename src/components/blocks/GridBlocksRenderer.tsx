@@ -37,7 +37,10 @@ function organizeBlocksIntoRows(blocks: Block[]): BlockRow[] {
   let currentRow: Block[] = [];
   let currentRowCols = 0;
 
-  for (const block of blocks) {
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+
+  for (const block of validBlocks) {
     // Profile blocks are always rendered separately
     if (block.type === 'profile') {
       if (currentRow.length > 0) {

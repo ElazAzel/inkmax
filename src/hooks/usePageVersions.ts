@@ -4,6 +4,7 @@
  */
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 import type { Block, PageTheme } from '@/types/page';
 import type { Json } from '@/platform/supabase/types';

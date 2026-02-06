@@ -339,6 +339,27 @@ export async function inviteToTeam(
     return { success: false, error: error.message };
   }
 
+  // Send notification to new member
+  try {
+    const { data: teamData } = await supabase
+      .from('teams')
+      .select('name')
+      .eq('id', teamId)
+      .single();
+    
+    if (teamData) {
+      await supabase.functions.invoke('send-team-notification', {
+        body: {
+          targetUserId: userId,
+          teamName: teamData.name,
+          type: 'invited'
+        }
+      });
+    }
+  } catch (e) {
+    logger.error('Failed to send invite notification', e, { context: 'collaboration' });
+  }
+
   return { success: true };
 }
 
@@ -460,6 +481,85 @@ export async function resetTeamInviteCode(teamId: string): Promise<string | null
   }
 
   return code;
+}
+
+// Join team by invite code
+export async function joinTeamByInviteCode(inviteCode: string): Promise<{ success: boolean; team?: Team; error?: string }> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not authenticated' };
+
+  // Find team by invite code
+  const { data: team, error: teamError } = await supabase
+    .from('teams')
+    .select('*')
+    .eq('invite_code', inviteCode)
+    .maybeSingle();
+
+  if (teamError || !team) {
+    return { success: false, error: 'Invalid invite code' };
+  }
+
+  // Check if user is already a member
+  const { data: existingMember } = await supabase
+    .from('team_members')
+    .select('id')
+    .eq('team_id', team.id)
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (existingMember) {
+    return { success: false, error: 'Already a member of this team' };
+  }
+
+  // Add user to team
+  const { error: joinError } = await supabase
+    .from('team_members')
+    .insert({
+      team_id: team.id,
+      user_id: user.id,
+      role: 'member',
+    });
+
+  if (joinError) {
+    return { success: false, error: joinError.message };
+  }
+
+  // Get user's display name for notification
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('display_name, username')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  const memberName = profile?.display_name || profile?.username || 'Someone';
+
+  // Notify team owner
+  try {
+    await supabase.functions.invoke('send-team-notification', {
+      body: {
+        targetUserId: team.owner_id,
+        teamName: team.name,
+        inviterName: memberName,
+        type: 'joined'
+      }
+    });
+  } catch (e) {
+    logger.error('Failed to send join notification', e, { context: 'collaboration' });
+  }
+
+  return { success: true, team };
+}
+
+// Get team by invite code (for preview)
+export async function getTeamByInviteCode(inviteCode: string): Promise<Team | null> {
+  const { data, error } = await supabase
+    .from('teams')
+    .select('*')
+    .eq('invite_code', inviteCode)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data;
 }
 
 // Shoutout functions
