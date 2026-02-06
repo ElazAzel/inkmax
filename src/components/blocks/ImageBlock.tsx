@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ExternalLink } from 'lucide-react';
 import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
 import { LazyImage } from '@/components/ui/lazy-image';
 import { cn } from '@/lib/utils';
@@ -16,6 +17,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
   const caption = getI18nText(block.caption, i18n.language as SupportedLanguage);
 
   const isBanner = block.style === 'banner';
+  const hasLink = Boolean(block.link);
 
   const getImageClass = () => {
     switch (block.style) {
@@ -52,20 +54,44 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
     <div className={cn("w-full flex flex-col", alignmentClass)}>
       <div 
         className={cn(
+          "relative group",
           containerClass,
           getImageClass(),
-          block.link && 'cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all'
+          hasLink && 'cursor-pointer'
         )}
-        onClick={block.link ? handleClick : undefined}
-        role={block.link ? 'link' : undefined}
+        onClick={hasLink ? handleClick : undefined}
+        role={hasLink ? 'link' : undefined}
       >
         <LazyImage
           src={block.url}
           alt={alt || 'Image'}
-          className={cn(isBanner ? 'w-full h-auto' : 'w-full h-auto object-cover')}
+          className={cn(
+            isBanner ? 'w-full h-auto' : 'w-full h-auto object-cover',
+            hasLink && 'transition-all duration-300 group-hover:scale-[1.02] group-hover:brightness-90'
+          )}
           wrapperClassName={block.style === 'circle' ? 'rounded-full aspect-square' : 'rounded-xl sm:rounded-2xl'}
           placeholderClassName={block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'}
         />
+        
+        {/* Link indicator overlay */}
+        {hasLink && (
+          <>
+            {/* Gradient overlay on hover */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl sm:rounded-2xl pointer-events-none" />
+            
+            {/* External link icon */}
+            <div className="absolute top-3 right-3 p-2 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0 pointer-events-none">
+              <ExternalLink className="w-4 h-4 text-foreground" />
+            </div>
+            
+            {/* Bottom hint on hover */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 pointer-events-none">
+              <span className="text-xs font-medium text-foreground whitespace-nowrap">
+                Нажмите, чтобы открыть
+              </span>
+            </div>
+          </>
+        )}
       </div>
       {caption && (
         <p className={cn(
