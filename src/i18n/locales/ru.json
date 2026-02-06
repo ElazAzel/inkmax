@@ -192,7 +192,9 @@
     "invalidLink": "Проверьте правильность ссылки или страница была удалена",
     "loadError": "Ошибка загрузки",
     "tryAgain": "Попробуйте обновить страницу",
-    "createYourPage": "Хотите создать свою страницу?"
+    "createYourPage": "Хотите создать свою страницу?",
+    "invalidEmail": "Введите корректный email",
+    "subscription": "Ошибка подписки"
   },
   "form": {
     "fillRequired": "Заполните обязательные поля",
@@ -208,10 +210,6 @@
   },
   "success": {
     "subscribed": "Вы успешно подписались!"
-  },
-  "errors": {
-    "invalidEmail": "Введите корректный email",
-    "subscription": "Ошибка подписки"
   },
   "actions": {
     "subscribe": "Подписаться",
@@ -1054,7 +1052,6 @@
     "loadError": "Ошибка загрузки",
     "loadErrorDesc": "Не удалось загрузить данные страницы",
     "tryAgain": "Попробовать снова",
-    "settings": "Настройки",
     "collabs": "Коллабы",
     "aiBlocksCreated": "✨ Создано {{count}} блоков с помощью AI",
     "blocksAdded": "Добавлено {{count}} блоков",

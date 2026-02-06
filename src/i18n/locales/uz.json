@@ -191,7 +191,9 @@
     "invalidLink": "Check the link or the page may have been deleted",
     "loadError": "Loading error",
     "tryAgain": "Try refreshing the page",
-    "createYourPage": "Want to create your own page?"
+    "createYourPage": "Want to create your own page?",
+    "invalidEmail": "Enter a valid email",
+    "subscription": "Subscription error"
   },
   "form": {
     "fillRequired": "Please fill required fields",
@@ -207,10 +209,6 @@
   },
   "success": {
     "subscribed": "Successfully subscribed!"
-  },
-  "errors": {
-    "invalidEmail": "Enter a valid email",
-    "subscription": "Subscription error"
   },
   "actions": {
     "subscribe": "Subscribe",
@@ -1042,7 +1040,6 @@
     "loadError": "Load Error",
     "loadErrorDesc": "Failed to load page data",
     "tryAgain": "Try Again",
-    "settings": "Settings",
     "collabs": "Collabs",
     "aiBlocksCreated": "✨ Created {{count}} blocks with AI",
     "blocksAdded": "Added {{count}} blocks",
