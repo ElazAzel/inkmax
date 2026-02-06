@@ -2,7 +2,7 @@
  * DashboardV2 - New mobile-first dashboard with multi-page support
  * Entry point for the redesigned dashboard experience
  */
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -22,18 +22,29 @@ import {
   DashboardLayout,
   PageSwitcher,
 } from '@/components/dashboard-v2/layout';
-import {
-  HomeScreen,
-  PagesScreen,
-  EditorScreen,
-  ActivityScreen,
-  InsightsScreen,
-  MonetizeScreen,
-  SettingsScreen,
-  EventsScreen,
-  EventDetailScreen,
-} from '@/components/dashboard-v2/screens';
 import { CreatePageDialog, PageVersionsDialog } from '@/components/dashboard-v2/dialogs';
+
+// Lazy load screens for bundle optimization (reduces DashboardV2 chunk by ~80%)
+const HomeScreen = lazy(() => import('@/components/dashboard-v2/screens/HomeScreen').then(m => ({ default: m.HomeScreen })));
+const PagesScreen = lazy(() => import('@/components/dashboard-v2/screens/PagesScreen').then(m => ({ default: m.PagesScreen })));
+const EditorScreen = lazy(() => import('@/components/dashboard-v2/screens/EditorScreen').then(m => ({ default: m.EditorScreen })));
+const ActivityScreen = lazy(() => import('@/components/dashboard-v2/screens/ActivityScreen').then(m => ({ default: m.ActivityScreen })));
+const InsightsScreen = lazy(() => import('@/components/dashboard-v2/screens/InsightsScreen').then(m => ({ default: m.InsightsScreen })));
+const MonetizeScreen = lazy(() => import('@/components/dashboard-v2/screens/MonetizeScreen').then(m => ({ default: m.MonetizeScreen })));
+const SettingsScreen = lazy(() => import('@/components/dashboard-v2/screens/SettingsScreen').then(m => ({ default: m.SettingsScreen })));
+const EventsScreen = lazy(() => import('@/components/dashboard-v2/screens/EventsScreen').then(m => ({ default: m.EventsScreen })));
+const EventDetailScreen = lazy(() => import('@/components/dashboard-v2/screens/EventDetailScreen').then(m => ({ default: m.EventDetailScreen })));
+
+// Screen loading fallback
+const ScreenLoader = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="animate-pulse space-y-4 w-full max-w-md px-4">
+      <div className="h-8 bg-muted rounded-lg w-3/4" />
+      <div className="h-32 bg-muted rounded-xl" />
+      <div className="h-12 bg-muted rounded-lg" />
+    </div>
+  </div>
+);
 
 // Modals & Panels (reused from v1)
 import { UnifiedBlockEditor } from '@/components/block-editors/UnifiedBlockEditor';
@@ -320,178 +331,180 @@ export default function DashboardV2() {
           isPremium={dashboard.isPremium}
           onSignOut={dashboard.handleSignOut}
         >
-          {/* Home Screen */}
-          {currentTab === 'home' && (
-            <HomeScreen
-              pageData={dashboard.pageData}
-              loading={dashboard.loading}
-              isPremium={dashboard.isPremium}
-              onOpenEditor={() => handleTabChange('editor')}
-              onPreview={() => dashboard.sharingState.handlePreview()}
-              onShare={() => dashboard.sharingState.handleShare()}
-              onOpenTemplates={() => setTemplateGalleryOpen(true)}
-              onOpenMarketplace={() => setShowMarketplace(true)}
-              pageSwitcher={pageSwitcherElement}
-              onOpenVersions={() => setShowVersions(true)}
-            />
-          )}
+          <Suspense fallback={<ScreenLoader />}>
+            {/* Home Screen */}
+            {currentTab === 'home' && (
+              <HomeScreen
+                pageData={dashboard.pageData}
+                loading={dashboard.loading}
+                isPremium={dashboard.isPremium}
+                onOpenEditor={() => handleTabChange('editor')}
+                onPreview={() => dashboard.sharingState.handlePreview()}
+                onShare={() => dashboard.sharingState.handleShare()}
+                onOpenTemplates={() => setTemplateGalleryOpen(true)}
+                onOpenMarketplace={() => setShowMarketplace(true)}
+                pageSwitcher={pageSwitcherElement}
+                onOpenVersions={() => setShowVersions(true)}
+              />
+            )}
 
-          {/* Editor Screen */}
-          {currentTab === 'editor' && (
-            <EditorScreen
-              pageData={dashboard.pageData}
-              loading={dashboard.loading}
-              isPremium={dashboard.isPremium}
-              currentTier={dashboard.isPremium ? 'pro' : 'free'}
-              premiumTier={dashboard.currentTier}
-              onInsertBlock={dashboard.blockEditor.handleInsertBlock}
-              onEditBlock={dashboard.blockEditor.handleEditBlock}
-              onDeleteBlock={dashboard.blockEditor.handleDeleteBlock}
-              onUpdateBlock={dashboard.updateBlock}
-              onReorderBlocks={dashboard.reorderBlocks}
-              onPreview={() => dashboard.sharingState.handlePreview()}
-              onShare={() => dashboard.sharingState.handleShare()}
-              onOpenTemplates={() => setTemplateGalleryOpen(true)}
-              onOpenAI={() => dashboard.aiState.openAIBuilder()}
-              canUndo={editorHistory.canUndo}
-              canRedo={editorHistory.canRedo}
-              onUndo={editorHistory.undo}
-              onRedo={editorHistory.redo}
-              onOpenVersions={() => setShowVersions(true)}
-            />
-          )}
+            {/* Editor Screen */}
+            {currentTab === 'editor' && (
+              <EditorScreen
+                pageData={dashboard.pageData}
+                loading={dashboard.loading}
+                isPremium={dashboard.isPremium}
+                currentTier={dashboard.isPremium ? 'pro' : 'free'}
+                premiumTier={dashboard.currentTier}
+                onInsertBlock={dashboard.blockEditor.handleInsertBlock}
+                onEditBlock={dashboard.blockEditor.handleEditBlock}
+                onDeleteBlock={dashboard.blockEditor.handleDeleteBlock}
+                onUpdateBlock={dashboard.updateBlock}
+                onReorderBlocks={dashboard.reorderBlocks}
+                onPreview={() => dashboard.sharingState.handlePreview()}
+                onShare={() => dashboard.sharingState.handleShare()}
+                onOpenTemplates={() => setTemplateGalleryOpen(true)}
+                onOpenAI={() => dashboard.aiState.openAIBuilder()}
+                canUndo={editorHistory.canUndo}
+                canRedo={editorHistory.canRedo}
+                onUndo={editorHistory.undo}
+                onRedo={editorHistory.redo}
+                onOpenVersions={() => setShowVersions(true)}
+              />
+            )}
 
-          {/* Pages Screen */}
-          {currentTab === 'pages' && (
-            <PagesScreen
-              pages={pagesForScreen}
-              limits={multiPage.limits ? {
-                tier: multiPage.limits.tier as 'free' | 'pro',
-                currentPages: multiPage.limits.currentPages,
-                maxPages: multiPage.limits.maxPages,
-                paidPages: multiPage.limits.paidPages,
-                freePages: multiPage.limits.freePages,
-                canCreate: multiPage.limits.canCreate,
-              } : undefined}
-              loading={multiPage.loading}
-              isPremium={dashboard.isPremium}
-              onCreatePage={() => setShowCreatePage(true)}
-              onEditPage={handleEditPage}
-              onPreviewPage={handlePreviewPage}
-              onSharePage={handleSharePage}
-              onDuplicatePage={() => toast.info(t('common.comingSoon', 'Coming soon'))}
-              onPageSettings={(id) => {
-                multiPage.switchPage(id);
-                handleTabChange('settings');
-              }}
-              onDeletePage={(id) => {
-                // TODO: Add delete confirmation
-                toast.info(t('common.comingSoon', 'Coming soon'));
-              }}
-              onUpgradePage={(id) => {
-                // TODO: Open page upgrade flow
-                toast.info(t('common.comingSoon', 'Coming soon'));
-              }}
-              onUpgradePlan={() => navigate('/pricing')}
-            />
-          )}
+            {/* Pages Screen */}
+            {currentTab === 'pages' && (
+              <PagesScreen
+                pages={pagesForScreen}
+                limits={multiPage.limits ? {
+                  tier: multiPage.limits.tier as 'free' | 'pro',
+                  currentPages: multiPage.limits.currentPages,
+                  maxPages: multiPage.limits.maxPages,
+                  paidPages: multiPage.limits.paidPages,
+                  freePages: multiPage.limits.freePages,
+                  canCreate: multiPage.limits.canCreate,
+                } : undefined}
+                loading={multiPage.loading}
+                isPremium={dashboard.isPremium}
+                onCreatePage={() => setShowCreatePage(true)}
+                onEditPage={handleEditPage}
+                onPreviewPage={handlePreviewPage}
+                onSharePage={handleSharePage}
+                onDuplicatePage={() => toast.info(t('common.comingSoon', 'Coming soon'))}
+                onPageSettings={(id) => {
+                  multiPage.switchPage(id);
+                  handleTabChange('settings');
+                }}
+                onDeletePage={(id) => {
+                  // TODO: Add delete confirmation
+                  toast.info(t('common.comingSoon', 'Coming soon'));
+                }}
+                onUpgradePage={(id) => {
+                  // TODO: Open page upgrade flow
+                  toast.info(t('common.comingSoon', 'Coming soon'));
+                }}
+                onUpgradePlan={() => navigate('/pricing')}
+              />
+            )}
 
-          {/* Activity Screen */}
-          {currentTab === 'activity' && (
-            <ActivityScreen
-              isPremium={dashboard.isPremium}
-            />
-          )}
+            {/* Activity Screen */}
+            {currentTab === 'activity' && (
+              <ActivityScreen
+                isPremium={dashboard.isPremium}
+              />
+            )}
 
-          {/* Insights Screen */}
-          {currentTab === 'insights' && (
-            <InsightsScreen
-              pageId={dashboard.pageData?.id || ''}
-              blocks={dashboard.pageData?.blocks || []}
-              isPremium={dashboard.isPremium}
-              onApplyInsight={(action) => {
-                handleTabChange('home');
-              }}
-            />
-          )}
+            {/* Insights Screen */}
+            {currentTab === 'insights' && (
+              <InsightsScreen
+                pageId={dashboard.pageData?.id || ''}
+                blocks={dashboard.pageData?.blocks || []}
+                isPremium={dashboard.isPremium}
+                onApplyInsight={(action) => {
+                  handleTabChange('home');
+                }}
+              />
+            )}
 
-          {/* Monetize Screen */}
-          {currentTab === 'monetize' && (
-            <MonetizeScreen
-              isPremium={dashboard.isPremium}
-              tier={dashboard.isPremium ? 'pro' : 'free'}
-              limits={{
-                pagesUsed: multiPage.limits?.currentPages || 1,
-                pagesLimit: multiPage.limits?.maxPages || 1,
-                paidPages: multiPage.limits?.paidPages || 0,
-                freePages: multiPage.limits?.freePages || 1,
-                blocksUsed: dashboard.pageData?.blocks.length || 0,
-                blocksLimit: dashboard.isPremium ? 50 : 8,
-                aiGenerationsUsed: 0,
-                aiGenerationsLimit: dashboard.isPremium ? 20 : 3,
-              }}
-              onUpgrade={() => navigate('/pricing')}
-            />
-          )}
+            {/* Monetize Screen */}
+            {currentTab === 'monetize' && (
+              <MonetizeScreen
+                isPremium={dashboard.isPremium}
+                tier={dashboard.isPremium ? 'pro' : 'free'}
+                limits={{
+                  pagesUsed: multiPage.limits?.currentPages || 1,
+                  pagesLimit: multiPage.limits?.maxPages || 1,
+                  paidPages: multiPage.limits?.paidPages || 0,
+                  freePages: multiPage.limits?.freePages || 1,
+                  blocksUsed: dashboard.pageData?.blocks.length || 0,
+                  blocksLimit: dashboard.isPremium ? 50 : 8,
+                  aiGenerationsUsed: 0,
+                  aiGenerationsLimit: dashboard.isPremium ? 20 : 3,
+                }}
+                onUpgrade={() => navigate('/pricing')}
+              />
+            )}
 
-          {/* Settings Screen */}
-          {currentTab === 'settings' && (
-            <SettingsScreen
-              usernameInput={dashboard.usernameState.usernameInput}
-              onUsernameChange={dashboard.usernameState.setUsernameInput}
-              onUpdateUsername={dashboard.usernameState.handleUpdateUsername}
-              usernameSaving={dashboard.usernameState.saving}
-              profileBlock={dashboard.profileBlock}
-              onUpdateProfile={dashboard.handleUpdateProfile}
-              isPremium={dashboard.isPremium}
-              premiumTier={dashboard.currentTier}
-              emailNotificationsEnabled={dashboard.userProfile.profile?.email_notifications_enabled ?? true}
-              onEmailNotificationsChange={dashboard.userProfile.updateEmailNotifications}
-              telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
-              telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
-              onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
-              niche={dashboard.pageData?.niche as Niche | undefined}
-              onNicheChange={dashboard.updateNiche}
-              onSignOut={dashboard.handleSignOut}
-              onOpenFriends={() => setShowFriends(true)}
-              onOpenSaveTemplate={() => setShowSaveTemplate(true)}
-              onOpenMyTemplates={() => setShowMyTemplates(true)}
-              onOpenTokens={() => setShowTokens(true)}
-              onOpenAchievements={() => setShowAchievements(true)}
-              onOpenTheme={() => setShowTheme(true)}
-              onOpenMarketplace={() => setShowMarketplace(true)}
-              onOpenTemplates={() => setTemplateGalleryOpen(true)}
-              // Page settings props
-              pageTitle={multiPage.activePage?.title}
-              pageSlug={multiPage.activePage?.slug}
-              isPaid={multiPage.activePage?.isPaid}
-              isPrimaryPaid={multiPage.activePage?.isPrimaryPaid}
-              seoTitle={(dashboard.pageData?.seo as { title?: string })?.title}
-              seoDescription={(dashboard.pageData?.seo as { description?: string })?.description}
-              isIndexable={dashboard.pageData?.isIndexable}
-              onUpdateSlug={async (slug) => multiPage.updatePageSlug(multiPage.activePageId || '', slug)}
-              onUpdateSeo={(seo) => {
-                dashboard.updatePageDataPartial({
-                  seo: { ...dashboard.pageData?.seo, ...seo },
-                });
-              }}
-              onToggleIndexable={(indexable) => {
-                dashboard.updatePageDataPartial({ isIndexable: indexable });
-              }}
-              onUpgradePage={() => {
-                toast.info(t('common.comingSoon', 'Coming soon'));
-              }}
-            />
-          )}
+            {/* Settings Screen */}
+            {currentTab === 'settings' && (
+              <SettingsScreen
+                usernameInput={dashboard.usernameState.usernameInput}
+                onUsernameChange={dashboard.usernameState.setUsernameInput}
+                onUpdateUsername={dashboard.usernameState.handleUpdateUsername}
+                usernameSaving={dashboard.usernameState.saving}
+                profileBlock={dashboard.profileBlock}
+                onUpdateProfile={dashboard.handleUpdateProfile}
+                isPremium={dashboard.isPremium}
+                premiumTier={dashboard.currentTier}
+                emailNotificationsEnabled={dashboard.userProfile.profile?.email_notifications_enabled ?? true}
+                onEmailNotificationsChange={dashboard.userProfile.updateEmailNotifications}
+                telegramEnabled={dashboard.userProfile.profile?.telegram_notifications_enabled ?? false}
+                telegramChatId={dashboard.userProfile.profile?.telegram_chat_id ?? ''}
+                onTelegramChange={dashboard.userProfile.updateTelegramNotifications}
+                niche={dashboard.pageData?.niche as Niche | undefined}
+                onNicheChange={dashboard.updateNiche}
+                onSignOut={dashboard.handleSignOut}
+                onOpenFriends={() => setShowFriends(true)}
+                onOpenSaveTemplate={() => setShowSaveTemplate(true)}
+                onOpenMyTemplates={() => setShowMyTemplates(true)}
+                onOpenTokens={() => setShowTokens(true)}
+                onOpenAchievements={() => setShowAchievements(true)}
+                onOpenTheme={() => setShowTheme(true)}
+                onOpenMarketplace={() => setShowMarketplace(true)}
+                onOpenTemplates={() => setTemplateGalleryOpen(true)}
+                // Page settings props
+                pageTitle={multiPage.activePage?.title}
+                pageSlug={multiPage.activePage?.slug}
+                isPaid={multiPage.activePage?.isPaid}
+                isPrimaryPaid={multiPage.activePage?.isPrimaryPaid}
+                seoTitle={(dashboard.pageData?.seo as { title?: string })?.title}
+                seoDescription={(dashboard.pageData?.seo as { description?: string })?.description}
+                isIndexable={dashboard.pageData?.isIndexable}
+                onUpdateSlug={async (slug) => multiPage.updatePageSlug(multiPage.activePageId || '', slug)}
+                onUpdateSeo={(seo) => {
+                  dashboard.updatePageDataPartial({
+                    seo: { ...dashboard.pageData?.seo, ...seo },
+                  });
+                }}
+                onToggleIndexable={(indexable) => {
+                  dashboard.updatePageDataPartial({ isIndexable: indexable });
+                }}
+                onUpgradePage={() => {
+                  toast.info(t('common.comingSoon', 'Coming soon'));
+                }}
+              />
+            )}
 
-          {/* Events Screen */}
-          {currentTab === 'events' && (
-            location.pathname.match(/\/dashboard\/events\/[^/]+$/) && !location.pathname.includes('/scanner') ? (
-              <EventDetailScreen />
-            ) : (
-              <EventsScreen />
-            )
-          )}
+            {/* Events Screen */}
+            {currentTab === 'events' && (
+              location.pathname.match(/\/dashboard\/events\/[^/]+$/) && !location.pathname.includes('/scanner') ? (
+                <EventDetailScreen />
+              ) : (
+                <EventsScreen />
+              )
+            )}
+          </Suspense>
         </DashboardLayout>
 
         {/* Create Page Dialog */}
