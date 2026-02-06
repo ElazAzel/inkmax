@@ -65,17 +65,21 @@ const normalizeLanguage = (lng: string): string => {
   return 'en';
 };
 
-// Custom language detector
+// Custom language detector - prioritizes URL params for language switching
 const customLanguageDetector = {
   name: 'customDetector',
   lookup() {
+    // 1. URL parameter has highest priority (for language switching)
     const params = new URLSearchParams(window.location.search);
     const urlLang = params.get('lang') || params.get('lng');
     if (urlLang) {
-      return normalizeLanguage(urlLang);
+      const normalizedUrlLang = normalizeLanguage(urlLang);
+      // Save to localStorage when set via URL
+      localStorage.setItem('i18nextLng', normalizedUrlLang);
+      return normalizedUrlLang;
     }
 
-    // Check if user manually selected language (stored in localStorage)
+    // 2. Check localStorage for user preference
     let stored = localStorage.getItem('i18nextLng');
 
     // Migrate 'kz' to 'kk' on read
@@ -88,7 +92,7 @@ const customLanguageDetector = {
       return stored;
     }
 
-    // Auto-detect from browser language
+    // 3. Auto-detect from browser language
     const browserLang = navigator.language || navigator.languages?.[0] || '';
     return normalizeLanguage(browserLang);
   },
@@ -141,7 +145,7 @@ i18n
     ns: ['translation'],
     defaultNS: 'translation',
     detection: {
-      order: ['localStorage', 'customDetector', 'navigator'],
+      order: ['customDetector'],
       caches: ['localStorage'],
     },
     // Handling missing keys
