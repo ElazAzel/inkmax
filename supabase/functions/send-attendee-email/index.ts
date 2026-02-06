@@ -48,7 +48,22 @@ interface OwnerData {
   username: string | null;
 }
 
-const translations = {
+const translations: Record<string, {
+  subject: string;
+  greeting: string;
+  confirmed: string;
+  pending: string;
+  eventDetails: string;
+  date: string;
+  location: string;
+  online: string;
+  ticketCode: string;
+  saveTicket: string;
+  addToCalendar: string;
+  questions: string;
+  organizer: string;
+  footer: string;
+}> = {
   ru: {
     subject: "Ваша регистрация подтверждена",
     greeting: "Здравствуйте",
@@ -96,6 +111,102 @@ const translations = {
     questions: "Сұрақтарыңыз болса, ұйымдастырушыға хабарласыңыз.",
     organizer: "Ұйымдастырушы",
     footer: "Бұл автоматты хат. Жауап бермеңіз.",
+  },
+  de: {
+    subject: "Ihre Registrierung ist bestätigt",
+    greeting: "Hallo",
+    confirmed: "Ihre Veranstaltungsregistrierung ist bestätigt!",
+    pending: "Ihre Anfrage wurde zur Prüfung eingereicht.",
+    eventDetails: "Veranstaltungsdetails",
+    date: "Datum",
+    location: "Ort",
+    online: "Online",
+    ticketCode: "Ihr Ticketcode",
+    saveTicket: "Speichern Sie diesen Code — Sie benötigen ihn zum Eintritt.",
+    addToCalendar: "Zum Kalender hinzufügen",
+    questions: "Bei Fragen wenden Sie sich an den Veranstalter.",
+    organizer: "Veranstalter",
+    footer: "Dies ist eine automatische E-Mail. Bitte antworten Sie nicht.",
+  },
+  fr: {
+    subject: "Votre inscription est confirmée",
+    greeting: "Bonjour",
+    confirmed: "Votre inscription à l'événement est confirmée!",
+    pending: "Votre demande a été soumise pour examen.",
+    eventDetails: "Détails de l'événement",
+    date: "Date",
+    location: "Lieu",
+    online: "En ligne",
+    ticketCode: "Votre code de billet",
+    saveTicket: "Conservez ce code — vous en aurez besoin pour entrer.",
+    addToCalendar: "Ajouter au calendrier",
+    questions: "Si vous avez des questions, contactez l'organisateur.",
+    organizer: "Organisateur",
+    footer: "Ceci est un email automatique. Veuillez ne pas répondre.",
+  },
+  es: {
+    subject: "Tu registro está confirmado",
+    greeting: "Hola",
+    confirmed: "¡Tu registro al evento está confirmado!",
+    pending: "Tu solicitud ha sido enviada para revisión.",
+    eventDetails: "Detalles del evento",
+    date: "Fecha",
+    location: "Ubicación",
+    online: "En línea",
+    ticketCode: "Tu código de entrada",
+    saveTicket: "Guarda este código — lo necesitarás para entrar.",
+    addToCalendar: "Añadir al calendario",
+    questions: "Si tienes preguntas, contacta al organizador.",
+    organizer: "Organizador",
+    footer: "Este es un email automático. Por favor no respondas.",
+  },
+  tr: {
+    subject: "Kaydınız onaylandı",
+    greeting: "Merhaba",
+    confirmed: "Etkinlik kaydınız onaylandı!",
+    pending: "Başvurunuz incelemeye gönderildi.",
+    eventDetails: "Etkinlik Detayları",
+    date: "Tarih",
+    location: "Konum",
+    online: "Çevrimiçi",
+    ticketCode: "Bilet Kodunuz",
+    saveTicket: "Bu kodu kaydedin — girişte ihtiyacınız olacak.",
+    addToCalendar: "Takvime Ekle",
+    questions: "Sorularınız varsa organizatörle iletişime geçin.",
+    organizer: "Organizatör",
+    footer: "Bu otomatik bir e-postadır. Lütfen yanıtlamayın.",
+  },
+  uk: {
+    subject: "Вашу реєстрацію підтверджено",
+    greeting: "Вітаємо",
+    confirmed: "Вашу реєстрацію на подію підтверджено!",
+    pending: "Вашу заявку надіслано на розгляд.",
+    eventDetails: "Деталі події",
+    date: "Дата",
+    location: "Місце",
+    online: "Онлайн",
+    ticketCode: "Ваш код квитка",
+    saveTicket: "Збережіть цей код — він потрібен для входу.",
+    addToCalendar: "Додати до календаря",
+    questions: "Якщо у вас є питання, зверніться до організатора.",
+    organizer: "Організатор",
+    footer: "Це автоматичний лист. Будь ласка, не відповідайте.",
+  },
+  uz: {
+    subject: "Ro'yxatdan o'tishingiz tasdiqlandi",
+    greeting: "Salom",
+    confirmed: "Tadbirga ro'yxatdan o'tishingiz tasdiqlandi!",
+    pending: "Arizangiz ko'rib chiqish uchun yuborildi.",
+    eventDetails: "Tadbir ma'lumotlari",
+    date: "Sana",
+    location: "Joylashuv",
+    online: "Onlayn",
+    ticketCode: "Sizning chipta kodingiz",
+    saveTicket: "Ushbu kodni saqlang — kirish uchun kerak bo'ladi.",
+    addToCalendar: "Taqvimga qo'shish",
+    questions: "Savollaringiz bo'lsa, tashkilotchiga murojaat qiling.",
+    organizer: "Tashkilotchi",
+    footer: "Bu avtomatik xat. Iltimos, javob bermang.",
   },
 };
 
@@ -332,8 +443,10 @@ const handler = async (req: Request): Promise<Response> => {
       .eq("id", eventData.page_id)
       .single();
 
-    const lang = ['ru', 'en', 'kk'].includes(language) ? language : 'ru';
-    const t = translations[lang as keyof typeof translations];
+    // Normalize language - fallback to English if not supported
+    const supportedLangs = Object.keys(translations);
+    const lang = supportedLangs.includes(language) ? language : 'en';
+    const t = translations[lang];
     const eventTitle = eventData.title_i18n_json?.[lang] || eventData.title_i18n_json?.ru || eventData.title_i18n_json?.en || 'Event';
     
     // Base URL for links

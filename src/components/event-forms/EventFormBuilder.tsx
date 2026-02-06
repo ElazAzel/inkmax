@@ -16,7 +16,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MultilingualInput } from '@/components/form-fields/MultilingualInput';
-import { createMultilingualString, getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { createEmptyI18nText, getI18nText, type SupportedLanguage, type I18nText } from '@/lib/i18n-helpers';
 import { usePremiumStatus } from '@/hooks/usePremiumStatus';
 import {
   Plus,
@@ -113,14 +113,14 @@ function SortableFieldCard({ field, index, isExpanded, onToggle, onUpdate, onRem
   const addOption = useCallback(() => {
     const newOption: EventFieldOption = {
       id: crypto.randomUUID(),
-      label_i18n: createMultilingualString(''),
+      label_i18n: createEmptyI18nText(['en']) as any,
     };
     onUpdate({ options: [...(field.options || []), newOption] });
   }, [field.options, onUpdate]);
 
   const updateOption = useCallback((optIndex: number, updates: Partial<EventFieldOption>) => {
     const newOptions = [...(field.options || [])];
-    newOptions[optIndex] = { ...newOptions[optIndex], ...updates };
+    newOptions[optIndex] = { ...newOptions[optIndex], ...updates } as EventFieldOption;
     onUpdate({ options: newOptions });
   }, [field.options, onUpdate]);
 
@@ -174,8 +174,8 @@ function SortableFieldCard({ field, index, isExpanded, onToggle, onUpdate, onRem
               {/* Label */}
               <MultilingualInput
                 label={t('eventBuilder.fieldLabel', 'Вопрос')}
-                value={field.label_i18n || createMultilingualString('')}
-                onChange={(value) => onUpdate({ label_i18n: value })}
+                value={field.label_i18n || createEmptyI18nText(['en'])}
+                onChange={(value) => onUpdate({ label_i18n: value as any })}
                 placeholder={t('eventBuilder.fieldLabelPlaceholder', 'Введите текст вопроса')}
               />
 
@@ -229,8 +229,8 @@ function SortableFieldCard({ field, index, isExpanded, onToggle, onUpdate, onRem
               {/* Help text */}
               <MultilingualInput
                 label={`${t('eventBuilder.fieldHelp', 'Подсказка')} (${t('fields.optional', 'опционально')})`}
-                value={field.helpText_i18n || createMultilingualString('')}
-                onChange={(value) => onUpdate({ helpText_i18n: value })}
+                value={field.helpText_i18n || createEmptyI18nText(['en'])}
+                onChange={(value) => onUpdate({ helpText_i18n: value as any })}
                 placeholder={t('eventBuilder.fieldHelpPlaceholder', 'Дополнительное пояснение')}
               />
 
@@ -243,7 +243,7 @@ function SortableFieldCard({ field, index, isExpanded, onToggle, onUpdate, onRem
                       <span className="w-6 text-center text-xs text-muted-foreground">{optIndex + 1}.</span>
                       <Input
                         value={getI18nText(option.label_i18n, language)}
-                        onChange={(e) => updateOption(optIndex, { label_i18n: createMultilingualString(e.target.value) })}
+                        onChange={(e) => updateOption(optIndex, { label_i18n: { ...option.label_i18n, [language]: e.target.value } as any })}
                         placeholder={t('eventBuilder.optionPlaceholder', 'Вариант ответа')}
                         className="h-8 text-sm flex-1"
                       />
@@ -324,10 +324,10 @@ export function EventFormBuilder({ fields, sections, onChange }: EventFormBuilde
   const createField = useCallback((type: EventFieldType = 'short_text'): EventFormField => ({
     id: crypto.randomUUID(),
     type,
-    label_i18n: createMultilingualString(''),
+    label_i18n: createEmptyI18nText(['en']) as any,
     required: type === 'email',
     options: ['dropdown', 'single_choice', 'multiple_choice'].includes(type)
-      ? [{ id: crypto.randomUUID(), label_i18n: createMultilingualString(t('eventBuilder.option1', 'Вариант 1')) }]
+      ? [{ id: crypto.randomUUID(), label_i18n: { en: t('eventBuilder.option1', 'Option 1'), ru: '', kk: '' } as any }]
       : undefined,
   }), [t]);
 
@@ -350,14 +350,15 @@ export function EventFormBuilder({ fields, sections, onChange }: EventFormBuilde
 
   const duplicateField = useCallback((index: number) => {
     const original = fields[index];
+    const originalLabel = getI18nText(original.label_i18n, 'en') || getI18nText(original.label_i18n, 'ru');
     const duplicate: EventFormField = {
       ...original,
       id: crypto.randomUUID(),
       label_i18n: {
+        en: `${originalLabel} (copy)`,
         ru: `${getI18nText(original.label_i18n, 'ru')} (копия)`,
-        en: `${getI18nText(original.label_i18n, 'en')} (copy)`,
         kk: `${getI18nText(original.label_i18n, 'kk')} (көшірме)`,
-      },
+      } as any,
       options: original.options?.map(opt => ({ ...opt, id: crypto.randomUUID() })),
     };
     const updated = [...fields];
