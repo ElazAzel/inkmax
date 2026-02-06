@@ -186,15 +186,6 @@
       "bio": "About you"
     }
   },
-  "errors": {
-    "pageNotFound": "Page not found",
-    "invalidLink": "Check the link or the page may have been deleted",
-    "loadError": "Loading error",
-    "tryAgain": "Try refreshing the page",
-    "createYourPage": "Want to create your own page?",
-    "invalidEmail": "Enter a valid email",
-    "subscription": "Subscription error"
-  },
   "form": {
     "fillRequired": "Please fill required fields",
     "success": "Form submitted successfully!",
@@ -816,9 +807,6 @@
     "floatingCta": {
       "create": "Create"
     },
-    "footer": {
-      "alternatives": "Comparison"
-    },
     "hero": {
       "badge": "AI Mini-Site Builder",
       "mainTitle": "A mini-site that brings leads in 2 minutes",
@@ -973,67 +961,6 @@
     "footer": {
       "copyright": "© 2025 lnkmx",
       "alternatives": "Comparison"
-    },
-    "faq": {
-      "badge": "Questions & Answers",
-      "title": "Frequently Asked Questions",
-      "subtitle": "Answers to popular questions about lnkmx",
-      "q1": {
-        "question": "What is lnkmx and who is it for?",
-        "answer": "lnkmx is an AI builder for link in bio pages and mini-sites that helps you collect links, services, and lead forms in one place."
-      },
-      "q2": {
-        "question": "How much does lnkmx cost?",
-        "answer": "The basic plan is free forever. Pro: 3 months - 4,350₸/mo, 6 months - 3,698₸/mo (-15%), 12 months - 3,045₸/mo (-30%). Online payment and 14-day refund."
-      },
-      "q3": {
-        "question": "How does AI page generation work?",
-        "answer": "Pick a niche and share a few details - AI builds the structure, copy, and CTAs in minutes. Free: 1 generation/month, Pro: 5/month."
-      },
-      "q4": {
-        "question": "What blocks are available?",
-        "answer": "20+ blocks: profile, links, buttons, images, video, carousels, products, price lists, forms, maps, messengers, reviews, FAQ, timers, and more."
-      },
-      "q5": {
-        "question": "Do you have CRM and analytics?",
-        "answer": "Yes. Pro includes CRM for leads and Telegram notifications. Analytics show clicks, sources, and behavior."
-      },
-      "q6": {
-        "question": "Is there a mobile editor?",
-        "answer": "Yes. You can edit your page directly from your phone."
-      },
-      "q7": {
-        "question": "What integrations are supported?",
-        "answer": "Telegram for lead alerts and Google Calendar for scheduling. Socials and messengers are available as blocks."
-      },
-      "q8": {
-        "question": "Do you take a commission on sales?",
-        "answer": "No. 0% commission on your sales - you only pay the subscription."
-      },
-      "q9": {
-        "question": "How can I pay for Pro?",
-        "answer": "Pay by card and available payment methods. You can also use tokens (100 tokens = 1 day Pro)."
-      },
-      "q10": {
-        "question": "What is the refund policy?",
-        "answer": "Refunds are available within 14 days of payment according to local regulations. See the user agreement for details."
-      },
-      "q11": {
-        "question": "Can I see real examples?",
-        "answer": "Yes. The gallery features real pages from creators, shops, and service providers."
-      },
-      "q12": {
-        "question": "How is lnkmx different from Linktree or Taplink?",
-        "answer": "lnkmx includes AI page creation, CRM, and notifications without extra fees, plus flexible blocks and local languages."
-      },
-      "q13": {
-        "question": "Is lnkmx suitable for shops or services?",
-        "answer": "Yes. Add a catalog, pricing, lead forms, and contact buttons to speed up booking or orders."
-      },
-      "q14": {
-        "question": "Can I connect my own domain?",
-        "answer": "Yes, Pro includes custom domains and branding."
-      }
     }
   },
   "dashboard": {
@@ -1487,51 +1414,6 @@
     "seo": {
       "title": "Sign in to lnkmx",
       "description": "Sign in to create and publish your link in bio page."
-    }
-  },
-  "pricing": {
-    "title": "Pricing",
-    "subtitle": "Choose the right plan",
-    "month": "mo",
-    "tokens": {
-      "title": "Or pay with Linkkon tokens",
-      "balanceDescription": "100 Linkkon = 1 day Premium. Your balance: {{balance}} tokens",
-      "converting": "Converting...",
-      "buyDay": "Buy 1 day for {{cost}} Linkkon",
-      "buyTokens": "Buy tokens"
-    },
-    "companyDetails": {
-      "nameLine": "IE BEEGIN • BIN: 971207300019",
-      "addressLine": "Almaty, Sholokhova st., 20/7"
-    },
-    "free": {
-      "title": "Free",
-      "description": "To start",
-      "price": "$0",
-      "period": "forever"
-    },
-    "pro": {
-      "title": "Pro",
-      "description": "For growth",
-      "popular": "Popular"
-    },
-    "features": {
-      "blocks": "blocks",
-      "aiGenerations": "AI generations/mo",
-      "crm": "Mini-CRM",
-      "telegram": "Telegram notifications",
-      "analytics": "Advanced analytics",
-      "noWatermark": "No watermark",
-      "themes": "Premium themes"
-    },
-    "choosePlan": "Choose plan",
-    "description": "Unlock all LinkMAX features for your business",
-    "alreadyFree": "The free plan is already active",
-    "comingSoon": "Payments are coming soon. Stay tuned for updates.",
-    "currentPlan": "Current plan",
-    "seo": {
-      "title": "lnkmx Pricing - plans for link in bio and mini-sites",
-      "description": "Compare free and Pro plans: AI generation, CRM, analytics, and branding for your link in bio page."
     }
   },
   "gallery": {
