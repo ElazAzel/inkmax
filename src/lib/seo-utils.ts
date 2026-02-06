@@ -72,7 +72,7 @@ export function evaluateQualityGate(
   }
 
   // Check for valuable content blocks
-  const hasValueBlocks = blocks.some(b => 
+  const hasValueBlocks = blocks.some(b =>
     ['faq', 'pricing', 'event', 'product', 'catalog', 'testimonial'].includes(b.type)
   );
   if (hasValueBlocks) {
@@ -177,7 +177,7 @@ export function extractProfileFromBlocks(
   const hasProducts = validBlocks.some(b => b.type === 'product' || b.type === 'catalog');
   const hasPricing = validBlocks.some(b => b.type === 'pricing');
   const hasBooking = validBlocks.some(b => b.type === 'booking');
-  
+
   // If has commercial features, might be organization
   if (hasProducts || (hasPricing && hasBooking)) {
     // Check if name contains business-like words
@@ -266,11 +266,11 @@ export function generatePageMeta(
     description = description.slice(0, 157) + '...';
   } else if (description.length < 100) {
     // Add platform context
-    const suffix = language === 'ru' 
+    const suffix = language === 'ru'
       ? ' - Мини-сайт на lnkmx.my'
       : language === 'kk'
-      ? ' - lnkmx.my мини-сайты'
-      : ' - Mini-site on lnkmx.my';
+        ? ' - lnkmx.my мини-сайты'
+        : ' - Mini-site on lnkmx.my';
     description = description + suffix;
   }
 
@@ -391,19 +391,21 @@ export function generateSchemas(
     result.faq = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: faqBlock.items.map(item => ({
-        '@type': 'Question',
-        name: getI18nText(item.question, language),
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: getI18nText(item.answer, language),
-        },
-      })),
+      mainEntity: faqBlock.items
+        .filter(item => item && item.question)
+        .map(item => ({
+          '@type': 'Question',
+          name: getI18nText(item.question, language),
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: getI18nText(item.answer, language),
+          },
+        })),
     };
   }
 
   // Event schemas if Event blocks exist
-  const eventBlocks = blocks.filter(b => b.type === 'event' && (b as EventBlock).status === 'published') as EventBlock[];
+  const eventBlocks = blocks.filter(b => b.type === 'event' && (b as EventBlock).status === 'published' && (b as EventBlock).title) as EventBlock[];
   if (eventBlocks.length > 0) {
     result.events = eventBlocks.map(event => ({
       '@context': 'https://schema.org',
@@ -418,13 +420,13 @@ export function generateSchemas(
         : 'https://schema.org/OfflineEventAttendanceMode',
       location: event.locationType === 'online'
         ? {
-            '@type': 'VirtualLocation',
-            url: event.locationValue,
-          }
+          '@type': 'VirtualLocation',
+          url: event.locationValue,
+        }
         : {
-            '@type': 'Place',
-            address: event.locationValue,
-          },
+          '@type': 'Place',
+          address: event.locationValue,
+        },
       image: event.coverUrl,
       organizer: {
         '@type': profile.type,
@@ -433,14 +435,14 @@ export function generateSchemas(
       },
       ...(event.isPaid && event.price
         ? {
-            offers: {
-              '@type': 'Offer',
-              price: event.price,
-              priceCurrency: event.currency || 'KZT',
-              availability: 'https://schema.org/InStock',
-              validFrom: now,
-            },
-          }
+          offers: {
+            '@type': 'Offer',
+            price: event.price,
+            priceCurrency: event.currency || 'KZT',
+            availability: 'https://schema.org/InStock',
+            validFrom: now,
+          },
+        }
         : {}),
     }));
   }
@@ -448,21 +450,24 @@ export function generateSchemas(
   // Services from Pricing block
   const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   if (pricingBlock?.items && pricingBlock.items.length > 0) {
-    result.services = pricingBlock.items.slice(0, 5).map(item => ({
-      '@context': 'https://schema.org',
-      '@type': 'Service',
-      name: getI18nText(item.name, language),
-      description: item.description ? getI18nText(item.description, language) : undefined,
-      provider: {
-        '@type': profile.type,
-        name: profile.name,
-      },
-      offers: {
-        '@type': 'Offer',
-        price: item.price,
-        priceCurrency: item.currency || pricingBlock.currency || 'KZT',
-      },
-    }));
+    result.services = pricingBlock.items
+      .filter(item => item && typeof item === 'object')
+      .slice(0, 5)
+      .map(item => ({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: getI18nText(item.name, language),
+        description: item.description ? getI18nText(item.description, language) : undefined,
+        provider: {
+          '@type': profile.type,
+          name: profile.name,
+        },
+        offers: {
+          '@type': 'Offer',
+          price: item.price,
+          priceCurrency: item.currency || pricingBlock.currency || 'KZT',
+        },
+      }));
   }
 
   return result;
@@ -479,11 +484,11 @@ export function generateSourceContext(
     `This page is managed by its owner on lnkmx.`,
     `Last updated: ${new Date(updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`,
   ];
-  
+
   if (versionId) {
     context.push(`Version: ${versionId}`);
   }
-  
+
   return context.join(' • ');
 }
 
@@ -495,13 +500,13 @@ export function generateContentHash(blocks: Block[]): string {
     type: b.type,
     id: b.id,
   })));
-  
+
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
     const char = content.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
     hash = hash & hash;
   }
-  
+
   return Math.abs(hash).toString(36).slice(0, 8);
 }

@@ -86,7 +86,7 @@ export function extractEntityLinks(
   // Extract knowsAbout from pricing/services
   const pricingBlock = validBlocks.find(b => b.type === 'pricing') as any;
   if (pricingBlock?.items) {
-    for (const item of pricingBlock.items.slice(0, 5)) {
+    for (const item of (pricingBlock.items || []).filter(i => i)) {
       const name = getI18nText(item.name, language);
       if (name && name.length > 2 && name.length < 50) {
         result.knowsAbout.push(name);
@@ -144,7 +144,7 @@ export function extractSkillTags(
   language: 'ru' | 'en' | 'kk' = 'ru'
 ): string[] {
   const tags: string[] = [];
-  
+
   // Guard against undefined/null blocks
   const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
 
