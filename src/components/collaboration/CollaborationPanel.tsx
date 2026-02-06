@@ -7,6 +7,7 @@ import { PromoTab } from './PromoTab';
 import { ShoutoutsTab } from './ShoutoutsTab';
 import { TeamsTab } from './TeamsTab';
 import { useTranslation } from 'react-i18next';
+import { generateTeamInviteCode, joinTeamByInviteCode } from '@/services/collaboration';
 
 interface CollaborationPanelProps {
   userId: string;
@@ -100,6 +101,8 @@ export function CollaborationPanel({ userId, pageId }: CollaborationPanelProps) 
             teams={teams}
             onCreateTeam={createNewTeam}
             onLeaveTeam={leaveTeam}
+            onJoinByCode={joinTeamByInviteCode}
+            onGetInviteCode={generateTeamInviteCode}
             onRefresh={refresh}
           />
         </TabsContent>

@@ -2294,7 +2294,20 @@
     "error": "Error",
     "updateError": "Update failed",
     "deleteError": "Delete failed",
-    "enterName": "Enter team name"
+    "enterName": "Enter team name",
+    "total": "Teams",
+    "owned": "Owned",
+    "member": "Member",
+    "owner": "Owner",
+    "noTeamsHint": "Create a team or join with an invite code",
+    "joinByCode": "By code",
+    "createNew": "Create",
+    "joinTeam": "Join team",
+    "joinTeamDesc": "Enter the invite code from the team owner",
+    "inviteCodePlaceholder": "Invite code (team-xxxxx)",
+    "joinButton": "Join",
+    "createTeamDesc": "Bring together like-minded people for collaboration",
+    "invite": "Invite"
   },
   "friends": {
     "title": "Friends",
