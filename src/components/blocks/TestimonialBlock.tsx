@@ -13,7 +13,7 @@ interface TestimonialBlockProps {
 export const TestimonialBlock = memo(function TestimonialBlock({ block }: TestimonialBlockProps) {
   const { i18n } = useTranslation();
   const currentLang = i18n.language as SupportedLanguage;
-  
+
   const title = getI18nText(block.title, currentLang);
 
   const renderStars = (rating: number = 5) => {
@@ -33,7 +33,7 @@ export const TestimonialBlock = memo(function TestimonialBlock({ block }: Testim
   };
 
   return (
-    <div 
+    <div
       className="w-full space-y-3"
       style={{
         backgroundColor: block.blockStyle?.backgroundColor,
@@ -46,17 +46,18 @@ export const TestimonialBlock = memo(function TestimonialBlock({ block }: Testim
           <h3 className="font-semibold text-sm">{title}</h3>
         </div>
       )}
-      
+
       {/* Horizontal scroll on mobile */}
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-hide">
-        {block.testimonials.map((testimonial, index) => {
-          const name = getI18nText(testimonial.name, currentLang);
+        {block.testimonials?.filter(Boolean).map((testimonial, index) => {
+          if (!testimonial) return null;
+          const name = getI18nText(testimonial.name, currentLang) || '';
           const text = getI18nText(testimonial.text, currentLang);
           const role = getI18nText(testimonial.role, currentLang);
-          
+
           return (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={cn(
                 "flex-shrink-0 w-[85%] min-w-[260px] max-w-[320px]",
                 "p-5 rounded-xl",
@@ -67,7 +68,7 @@ export const TestimonialBlock = memo(function TestimonialBlock({ block }: Testim
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10 flex-shrink-0">
                   <AvatarImage src={testimonial.avatar} alt={name} />
-                  <AvatarFallback className="text-xs">{name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-xs">{name?.[0] || '?'}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-1">
