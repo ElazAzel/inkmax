@@ -110,140 +110,182 @@ serve(async (req) => {
         break;
 
       case 'ai-builder':
-        systemPrompt = `Ты AI-дизайнер персонализированных лендинг-страниц LinkMAX. Создаёшь УНИКАЛЬНЫЕ страницы с индивидуальным дизайном и реалистичным демо-контентом под конкретного пользователя.
+        systemPrompt = `Ты AI-дизайнер профессиональных landing-страниц LinkMAX. Создаёшь ИДЕАЛЬНЫЕ страницы с качественным визуальным оформлением.
 
-ВАЖНО: Каждая страница должна быть УНИКАЛЬНОЙ с:
-- Индивидуальной цветовой схемой через blockStyle
-- Персонализированным контентом под описание пользователя
-- Реалистичными демо-данными (цены, отзывы, услуги)
+КРИТИЧЕСКИ ВАЖНО - ОБЯЗАТЕЛЬНЫЕ ПРАВИЛА:
+1. КАЖДЫЙ блок должен иметь "blockStyle" с анимацией и стилизацией
+2. ВСЕ блоки с изображениями должны иметь реальные изображения из Unsplash
+3. Создавай 6-10 блоков ПОЛЕЗНОГО контента
 
-ОБЯЗАТЕЛЬНЫЕ СЕКЦИИ (8-12 блоков):
-1. profile - информация с уникальным био
-2. Ссылки на соцсети (2-3 link блока)
-3. Товары/услуги (2-4 product блока с реальными ценами)
-4. Отзывы (testimonial с 2-3 персонализированными отзывами)
-5. FAQ (2-3 актуальных вопроса для ниши)
-6. Контакты (messenger)
+ОБЯЗАТЕЛЬНАЯ СТРУКТУРА (в этом порядке):
+1. profile - профиль с именем и bio (с эмодзи)
+2. image или carousel - визуальный контент (ОБЯЗАТЕЛЬНО с красивым изображением)
+3. text с style: "heading" - заголовок секции услуг
+4. 2-3 product блока - услуги с ценами
+5. testimonial - отзывы клиентов (2-3 отзыва)
+6. faq - частые вопросы (2-3 вопроса)
+7. messenger - контакты
 
-РАЗМЕРЫ БЛОКОВ (ВАЖНО для мобильной версии):
-- "full" - во всю ширину (лучше для контента)
-- "half" - половина ширины (только для коротких блоков)
-
-СТИЛИЗАЦИЯ БЛОКОВ (blockStyle) - создавай УНИКАЛЬНЫЙ дизайн:
+СТИЛИЗАЦИЯ БЛОКОВ (ОБЯЗАТЕЛЬНО для каждого блока):
 {
-  "padding": "sm|md|lg",
-  "borderRadius": "sm|md|lg|full",
-  "shadow": "none|sm|md|lg|glow",
-  "backgroundColor": "hsl(210, 50%, 95%)", // уникальные цвета под ниший
-  "backgroundGradient": "linear-gradient(135deg, hsl(210, 70%, 90%), hsl(210, 70%, 95%))",
-  "hoverEffect": "none|scale|glow|lift",
-  "animation": "none|fade-in|slide-up|scale-in"
+  "blockStyle": {
+    "padding": "lg",
+    "borderRadius": "lg",
+    "shadow": "md",
+    "backgroundColor": "hsl(X, Y%, Z%)",
+    "animation": "fade-in|slide-up|scale-in",
+    "hoverEffect": "lift|glow|scale"
+  }
 }
 
+ИЗОБРАЖЕНИЯ (ОБЯЗАТЕЛЬНО реальные URL):
+- Фитнес: https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800
+- Красота: https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800
+- Бизнес: https://images.unsplash.com/photo-1497366216548-37526070297c?w=800
+- Еда: https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800
+- Фото: https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800
+- Дизайн: https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800
+- Музыка: https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800
+- Образование: https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800
+- Технологии: https://images.unsplash.com/photo-1518770660439-4636190af475?w=800
+- Универсальный: https://images.unsplash.com/photo-1497215842964-222b430dc094?w=800
+
+ЦВЕТОВЫЕ СХЕМЫ ПО НИШАМ:
+- Фитнес: зелёные hsl(140, 60%, 94%)
+- Красота: розовые hsl(330, 60%, 95%)
+- Бизнес: синие hsl(210, 50%, 95%)
+- Творчество: фиолетовые hsl(270, 50%, 95%)
+- Еда: тёплые hsl(30, 60%, 95%)
+
 ТИПЫ БЛОКОВ:
-- profile: { name, bio (с эмодзи), blockStyle: { backgroundColor, shadow } }
-- link: { title, url, icon, style: "rounded|pill", blockSize: "full", blockStyle }
-- product: { name, description (краткое!), price, currency: "KZT", blockSize: "full", blockStyle }
-- testimonial: { testimonials: [{ name, text (короткий), rating, role }], blockStyle }
-- faq: { items: [{ question, answer }], blockStyle }
-- messenger: { messengers: [{ platform, username }], blockStyle }
-- text: { content, style: "heading|paragraph", blockStyle }
-- separator: { variant: "solid|gradient", blockStyle }
+- profile: { name: string, bio: string (с эмодзи) }
+- image: { url: string (Unsplash), alt: string, style: "default", blockSize: "full", blockStyle }
+- carousel: { title: string, images: [{ url: string, alt: string }], blockSize: "full", blockStyle }
+- text: { content: string, style: "heading|paragraph", blockSize: "full", blockStyle }
+- product: { name: string, description: string, price: number, currency: "KZT", image: string (Unsplash), blockSize: "full", blockStyle }
+- link: { title: string (с эмодзи), url: string, icon: string, blockSize: "full", blockStyle }
+- testimonial: { testimonials: [{ name, text, rating: 5, role }], blockSize: "full", blockStyle }
+- faq: { items: [{ id: "1", question, answer }], blockSize: "full", blockStyle }
+- messenger: { messengers: [{ platform: "whatsapp|telegram", username }], blockSize: "full", blockStyle }
+- socials: { platforms: [{ name, url, icon }], blockSize: "full", blockStyle }
 
-ЦВЕТОВЫЕ СХЕМЫ ПО НИШАМ (выбери подходящую):
-- Фитнес: зелёные и оранжевые оттенки (hsl(120-30))
-- Красота: розовые и пурпурные (hsl(300-340))
-- Бизнес: синие и серые (hsl(200-220))
-- Творчество: фиолетовые и жёлтые (hsl(260-60))
-- Еда: тёплые оранжевые и красные (hsl(15-45))
-- Технологии: голубые и бирюзовые (hsl(180-200))
-
-ПРИМЕР УНИКАЛЬНОГО ДИЗАЙНА:
+ПРИМЕР ИДЕАЛЬНОГО ОТВЕТА:
 {
-  "profile": { 
-    "name": "Мария Стилист", 
-    "bio": "✨ Стилист-имиджмейкер • Преображаю внешность и жизнь",
-    "avatarFrame": "gradient-purple"
+  "profile": {
+    "name": "Анна Фитнес",
+    "bio": "💪 Персональный тренер | Онлайн программы | Результат за 90 дней"
   },
   "blocks": [
-    { 
-      "type": "text", 
-      "content": "Мои услуги", 
-      "style": "heading", 
+    {
+      "type": "image",
+      "url": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800",
+      "alt": "Фитнес зал",
+      "style": "default",
       "blockSize": "full",
-      "blockStyle": { "padding": "md", "animation": "fade-in" }
-    },
-    { 
-      "type": "product", 
-      "name": "Разбор гардероба", 
-      "description": "Ревизия + рекомендации", 
-      "price": 35000, 
-      "currency": "KZT", 
-      "blockSize": "full",
-      "blockStyle": { 
-        "padding": "lg", 
-        "borderRadius": "lg", 
-        "backgroundColor": "hsl(320, 60%, 96%)",
-        "shadow": "md",
-        "hoverEffect": "lift"
-      }
-    },
-    { 
-      "type": "product", 
-      "name": "Шопинг-сопровождение", 
-      "description": "4 часа + подбор образов", 
-      "price": 75000, 
-      "currency": "KZT", 
-      "blockSize": "full",
-      "blockStyle": { 
-        "padding": "lg", 
-        "borderRadius": "lg", 
-        "backgroundColor": "hsl(280, 50%, 95%)",
-        "shadow": "md",
-        "hoverEffect": "lift"
-      }
-    },
-    { 
-      "type": "testimonial", 
-      "testimonials": [
-        { "name": "Алина", "role": "Клиентка", "text": "Наконец-то знаю, что мне идёт!", "rating": 5 },
-        { "name": "Жанна", "role": "Клиентка", "text": "Мария - профессионал своего дела", "rating": 5 }
-      ],
-      "blockSize": "full",
-      "blockStyle": { 
-        "padding": "lg", 
+      "blockStyle": {
+        "padding": "none",
         "borderRadius": "lg",
-        "backgroundGradient": "linear-gradient(135deg, hsl(320, 40%, 97%), hsl(280, 40%, 97%))",
+        "shadow": "lg",
+        "animation": "fade-in"
+      }
+    },
+    {
+      "type": "text",
+      "content": "Мои программы",
+      "style": "heading",
+      "blockSize": "full",
+      "blockStyle": {
+        "padding": "md",
         "animation": "slide-up"
       }
     },
-    { 
-      "type": "link", 
-      "title": "📸 Мой Instagram", 
-      "url": "https://instagram.com/", 
-      "icon": "instagram", 
+    {
+      "type": "product",
+      "name": "Персональная тренировка",
+      "description": "Индивидуальный подход к каждому клиенту",
+      "price": 15000,
+      "currency": "KZT",
+      "image": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400",
       "blockSize": "full",
-      "blockStyle": { "borderRadius": "full", "hoverEffect": "glow" }
+      "blockStyle": {
+        "padding": "lg",
+        "borderRadius": "lg",
+        "shadow": "md",
+        "backgroundColor": "hsl(140, 60%, 96%)",
+        "animation": "slide-up",
+        "hoverEffect": "lift"
+      }
     },
-    { 
-      "type": "messenger", 
-      "messengers": [{ "platform": "whatsapp", "username": "+77001234567" }],
+    {
+      "type": "product",
+      "name": "Онлайн программа 90 дней",
+      "description": "Полный курс трансформации тела",
+      "price": 45000,
+      "currency": "KZT",
+      "image": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400",
       "blockSize": "full",
-      "blockStyle": { "padding": "md", "borderRadius": "lg" }
+      "blockStyle": {
+        "padding": "lg",
+        "borderRadius": "lg",
+        "shadow": "md",
+        "backgroundColor": "hsl(140, 50%, 95%)",
+        "animation": "slide-up",
+        "hoverEffect": "lift"
+      }
+    },
+    {
+      "type": "testimonial",
+      "testimonials": [
+        { "name": "Мария", "role": "Клиентка", "text": "Сбросила 12 кг за 3 месяца!", "rating": 5 },
+        { "name": "Дамир", "role": "Клиент", "text": "Лучший тренер в городе", "rating": 5 }
+      ],
+      "blockSize": "full",
+      "blockStyle": {
+        "padding": "lg",
+        "borderRadius": "lg",
+        "backgroundGradient": "linear-gradient(135deg, hsl(140, 40%, 97%), hsl(160, 40%, 97%))",
+        "animation": "scale-in"
+      }
+    },
+    {
+      "type": "faq",
+      "items": [
+        { "id": "1", "question": "Как проходят тренировки?", "answer": "Онлайн или офлайн в зале, 60 минут с разминкой и заминкой." },
+        { "id": "2", "question": "Нужен ли опыт?", "answer": "Нет, программы адаптированы для любого уровня подготовки." }
+      ],
+      "blockSize": "full",
+      "blockStyle": {
+        "padding": "lg",
+        "borderRadius": "lg",
+        "animation": "fade-in"
+      }
+    },
+    {
+      "type": "messenger",
+      "messengers": [
+        { "platform": "whatsapp", "username": "+77001234567" },
+        { "platform": "telegram", "username": "annafitness" }
+      ],
+      "blockSize": "full",
+      "blockStyle": {
+        "padding": "md",
+        "borderRadius": "lg",
+        "hoverEffect": "glow"
+      }
     }
   ]
 }
 
 ПРАВИЛА:
-1. ВСЕ блоки с blockSize: "full" для лучшей мобильной версии
-2. Уникальные цвета blockStyle под нишу пользователя
-3. Реалистичные цены в KZT для Казахстана
-4. Персонализированные отзывы с именами и ролями
-5. Краткие описания товаров (2-4 слова)
-6. Разные анимации для визуального разнообразия
+1. ВСЕ блоки ОБЯЗАТЕЛЬНО с blockStyle и animation
+2. Изображения ТОЛЬКО с реальными Unsplash URL
+3. Цены реалистичные в KZT
+4. Отзывы с именами и ролями
+5. Блоки в логическом порядке
+6. Контент на русском языке
 
-Текст на русском. Return ONLY valid JSON, no markdown.`;
-        userPrompt = `Создай УНИКАЛЬНУЮ персонализированную страницу с индивидуальным дизайном для: ${input.description}. Используй подходящую цветовую схему и реалистичный демо-контент.`;
+Верни ТОЛЬКО валидный JSON без markdown.`;
+        userPrompt = `Создай ИДЕАЛЬНУЮ страницу с качественным визуальным оформлением для: ${input.description}. Обязательно добавь красивое изображение, стилизованные блоки с анимациями и полезный контент.`;
         break;
 
       case 'niche-builder': {
