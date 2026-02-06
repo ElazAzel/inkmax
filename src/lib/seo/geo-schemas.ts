@@ -48,24 +48,24 @@ export function generateGEOSchemas(
 ): GEOSchemas {
   const pageUrl = `https://lnkmx.my/${context.slug}`;
   const now = new Date().toISOString();
-  
+
   // Guard against undefined/null blocks
   const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
-  
+
   const graph: object[] = [];
-  
+
   // 1. Main Entity (Person/Organization/LocalBusiness)
   const mainEntity = generateMainEntity(validBlocks, context, pageUrl);
   graph.push(mainEntity);
-  
+
   // 2. WebPage/ProfilePage
   const webPage = generateWebPage(context, pageUrl, now);
   graph.push(webPage);
-  
+
   // 3. Breadcrumb
   const breadcrumb = generateBreadcrumb(context, pageUrl);
   graph.push(breadcrumb);
-  
+
   // 4. FAQ Schema
   const faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
   let faq: object | undefined;
@@ -73,7 +73,7 @@ export function generateGEOSchemas(
     faq = generateFAQSchema(faqBlock, context.language);
     graph.push(faq);
   }
-  
+
   // 5. Event Schemas
   const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
   let events: object[] | undefined;
@@ -81,7 +81,7 @@ export function generateGEOSchemas(
     events = generateEventSchemas(eventBlocks, context, pageUrl);
     events.forEach(e => graph.push(e));
   }
-  
+
   // 6. Service Schemas
   const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   let services: object[] | undefined;
@@ -89,7 +89,7 @@ export function generateGEOSchemas(
     services = generateServiceSchemas(pricingBlock, context, pageUrl);
     services.forEach(s => graph.push(s));
   }
-  
+
   // 7. HowTo Schema (for booking flow)
   const hasBooking = validBlocks.some(b => b.type === 'booking');
   let howTo: object | undefined;
@@ -97,7 +97,7 @@ export function generateGEOSchemas(
     howTo = generateHowToSchema(context, pageUrl);
     graph.push(howTo);
   }
-  
+
   return {
     mainEntity,
     webPage,
@@ -119,7 +119,7 @@ function generateMainEntity(
   pageUrl: string
 ): object {
   const { entityType } = context.answerBlock;
-  
+
   const entity: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': entityType,
@@ -128,22 +128,22 @@ function generateMainEntity(
     url: pageUrl,
     description: context.answerBlock.summary,
   };
-  
+
   // Add image if available
   if (context.avatar) {
     entity.image = context.avatar;
   }
-  
+
   // Add sameAs links
   if (context.sameAs.length > 0) {
     entity.sameAs = context.sameAs;
   }
-  
+
   // Add knowsAbout from services
   if (context.answerBlock.services.length > 0) {
     entity.knowsAbout = context.answerBlock.services;
   }
-  
+
   // Add location-specific fields for LocalBusiness
   if (entityType === 'LocalBusiness') {
     const mapBlock = blocks.find(b => b.type === 'map') as MapBlock | undefined;
@@ -157,12 +157,12 @@ function generateMainEntity(
       entity.areaServed = context.answerBlock.location;
     }
   }
-  
+
   // Add jobTitle for Person
   if (entityType === 'Person' && context.answerBlock.niche) {
     entity.jobTitle = context.answerBlock.niche;
   }
-  
+
   return entity;
 }
 
@@ -219,7 +219,7 @@ function generateBreadcrumb(context: SchemaContext, pageUrl: string): object {
       item: pageUrl,
     },
   ];
-  
+
   // Add niche level if available
   if (context.answerBlock.niche) {
     items.splice(1, 0, {
@@ -230,7 +230,7 @@ function generateBreadcrumb(context: SchemaContext, pageUrl: string): object {
     });
     items[2].position = 3;
   }
-  
+
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -249,14 +249,16 @@ function generateFAQSchema(
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqBlock.items.map(item => ({
-      '@type': 'Question',
-      name: getI18nText(item.question, language),
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: getI18nText(item.answer, language),
-      },
-    })),
+    mainEntity: (faqBlock.items || [])
+      .filter(item => item && item.question)
+      .map(item => ({
+        '@type': 'Question',
+        name: getI18nText(item.question, language),
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: getI18nText(item.answer, language),
+        },
+      })),
   };
 }
 
@@ -269,7 +271,7 @@ function generateEventSchemas(
   pageUrl: string
 ): object[] {
   return eventBlocks
-    .filter(e => e.status === 'published')
+    .filter(e => e && e.status === 'published' && e.title)
     .map(event => {
       const eventSchema: Record<string, unknown> = {
         '@context': 'https://schema.org',
@@ -281,19 +283,19 @@ function generateEventSchemas(
           '@id': `${pageUrl}#main`,
         },
       };
-      
+
       if (event.description) {
         eventSchema.description = getI18nText(event.description, context.language);
       }
-      
+
       if (event.endAt) {
         eventSchema.endDate = event.endAt;
       }
-      
+
       if (event.coverUrl) {
         eventSchema.image = event.coverUrl;
       }
-      
+
       // Location
       if (event.locationType === 'online') {
         eventSchema.eventAttendanceMode = 'https://schema.org/OnlineEventAttendanceMode';
@@ -308,7 +310,7 @@ function generateEventSchemas(
           address: event.locationValue,
         };
       }
-      
+
       // Offers for paid events
       if (event.isPaid && event.price) {
         eventSchema.offers = {
@@ -319,7 +321,7 @@ function generateEventSchemas(
           url: pageUrl,
         };
       }
-      
+
       return eventSchema;
     });
 }
@@ -332,25 +334,28 @@ function generateServiceSchemas(
   context: SchemaContext,
   pageUrl: string
 ): object[] {
-  return pricingBlock.items.slice(0, 10).map((item, index) => ({
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    '@id': `${pageUrl}#service-${index}`,
-    name: getI18nText(item.name, context.language),
-    description: item.description 
-      ? getI18nText(item.description, context.language)
-      : undefined,
-    provider: {
-      '@id': `${pageUrl}#main`,
-    },
-    offers: {
-      '@type': 'Offer',
-      price: item.price,
-      priceCurrency: item.currency || pricingBlock.currency || 'KZT',
-      availability: 'https://schema.org/InStock',
-    },
-    areaServed: context.answerBlock.location || 'Online',
-  }));
+  return (pricingBlock.items || [])
+    .filter(item => item && typeof item === 'object')
+    .slice(0, 10)
+    .map((item, index) => ({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      '@id': `${pageUrl}#service-${index}`,
+      name: getI18nText(item.name, context.language),
+      description: item.description
+        ? getI18nText(item.description, context.language)
+        : undefined,
+      provider: {
+        '@id': `${pageUrl}#main`,
+      },
+      offers: {
+        '@type': 'Offer',
+        price: item.price,
+        priceCurrency: item.currency || pricingBlock.currency || 'KZT',
+        availability: 'https://schema.org/InStock',
+      },
+      areaServed: context.answerBlock.location || 'Online',
+    }));
 }
 
 /**
@@ -376,15 +381,15 @@ function generateHowToSchema(
     { name: 'Fill in contact details', text: 'Enter your name and contact information.' },
     { name: 'Confirm booking', text: 'Confirm your booking and receive confirmation.' },
   ];
-  
+
   return {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
-    name: context.language === 'ru' 
+    name: context.language === 'ru'
       ? `Как записаться к ${context.name}`
       : context.language === 'kk'
-      ? `${context.name}-ға қалай жазылуға болады`
-      : `How to book with ${context.name}`,
+        ? `${context.name}-ға қалай жазылуға болады`
+        : `How to book with ${context.name}`,
     description: context.answerBlock.summary,
     step: steps.map((step, index) => ({
       '@type': 'HowToStep',
