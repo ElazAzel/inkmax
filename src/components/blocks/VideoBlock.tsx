@@ -40,7 +40,7 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
 
   if (!embedUrl) {
     return (
-      <Card className="bg-card border-border shadow-sm rounded-xl">
+      <Card variant="solid" className="bg-card border-border shadow-sm rounded-xl">
         <CardHeader className="p-3 sm:p-4">
           <CardTitle className="text-sm text-destructive">
             {t('blocks.video.invalidUrl', 'Неверный URL видео')}
@@ -57,6 +57,7 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
 
   return (
     <Card 
+      variant="solid"
       className="overflow-hidden bg-card border-border shadow-sm rounded-xl"
       onClick={() => onClick?.()}
     >
@@ -66,7 +67,7 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
         </CardHeader>
       )}
       <CardContent className="p-0">
-        <div className={cn("w-full", aspectRatioClass)}>
+        <div className={cn("w-full bg-black", aspectRatioClass)}>
           <iframe
             src={embedUrl}
             className="w-full h-full"
