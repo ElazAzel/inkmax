@@ -126,8 +126,9 @@ i18n
     interpolation: {
       escapeValue: false, // React already escapes
     },
-    ns: ['translation'],
+    ns: ['translation', 'landingV5'],
     defaultNS: 'translation',
+    fallbackNS: 'translation',
     detection: {
       order: ['localStorage', 'customDetector', 'navigator'],
       caches: ['localStorage'],
