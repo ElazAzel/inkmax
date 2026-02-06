@@ -20,7 +20,8 @@
     "preview": "vite preview",
     "i18n:check": "node scripts/check-i18n.mjs",
     "i18n:export": "node scripts/i18n-export.mjs",
-    "i18n:import": "node scripts/i18n-import.mjs"
+    "i18n:import": "node scripts/i18n-import.mjs",
+    "typecheck:strict": "tsc -p tsconfig.strict.json --noEmit"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -110,7 +110,7 @@ export const logger = {
   timeEnd(label: string): void {
     if (isDev) {
       const start = timers.get(label);
-      if (start) {
+      if (start !== undefined) {
         const duration = performance.now() - start;
         console.log(formatMessage('debug', `${label}: ${duration.toFixed(2)}ms`));
         timers.delete(label);

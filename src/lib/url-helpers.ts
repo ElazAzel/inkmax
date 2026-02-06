@@ -29,6 +29,11 @@ export function getPreviewUrl(slug: string): string {
  * Copy URL to clipboard and return success status
  */
 export async function copyToClipboard(text: string): Promise<boolean> {
+  if (!navigator?.clipboard) {
+    logger.warn('Clipboard API not available', { context: 'url-helpers' });
+    return false;
+  }
+
   try {
     await navigator.clipboard.writeText(text);
     return true;
