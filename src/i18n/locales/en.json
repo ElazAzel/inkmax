@@ -1358,7 +1358,6 @@
     "button": "Button",
     "text": "Text",
     "image": "Image",
-    "video": "Video",
     "socials": "Socials",
     "messenger": "Messenger",
     "separator": "Separator",
@@ -1398,7 +1397,6 @@
     "newsletter": "Newsletter",
     "avatar": "Avatar",
     "download": "File",
-    "shoutout": "Shoutout",
     "community": {
       "title": "Title",
       "titlePlaceholder": "My Private Club",

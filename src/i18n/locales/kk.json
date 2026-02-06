@@ -1347,7 +1347,6 @@
     "button": "Түйме",
     "text": "Мәтін",
     "image": "Сурет",
-    "video": "Видео",
     "socials": "Әлеуметтік желілер",
     "messenger": "Мессенджер",
     "separator": "Бөлгіш",
@@ -1387,7 +1386,6 @@
     "newsletter": "Жаршы",
     "avatar": "Аватар",
     "download": "Файл",
-    "shoutout": "Атап өту",
     "community": {
       "title": "Атауы",
       "titlePlaceholder": "Менің жабық клубым",

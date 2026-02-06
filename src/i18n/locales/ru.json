@@ -1358,7 +1358,6 @@
     "button": "Кнопка",
     "text": "Текст",
     "image": "Изображение",
-    "video": "Видео",
     "socials": "Соцсети",
     "messenger": "Мессенджер",
     "separator": "Разделитель",
@@ -1398,7 +1397,6 @@
     "newsletter": "Рассылка",
     "avatar": "Аватар",
     "download": "Файл",
-    "shoutout": "Упоминание",
     "community": {
       "title": "Название",
       "titlePlaceholder": "Мой закрытый клуб",
