@@ -11,7 +11,7 @@ export default function FooterSection() {
   const navigate = useNavigate();
 
   return (
-    <footer className="border-t border-border/30 py-8 px-5 bg-gradient-to-b from-background to-muted/20">
+    <footer className="border-t border-border/30 py-8 pb-20 px-5 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-xl mx-auto">
         <Reveal direction="up">
           {/* Logo and description */}
