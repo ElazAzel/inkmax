@@ -120,7 +120,8 @@
     "right": "Right",
     "buttonText": "Button Text",
     "requiredRussian": "Required field for Russian language",
-    "requiredPrimary": "Required field for primary language"
+    "requiredPrimary": "Required field for primary language",
+    "requiredEnglish": "Required field (English is mandatory)"
   },
   "hints": {
     "bioLinks": "Tip: Add links with [text](url) format",
