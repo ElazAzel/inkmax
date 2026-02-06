@@ -67,10 +67,10 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
         </CardHeader>
       )}
       <CardContent className="p-0">
-        <div className={cn("w-full bg-black", aspectRatioClass)}>
+        <div className={cn("relative w-full bg-black", aspectRatioClass)}>
           <iframe
             src={embedUrl}
-            className="w-full h-full"
+            className="absolute inset-0 w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             title={title || 'Video'}
