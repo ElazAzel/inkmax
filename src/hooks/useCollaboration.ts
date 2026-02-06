@@ -16,6 +16,8 @@ import {
   inviteToTeam,
   leaveTeam,
   deleteTeam,
+  joinTeamByInviteCode,
+  generateTeamInviteCode,
   getMyShoutouts,
   createShoutout,
   deleteShoutout,
@@ -121,6 +123,26 @@ export function useCollaboration(userId: string | undefined) {
     return success;
   }, [loadData, t]);
 
+  const joinByCode = useCallback(async (inviteCode: string) => {
+    const result = await joinTeamByInviteCode(inviteCode);
+    if (result.success) {
+      toast.success(t('toasts.team.joined', 'Вы присоединились к команде!'));
+      await loadData();
+    } else {
+      const errorMessages: Record<string, string> = {
+        'Invalid invite code': t('toasts.team.invalidCode', 'Неверный код приглашения'),
+        'Already a member of this team': t('toasts.team.alreadyMember', 'Вы уже участник этой команды'),
+        'Not authenticated': t('toasts.team.notAuth', 'Необходима авторизация'),
+      };
+      toast.error(errorMessages[result.error || ''] || result.error || t('toasts.team.joinError', 'Ошибка при присоединении'));
+    }
+    return result;
+  }, [loadData, t]);
+
+  const getInviteCode = useCallback(async (teamId: string) => {
+    return generateTeamInviteCode(teamId);
+  }, []);
+
   const removeTeam = useCallback(async (teamId: string) => {
     const success = await deleteTeam(teamId);
     if (success) {
@@ -181,6 +203,8 @@ export function useCollaboration(userId: string | undefined) {
     createNewTeam,
     inviteMember,
     leaveTeam: leave,
+    joinByCode,
+    getInviteCode,
     removeTeam,
     getTeamWithMembers,
     // Shoutout actions
