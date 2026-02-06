@@ -2,7 +2,6 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExternalLink } from 'lucide-react';
 import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
-import { LazyImage } from '@/components/ui/lazy-image';
 import { cn } from '@/lib/utils';
 import type { ImageBlock as ImageBlockType } from '@/types/page';
 
@@ -56,41 +55,43 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
         className={cn(
           "relative group",
           containerClass,
-          getImageClass(),
-          hasLink && 'cursor-pointer hover:shadow-lg transition-shadow duration-300'
+          hasLink && 'cursor-pointer'
         )}
         onClick={hasLink ? handleClick : undefined}
         role={hasLink ? 'link' : undefined}
       >
-        <LazyImage
-          src={block.url}
-          alt={alt || 'Image'}
-          className={cn(
-            isBanner ? 'w-full h-auto' : 'w-full h-auto object-cover',
-            hasLink && 'transition-all duration-300 group-hover:scale-[1.02] group-hover:brightness-90'
+        <div className={cn(
+          "relative overflow-hidden",
+          getImageClass(),
+          hasLink && 'hover:shadow-lg transition-shadow duration-300'
+        )}>
+          <img
+            src={block.url}
+            alt={alt || 'Image'}
+            className={cn(
+              "w-full h-auto",
+              block.style === 'circle' && 'aspect-square object-cover',
+              hasLink && 'transition-all duration-300 group-hover:scale-[1.02] group-hover:brightness-90'
+            )}
+            loading="lazy"
+          />
+          
+          {/* Link indicator overlay */}
+          {hasLink && (
+            <>
+              {/* Gradient overlay on hover */}
+              <div className={cn(
+                "absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none",
+                block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'
+              )} />
+              
+              {/* External link icon */}
+              <div className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-10">
+                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-foreground" />
+              </div>
+            </>
           )}
-          wrapperClassName={cn(
-            block.style === 'circle' ? 'rounded-full aspect-square' : 'rounded-xl sm:rounded-2xl',
-            'overflow-hidden'
-          )}
-          placeholderClassName={block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'}
-        />
-        
-        {/* Link indicator overlay */}
-        {hasLink && (
-          <>
-            {/* Gradient overlay on hover */}
-            <div className={cn(
-              "absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none",
-              block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'
-            )} />
-            
-            {/* External link icon */}
-            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-10">
-              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-foreground" />
-            </div>
-          </>
-        )}
+        </div>
       </div>
       {caption && (
         <p className={cn(
