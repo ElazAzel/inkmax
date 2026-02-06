@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import { supabase } from '@/platform/supabase/client';
 import { storage } from '@/lib/storage';
+import { logger } from '@/lib/logger';
 
 interface UseDashboardAuthGuardOptions {
   isLoading?: boolean;

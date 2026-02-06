@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
+import { logger } from '@/lib/logger';
 import {
   getTokenBalance,
   getTokenTransactions,

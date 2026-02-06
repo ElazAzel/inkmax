@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/platform/supabase/client';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 
@@ -46,21 +46,33 @@ export function useLanguageUpload() {
     const [languages, setLanguages] = useState<Language[]>([]);
     const [loadingLanguages, setLoadingLanguages] = useState(false);
 
-    // Load all languages from database
+    // Load all languages from database using RPC or edge function
     const loadLanguages = useCallback(async () => {
         setLoadingLanguages(true);
         try {
-            const { data, error } = await supabase
-                .from('languages')
-                .select('*')
-                .order('language_code');
+            // Use edge function since 'languages' table might not exist yet
+            const response = await fetch(
+                `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/language-upload`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'list' }),
+                }
+            );
 
-            if (error) throw error;
-
-            setLanguages(data || []);
+            if (response.ok) {
+                const data = await response.json();
+                setLanguages(data.languages || []);
+            } else {
+                // Fallback to empty
+                setLanguages([]);
+            }
         } catch (error) {
             logger.error('Error loading languages', error, { context: 'useLanguageUpload' });
-            toast.error('Не удалось загрузить языки');
+            // Keep languages empty on error
+            setLanguages([]);
         } finally {
             setLoadingLanguages(false);
         }
@@ -216,12 +228,32 @@ export function useLanguageUpload() {
     // Delete language
     const deleteLanguage = useCallback(async (languageCode: string): Promise<boolean> => {
         try {
-            const { error } = await supabase
-                .from('languages')
-                .delete()
-                .eq('language_code', languageCode);
+            const { data: { session } } = await supabase.auth.getSession();
 
-            if (error) throw error;
+            if (!session) {
+                toast.error('Не авторизован');
+                return false;
+            }
+
+            const response = await fetch(
+                `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/language-upload`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        languageCode,
+                        action: 'delete',
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Ошибка удаления');
+            }
 
             toast.success(`Язык ${languageCode.toUpperCase()} удалён`);
             await loadLanguages();

@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { logger } from '@/lib/logger';
-import { useRouter } from '@/hooks/useRouter';
 
 interface UsePullToRefreshOptions {
   onRefresh: () => Promise<void>;

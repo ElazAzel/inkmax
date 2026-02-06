@@ -1,4 +1,3 @@
-```typescript
 import { useState, useCallback } from 'react';
 import { supabase } from '@/platform/supabase/client';
 import { logger } from '@/lib/logger';
