@@ -1379,7 +1379,13 @@
       "minutes": "минут",
       "seconds": "секунд"
     },
-    "carousel": "Галерея",
+    "carousel": {
+      "empty": "Галереяға суреттер қосыңыз"
+    },
+    "video": {
+      "invalidUrl": "Бейне URL қате",
+      "checkUrl": "Бейне сілтемесін тексеріп, қайталап көріңіз."
+    },
     "newsletter": "Жаршы",
     "avatar": "Аватар",
     "download": "Файл",
@@ -1414,6 +1420,10 @@
     },
     "customCode": "Код",
     "scratch": "Скретч",
+    "shoutout": {
+      "recommend": "Ұсынамын",
+      "userNotFound": "Пайдаланушы табылмады"
+    },
     "added": "Блок қосылды",
     "deleted": "Блок жойылды",
     "restored": "Блок қалпына келтірілді",

@@ -28,7 +28,7 @@ function getVideoEmbedUrl(url: string, platform: 'youtube' | 'vimeo'): string | 
 }
 
 export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: VideoBlockProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const title = getI18nText(block.title, i18n.language as SupportedLanguage);
   const embedUrl = getVideoEmbedUrl(block.url, block.platform);
   
@@ -42,11 +42,13 @@ export const VideoBlock = memo(function VideoBlockComponent({ block, onClick }: 
     return (
       <Card className="bg-card border-border shadow-sm rounded-xl">
         <CardHeader className="p-3 sm:p-4">
-          <CardTitle className="text-sm text-destructive">Invalid Video URL</CardTitle>
+          <CardTitle className="text-sm text-destructive">
+            {t('blocks.video.invalidUrl', 'Неверный URL видео')}
+          </CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-4 pt-0">
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Please check the video URL and try again.
+            {t('blocks.video.checkUrl', 'Проверьте ссылку на видео и попробуйте снова.')}
           </p>
         </CardContent>
       </Card>

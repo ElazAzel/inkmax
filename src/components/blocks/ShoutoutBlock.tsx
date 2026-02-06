@@ -22,7 +22,7 @@ interface UserInfo {
 }
 
 export function ShoutoutBlock({ userId, message, style }: ShoutoutBlockProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [user, setUser] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -74,10 +74,10 @@ export function ShoutoutBlock({ userId, message, style }: ShoutoutBlockProps) {
         <CardContent className="p-5">
           <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
             <Megaphone className="h-3 w-3" />
-            <span>Рекомендую</span>
+            <span>{t('blocks.shoutout.recommend', 'Рекомендую')}</span>
           </div>
           <div className="text-sm text-muted-foreground">
-            Пользователь не найден
+            {t('blocks.shoutout.userNotFound', 'Пользователь не найден')}
           </div>
         </CardContent>
       </Card>
@@ -99,7 +99,7 @@ export function ShoutoutBlock({ userId, message, style }: ShoutoutBlockProps) {
       <CardContent className="p-5">
         <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
           <Megaphone className="h-3 w-3" />
-          <span>Рекомендую</span>
+          <span>{t('blocks.shoutout.recommend', 'Рекомендую')}</span>
         </div>
         
         <div className="flex items-center gap-3">
