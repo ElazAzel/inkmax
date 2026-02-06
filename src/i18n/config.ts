@@ -33,6 +33,9 @@ const migrateKzToKk = () => {
 // Run migration before i18n init
 migrateKzToKk();
 
+// All supported UI languages
+const SUPPORTED_LANGUAGES = ['ru', 'en', 'kk', 'de', 'uk', 'uz', 'be', 'es', 'fr', 'it', 'pt', 'zh', 'tr', 'ja', 'ko', 'ar'];
+
 // Normalize language code to supported codes
 const normalizeLanguage = (lng: string): string => {
   if (!lng) return 'ru';
@@ -43,20 +46,10 @@ const normalizeLanguage = (lng: string): string => {
   // Map 'kz' to 'kk' (Kazakh ISO code)
   if (langCode === 'kz') return 'kk';
 
-  // Russian
-  if (langCode === 'ru') return 'ru';
+  // If it's a supported language, return it
+  if (SUPPORTED_LANGUAGES.includes(langCode)) return langCode;
 
-  // Kazakh
-  if (langCode === 'kk') return 'kk';
-
-  // English
-  if (langCode === 'en') return 'en';
-
-  // CIS region languages default to Russian
-  const cisLanguages = ['uk', 'be', 'uz', 'ky', 'tg', 'az', 'hy', 'ka', 'mo', 'ro'];
-  if (cisLanguages.includes(langCode)) return 'ru';
-
-  // Rest of the world defaults to English
+  // Default to English for unsupported languages
   return 'en';
 };
 
@@ -79,7 +72,7 @@ const customLanguageDetector = {
       localStorage.setItem('i18nextLng', 'kk');
     }
 
-    if (stored && ['ru', 'en', 'kk'].includes(stored)) {
+    if (stored && SUPPORTED_LANGUAGES.includes(stored)) {
       return stored;
     }
 
@@ -152,7 +145,7 @@ i18n
 // Development diagnostics
 if (import.meta.env.DEV) {
   console.log('[i18n] Initialized with language:', i18n.language);
-  console.log('[i18n] Supported languages:', ['ru', 'en', 'kk']);
+  console.log('[i18n] Supported languages:', SUPPORTED_LANGUAGES);
   console.log('[i18n] Resources loaded:', Object.keys(i18n.options.resources || {}));
 
   // Validate all translations and show missing keys
@@ -163,7 +156,7 @@ if (import.meta.env.DEV) {
 i18n.on('languageChanged', (lng) => {
   // Normalize on change
   const normalized = normalizeLanguage(lng);
-  if (normalized !== lng && ['ru', 'en', 'kk'].includes(normalized)) {
+  if (normalized !== lng && SUPPORTED_LANGUAGES.includes(normalized)) {
     i18n.changeLanguage(normalized);
     return;
   }
