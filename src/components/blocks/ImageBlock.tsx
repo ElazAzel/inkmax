@@ -54,7 +54,7 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
     <div className={cn("w-full flex flex-col", alignmentClass)}>
       <div 
         className={cn(
-          "relative group overflow-hidden",
+          "relative group",
           containerClass,
           getImageClass(),
           hasLink && 'cursor-pointer hover:shadow-lg transition-shadow duration-300'
@@ -69,7 +69,10 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
             isBanner ? 'w-full h-auto' : 'w-full h-auto object-cover',
             hasLink && 'transition-all duration-300 group-hover:scale-[1.02] group-hover:brightness-90'
           )}
-          wrapperClassName={block.style === 'circle' ? 'rounded-full aspect-square' : 'rounded-xl sm:rounded-2xl'}
+          wrapperClassName={cn(
+            block.style === 'circle' ? 'rounded-full aspect-square' : 'rounded-xl sm:rounded-2xl',
+            'overflow-hidden'
+          )}
           placeholderClassName={block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'}
         />
         
