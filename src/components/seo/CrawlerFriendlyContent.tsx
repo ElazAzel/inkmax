@@ -30,38 +30,41 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
   const { i18n } = useTranslation();
   const language = i18n.language as 'ru' | 'en' | 'kk';
 
-  const profile = extractProfileFromBlocks(blocks, language);
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+
+  const profile = extractProfileFromBlocks(validBlocks, language);
   const sourceContext = generateSourceContext(slug, updatedAt || new Date().toISOString());
-  const entityLinks = extractEntityLinks(blocks, language);
+  const entityLinks = extractEntityLinks(validBlocks, language);
   
   // Generate Answer Block for AEO
-  const answerBlock = generateAnswerBlock(blocks, slug, language);
+  const answerBlock = generateAnswerBlock(validBlocks, slug, language);
   
   // Generate enhanced Key Facts
-  const keyFacts = generateEnhancedKeyFacts(blocks, answerBlock, profile.name, language);
+  const keyFacts = generateEnhancedKeyFacts(validBlocks, answerBlock, profile.name, language);
   
   // Generate auto FAQ if user doesn't have one
-  const shouldGenerateAutoFAQ = !hasUserFAQ(blocks);
-  const faqContext = extractFAQContext(blocks, profile.name, answerBlock.niche, answerBlock.location, language);
+  const shouldGenerateAutoFAQ = !hasUserFAQ(validBlocks);
+  const faqContext = extractFAQContext(validBlocks, profile.name, answerBlock.niche, answerBlock.location, language);
   const autoFAQItems = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 5) : [];
 
   // Extract FAQ content
-  const faqBlock = blocks.find(b => b.type === 'faq') as FAQBlock | undefined;
+  const faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
   
   // Extract Events
-  const eventBlocks = blocks.filter(b => b.type === 'event') as EventBlock[];
+  const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
   
   // Extract Pricing/Services
-  const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
 
   // Extract links
-  const linkBlocks = blocks.filter(b => b.type === 'link' || b.type === 'button') as any[];
+  const linkBlocks = validBlocks.filter(b => b.type === 'link' || b.type === 'button') as any[];
 
   // Extract text blocks for content
-  const textBlocks = blocks.filter(b => b.type === 'text') as TextBlock[];
+  const textBlocks = validBlocks.filter(b => b.type === 'text') as TextBlock[];
 
   // Extract socials
-  const socialsBlock = blocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
+  const socialsBlock = validBlocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
 
   return (
     <noscript>
@@ -147,11 +150,11 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
         )}
 
         {/* Services/Pricing section */}
-        {pricingBlock && pricingBlock.items.length > 0 && (
+        {pricingBlock && pricingBlock.items?.length > 0 && (
           <section id="services" aria-label="Services">
             <h2>{SECTION_LABELS.services[language]}</h2>
             <ul>
-              {pricingBlock.items.map(item => (
+              {(pricingBlock.items || []).filter(item => item && typeof item === 'object' && item.name).map(item => (
                 <li 
                   key={item.id}
                   itemScope 
@@ -273,10 +276,10 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
           <section aria-label="Social Media">
             <h2>{language === 'ru' ? 'Соцсети' : language === 'kk' ? 'Әлеуметтік желілер' : 'Social Media'}</h2>
             <ul>
-              {socialsBlock.platforms.map((platform, i) => (
+              {(socialsBlock.platforms || []).filter(p => p && p.url).map((platform, i) => (
                 <li key={i}>
                   <a href={platform.url} rel="noopener noreferrer me" itemProp="sameAs">
-                    {platform.name}
+                    {platform.name || platform.url}
                   </a>
                 </li>
               ))}

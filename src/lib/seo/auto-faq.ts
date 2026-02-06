@@ -251,8 +251,10 @@ export function extractFAQContext(
   location: string | undefined,
   language: 'ru' | 'en' | 'kk'
 ): AutoFAQContext {
-  const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
-  const hasBooking = blocks.some(b => b.type === 'booking');
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+  const hasBooking = validBlocks.some(b => b.type === 'booking');
 
   // Extract services
   const services: string[] = [];
@@ -291,6 +293,7 @@ export function extractFAQContext(
  * Check if user already has sufficient FAQ
  */
 export function hasUserFAQ(blocks: Block[]): boolean {
-  const faqBlock = blocks.find(b => b.type === 'faq') as { items?: unknown[] } | undefined;
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+  const faqBlock = validBlocks.find(b => b.type === 'faq') as { items?: unknown[] } | undefined;
   return (faqBlock?.items?.length ?? 0) >= 3;
 }

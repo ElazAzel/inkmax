@@ -30,21 +30,24 @@ interface GEOEnhancedContentProps {
 export function GEOEnhancedContent({ blocks, slug }: GEOEnhancedContentProps) {
   const { i18n } = useTranslation();
   const language = i18n.language as 'ru' | 'en' | 'kk';
+
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
   
-  const profile = extractProfileFromBlocks(blocks, language);
-  const answerBlock = generateAnswerBlock(blocks, slug, language);
-  const keyFacts = generateKeyFacts(blocks, answerBlock, profile.name, language);
-  const entityLinks = extractEntityLinks(blocks, language);
+  const profile = extractProfileFromBlocks(validBlocks, language);
+  const answerBlock = generateAnswerBlock(validBlocks, slug, language);
+  const keyFacts = generateKeyFacts(validBlocks, answerBlock, profile.name, language);
+  const entityLinks = extractEntityLinks(validBlocks, language);
   
   // Auto FAQ if needed
-  const shouldGenerateAutoFAQ = !hasUserFAQ(blocks);
-  const faqContext = extractFAQContext(blocks, profile.name, answerBlock.niche, answerBlock.location, language);
+  const shouldGenerateAutoFAQ = !hasUserFAQ(validBlocks);
+  const faqContext = extractFAQContext(validBlocks, profile.name, answerBlock.niche, answerBlock.location, language);
   const autoFAQItems = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 3) : [];
   
   // Extract blocks
-  const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
-  const faqBlock = blocks.find(b => b.type === 'faq') as FAQBlock | undefined;
-  const eventBlocks = blocks.filter(b => b.type === 'event') as EventBlock[];
+  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+  const faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
+  const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
 
   // Labels
   const labels = {
@@ -145,10 +148,10 @@ export function GEOEnhancedContent({ blocks, slug }: GEOEnhancedContentProps) {
       )}
 
       {/* Services with Schema.org */}
-      {pricingBlock && pricingBlock.items.length > 0 && (
+      {pricingBlock && pricingBlock.items?.length > 0 && (
         <section id="geo-services" data-geo="services">
           <h3>{t.services}</h3>
-          {pricingBlock.items.slice(0, 5).map(item => (
+          {(pricingBlock.items || []).filter(item => item && typeof item === 'object' && item.name).slice(0, 5).map(item => (
             <article 
               key={item.id}
               itemScope 
