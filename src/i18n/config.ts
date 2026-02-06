@@ -19,6 +19,18 @@ import ko from './locales/ko.json';
 import ar from './locales/ar.json';
 import { validateTranslations } from './validation';
 
+// Merge all top-level keys into translation namespace
+// This handles JSON files with structure: { translation: {...}, landingV5: {...}, ... }
+const mergeNamespaces = (json: Record<string, unknown>) => {
+  const { translation, ...rest } = json as { translation: Record<string, unknown>, [key: string]: unknown };
+  return {
+    translation: {
+      ...translation,
+      ...rest
+    }
+  };
+};
+
 // Migrate 'kz' to 'kk' if stored in localStorage
 const migrateKzToKk = () => {
   const stored = localStorage.getItem('i18nextLng');
@@ -96,22 +108,22 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ru,
-      en,
-      kk,
-      de,
-      uk,
-      uz,
-      be,
-      es,
-      fr,
-      it,
-      pt,
-      zh,
-      tr,
-      ja,
-      ko,
-      ar,
+      ru: mergeNamespaces(ru),
+      en: mergeNamespaces(en),
+      kk: mergeNamespaces(kk),
+      de: mergeNamespaces(de),
+      uk: mergeNamespaces(uk),
+      uz: mergeNamespaces(uz),
+      be: mergeNamespaces(be),
+      es: mergeNamespaces(es),
+      fr: mergeNamespaces(fr),
+      it: mergeNamespaces(it),
+      pt: mergeNamespaces(pt),
+      zh: mergeNamespaces(zh),
+      tr: mergeNamespaces(tr),
+      ja: mergeNamespaces(ja),
+      ko: mergeNamespaces(ko),
+      ar: mergeNamespaces(ar),
     },
     supportedLngs: ['ru', 'en', 'kk', 'de', 'uk', 'uz', 'be', 'es', 'fr', 'it', 'pt', 'zh', 'tr', 'ja', 'ko', 'ar'],
     nonExplicitSupportedLngs: true,
@@ -126,9 +138,8 @@ i18n
     interpolation: {
       escapeValue: false, // React already escapes
     },
-    ns: ['translation', 'landingV5'],
+    ns: ['translation'],
     defaultNS: 'translation',
-    fallbackNS: 'translation',
     detection: {
       order: ['localStorage', 'customDetector', 'navigator'],
       caches: ['localStorage'],
