@@ -48,16 +48,16 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
     }
   };
 
-  const containerClass = isBanner ? 'w-full' : 'overflow-hidden w-full max-w-md';
+  const containerClass = isBanner ? 'w-full' : 'w-full max-w-md';
 
   return (
     <div className={cn("w-full flex flex-col", alignmentClass)}>
       <div 
         className={cn(
-          "relative group",
+          "relative group overflow-hidden",
           containerClass,
           getImageClass(),
-          hasLink && 'cursor-pointer'
+          hasLink && 'cursor-pointer hover:shadow-lg transition-shadow duration-300'
         )}
         onClick={hasLink ? handleClick : undefined}
         role={hasLink ? 'link' : undefined}
@@ -77,18 +77,14 @@ export const ImageBlock = memo(function ImageBlockComponent({ block, onClick }: 
         {hasLink && (
           <>
             {/* Gradient overlay on hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl sm:rounded-2xl pointer-events-none" />
+            <div className={cn(
+              "absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none",
+              block.style === 'circle' ? 'rounded-full' : 'rounded-xl sm:rounded-2xl'
+            )} />
             
             {/* External link icon */}
-            <div className="absolute top-3 right-3 p-2 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0 pointer-events-none">
-              <ExternalLink className="w-4 h-4 text-foreground" />
-            </div>
-            
-            {/* Bottom hint on hover */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 pointer-events-none">
-              <span className="text-xs font-medium text-foreground whitespace-nowrap">
-                Нажмите, чтобы открыть
-              </span>
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 bg-background/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-10">
+              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-foreground" />
             </div>
           </>
         )}
