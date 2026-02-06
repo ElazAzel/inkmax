@@ -479,7 +479,18 @@
     "verificationDesc": "Подтвердите личность для получения значка",
     "verificationPending": "Заявка на рассмотрении",
     "verificationApproved": "Аккаунт верифицирован",
-    "verificationRejected": "Заявка отклонена"
+    "verificationRejected": "Заявка отклонена",
+    "linkedAccounts": {
+      "title": "Способы входа",
+      "email": "Почта",
+      "connected": "Подключён",
+      "link": "Подключить",
+      "unlink": "Отключить",
+      "linkFailed": "Не удалось подключить аккаунт",
+      "unlinkFailed": "Не удалось отключить аккаунт",
+      "unlinkSuccess": "Аккаунт отключён",
+      "cannotUnlinkLast": "Необходимо оставить хотя бы один способ входа"
+    }
   },
   "niche": {
     "barber": "Барбер",

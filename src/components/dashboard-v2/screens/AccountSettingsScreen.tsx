@@ -35,6 +35,7 @@ import { DashboardHeader } from '../layout/DashboardHeader';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { TelegramVerification } from '@/components/auth/TelegramVerification';
 import { VerificationPanel } from '@/components/settings/VerificationPanel';
+import { LinkedAccountsSection } from '@/components/settings/LinkedAccountsSection';
 import { cn } from '@/lib/utils';
 import type { ProfileBlock } from '@/types/page';
 import type { PremiumTier } from '@/hooks/usePremiumStatus';
@@ -322,6 +323,9 @@ export const AccountSettingsScreen = memo(function AccountSettingsScreen(props: 
           </Card>
         </div>
 
+        {/* Linked Accounts Section */}
+        <LinkedAccountsSection userEmail={props.displayName} />
+
         {/* Security */}
         <div className="space-y-2">
           <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider px-1">
@@ -330,8 +334,8 @@ export const AccountSettingsScreen = memo(function AccountSettingsScreen(props: 
           <Card className="divide-y divide-border/50 overflow-hidden">
             <SettingsItem
               icon={Lock}
-              iconBg="bg-red-500/15"
-              iconColor="text-red-500"
+              iconBg="bg-destructive/15"
+              iconColor="text-destructive"
               label={t('dashboard.accountSettings.changePassword', 'Change Password')}
               onClick={() => {/* TODO: Open password change */}}
             />
