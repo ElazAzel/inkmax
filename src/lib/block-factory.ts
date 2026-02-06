@@ -47,6 +47,12 @@ export function createBlock(type: string): Block {
         url: 'https://example.com',
         icon: 'globe',
         style: 'rounded',
+        blockStyle: {
+          padding: 'md',
+          borderRadius: 'lg',
+          hoverEffect: 'lift',
+          animation: 'fade-in',
+        },
       };
     
     case 'button':
@@ -58,6 +64,13 @@ export function createBlock(type: string): Block {
         url: 'https://example.com',
         background: { type: 'gradient', value: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)))' },
         hoverEffect: 'glow',
+        blockStyle: {
+          padding: 'md',
+          borderRadius: 'full',
+          shadow: 'md',
+          animation: 'scale-in',
+          hoverEffect: 'glow',
+        },
       };
     
     case 'text':
@@ -67,6 +80,10 @@ export function createBlock(type: string): Block {
         type: 'text',
         content: 'Enter your text here',
         style: 'paragraph',
+        blockStyle: {
+          padding: 'md',
+          animation: 'fade-in',
+        },
       };
     
     case 'image':
@@ -74,9 +91,15 @@ export function createBlock(type: string): Block {
         ...baseProps,
         id: `image-${timestamp}`,
         type: 'image',
-        url: 'https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?w=800',
-        alt: 'Sample image',
+        url: 'https://images.unsplash.com/photo-1497215842964-222b430dc094?w=800',
+        alt: 'Beautiful workspace',
         style: 'default',
+        blockStyle: {
+          padding: 'none',
+          borderRadius: 'lg',
+          shadow: 'md',
+          animation: 'fade-in',
+        },
       };
     
     case 'socials':
@@ -102,6 +125,13 @@ export function createBlock(type: string): Block {
         currency: 'KZT',
         image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
         buyLink: 'https://example.com',
+        blockStyle: {
+          padding: 'lg',
+          borderRadius: 'lg',
+          shadow: 'md',
+          animation: 'slide-up',
+          hoverEffect: 'lift',
+        },
       };
     
     case 'video':
@@ -113,6 +143,11 @@ export function createBlock(type: string): Block {
         url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         platform: 'youtube',
         aspectRatio: '16:9',
+        blockStyle: {
+          borderRadius: 'lg',
+          shadow: 'lg',
+          animation: 'fade-in',
+        },
       };
     
     case 'carousel':
@@ -122,11 +157,17 @@ export function createBlock(type: string): Block {
         type: 'carousel',
         title: 'Gallery',
         images: [
-          { url: 'https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?w=800', alt: 'Image 1' },
-          { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800', alt: 'Image 2' },
+          { url: 'https://images.unsplash.com/photo-1497215842964-222b430dc094?w=800', alt: 'Image 1' },
+          { url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800', alt: 'Image 2' },
+          { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800', alt: 'Image 3' },
         ],
         autoPlay: true,
         interval: 5000,
+        blockStyle: {
+          borderRadius: 'lg',
+          shadow: 'lg',
+          animation: 'scale-in',
+        },
       };
     
     case 'custom_code':
@@ -202,10 +243,16 @@ export function createBlock(type: string): Block {
         type: 'testimonial',
         title: 'What People Say',
         testimonials: [
-          { name: 'John Doe', text: 'Amazing service!', rating: 5 },
-          { name: 'Jane Smith', text: 'Highly recommended!', rating: 5 },
+          { name: 'Алина К.', text: 'Отличный сервис! Очень рекомендую.', rating: 5, role: 'Клиент' },
+          { name: 'Дмитрий М.', text: 'Профессиональный подход к делу.', rating: 5, role: 'Клиент' },
         ],
         isPremium: true,
+        blockStyle: {
+          padding: 'lg',
+          borderRadius: 'lg',
+          backgroundGradient: 'linear-gradient(135deg, hsl(var(--muted)), hsl(var(--muted)/0.5))',
+          animation: 'scale-in',
+        },
       };
     
     case 'scratch':
@@ -273,10 +320,15 @@ export function createBlock(type: string): Block {
         id: `before_after-${timestamp}`,
         type: 'before_after',
         title: 'Before & After',
-        beforeImage: 'https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?w=800',
-        afterImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
-        beforeLabel: 'Before',
-        afterLabel: 'After',
+        beforeImage: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800',
+        afterImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800',
+        beforeLabel: 'До',
+        afterLabel: 'После',
+        blockStyle: {
+          borderRadius: 'lg',
+          shadow: 'lg',
+          animation: 'scale-in',
+        },
       };
     
     case 'faq':
@@ -286,9 +338,14 @@ export function createBlock(type: string): Block {
         type: 'faq',
         title: 'FAQ',
         items: [
-          { id: '1', question: 'Question 1?', answer: 'Answer 1' },
-          { id: '2', question: 'Question 2?', answer: 'Answer 2' },
+          { id: '1', question: 'Как записаться?', answer: 'Свяжитесь с нами через мессенджер или по телефону.' },
+          { id: '2', question: 'Какие способы оплаты?', answer: 'Принимаем наличные, карты и переводы.' },
         ],
+        blockStyle: {
+          padding: 'lg',
+          borderRadius: 'lg',
+          animation: 'fade-in',
+        },
       };
     
     case 'countdown':
