@@ -6,7 +6,7 @@ import { storage } from './storage';
 
 // Version key for cache invalidation
 const CACHE_VERSION_KEY = 'cache_version';
-const CURRENT_CACHE_VERSION = '3'; // Incremented after Pro/Business tier merge
+const CURRENT_CACHE_VERSION = '4'; // Force cache clear for ImageBlock/VideoBlock fixes
 
 /**
  * Clear all local storage items related to LinkMAX
