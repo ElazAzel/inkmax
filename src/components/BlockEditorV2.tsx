@@ -51,7 +51,7 @@ const CommunityBlockEditor = lazy(() => import('./block-editors/CommunityBlockEd
 const EventBlockEditor = lazy(() => import('./block-editors/EventBlockEditor').then(m => ({ default: m.EventBlockEditor })));
 
 // Lazy load BlockRenderer for Preview
-const BlockRenderer = lazy(() => import('../BlockRenderer').then(m => ({ default: m.BlockRenderer })));
+const BlockRenderer = lazy(() => import('./BlockRenderer').then(m => ({ default: m.BlockRenderer })));
 
 // Block type to icon mapping
 const BLOCK_ICONS: Record<string, string> = {
@@ -119,7 +119,7 @@ export function BlockEditorV2({
     const [isSaving, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const autosaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const originalDataRef = useRef<any>(null);
 
     // Update formData when block changes

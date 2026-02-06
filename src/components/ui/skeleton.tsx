@@ -5,6 +5,8 @@ interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'card' | 'text' | 'avatar' | 'button';
   /** Size for avatar variant */
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  /** Optional class name for custom styling */
+  className?: string;
 }
 
 function Skeleton({ className, variant = 'default', size = 'md', ...props }: SkeletonProps) {
@@ -23,13 +25,13 @@ function Skeleton({ className, variant = 'default', size = 'md', ...props }: Ske
   };
 
   return (
-    <div 
+    <div
       className={cn(
         "animate-pulse rounded-md",
         variants[variant],
         className
-      )} 
-      {...props} 
+      )}
+      {...props}
     />
   );
 }
@@ -78,10 +80,10 @@ function BlockSkeleton({ className }: { className?: string }) {
   );
 }
 
-export { 
-  Skeleton, 
-  CardSkeleton, 
-  ListItemSkeleton, 
-  ProfileSkeleton, 
-  BlockSkeleton 
+export {
+  Skeleton,
+  CardSkeleton,
+  ListItemSkeleton,
+  ProfileSkeleton,
+  BlockSkeleton
 };
