@@ -38,6 +38,7 @@ import { LandingGallerySection } from '@/components/landing/LandingGallerySectio
 import { FAQSection } from '@/components/landing/FAQSection';
 import { NichesDetailSection } from '@/components/landing/NichesDetailSection';
 import { LinkInBioSection } from '@/components/landing/LinkInBioSection';
+import { PartnersSection } from '@/components/landing/PartnersSection';
 import { TermsLink } from '@/components/legal/TermsOfServiceModal';
 import { PrivacyLink } from '@/components/legal/PrivacyPolicyModal';
 import { SEOLandingHead } from '@/components/landing/SEOLandingHead';
@@ -376,6 +377,11 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* ========== PARTNERS ========== */}
+        <Suspense fallback={null}>
+          <PartnersSection />
+        </Suspense>
 
         {/* ========== PROBLEM SECTION ========== */}
         <section ref={problemAnim.ref} className="py-10 px-5">
