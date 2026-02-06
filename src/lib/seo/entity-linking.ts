@@ -56,8 +56,11 @@ export function extractEntityLinks(
     knowsAbout: [],
   };
 
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+
   // Extract sameAs from socials block
-  const socialsBlock = blocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
+  const socialsBlock = validBlocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
   if (socialsBlock?.platforms) {
     for (const platform of socialsBlock.platforms) {
       if (platform.url && isValidUrl(platform.url)) {
@@ -67,7 +70,7 @@ export function extractEntityLinks(
   }
 
   // Extract sameAs from link blocks (only known social platforms)
-  const linkBlocks = blocks.filter(b => b.type === 'link' || b.type === 'button') as LinkBlock[];
+  const linkBlocks = validBlocks.filter(b => b.type === 'link' || b.type === 'button') as LinkBlock[];
   for (const block of linkBlocks) {
     if (block.url && isValidUrl(block.url)) {
       const url = block.url.toLowerCase();
@@ -81,7 +84,7 @@ export function extractEntityLinks(
   }
 
   // Extract knowsAbout from pricing/services
-  const pricingBlock = blocks.find(b => b.type === 'pricing') as any;
+  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as any;
   if (pricingBlock?.items) {
     for (const item of pricingBlock.items.slice(0, 5)) {
       const name = getI18nText(item.name, language);
@@ -92,7 +95,7 @@ export function extractEntityLinks(
   }
 
   // Extract knowsAbout from catalog categories
-  const catalogBlock = blocks.find(b => b.type === 'catalog') as any;
+  const catalogBlock = validBlocks.find(b => b.type === 'catalog') as any;
   if (catalogBlock?.categories) {
     for (const category of catalogBlock.categories.slice(0, 3)) {
       const name = getI18nText(category.name, language);
@@ -141,9 +144,12 @@ export function extractSkillTags(
   language: 'ru' | 'en' | 'kk' = 'ru'
 ): string[] {
   const tags: string[] = [];
+  
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
 
   // From pricing serviceType
-  const pricingBlock = blocks.find(b => b.type === 'pricing') as any;
+  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as any;
   if (pricingBlock?.items) {
     for (const item of pricingBlock.items) {
       if (item.serviceType && item.serviceType !== 'other') {
@@ -153,7 +159,7 @@ export function extractSkillTags(
   }
 
   // From catalog categories
-  const catalogBlock = blocks.find(b => b.type === 'catalog') as any;
+  const catalogBlock = validBlocks.find(b => b.type === 'catalog') as any;
   if (catalogBlock?.categories) {
     for (const category of catalogBlock.categories) {
       const name = getI18nText(category.name, language);

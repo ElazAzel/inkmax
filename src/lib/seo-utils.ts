@@ -143,8 +143,16 @@ export function extractProfileFromBlocks(
     sameAs: [],
   };
 
+  // Guard against undefined/null blocks
+  if (!blocks || !Array.isArray(blocks)) {
+    return result;
+  }
+
+  // Filter out undefined/null entries
+  const validBlocks = blocks.filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+
   // Try profile block first
-  const profileBlock = blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
+  const profileBlock = validBlocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
   if (profileBlock) {
     result.name = getI18nText(profileBlock.name, language);
     result.bio = getI18nText(profileBlock.bio, language);
@@ -152,7 +160,7 @@ export function extractProfileFromBlocks(
   }
 
   // Try avatar block
-  const avatarBlock = blocks.find(b => b.type === 'avatar') as AvatarBlock | undefined;
+  const avatarBlock = validBlocks.find(b => b.type === 'avatar') as AvatarBlock | undefined;
   if (avatarBlock && !result.name) {
     result.name = getI18nText(avatarBlock.name, language);
     result.bio = avatarBlock.subtitle ? getI18nText(avatarBlock.subtitle, language) : undefined;
@@ -160,15 +168,15 @@ export function extractProfileFromBlocks(
   }
 
   // Extract sameAs from socials block
-  const socialsBlock = blocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
+  const socialsBlock = validBlocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
   if (socialsBlock?.platforms) {
     result.sameAs = socialsBlock.platforms.map(p => p.url).filter(Boolean);
   }
 
   // Determine if it's an organization based on content
-  const hasProducts = blocks.some(b => b.type === 'product' || b.type === 'catalog');
-  const hasPricing = blocks.some(b => b.type === 'pricing');
-  const hasBooking = blocks.some(b => b.type === 'booking');
+  const hasProducts = validBlocks.some(b => b.type === 'product' || b.type === 'catalog');
+  const hasPricing = validBlocks.some(b => b.type === 'pricing');
+  const hasBooking = validBlocks.some(b => b.type === 'booking');
   
   // If has commercial features, might be organization
   if (hasProducts || (hasPricing && hasBooking)) {
