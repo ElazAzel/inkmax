@@ -6,9 +6,14 @@ import { Reveal } from '@/components/motion';
 export default function AEOSection() {
   const { t } = useTranslation();
 
-  const audienceItems = t('landingV5.aeo.for.list', { returnObjects: true }) as string[];
-  const locationItems = t('landingV5.aeo.where.list', { returnObjects: true }) as string[];
-  const quickAnswers = t('landingV5.aeo.answers.items', { returnObjects: true }) as Array<{ q: string; a: string }>;
+  const audienceItemsRaw = t('landingV5.aeo.for.list', { returnObjects: true });
+  const locationItemsRaw = t('landingV5.aeo.where.list', { returnObjects: true });
+  const quickAnswersRaw = t('landingV5.aeo.answers.items', { returnObjects: true });
+
+  // Ensure arrays are valid before mapping
+  const audienceItems = Array.isArray(audienceItemsRaw) ? audienceItemsRaw : [];
+  const locationItems = Array.isArray(locationItemsRaw) ? locationItemsRaw : [];
+  const quickAnswers = Array.isArray(quickAnswersRaw) ? quickAnswersRaw : [];
 
   return (
     <section className="sr-only" aria-hidden="false" data-seo="aeo">
