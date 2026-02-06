@@ -78,6 +78,11 @@ const BlockSkeleton = () => (
  * Get block title for analytics - type-safe extraction
  */
 function getBlockTitle(block: Block, lang: SupportedLanguage): string {
+  // Guard against undefined block
+  if (!block || typeof block !== 'object' || !('type' in block)) {
+    return 'unknown';
+  }
+  
   // Type-safe title extraction using discriminated union
   let rawTitle: string | { ru?: string; en?: string; kk?: string } | undefined;
   

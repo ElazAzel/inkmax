@@ -92,6 +92,9 @@ export function generateKeyFacts(
   const facts: KeyFact[] = [];
   const labels = FACT_LABELS[language];
   
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+  
   // 1. Identity facts
   if (name) {
     facts.push({
@@ -122,7 +125,7 @@ export function generateKeyFacts(
   }
   
   // 3. Services
-  const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   if (pricingBlock?.items?.length) {
     // Service count
     facts.push({
@@ -165,7 +168,7 @@ export function generateKeyFacts(
   }
   
   // 4. Booking availability
-  const hasBooking = blocks.some(b => b.type === 'booking');
+  const hasBooking = validBlocks.some(b => b.type === 'booking');
   if (hasBooking) {
     facts.push({
       category: 'features',
@@ -175,7 +178,7 @@ export function generateKeyFacts(
   }
   
   // 5. Events
-  const eventBlocks = blocks.filter(b => b.type === 'event') as EventBlock[];
+  const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
   const activeEvents = eventBlocks.filter(e => e.status === 'published');
   if (activeEvents.length > 0) {
     facts.push({
@@ -186,7 +189,7 @@ export function generateKeyFacts(
   }
   
   // 6. Social links count
-  const socialsBlock = blocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
+  const socialsBlock = validBlocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
   if (socialsBlock?.platforms?.length) {
     const platformNames = socialsBlock.platforms
       .slice(0, 4)

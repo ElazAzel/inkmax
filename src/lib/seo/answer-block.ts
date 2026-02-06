@@ -122,9 +122,12 @@ export function generateAnswerBlock(
 ): AnswerBlockData {
   const t = TRANSLATIONS[language];
   
+  // Guard against undefined/null blocks
+  const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
+  
   // Extract profile info
-  const profileBlock = blocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
-  const avatarBlock = blocks.find(b => b.type === 'avatar') as AvatarBlock | undefined;
+  const profileBlock = validBlocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
+  const avatarBlock = validBlocks.find(b => b.type === 'avatar') as AvatarBlock | undefined;
   
   const name = profileBlock 
     ? getI18nText(profileBlock.name, language)
@@ -139,19 +142,19 @@ export function generateAnswerBlock(
     : undefined;
   
   // Detect niche from bio and services
-  const niche = detectNiche(bio || '', blocks, language);
+  const niche = detectNiche(bio || '', validBlocks, language);
   
   // Detect location from bio
   const location = detectLocation(bio || '');
   
   // Extract services
-  const services = extractServices(blocks, language);
+  const services = extractServices(validBlocks, language);
   
   // Extract primary contact
-  const contact = extractPrimaryContact(blocks);
+  const contact = extractPrimaryContact(validBlocks);
   
   // Determine entity type
-  const entityType = determineEntityType(name, bio, blocks);
+  const entityType = determineEntityType(name, bio, validBlocks);
   
   // Generate summary
   const summary = buildSummary({
@@ -160,7 +163,7 @@ export function generateAnswerBlock(
     location,
     services,
     contact,
-    hasBooking: blocks.some(b => b.type === 'booking'),
+    hasBooking: validBlocks.some(b => b.type === 'booking'),
     language,
   });
   
