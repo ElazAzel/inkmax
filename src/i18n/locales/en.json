@@ -479,7 +479,18 @@
     "verificationDesc": "Verify your identity to get a badge",
     "verificationPending": "Verification pending",
     "verificationApproved": "Account verified",
-    "verificationRejected": "Verification rejected"
+    "verificationRejected": "Verification rejected",
+    "linkedAccounts": {
+      "title": "Login Methods",
+      "email": "Email",
+      "connected": "Connected",
+      "link": "Link",
+      "unlink": "Unlink",
+      "linkFailed": "Failed to link account",
+      "unlinkFailed": "Failed to unlink account",
+      "unlinkSuccess": "Account unlinked",
+      "cannotUnlinkLast": "You must have at least one login method"
+    }
   },
   "niche": {
     "barber": "Barber",
