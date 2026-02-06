@@ -175,7 +175,7 @@ export function generateAutoFAQ(
 ): AutoFAQItem[] {
   const templates = FAQ_TEMPLATES[language];
   const faqs: AutoFAQItem[] = [];
-  
+
   const replacePlaceholders = (text: string): string => {
     return text
       .replace(/\{name\}/g, context.name || 'специалист')
@@ -185,7 +185,7 @@ export function generateAutoFAQ(
       .replace(/\{minPrice\}/g, String(context.minPrice || ''))
       .replace(/\{currency\}/g, context.currency || 'KZT');
   };
-  
+
   // Priority 1: Pricing question (if has pricing)
   if (context.minPrice) {
     faqs.push({
@@ -193,7 +193,7 @@ export function generateAutoFAQ(
       answer: replacePlaceholders(templates.howMuch.a),
     });
   }
-  
+
   // Priority 2: How to book (if has booking)
   if (context.hasBooking) {
     faqs.push({
@@ -201,13 +201,13 @@ export function generateAutoFAQ(
       answer: replacePlaceholders(templates.howToBook.a),
     });
   }
-  
+
   // Priority 3: How it works
   faqs.push({
     question: replacePlaceholders(templates.howWorks.q),
     answer: replacePlaceholders(templates.howWorks.a),
   });
-  
+
   // Priority 4: Who is suitable
   if (context.services.length > 0) {
     faqs.push({
@@ -215,13 +215,13 @@ export function generateAutoFAQ(
       answer: replacePlaceholders(templates.whoSuitable.a),
     });
   }
-  
+
   // Priority 5: Results
   faqs.push({
     question: replacePlaceholders(templates.whatResults.q),
     answer: replacePlaceholders(templates.whatResults.a),
   });
-  
+
   // Priority 6: Payment methods (if has pricing)
   if (context.minPrice) {
     faqs.push({
@@ -229,7 +229,7 @@ export function generateAutoFAQ(
       answer: replacePlaceholders(templates.paymentMethods.a),
     });
   }
-  
+
   // Priority 7: Cancellation (if has booking)
   if (context.hasBooking) {
     faqs.push({
@@ -237,7 +237,7 @@ export function generateAutoFAQ(
       answer: replacePlaceholders(templates.cancellation.a),
     });
   }
-  
+
   return faqs.slice(0, maxItems);
 }
 
@@ -253,16 +253,16 @@ export function extractFAQContext(
 ): AutoFAQContext {
   const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   const hasBooking = blocks.some(b => b.type === 'booking');
-  
+
   // Extract services
   const services: string[] = [];
   if (pricingBlock?.items) {
-    for (const item of pricingBlock.items.slice(0, 3)) {
+    for (const item of (pricingBlock.items || []).filter(i => i)) {
       const serviceName = getI18nText(item.name, language);
       if (serviceName) services.push(serviceName);
     }
   }
-  
+
   // Find minimum price
   let minPrice: number | undefined;
   let currency: string | undefined;
@@ -275,7 +275,7 @@ export function extractFAQContext(
       currency = pricingBlock.currency || 'KZT';
     }
   }
-  
+
   return {
     name: name || '',
     niche,

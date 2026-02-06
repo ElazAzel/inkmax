@@ -91,10 +91,10 @@ export function generateKeyFacts(
 ): KeyFact[] {
   const facts: KeyFact[] = [];
   const labels = FACT_LABELS[language];
-  
+
   // Guard against undefined/null blocks
   const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
-  
+
   // 1. Identity facts
   if (name) {
     facts.push({
@@ -104,7 +104,7 @@ export function generateKeyFacts(
       schemaProperty: 'name',
     });
   }
-  
+
   if (answerBlock.niche) {
     facts.push({
       category: 'identity',
@@ -113,7 +113,7 @@ export function generateKeyFacts(
       schemaProperty: 'jobTitle',
     });
   }
-  
+
   // 2. Location
   if (answerBlock.location) {
     facts.push({
@@ -123,7 +123,7 @@ export function generateKeyFacts(
       schemaProperty: 'address',
     });
   }
-  
+
   // 3. Services
   const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   if (pricingBlock?.items?.length) {
@@ -133,14 +133,15 @@ export function generateKeyFacts(
       label: labels.servicesCount,
       value: String(pricingBlock.items.length),
     });
-    
+
     // Service names (top 3)
-    const serviceNames = pricingBlock.items
+    const serviceNames = (pricingBlock.items || [])
+      .filter(item => item && typeof item === 'object')
       .slice(0, 3)
       .map(item => getI18nText(item.name, language))
       .filter(Boolean)
       .join(', ');
-    
+
     if (serviceNames) {
       facts.push({
         category: 'services',
@@ -149,12 +150,12 @@ export function generateKeyFacts(
         schemaProperty: 'knowsAbout',
       });
     }
-    
+
     // Min price
     const prices = pricingBlock.items
       .map(item => item.price)
       .filter((p): p is number => typeof p === 'number' && p > 0);
-    
+
     if (prices.length > 0) {
       const minPrice = Math.min(...prices);
       const currency = pricingBlock.currency || 'KZT';
@@ -166,7 +167,7 @@ export function generateKeyFacts(
       });
     }
   }
-  
+
   // 4. Booking availability
   const hasBooking = validBlocks.some(b => b.type === 'booking');
   if (hasBooking) {
@@ -176,7 +177,7 @@ export function generateKeyFacts(
       value: language === 'ru' ? 'Доступна' : language === 'kk' ? 'Қолжетімді' : 'Available',
     });
   }
-  
+
   // 5. Events
   const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
   const activeEvents = eventBlocks.filter(e => e.status === 'published');
@@ -187,7 +188,7 @@ export function generateKeyFacts(
       value: String(activeEvents.length),
     });
   }
-  
+
   // 6. Social links count
   const socialsBlock = validBlocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
   if (socialsBlock?.platforms?.length) {
@@ -196,7 +197,7 @@ export function generateKeyFacts(
       .map(p => p.name || p.url?.split('/')[2]?.replace('www.', ''))
       .filter(Boolean)
       .join(', ');
-    
+
     if (platformNames) {
       facts.push({
         category: 'social',
@@ -206,7 +207,7 @@ export function generateKeyFacts(
       });
     }
   }
-  
+
   return facts;
 }
 
@@ -215,7 +216,7 @@ export function generateKeyFacts(
  */
 export function formatFactsAsBullets(facts: KeyFact[], language: 'ru' | 'en' | 'kk'): string {
   if (facts.length === 0) return '';
-  
+
   const items = facts.map(f => `• ${f.label}: ${f.value}`);
   return items.join('\n');
 }
@@ -225,12 +226,12 @@ export function formatFactsAsBullets(facts: KeyFact[], language: 'ru' | 'en' | '
  */
 export function formatFactsAsHtml(facts: KeyFact[]): string {
   if (facts.length === 0) return '';
-  
+
   const items = facts.map(f => {
     const prop = f.schemaProperty ? ` itemprop="${f.schemaProperty}"` : '';
     return `<li${prop}><strong>${f.label}:</strong> ${f.value}</li>`;
   });
-  
+
   return `<ul class="key-facts">${items.join('')}</ul>`;
 }
 
@@ -246,10 +247,10 @@ export function groupFactsByCategory(facts: KeyFact[]): Record<KeyFact['category
     features: [],
     social: [],
   };
-  
+
   for (const fact of facts) {
     groups[fact.category].push(fact);
   }
-  
+
   return groups;
 }

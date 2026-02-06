@@ -121,41 +121,41 @@ export function generateAnswerBlock(
   language: 'ru' | 'en' | 'kk' = 'ru'
 ): AnswerBlockData {
   const t = TRANSLATIONS[language];
-  
+
   // Guard against undefined/null blocks
   const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
-  
+
   // Extract profile info
   const profileBlock = validBlocks.find(b => b.type === 'profile') as ProfileBlock | undefined;
   const avatarBlock = validBlocks.find(b => b.type === 'avatar') as AvatarBlock | undefined;
-  
-  const name = profileBlock 
+
+  const name = profileBlock
     ? getI18nText(profileBlock.name, language)
-    : avatarBlock 
-    ? getI18nText(avatarBlock.name, language)
-    : undefined;
-  
-  const bio = profileBlock 
+    : avatarBlock
+      ? getI18nText(avatarBlock.name, language)
+      : undefined;
+
+  const bio = profileBlock
     ? getI18nText(profileBlock.bio, language)
     : avatarBlock?.subtitle
-    ? getI18nText(avatarBlock.subtitle, language)
-    : undefined;
-  
+      ? getI18nText(avatarBlock.subtitle, language)
+      : undefined;
+
   // Detect niche from bio and services
   const niche = detectNiche(bio || '', validBlocks, language);
-  
+
   // Detect location from bio
   const location = detectLocation(bio || '');
-  
+
   // Extract services
   const services = extractServices(validBlocks, language);
-  
+
   // Extract primary contact
   const contact = extractPrimaryContact(validBlocks);
-  
+
   // Determine entity type
   const entityType = determineEntityType(name, bio, validBlocks);
-  
+
   // Generate summary
   const summary = buildSummary({
     name,
@@ -166,7 +166,7 @@ export function generateAnswerBlock(
     hasBooking: validBlocks.some(b => b.type === 'booking'),
     language,
   });
-  
+
   return {
     summary,
     entityType,
@@ -186,18 +186,18 @@ function detectNiche(
   language: 'ru' | 'en' | 'kk'
 ): string | undefined {
   const bioLower = bio.toLowerCase();
-  
+
   // Check bio for niche keywords
   for (const [keyword, translations] of Object.entries(NICHE_KEYWORDS)) {
     if (bioLower.includes(keyword) || bioLower.includes(translations.ru.toLowerCase())) {
       return translations[language];
     }
   }
-  
+
   // Check pricing/services for niche hints
   const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   if (pricingBlock?.items) {
-    for (const item of pricingBlock.items) {
+    for (const item of (pricingBlock.items || []).filter(i => i)) {
       const serviceName = getI18nText(item.name, language)?.toLowerCase() || '';
       for (const [keyword, translations] of Object.entries(NICHE_KEYWORDS)) {
         if (serviceName.includes(keyword)) {
@@ -206,7 +206,7 @@ function detectNiche(
       }
     }
   }
-  
+
   return undefined;
 }
 
@@ -215,14 +215,14 @@ function detectNiche(
  */
 function detectLocation(bio: string): string | undefined {
   const bioLower = bio.toLowerCase();
-  
+
   for (const city of CITY_KEYWORDS) {
     if (bioLower.includes(city)) {
       // Capitalize first letter
       return city.charAt(0).toUpperCase() + city.slice(1);
     }
   }
-  
+
   return undefined;
 }
 
@@ -231,10 +231,11 @@ function detectLocation(bio: string): string | undefined {
  */
 function extractServices(blocks: Block[], language: 'ru' | 'en' | 'kk'): string[] {
   const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
-  
+
   if (!pricingBlock?.items) return [];
-  
-  return pricingBlock.items
+
+  return (pricingBlock.items || [])
+    .filter(item => item && typeof item === 'object')
     .slice(0, 3)
     .map(item => getI18nText(item.name, language))
     .filter((name): name is string => !!name && name.length > 0);
@@ -250,14 +251,14 @@ function extractPrimaryContact(blocks: Block[]): string | undefined {
     const primary = messengerBlock.messengers[0];
     return `${primary.platform}: ${primary.username}`;
   }
-  
+
   // Check socials block
   const socialsBlock = blocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
   if (socialsBlock?.platforms?.length) {
     const primary = socialsBlock.platforms[0];
     return primary.url;
   }
-  
+
   return undefined;
 }
 
@@ -271,24 +272,24 @@ function determineEntityType(
 ): 'Person' | 'Organization' | 'LocalBusiness' {
   const nameLower = name?.toLowerCase() || '';
   const bioLower = bio?.toLowerCase() || '';
-  
+
   // Check for business indicators in name
-  const businessWords = ['studio', 'студия', 'salon', 'салон', 'shop', 'магазин', 
+  const businessWords = ['studio', 'студия', 'salon', 'салон', 'shop', 'магазин',
     'agency', 'агентство', 'company', 'компания', 'center', 'центр', 'clinic', 'клиника'];
-  
+
   for (const word of businessWords) {
     if (nameLower.includes(word) || bioLower.includes(word)) {
       // If has booking/address, likely local business
       const hasBooking = blocks.some(b => b.type === 'booking');
       const hasMap = blocks.some(b => b.type === 'map');
-      
+
       if (hasBooking || hasMap) {
         return 'LocalBusiness';
       }
       return 'Organization';
     }
   }
-  
+
   return 'Person';
 }
 
@@ -308,9 +309,9 @@ interface SummaryParams {
 function buildSummary(params: SummaryParams): string {
   const { name, niche, location, services, hasBooking, language } = params;
   const t = TRANSLATIONS[language];
-  
+
   const parts: string[] = [];
-  
+
   // First sentence: Who is this
   if (name) {
     let intro = name;
@@ -322,23 +323,23 @@ function buildSummary(params: SummaryParams): string {
     }
     parts.push(intro + '.');
   }
-  
+
   // Second sentence: Services
   if (services.length > 0) {
     const servicesText = `${t.servicesPrefix}: ${services.join(', ')}.`;
     parts.push(servicesText);
   }
-  
+
   // Third sentence: Booking/CTA
   if (hasBooking) {
     parts.push(t.bookingAvailable + '.');
   }
-  
+
   // Fallback if empty
   if (parts.length === 0) {
     return `${t.professional} ${t.onlinePlatform}.`;
   }
-  
+
   return parts.join(' ');
 }
 
@@ -347,7 +348,7 @@ function buildSummary(params: SummaryParams): string {
  */
 export function generateAnswerBlockHtml(data: AnswerBlockData, language: 'ru' | 'en' | 'kk'): string {
   const t = TRANSLATIONS[language];
-  
+
   return `
     <section id="answer" class="answer-block" itemscope itemtype="https://schema.org/${data.entityType}">
       <p itemprop="description">${data.summary}</p>
