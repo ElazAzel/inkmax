@@ -40,6 +40,7 @@ import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 
 // Loading & Background
 import { LoadingState, BackgroundEffects } from '@/components/dashboard';
+import { storage } from '@/lib/storage';
 
 import type { Block } from '@/types/page';
 

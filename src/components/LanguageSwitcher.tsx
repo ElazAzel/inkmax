@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import type { LocaleCode } from '@/lib/i18n-helpers';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useOptionalLanguage } from '@/contexts/LanguageContext';
 import { TranslationLanguageSelector, getLanguageInfo } from '@/components/translation/TranslationLanguageSelector';
 
 // Extended language list - covers major world languages

@@ -173,17 +173,17 @@ export default function PublicPage() {
       />
       <SEOMetaEnhancer
         pageUrl={canonicalUrl}
-        pageTitle={pageData.title || pageData.slug || 'Profile'}
-        pageDescription={pageData.description || t('publicPage.defaultDescription', 'View my profile')}
-        imageUrl={pageData.avatar || 'https://lnkmx.my/og-default.png'}
-        imageAlt={pageData.title || pageData.slug}
+        pageTitle={pageData.seo?.title || pageData.slug || 'Profile'}
+        pageDescription={pageData.seo?.description || t('publicPage.defaultDescription', 'View my profile')}
+        imageUrl={'https://lnkmx.my/og-default.png'}
+        imageAlt={pageData.seo?.title || pageData.slug}
         type="profile"
       />
       <AISearchOptimizer
         pageType="profile"
-        primaryQuestion={`Who is ${pageData.title || pageData.slug}?`}
-        primaryAnswer={pageData.description || pageData.seo?.description || `Professional profile of ${pageData.title || pageData.slug} created with lnkmx`}
-        entityName={pageData.title || pageData.slug || 'User Profile'}
+        primaryQuestion={`Who is ${pageData.seo?.title || pageData.slug}?`}
+        primaryAnswer={pageData.seo?.description || `Professional profile of ${pageData.seo?.title || pageData.slug} created with lnkmx`}
+        entityName={pageData.seo?.title || pageData.slug || 'User Profile'}
         entityCategory="Personal Profile, Professional Page, Portfolio"
         useCases={[
           'View professional profile',

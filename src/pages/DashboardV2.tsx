@@ -53,6 +53,7 @@ import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
 import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { LoadingState, BackgroundEffects } from '@/components/dashboard';
 import { ThemePanel } from '@/components/dashboard-v2/panels';
+import { storage } from '@/lib/storage';
 
 import type { Niche } from '@/lib/niches';
 

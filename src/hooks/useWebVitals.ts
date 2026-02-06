@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { onCLS, onFID, onLCP, onTTFB, onFCP, Metric } from 'web-vitals';
 import { logger } from '@/lib/logger';
 
 // Web Vitals types
@@ -9,8 +8,6 @@ interface WebVitalsMetric {
   rating: 'good' | 'needs-improvement' | 'poor';
   delta: number;
 }
-
-const VITALS_URL = 'https://vitals.vercel-analytics.com/v1/vitals';
 
 // Thresholds for Web Vitals ratings
 const THRESHOLDS = {
