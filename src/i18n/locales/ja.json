@@ -191,7 +191,14 @@
     "invalidLink": "Check the link or the page may have been deleted",
     "loadError": "Loading error",
     "tryAgain": "Try refreshing the page",
-    "createYourPage": "Want to create your own page?"
+    "createYourPage": "Want to create your own page?",
+    "invalidEmail": "Enter a valid email",
+    "subscription": "Subscription error",
+    "general": "An error occurred",
+    "notFound": "Page not found",
+    "unauthorized": "Authorization required",
+    "forbidden": "Access denied",
+    "networkError": "Network error"
   },
   "form": {
     "fillRequired": "Please fill required fields",
@@ -207,10 +214,6 @@
   },
   "success": {
     "subscribed": "Successfully subscribed!"
-  },
-  "errors": {
-    "invalidEmail": "Enter a valid email",
-    "subscription": "Subscription error"
   },
   "actions": {
     "subscribe": "Subscribe",
@@ -1042,7 +1045,6 @@
     "loadError": "Load Error",
     "loadErrorDesc": "Failed to load page data",
     "tryAgain": "Try Again",
-    "settings": "Settings",
     "collabs": "Collabs",
     "aiBlocksCreated": "✨ Created {{count}} blocks with AI",
     "blocksAdded": "Added {{count}} blocks",
@@ -1569,15 +1571,6 @@
       "locationTitle": "Local relevance",
       "locationBody": "Find examples from your city or country and adapt them for your business."
     }
-  },
-  "errors": {
-    "general": "An error occurred",
-    "notFound": "Page not found",
-    "pageNotFound": "Page not found",
-    "invalidLink": "Invalid or corrupted link",
-    "unauthorized": "Authorization required",
-    "forbidden": "Access denied",
-    "networkError": "Network error"
   },
   "language": {
     "autoTranslate": "Auto-translate",
