@@ -47,7 +47,7 @@ const ScreenLoader = () => (
 );
 
 // Modals & Panels (reused from v1)
-import { UnifiedBlockEditor } from '@/components/block-editors/UnifiedBlockEditor';
+import { BlockEditorV2 } from '@/components/BlockEditorV2';
 import { TemplateGallery } from '@/components/editor/TemplateGallery';
 import { TemplateMarketplace } from '@/components/editor/TemplateMarketplace';
 import { SaveTemplateDialog } from '@/components/editor/SaveTemplateDialog';
@@ -519,11 +519,12 @@ export default function DashboardV2() {
 
         {/* Block Editor Modal */}
         {dashboard.blockEditor.editingBlock && (
-          <UnifiedBlockEditor
+          <BlockEditorV2
             block={dashboard.blockEditor.editingBlock}
             isOpen={dashboard.blockEditor.editorOpen}
             onClose={dashboard.blockEditor.closeEditor}
             onSave={dashboard.blockEditor.handleSaveBlock}
+            enableAutosave={true}
           />
         )}
 
