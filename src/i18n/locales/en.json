@@ -1379,7 +1379,13 @@
       "minutes": "minutes",
       "seconds": "seconds"
     },
-    "carousel": "Gallery",
+    "carousel": {
+      "empty": "No images added to carousel"
+    },
+    "video": {
+      "invalidUrl": "Invalid video URL",
+      "checkUrl": "Please check the video URL and try again."
+    },
     "newsletter": "Newsletter",
     "avatar": "Avatar",
     "download": "File",
@@ -1414,6 +1420,10 @@
     },
     "customCode": "Code",
     "scratch": "Scratch",
+    "shoutout": {
+      "recommend": "Recommend",
+      "userNotFound": "User not found"
+    },
     "added": "Block added",
     "deleted": "Block deleted",
     "restored": "Block restored",

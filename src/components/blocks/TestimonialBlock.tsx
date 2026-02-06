@@ -79,7 +79,7 @@ export const TestimonialBlock = memo(function TestimonialBlock({ block }: Testim
                     </div>
                     {testimonial.rating && renderStars(testimonial.rating)}
                   </div>
-                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     "{text}"
                   </p>
                 </div>

@@ -152,7 +152,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, onClick
           disabled={isPurchasing}
           className={cn(
             "w-full h-14 rounded-2xl text-base font-bold gap-2 shadow-lg",
-            !hasEnoughTokens && tokenPrice && "bg-gradient-to-r from-green-500 to-emerald-600 shadow-green-500/20"
+            !hasEnoughTokens && tokenPrice && "bg-primary shadow-primary/20"
           )}
         >
           {isPurchasing ? (
@@ -220,7 +220,7 @@ export const ProductBlock = memo(function ProductBlockComponent({ block, onClick
               {name}
             </h3>
             {description && (
-              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
                 {description}
               </p>
             )}
