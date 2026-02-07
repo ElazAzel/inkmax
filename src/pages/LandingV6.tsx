@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next';
 // We will replace these with V6 versions progressively
 const FooterSection = lazy(() => import('@/components/landing-v5/FooterSection'));
 const FAQSectionV6 = lazy(() => import('@/components/landing-v6/FAQSectionV6'));
+const StepsSection = lazy(() => import('@/components/landing-v6/StepsSection'));
+const CTASection = lazy(() => import('@/components/landing-v6/CTASection'));
 
 export default function LandingV6() {
     const navigate = useNavigate();
@@ -41,6 +43,10 @@ export default function LandingV6() {
                     </Suspense>
 
                     <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
+                        <StepsSection />
+                    </Suspense>
+
+                    <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
                         <FeaturesBento />
                     </Suspense>
 
@@ -50,6 +56,10 @@ export default function LandingV6() {
 
                     <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
                         <FAQSectionV6 />
+                    </Suspense>
+
+                    <Suspense fallback={<div className="h-64 animate-pulse bg-muted/10" />}>
+                        <CTASection />
                     </Suspense>
                 </main>
 

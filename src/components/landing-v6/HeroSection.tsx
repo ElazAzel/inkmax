@@ -88,13 +88,74 @@ export default function HeroSection({ onCreatePage, onViewExamples }: HeroSectio
                     </Reveal>
                 </div>
 
-                {/* Hero Visual - Bento Grid Teaser (Placeholder for next step) */}
-                <Reveal delay={600} direction="up" distance={40} className="mt-16 md:mt-24">
-                    <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-muted/20 border border-border/40 rounded-3xl overflow-hidden shadow-2xl shadow-primary/5">
-                        <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
-                            <span className="text-muted-foreground font-medium">Product Interactive Preview Loading...</span>
+                {/* Hero Visual - CSS-only Mobile Mockup */}
+                <Reveal delay={600} direction="up" distance={40} className="mt-16 md:mt-24 relative z-10">
+                    <div className="relative mx-auto w-full max-w-[320px] md:max-w-[360px] aspect-[9/19] bg-background border-8 border-muted rounded-[3rem] shadow-2xl shadow-primary/20 overflow-hidden ring-1 ring-border/50">
+                        {/* Dynamic Island / Notch */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-black rounded-b-2xl z-20 flex items-center justify-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-neutral-800" />
+                            <div className="w-10 h-1.5 rounded-full bg-neutral-800" />
                         </div>
-                        {/* We will implement the actual Bento Grid preview here next */}
+
+                        {/* Screen Content */}
+                        <div className="w-full h-full bg-neutral-50 dark:bg-neutral-900 flex flex-col pt-12 px-6 pb-6 relative overflow-hidden">
+                            {/* Abstract Header Gradient */}
+                            <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/20 to-transparent -z-10" />
+
+                            {/* Profile Header */}
+                            <div className="flex flex-col items-center mb-8">
+                                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-primary/60 border-4 border-background shadow-lg mb-4 flex items-center justify-center">
+                                    <span className="text-3xl font-bold text-primary-foreground">A</span>
+                                </div>
+                                <div className="h-6 w-3/4 bg-foreground/10 rounded-md mb-2 animate-pulse" />
+                                <div className="h-4 w-1/2 bg-foreground/5 rounded-md animate-pulse" />
+                            </div>
+
+                            {/* Links Stack */}
+                            <div className="space-y-3 w-full flex-1">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="group relative w-full h-14 bg-background border border-border/60 rounded-xl shadow-sm flex items-center px-4 hover:scale-[1.02] transition-transform cursor-pointer">
+                                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                            <div className="w-4 h-4 bg-primary/40 rounded-sm" />
+                                        </div>
+                                        <div className="h-3 w-1/2 bg-foreground/10 rounded-sm group-hover:bg-primary/20 transition-colors" />
+                                        {/* Click effect */}
+                                        <div className="absolute right-4 w-2 h-2 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Floating Socials */}
+                            <div className="flex justify-center gap-4 mt-6 opacity-60">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="w-10 h-10 rounded-full bg-foreground/5" />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Reflection/Sheen */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none rounded-[2.5rem]" />
+                    </div>
+
+                    {/* Floating Elements (Decorations) */}
+                    <div className="absolute top-1/3 -left-12 md:-left-24 bg-card border p-4 rounded-2xl shadow-xl animate-bounce duration-[3000ms] hidden md:block">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold">$$</div>
+                            <div>
+                                <div className="font-bold text-sm">New Sale!</div>
+                                <div className="text-xs text-muted-foreground">+ 12,500₸</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="absolute bottom-1/4 -right-12 md:-right-20 bg-card border p-4 rounded-2xl shadow-xl animate-bounce delay-700 duration-[4000ms] hidden md:block">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">📈</div>
+                            <div>
+                                <div className="font-bold text-sm">Visits +42%</div>
+                                <div className="text-xs text-muted-foreground">Last 7 days</div>
+                            </div>
+                        </div>
                     </div>
                 </Reveal>
 
