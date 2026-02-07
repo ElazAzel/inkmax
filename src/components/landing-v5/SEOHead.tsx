@@ -200,7 +200,7 @@ export default function SEOHead({ language, includeFAQ = true }: SEOHeadProps) {
           {
             '@type': 'Offer',
             name: 'Pro Plan',
-            price: '2990',
+            price: '3045',
             priceCurrency: 'KZT',
             availability: 'https://schema.org/InStock',
             category: 'SaaS'

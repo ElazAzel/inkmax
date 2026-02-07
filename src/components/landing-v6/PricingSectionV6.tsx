@@ -72,7 +72,7 @@ export default function PricingSectionV6() {
                             <p className="text-muted-foreground text-sm">For serious creators</p>
                         </div>
                         <div className="mb-8 flex items-baseline">
-                            <span className="text-4xl font-extrabold font-heading">2,990₸</span>
+                            <span className="text-4xl font-extrabold font-heading">3,045₸</span>
                             <span className="text-muted-foreground ml-2">/month</span>
                         </div>
 

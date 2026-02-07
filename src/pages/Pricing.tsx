@@ -144,7 +144,7 @@ export default function Pricing() {
     <AISearchOptimizer
       pageType="pricing"
       primaryQuestion="How much does lnkmx cost?"
-      primaryAnswer="lnkmx offers a free Basic plan and a Pro plan starting from 2,900 KZT (approximately $6 USD) for 3 months. Pro features include unlimited pages, custom domains, analytics, and priority support."
+      primaryAnswer="lnkmx offers a free Basic plan and a Pro plan starting from 3,045 KZT (approximately $6 USD) for 12 months. Pro features include unlimited pages, custom domains, analytics, and priority support."
       entityName="lnkmx Pricing"
       entityCategory="SaaS Pricing, Subscription Plans, Link in Bio Pricing"
       useCases={[
@@ -159,10 +159,10 @@ export default function Pricing() {
         'Growing businesses needing more features',
       ]}
       problemStatement="Most link-in-bio and page builder tools are too expensive for micro-businesses and freelancers"
-      solutionStatement="lnkmx offers a free plan for basic needs and affordable Pro pricing starting at just $6 for 3 months"
+      solutionStatement="lnkmx offers a free plan for basic needs and affordable Pro pricing starting at just $6 for 12 months"
       keyFeatures={[
         'Free Basic plan available',
-        'Pro plan: 2,900 KZT for 3 months',
+        'Pro plan: 3,045 KZT/mo (Annual)',
         'Volume discounts: up to 30% off for 12 months',
         'Multi-currency support (KZT, USD)',
         'Flexible token system',
