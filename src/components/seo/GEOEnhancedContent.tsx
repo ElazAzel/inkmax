@@ -33,21 +33,33 @@ export function GEOEnhancedContent({ blocks, slug }: GEOEnhancedContentProps) {
 
   // Guard against undefined/null blocks
   const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
-  
-  const profile = extractProfileFromBlocks(validBlocks, language);
-  const answerBlock = generateAnswerBlock(validBlocks, slug, language);
-  const keyFacts = generateKeyFacts(validBlocks, answerBlock, profile.name, language);
-  const entityLinks = extractEntityLinks(validBlocks, language);
-  
-  // Auto FAQ if needed
-  const shouldGenerateAutoFAQ = !hasUserFAQ(validBlocks);
-  const faqContext = extractFAQContext(validBlocks, profile.name, answerBlock.niche, answerBlock.location, language);
-  const autoFAQItems = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 3) : [];
-  
-  // Extract blocks
-  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
-  const faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
-  const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
+
+  // Wrap all SEO processing in try-catch to prevent render crashes
+  let profile: ReturnType<typeof extractProfileFromBlocks> = { type: 'Person', sameAs: [] };
+  let answerBlock: ReturnType<typeof generateAnswerBlock> = { summary: '', entityType: 'Person', services: [] };
+  let keyFacts: ReturnType<typeof generateKeyFacts> = [];
+  let entityLinks: ReturnType<typeof extractEntityLinks> = { sameAs: [], knowsAbout: [] };
+  let autoFAQItems: Array<{ question: string; answer: string }> = [];
+  let pricingBlock: PricingBlock | undefined;
+  let faqBlock: FAQBlock | undefined;
+  let eventBlocks: EventBlock[] = [];
+
+  try {
+    profile = extractProfileFromBlocks(validBlocks, language);
+    answerBlock = generateAnswerBlock(validBlocks, slug, language);
+    keyFacts = generateKeyFacts(validBlocks, answerBlock, profile.name, language);
+    entityLinks = extractEntityLinks(validBlocks, language);
+    
+    const shouldGenerateAutoFAQ = !hasUserFAQ(validBlocks);
+    const faqContext = extractFAQContext(validBlocks, profile.name, answerBlock.niche, answerBlock.location, language);
+    autoFAQItems = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 3) : [];
+    
+    pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+    faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
+    eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
+  } catch (err) {
+    console.warn('GEO content processing error:', err);
+  }
 
   // Labels
   const labels = {

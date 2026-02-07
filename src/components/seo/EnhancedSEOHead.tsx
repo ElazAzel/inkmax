@@ -81,53 +81,69 @@ export function EnhancedSEOHead({
   const language = i18n.language as 'ru' | 'en' | 'kk';
   const slug = pageData.slug || '';
 
-  // Memoize all SEO computations
+  // Memoize all SEO computations - wrapped in try-catch for safety
   const seoData = useMemo(() => {
-    const profile = extractProfileFromBlocks(pageData.blocks, language);
-    const qualityGate = evaluateQualityGate(
-      pageData.blocks,
-      profile.name,
-      profile.bio,
-      isNewAccount
-    );
-    const meta = generatePageMeta(profile, pageData.blocks, slug, qualityGate, language);
-    
-    // Generate Answer Block for AEO
-    const answerBlock = generateAnswerBlock(pageData.blocks, slug, language);
-    
-    // Generate enhanced Key Facts
-    const keyFacts = generateEnhancedKeyFacts(pageData.blocks, answerBlock, profile.name, language);
-    
-    // Generate GEO Schemas with combined graph
-    const geoSchemas = generateGEOSchemas(pageData.blocks, {
-      slug,
-      name: profile.name || '',
-      bio: profile.bio,
-      avatar: profile.avatar,
-      answerBlock,
-      sameAs: profile.sameAs,
-      language,
-    });
-    
-    // Generate auto FAQ if needed
-    const shouldGenerateAutoFAQ = !hasUserFAQ(pageData.blocks);
-    const faqContext = extractFAQContext(pageData.blocks, profile.name, answerBlock.niche, answerBlock.location, language);
-    const autoFAQ = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 5) : [];
-    
-    // Entity links for structured data
-    const entityLinks = extractEntityLinks(pageData.blocks, language);
+    try {
+      const safeBlocks = (pageData.blocks || []).filter((b): b is NonNullable<typeof b> => b != null && typeof b === 'object' && 'type' in b);
+      const profile = extractProfileFromBlocks(safeBlocks, language);
+      const qualityGate = evaluateQualityGate(
+        safeBlocks,
+        profile.name,
+        profile.bio,
+        isNewAccount
+      );
+      const meta = generatePageMeta(profile, safeBlocks, slug, qualityGate, language);
+      
+      // Generate Answer Block for AEO
+      const answerBlock = generateAnswerBlock(safeBlocks, slug, language);
+      
+      // Generate enhanced Key Facts
+      const keyFacts = generateEnhancedKeyFacts(safeBlocks, answerBlock, profile.name, language);
+      
+      // Generate GEO Schemas with combined graph
+      const geoSchemas = generateGEOSchemas(safeBlocks, {
+        slug,
+        name: profile.name || '',
+        bio: profile.bio,
+        avatar: profile.avatar,
+        answerBlock,
+        sameAs: profile.sameAs,
+        language,
+      });
+      
+      // Generate auto FAQ if needed
+      const shouldGenerateAutoFAQ = !hasUserFAQ(safeBlocks);
+      const faqContext = extractFAQContext(safeBlocks, profile.name, answerBlock.niche, answerBlock.location, language);
+      const autoFAQ = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 5) : [];
+      
+      // Entity links for structured data
+      const entityLinks = extractEntityLinks(safeBlocks, language);
 
-    return {
-      profile,
-      qualityGate,
-      meta,
-      answerBlock,
-      keyFacts,
-      geoSchemas,
-      autoFAQ,
-      entityLinks,
-    };
-  }, [pageData.blocks, slug, language, updatedAt, isNewAccount]);
+      return {
+        profile,
+        qualityGate,
+        meta,
+        answerBlock,
+        keyFacts,
+        geoSchemas,
+        autoFAQ,
+        entityLinks,
+      };
+    } catch (err) {
+      console.warn('SEO computation error, using fallback:', err);
+      const fallbackProfile = { type: 'Person' as const, sameAs: [] };
+      return {
+        profile: fallbackProfile as ReturnType<typeof extractProfileFromBlocks>,
+        qualityGate: { score: 0, shouldIndex: false, reasons: [] },
+        meta: { title: slug || 'Profile', description: '', canonical: pageUrl, robots: 'noindex', ogImage: '' },
+        answerBlock: { summary: '', entityType: 'Person' as const, services: [] },
+        keyFacts: [],
+        geoSchemas: { mainEntity: {}, webPage: {}, breadcrumb: {}, graph: [] },
+        autoFAQ: [],
+        entityLinks: { sameAs: [], knowsAbout: [] },
+      };
+    }
+  }, [pageData.blocks, slug, language, updatedAt, isNewAccount, pageUrl]);
 
   useEffect(() => {
     const { meta, geoSchemas, qualityGate, answerBlock } = seoData;

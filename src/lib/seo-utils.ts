@@ -170,7 +170,10 @@ export function extractProfileFromBlocks(
   // Extract sameAs from socials block
   const socialsBlock = validBlocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
   if (socialsBlock?.platforms) {
-    result.sameAs = socialsBlock.platforms.map(p => p.url).filter(Boolean);
+    result.sameAs = (socialsBlock.platforms || [])
+      .filter(p => p != null && typeof p === 'object' && p.url)
+      .map(p => p.url)
+      .filter(Boolean);
   }
 
   // Determine if it's an organization based on content

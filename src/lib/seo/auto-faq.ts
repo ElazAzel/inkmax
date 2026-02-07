@@ -259,7 +259,8 @@ export function extractFAQContext(
   // Extract services
   const services: string[] = [];
   if (pricingBlock?.items) {
-    for (const item of (pricingBlock.items || []).filter(i => i)) {
+    for (const item of (pricingBlock.items || []).filter((i): i is NonNullable<typeof i> => i != null && typeof i === 'object')) {
+      if (!item.name) continue;
       const serviceName = getI18nText(item.name, language);
       if (serviceName) services.push(serviceName);
     }
@@ -269,7 +270,8 @@ export function extractFAQContext(
   let minPrice: number | undefined;
   let currency: string | undefined;
   if (pricingBlock?.items) {
-    const prices = pricingBlock.items
+    const prices = (pricingBlock.items || [])
+      .filter((item): item is NonNullable<typeof item> => item != null && typeof item === 'object')
       .map(item => item.price)
       .filter((p): p is number => typeof p === 'number' && p > 0);
     if (prices.length > 0) {

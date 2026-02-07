@@ -33,29 +33,34 @@ export function CrawlerFriendlyContent({ blocks, slug, updatedAt }: CrawlerFrien
   // Guard against undefined/null blocks
   const validBlocks = (blocks || []).filter((b): b is Block => b != null && typeof b === 'object' && 'type' in b);
 
-  const profile = extractProfileFromBlocks(validBlocks, language);
-  const sourceContext = generateSourceContext(slug, updatedAt || new Date().toISOString());
-  const entityLinks = extractEntityLinks(validBlocks, language);
-  
-  // Generate Answer Block for AEO
-  const answerBlock = generateAnswerBlock(validBlocks, slug, language);
-  
-  // Generate enhanced Key Facts
-  const keyFacts = generateEnhancedKeyFacts(validBlocks, answerBlock, profile.name, language);
-  
-  // Generate auto FAQ if user doesn't have one
-  const shouldGenerateAutoFAQ = !hasUserFAQ(validBlocks);
-  const faqContext = extractFAQContext(validBlocks, profile.name, answerBlock.niche, answerBlock.location, language);
-  const autoFAQItems = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 5) : [];
+  // Wrap all SEO processing in try-catch to prevent render crashes
+  let profile: ReturnType<typeof extractProfileFromBlocks> = { type: 'Person', sameAs: [] };
+  let sourceContext = '';
+  let entityLinks: ReturnType<typeof extractEntityLinks> = { sameAs: [], knowsAbout: [] };
+  let answerBlock: ReturnType<typeof generateAnswerBlock> = { summary: '', entityType: 'Person', services: [] };
+  let keyFacts: ReturnType<typeof generateEnhancedKeyFacts> = [];
+  let autoFAQItems: Array<{ question: string; answer: string }> = [];
+  let faqBlock: FAQBlock | undefined;
+  let eventBlocks: EventBlock[] = [];
+  let pricingBlock: PricingBlock | undefined;
 
-  // Extract FAQ content
-  const faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
-  
-  // Extract Events
-  const eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
-  
-  // Extract Pricing/Services
-  const pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+  try {
+    profile = extractProfileFromBlocks(validBlocks, language);
+    sourceContext = generateSourceContext(slug, updatedAt || new Date().toISOString());
+    entityLinks = extractEntityLinks(validBlocks, language);
+    answerBlock = generateAnswerBlock(validBlocks, slug, language);
+    keyFacts = generateEnhancedKeyFacts(validBlocks, answerBlock, profile.name, language);
+    
+    const shouldGenerateAutoFAQ = !hasUserFAQ(validBlocks);
+    const faqContext = extractFAQContext(validBlocks, profile.name, answerBlock.niche, answerBlock.location, language);
+    autoFAQItems = shouldGenerateAutoFAQ ? generateAutoFAQ(faqContext, language, 5) : [];
+
+    faqBlock = validBlocks.find(b => b.type === 'faq') as FAQBlock | undefined;
+    eventBlocks = validBlocks.filter(b => b.type === 'event') as EventBlock[];
+    pricingBlock = validBlocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
+  } catch (err) {
+    console.warn('Crawler content processing error:', err);
+  }
 
   // Extract links
   const linkBlocks = validBlocks.filter(b => b.type === 'link' || b.type === 'button') as any[];
