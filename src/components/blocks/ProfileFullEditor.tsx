@@ -484,13 +484,14 @@ export const ProfileFullEditor = memo(function ProfileFullEditor({
                 placeholder={t('profile.namePlaceholder', 'Ваше имя')}
               />
 
-              {/* Multilingual Bio Input */}
+              {/* Multilingual Bio Input with Rich Text (link insertion) */}
               <MultilingualInput
                 label={t('fields.bio', 'О себе')}
                 value={isMultilingualString(formData.bio) ? formData.bio : createMultilingualString(bio)}
                 onChange={(newBio: MultilingualString) => setFormData(prev => ({ ...prev, bio: newBio }))}
                 type="textarea"
                 placeholder={t('profile.bioPlaceholder', 'Расскажите о себе...')}
+                enableRichText={true}
               />
             </TabsContent>
 
