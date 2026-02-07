@@ -22,7 +22,7 @@ import {
   DashboardLayout,
   PageSwitcher,
 } from '@/components/dashboard-v2/layout';
-import { CreatePageDialog, PageVersionsDialog } from '@/components/dashboard-v2/dialogs';
+
 
 // Lazy load screens for bundle optimization (reduces DashboardV2 chunk by ~80%)
 const HomeScreen = lazy(() => import('@/components/dashboard-v2/screens/HomeScreen').then(m => ({ default: m.HomeScreen })));
@@ -47,24 +47,28 @@ const ScreenLoader = () => (
 );
 
 // Modals & Panels (reused from v1)
-import { BlockEditorV2 } from '@/components/BlockEditorV2';
-import { TemplateGallery } from '@/components/editor/TemplateGallery';
-import { TemplateMarketplace } from '@/components/editor/TemplateMarketplace';
-import { SaveTemplateDialog } from '@/components/editor/SaveTemplateDialog';
-import { AIGenerator } from '@/components/AIGenerator';
-import { QuickStartFlow } from '@/components/onboarding/QuickStartFlow';
-import { NicheOnboarding } from '@/components/onboarding/NicheOnboarding';
-import { AchievementNotification } from '@/components/achievements/AchievementNotification';
-import { InstallPromptDialog } from '@/components/InstallPromptDialog';
-import { ShareAfterPublishDialog } from '@/components/referral/ShareAfterPublishDialog';
-import { TokensPanel } from '@/components/tokens/TokensPanel';
-import { FriendsPanel } from '@/components/friends/FriendsPanel';
-import { MyTemplatesPanel } from '@/components/templates/MyTemplatesPanel';
-import { AchievementsPanel } from '@/components/achievements/AchievementsPanel';
-import { LocalStorageMigration } from '@/components/LocalStorageMigration';
 import { LoadingState, BackgroundEffects } from '@/components/dashboard';
-import { ThemePanel } from '@/components/dashboard-v2/panels';
 import { storage } from '@/lib/storage';
+
+// Lazy load heavy components for better bundle splitting
+const BlockEditorV2 = lazy(() => import('@/components/BlockEditorV2').then(m => ({ default: m.BlockEditorV2 })));
+const TemplateGallery = lazy(() => import('@/components/editor/TemplateGallery').then(m => ({ default: m.TemplateGallery })));
+const TemplateMarketplace = lazy(() => import('@/components/editor/TemplateMarketplace').then(m => ({ default: m.TemplateMarketplace })));
+const SaveTemplateDialog = lazy(() => import('@/components/editor/SaveTemplateDialog').then(m => ({ default: m.SaveTemplateDialog })));
+const AIGenerator = lazy(() => import('@/components/AIGenerator').then(m => ({ default: m.AIGenerator })));
+const QuickStartFlow = lazy(() => import('@/components/onboarding/QuickStartFlow').then(m => ({ default: m.QuickStartFlow })));
+const NicheOnboarding = lazy(() => import('@/components/onboarding/NicheOnboarding').then(m => ({ default: m.NicheOnboarding })));
+const AchievementNotification = lazy(() => import('@/components/achievements/AchievementNotification').then(m => ({ default: m.AchievementNotification })));
+const InstallPromptDialog = lazy(() => import('@/components/InstallPromptDialog').then(m => ({ default: m.InstallPromptDialog })));
+const ShareAfterPublishDialog = lazy(() => import('@/components/referral/ShareAfterPublishDialog').then(m => ({ default: m.ShareAfterPublishDialog })));
+const TokensPanel = lazy(() => import('@/components/tokens/TokensPanel').then(m => ({ default: m.TokensPanel })));
+const FriendsPanel = lazy(() => import('@/components/friends/FriendsPanel').then(m => ({ default: m.FriendsPanel })));
+const MyTemplatesPanel = lazy(() => import('@/components/templates/MyTemplatesPanel').then(m => ({ default: m.MyTemplatesPanel })));
+const AchievementsPanel = lazy(() => import('@/components/achievements/AchievementsPanel').then(m => ({ default: m.AchievementsPanel })));
+const LocalStorageMigration = lazy(() => import('@/components/LocalStorageMigration').then(m => ({ default: m.LocalStorageMigration })));
+const ThemePanel = lazy(() => import('@/components/dashboard-v2/panels').then(m => ({ default: m.ThemePanel })));
+const CreatePageDialogLazy = lazy(() => import('@/components/dashboard-v2/dialogs').then(m => ({ default: m.CreatePageDialog })));
+const PageVersionsDialogLazy = lazy(() => import('@/components/dashboard-v2/dialogs').then(m => ({ default: m.PageVersionsDialog })));
 
 import type { Niche } from '@/lib/niches';
 
@@ -315,14 +319,16 @@ export default function DashboardV2() {
 
         {/* Migration Notice */}
         {dashboard.user && (
-          <LocalStorageMigration
-            key={migrationKey}
-            userId={dashboard.user.id}
-            onMigrated={() => {
-              setMigrationKey((prev) => prev + 1);
-              window.location.reload();
-            }}
-          />
+          <Suspense fallback={null}>
+            <LocalStorageMigration
+              key={migrationKey}
+              userId={dashboard.user.id}
+              onMigrated={() => {
+                setMigrationKey((prev) => prev + 1);
+                window.location.reload();
+              }}
+            />
+          </Suspense>
         )}
 
         <DashboardLayout
@@ -507,133 +513,135 @@ export default function DashboardV2() {
           </Suspense>
         </DashboardLayout>
 
-        {/* Create Page Dialog */}
-        <CreatePageDialog
-          open={showCreatePage}
-          onOpenChange={setShowCreatePage}
-          onCreatePage={handleCreatePage}
-          limits={multiPage.limits}
-          isPremium={dashboard.isPremium}
-          onUpgrade={() => navigate('/pricing')}
-        />
-
-        {/* Block Editor Modal */}
-        {dashboard.blockEditor.editingBlock && (
-          <BlockEditorV2
-            block={dashboard.blockEditor.editingBlock}
-            isOpen={dashboard.blockEditor.editorOpen}
-            onClose={dashboard.blockEditor.closeEditor}
-            onSave={dashboard.blockEditor.handleSaveBlock}
-            enableAutosave={true}
+        <Suspense fallback={null}>
+          {/* Create Page Dialog */}
+          <CreatePageDialogLazy
+            open={showCreatePage}
+            onOpenChange={setShowCreatePage}
+            onCreatePage={handleCreatePage}
+            limits={multiPage.limits}
+            isPremium={dashboard.isPremium}
+            onUpgrade={() => navigate('/pricing')}
           />
-        )}
 
-        {/* Template Gallery */}
-        <TemplateGallery
-          open={templateGalleryOpen}
-          onClose={() => setTemplateGalleryOpen(false)}
-          onSelect={dashboard.handleApplyTemplate}
-        />
+          {/* Block Editor Modal */}
+          {dashboard.blockEditor.editingBlock && (
+            <BlockEditorV2
+              block={dashboard.blockEditor.editingBlock}
+              isOpen={dashboard.blockEditor.editorOpen}
+              onClose={dashboard.blockEditor.closeEditor}
+              onSave={dashboard.blockEditor.handleSaveBlock}
+              enableAutosave={true}
+            />
+          )}
 
-        {/* Template Marketplace */}
-        <TemplateMarketplace
-          open={showMarketplace}
-          onClose={() => setShowMarketplace(false)}
-          onApplyTemplate={(blocks) => {
-            dashboard.handleApplyTemplate(blocks);
-            setShowMarketplace(false);
-          }}
-        />
-
-        {/* AI Generator */}
-        {dashboard.aiState.aiGeneratorOpen && (
-          <AIGenerator
-            type={dashboard.aiState.aiGeneratorType}
-            isOpen={dashboard.aiState.aiGeneratorOpen}
-            onClose={dashboard.aiState.closeAIGenerator}
-            onResult={dashboard.aiState.handleAIResult}
+          {/* Template Gallery */}
+          <TemplateGallery
+            open={templateGalleryOpen}
+            onClose={() => setTemplateGalleryOpen(false)}
+            onSelect={dashboard.handleApplyTemplate}
           />
-        )}
 
-        {/* Achievement Notification */}
-        {dashboard.achievements.newAchievement && (
-          <AchievementNotification
-            achievement={dashboard.achievements.newAchievement}
-            onDismiss={dashboard.achievements.dismissAchievementNotification}
+          {/* Template Marketplace */}
+          <TemplateMarketplace
+            open={showMarketplace}
+            onClose={() => setShowMarketplace(false)}
+            onApplyTemplate={(blocks) => {
+              dashboard.handleApplyTemplate(blocks);
+              setShowMarketplace(false);
+            }}
           />
-        )}
 
-        {/* Quick Start Flow */}
-        <QuickStartFlow
-          open={showQuickStart}
-          onClose={() => setShowQuickStart(false)}
-          onComplete={(data) => {
-            dashboard.onboardingState.handleNicheOnboardingComplete(data.profile, data.blocks, data.niche);
-            setShowQuickStart(false);
-          }}
-        />
+          {/* AI Generator */}
+          {dashboard.aiState.aiGeneratorOpen && (
+            <AIGenerator
+              type={dashboard.aiState.aiGeneratorType}
+              isOpen={dashboard.aiState.aiGeneratorOpen}
+              onClose={dashboard.aiState.closeAIGenerator}
+              onResult={dashboard.aiState.handleAIResult}
+            />
+          )}
 
-        <NicheOnboarding
-          isOpen={dashboard.onboardingState.showNicheOnboarding}
-          onClose={dashboard.onboardingState.handleNicheOnboardingClose}
-          onComplete={dashboard.onboardingState.handleNicheOnboardingComplete}
-        />
+          {/* Achievement Notification */}
+          {dashboard.achievements.newAchievement && (
+            <AchievementNotification
+              achievement={dashboard.achievements.newAchievement}
+              onDismiss={dashboard.achievements.dismissAchievementNotification}
+            />
+          )}
 
-        {/* Panels & Dialogs */}
-        {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
-        {showFriends && <FriendsPanel onClose={() => setShowFriends(false)} />}
+          {/* Quick Start Flow */}
+          <QuickStartFlow
+            open={showQuickStart}
+            onClose={() => setShowQuickStart(false)}
+            onComplete={(data) => {
+              dashboard.onboardingState.handleNicheOnboardingComplete(data.profile, data.blocks, data.niche);
+              setShowQuickStart(false);
+            }}
+          />
 
-        <SaveTemplateDialog
-          open={showSaveTemplate}
-          onClose={() => setShowSaveTemplate(false)}
-          blocks={dashboard.pageData.blocks}
-          previewContainerId="preview-container"
-        />
+          <NicheOnboarding
+            isOpen={dashboard.onboardingState.showNicheOnboarding}
+            onClose={dashboard.onboardingState.handleNicheOnboardingClose}
+            onComplete={dashboard.onboardingState.handleNicheOnboardingComplete}
+          />
 
-        <MyTemplatesPanel
-          open={showMyTemplates}
-          onOpenChange={setShowMyTemplates}
-          onApplyTemplate={dashboard.handleApplyTemplate}
-          currentBlocks={dashboard.pageData.blocks}
-        />
+          {/* Panels & Dialogs */}
+          {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
+          {showFriends && <FriendsPanel onClose={() => setShowFriends(false)} />}
 
-        <TokensPanel open={showTokens} onOpenChange={setShowTokens} />
+          <SaveTemplateDialog
+            open={showSaveTemplate}
+            onClose={() => setShowSaveTemplate(false)}
+            blocks={dashboard.pageData.blocks}
+            previewContainerId="preview-container"
+          />
 
-        <InstallPromptDialog
-          open={dashboard.sharingState.showInstallPrompt}
-          onClose={dashboard.sharingState.closeInstallPrompt}
-          pageUrl={dashboard.sharingState.publishedUrl}
-        />
+          <MyTemplatesPanel
+            open={showMyTemplates}
+            onOpenChange={setShowMyTemplates}
+            onApplyTemplate={dashboard.handleApplyTemplate}
+            currentBlocks={dashboard.pageData.blocks}
+          />
 
-        <ShareAfterPublishDialog
-          open={dashboard.sharingState.showShareDialog}
-          onOpenChange={dashboard.sharingState.closeShareDialog}
-          userId={dashboard.user?.id}
-          publishedUrl={dashboard.sharingState.publishedUrl}
-        />
+          <TokensPanel open={showTokens} onOpenChange={setShowTokens} />
 
-        {/* Page Versions Dialog */}
-        <PageVersionsDialog
-          open={showVersions}
-          onClose={() => setShowVersions(false)}
-          versions={pageVersions.versions}
-          loading={pageVersions.loading}
-          onRestore={pageVersions.restoreVersion}
-          pageId={dashboard.pageData?.id}
-          onFetch={pageVersions.fetchVersions}
-        />
+          <InstallPromptDialog
+            open={dashboard.sharingState.showInstallPrompt}
+            onClose={dashboard.sharingState.closeInstallPrompt}
+            pageUrl={dashboard.sharingState.publishedUrl}
+          />
 
-        {/* Theme Panel */}
-        <ThemePanel
-          open={showTheme}
-          onClose={() => setShowTheme(false)}
-          currentTheme={dashboard.pageData?.theme || {}}
-          onThemeChange={(theme) => {
-            dashboard.updatePageDataPartial({ theme: { ...dashboard.pageData?.theme, ...theme } });
-          }}
-          isPremium={dashboard.isPremium}
-          onUpgrade={() => navigate('/pricing')}
-        />
+          <ShareAfterPublishDialog
+            open={dashboard.sharingState.showShareDialog}
+            onOpenChange={dashboard.sharingState.closeShareDialog}
+            userId={dashboard.user?.id}
+            publishedUrl={dashboard.sharingState.publishedUrl}
+          />
+
+          {/* Page Versions Dialog */}
+          <PageVersionsDialogLazy
+            open={showVersions}
+            onClose={() => setShowVersions(false)}
+            versions={pageVersions.versions}
+            loading={pageVersions.loading}
+            onRestore={pageVersions.restoreVersion}
+            pageId={dashboard.pageData?.id}
+            onFetch={pageVersions.fetchVersions}
+          />
+
+          {/* Theme Panel */}
+          <ThemePanel
+            open={showTheme}
+            onClose={() => setShowTheme(false)}
+            currentTheme={dashboard.pageData?.theme || {}}
+            onThemeChange={(theme) => {
+              dashboard.updatePageDataPartial({ theme: { ...dashboard.pageData?.theme, ...theme } });
+            }}
+            isPremium={dashboard.isPremium}
+            onUpgrade={() => navigate('/pricing')}
+          />
+        </Suspense>
       </div>
     </>
   );

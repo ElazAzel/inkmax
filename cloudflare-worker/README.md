@@ -4,7 +4,7 @@
 
 ## Архитектура
 
-```
+```text
 ┌─────────────────┐
 │  Входящий       │
 │  запрос         │
@@ -36,6 +36,7 @@
 ## Поддерживаемые боты
 
 ### Поисковые системы
+
 - Google (Googlebot)
 - Bing (Bingbot)
 - Yandex
@@ -43,6 +44,7 @@
 - DuckDuckGo
 
 ### AI/Answer Engines (AEO/GEO)
+
 - ChatGPT (GPTBot, ChatGPT-User)
 - Claude (claude-web, anthropic-ai)
 - Perplexity
@@ -51,6 +53,7 @@
 - Apple (Applebot)
 
 ### Социальные сети
+
 - Facebook
 - Twitter/X
 - LinkedIn
@@ -122,15 +125,17 @@ curl -I -H "User-Agent: Googlebot" https://lnkmx.my/elazart
 
 SSR контент генерируется через Edge Function:
 
-```
+```text
 GET https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/render-page?slug={slug}&lang={lang}
 ```
 
 Параметры:
+
 - `slug` - slug страницы (обязательно)
 - `lang` - язык (ru, en, kk), по умолчанию "ru"
 
 Возвращает:
+
 - `200` - полный HTML с meta тегами, JSON-LD и контентом
 - `404` - страница не найдена или не опубликована
 
@@ -181,6 +186,7 @@ GET https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/render-page?slug={slug
 ## Мониторинг
 
 В Cloudflare Dashboard → Workers → Analytics можно отслеживать:
+
 - Количество запросов
 - Процент ботов
 - Время ответа
@@ -189,16 +195,20 @@ GET https://pphdcfxucfndmwulpfwv.supabase.co/functions/v1/render-page?slug={slug
 ## Troubleshooting
 
 ### Воркер не срабатывает
+
 1. Проверьте routes в wrangler.toml
 2. Убедитесь что DNS проксируется через Cloudflare (оранжевое облако)
 3. Проверьте что домен добавлен в Cloudflare
 
 ### SSR возвращает ошибку
+
 1. Проверьте Edge Function логи в Supabase Dashboard
 2. Убедитесь что страница опубликована (is_published = true)
 3. Проверьте slug - он должен совпадать точно
 
 ### Контент не обновляется
+
 Edge Function кеширует ответ на 1 час. Для немедленного обновления:
+
 - Измените slug страницы
 - Дождитесь истечения TTL кэша (1 час)
