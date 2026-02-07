@@ -180,6 +180,14 @@ export default {
           '50%': {
             boxShadow: '0 0 30px hsl(211 100% 50% / 0.4), 0 0 60px hsl(262 83% 58% / 0.2)'
           }
+        },
+        'marquee': {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' }
+        },
+        'marquee2': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0%)' }
         }
       },
       animation: {
@@ -206,7 +214,9 @@ export default {
         'spin-slow': 'spin-slow 20s linear infinite',
         'wiggle': 'wiggle 1s ease-in-out infinite',
         'morph': 'morph 8s ease-in-out infinite',
-        'glow-pulse': 'glow-pulse 3s ease-in-out infinite'
+        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+        'marquee': 'marquee 25s linear infinite',
+        'marquee2': 'marquee2 25s linear infinite'
       },
       fontFamily: {
         sans: [

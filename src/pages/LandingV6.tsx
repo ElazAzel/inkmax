@@ -5,6 +5,7 @@ import HeroSection from '@/components/landing-v6/HeroSection';
 import FeaturesBento from '@/components/landing-v6/FeaturesBento';
 import PricingSectionV6 from '@/components/landing-v6/PricingSectionV6';
 import TrustSectionV6 from '@/components/landing-v6/TrustSectionV6';
+import NoiseOverlay from '@/components/landing-v6/NoiseOverlay';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -25,6 +26,7 @@ export default function LandingV6() {
     return (
         <>
             <SEOHead language={i18n.language} includeFAQ={false} />
+            <NoiseOverlay />
 
             <div className="min-h-screen bg-background font-sans selection:bg-primary/20 selection:text-primary overflow-x-hidden">
                 <NavBar
@@ -33,10 +35,7 @@ export default function LandingV6() {
                 />
 
                 <main>
-                    <HeroSection
-                        onCreatePage={handleCreatePage}
-                        onViewExamples={handleViewExamples}
-                    />
+                    <HeroSection />
 
                     <Suspense fallback={<div className="h-24" />}>
                         <TrustSectionV6 />

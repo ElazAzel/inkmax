@@ -1,164 +1,128 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Reveal } from '@/components/motion';
+import { Reveal } from '@/components/motion/Reveal';
 
-interface HeroSectionProps {
-    onCreatePage: () => void;
-    onViewExamples: () => void;
-}
-
-export default function HeroSection({ onCreatePage, onViewExamples }: HeroSectionProps) {
-    const { t } = useTranslation();
+export default function HeroSection() {
+    const scrollToSection = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     return (
-        <section className="relative pt-32 pb-16 md:pt-48 md:pb-32 overflow-hidden bg-background">
-            {/* Background Grid Pattern (Swiss Style) */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+        <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 pb-12">
+            {/* Ambient Auras */}
+            <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] animate-float-slow pointer-events-none" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[100px] animate-float pointer-events-none delay-1000" />
 
-            <div className="container px-4 md:px-6 relative z-10 max-w-7xl mx-auto">
-                <div className="flex flex-col items-center text-center space-y-8">
-
-                    {/* Trust Badge / Eyebrow */}
-                    <Reveal delay={0} direction="down">
-                        <Badge variant="outline" className="px-4 py-1.5 text-sm font-medium border-border/60 bg-background/50 backdrop-blur-sm rounded-full shadow-sm">
-                            <Sparkles className="w-3.5 h-3.5 mr-2 text-primary fill-primary/20" />
-                            <span className="font-heading tracking-tight">AI-Powered Bio Pages v5.0</span>
-                        </Badge>
-                    </Reveal>
-
-                    {/* Main Headline - Manrope Font (Swiss typography) */}
-                    <Reveal delay={100} direction="up" distance={20}>
-                        <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-foreground leading-[1.1] max-w-4xl mx-auto">
-                            Your Bio Page, <br className="hidden md:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-b from-foreground to-foreground/70">
-                                Reimagined.
-                            </span>
-                        </h1>
-                    </Reveal>
-
-                    {/* Subtitle - Inter Font */}
-                    <Reveal delay={200} direction="up" distance={20}>
-                        <p className="font-sans text-lg md:text-xl text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed">
-                            The operating system for creators and micro-businesses.
-                            Build a stunning page, capture leads, and manage bookings — all in seconds.
-                        </p>
-                    </Reveal>
-
-                    {/* CTA Group */}
-                    <Reveal delay={300} direction="up" distance={20}>
-                        <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-                            <Button
-                                size="lg"
-                                onClick={onCreatePage}
-                                className="h-14 px-8 rounded-full text-base font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 min-w-[200px]"
-                            >
-                                Start for free
-                                <ArrowRight className="ml-2 w-4 h-4" />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                onClick={onViewExamples}
-                                className="h-14 px-8 rounded-full text-base font-medium border-border/50 hover:bg-muted/50 min-w-[200px]"
-                            >
-                                View Examples
-                            </Button>
-                        </div>
-                    </Reveal>
-
-                    {/* Trust Indicators */}
-                    <Reveal delay={400} direction="fade">
-                        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 pt-8 text-sm text-muted-foreground font-medium">
-                            <div className="flex items-center gap-2">
-                                <CheckCircle2 className="w-4 h-4 text-primary" />
-                                <span>No credit card required</span>
+            <div className="container px-4 md:px-6 relative z-10">
+                <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                    {/* Text Content */}
+                    <div className="text-left space-y-8">
+                        <Reveal delay={100}>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 text-primary text-sm font-medium border border-primary/10 mb-6">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                </span>
+                                V6.0 Live
                             </div>
-                            <div className="flex items-center gap-2">
-                                <CheckCircle2 className="w-4 h-4 text-primary" />
-                                <span>Free forever plan</span>
+                        </Reveal>
+
+                        <Reveal delay={200}>
+                            <h1 className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9]">
+                                The <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-violet-500 to-primary animate-gradient-flow bg-[length:200%_auto]">OS</span> <br />
+                                for your <br />
+                                <span className="italic font-serif">Micro-Brand.</span>
+                            </h1>
+                        </Reveal>
+
+                        <Reveal delay={300}>
+                            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
+                                More than a link-in-bio. A complete operating system to build, sell, and grow entirely from your phone. No code, just flow.
+                            </p>
+                        </Reveal>
+
+                        <Reveal delay={400}>
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <Button size="lg" className="h-14 px-8 rounded-full text-lg shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300" onClick={() => scrollToSection('pricing')}>
+                                    Start Building Free
+                                    <ArrowRight className="ml-2 w-5 h-5" />
+                                </Button>
+                                <Button size="lg" variant="outline" className="h-14 px-8 rounded-full text-lg border-2 hover:bg-muted/50 transition-all duration-300" onClick={() => scrollToSection('features')}>
+                                    Explore Features
+                                </Button>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <CheckCircle2 className="w-4 h-4 text-primary" />
-                                <span>Set up in 2 minutes</span>
-                            </div>
-                        </div>
-                    </Reveal>
-                </div>
+                        </Reveal>
 
-                {/* Hero Visual - CSS-only Mobile Mockup */}
-                <Reveal delay={600} direction="up" distance={40} className="mt-16 md:mt-24 relative z-10">
-                    <div className="relative mx-auto w-full max-w-[320px] md:max-w-[360px] aspect-[9/19] bg-background border-8 border-muted rounded-[3rem] shadow-2xl shadow-primary/20 overflow-hidden ring-1 ring-border/50">
-                        {/* Dynamic Island / Notch */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-black rounded-b-2xl z-20 flex items-center justify-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-neutral-800" />
-                            <div className="w-10 h-1.5 rounded-full bg-neutral-800" />
-                        </div>
-
-                        {/* Screen Content */}
-                        <div className="w-full h-full bg-neutral-50 dark:bg-neutral-900 flex flex-col pt-12 px-6 pb-6 relative overflow-hidden">
-                            {/* Abstract Header Gradient */}
-                            <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/20 to-transparent -z-10" />
-
-                            {/* Profile Header */}
-                            <div className="flex flex-col items-center mb-8">
-                                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-primary/60 border-4 border-background shadow-lg mb-4 flex items-center justify-center">
-                                    <span className="text-3xl font-bold text-primary-foreground">A</span>
+                        <Reveal delay={500}>
+                            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                                    <span>No credit card</span>
                                 </div>
-                                <div className="h-6 w-3/4 bg-foreground/10 rounded-md mb-2 animate-pulse" />
-                                <div className="h-4 w-1/2 bg-foreground/5 rounded-md animate-pulse" />
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                                    <span>Cancel anytime</span>
+                                </div>
                             </div>
+                        </Reveal>
+                    </div>
 
-                            {/* Links Stack */}
-                            <div className="space-y-3 w-full flex-1">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="group relative w-full h-14 bg-background border border-border/60 rounded-xl shadow-sm flex items-center px-4 hover:scale-[1.02] transition-transform cursor-pointer">
-                                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
-                                            <div className="w-4 h-4 bg-primary/40 rounded-sm" />
-                                        </div>
-                                        <div className="h-3 w-1/2 bg-foreground/10 rounded-sm group-hover:bg-primary/20 transition-colors" />
-                                        {/* Click effect */}
-                                        <div className="absolute right-4 w-2 h-2 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {/* Visual Content - Off-axis overlapping cards */}
+                    <div className="relative hidden lg:block h-[800px] w-full perspective-[2000px]">
+                        <Reveal delay={600} className="w-full h-full relative">
+                            {/* Card 1: Stats */}
+                            <div className="absolute top-[15%] right-[5%] w-[280px] bg-card/80 backdrop-blur-xl border border-white/20 p-6 rounded-3xl shadow-glass-lg rotate-[-6deg] animate-float z-20">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
+                                        $
                                     </div>
-                                ))}
+                                    <div>
+                                        <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Revenue</p>
+                                        <p className="text-xl font-bold font-heading">$12,450</p>
+                                    </div>
+                                </div>
+                                <div className="h-24 bg-gradient-to-t from-green-500/10 to-transparent rounded-xl border border-green-500/20 relative overflow-hidden">
+                                    <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-green-500/20 skew-y-6 transform origin-bottom-left"></div>
+                                </div>
                             </div>
 
-                            {/* Floating Socials */}
-                            <div className="flex justify-center gap-4 mt-6 opacity-60">
-                                {[1, 2, 3].map((i) => (
-                                    <div key={i} className="w-10 h-10 rounded-full bg-foreground/5" />
-                                ))}
+                            {/* Card 2: Phone Mockup Main */}
+                            <div className="absolute top-[5%] left-[15%] w-[320px] aspect-[9/19] bg-background border-[8px] border-muted rounded-[3rem] shadow-2xl rotate-[3deg] z-10 overflow-hidden ring-1 ring-black/5 dark:ring-white/10">
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-black rounded-b-2xl z-20" />
+                                <div className="p-6 pt-12 space-y-4 h-full bg-neutral-50 dark:bg-neutral-900 pointer-events-none select-none">
+                                    <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-violet-500 mx-auto shadow-lg" />
+                                    <div className="text-center space-y-2">
+                                        <div className="h-4 w-32 bg-foreground/10 mx-auto rounded-full" />
+                                        <div className="h-3 w-48 bg-foreground/5 mx-auto rounded-full" />
+                                    </div>
+                                    <div className="space-y-3 pt-4">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="h-14 w-full bg-white dark:bg-black/20 rounded-2xl border border-foreground/5 shadow-sm p-3 flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-foreground/5" />
+                                                <div className="h-3 w-24 bg-foreground/10 rounded-full" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Reflection/Sheen */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none rounded-[2.5rem]" />
+                            {/* Card 3: Floating UI Elements */}
+                            <div className="absolute bottom-[20%] left-[-5%] bg-white dark:bg-neutral-800 p-4 rounded-2xl shadow-xl flex items-center gap-3 rotate-[5deg] animate-float-slow z-30">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                    <Sparkles className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold">New Lead!</p>
+                                    <p className="text-xs text-muted-foreground">Just now via LinkMAX</p>
+                                </div>
+                            </div>
+                        </Reveal>
                     </div>
-
-                    {/* Floating Elements (Decorations) */}
-                    <div className="absolute top-1/3 -left-12 md:-left-24 bg-card border p-4 rounded-2xl shadow-xl animate-bounce duration-[3000ms] hidden md:block">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold">$$</div>
-                            <div>
-                                <div className="font-bold text-sm">New Sale!</div>
-                                <div className="text-xs text-muted-foreground">+ 12,500₸</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="absolute bottom-1/4 -right-12 md:-right-20 bg-card border p-4 rounded-2xl shadow-xl animate-bounce delay-700 duration-[4000ms] hidden md:block">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">📈</div>
-                            <div>
-                                <div className="font-bold text-sm">Visits +42%</div>
-                                <div className="text-xs text-muted-foreground">Last 7 days</div>
-                            </div>
-                        </div>
-                    </div>
-                </Reveal>
-
+                </div>
             </div>
         </section>
     );

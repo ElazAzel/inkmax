@@ -1,20 +1,35 @@
-import { Reveal } from '@/components/motion';
+import { Reveal } from '@/components/motion/Reveal';
 
 export default function TrustSectionV6() {
     return (
-        <section className="py-24 bg-muted/30 border-t border-border/40">
-            <div className="container px-4 md:px-6 max-w-7xl mx-auto text-center">
-                <p className="font-sans text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-12">
-                    Trusted by 10,000+ creators and businesses
-                </p>
-
-                {/* Marquee / Grid placeholder - implementing a clean grid for Swiss style */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 md:gap-12 items-center justify-center opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                    {/* Placeholders for logos - in a real app these would be SVGs */}
-                    {['Acme Corp', 'Global Inc', 'SaaS Flow', 'NextGen', 'Creativ', 'Studio 42'].map((name, i) => (
-                        <Reveal key={i} delay={i * 50} direction="fade" className="flex justify-center">
-                            <span className="text-xl font-heading font-black text-foreground/80">{name}</span>
-                        </Reveal>
+        <section className="py-12 border-y border-border/40 bg-muted/20 relative overflow-hidden">
+            <div className="flex overflow-hidden">
+                <div className="flex animate-marquee whitespace-nowrap">
+                    {[...Array(2)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-12 mx-6 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                            <span className="text-xl font-bold font-heading">Acme Corp</span>
+                            <span className="text-xl font-bold font-heading">GlobalTech</span>
+                            <span className="text-xl font-bold font-heading">IndieMaker</span>
+                            <span className="text-xl font-bold font-heading">CreatorLabs</span>
+                            <span className="text-xl font-bold font-heading">StudioFlow</span>
+                            <span className="text-xl font-bold font-heading">NextGen</span>
+                            <span className="text-xl font-bold font-heading">BrightSide</span>
+                            <span className="text-xl font-bold font-heading">Velocity</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex absolute top-0 py-12 animate-marquee2 whitespace-nowrap">
+                    {[...Array(2)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-12 mx-6 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                            <span className="text-xl font-bold font-heading">Acme Corp</span>
+                            <span className="text-xl font-bold font-heading">GlobalTech</span>
+                            <span className="text-xl font-bold font-heading">IndieMaker</span>
+                            <span className="text-xl font-bold font-heading">CreatorLabs</span>
+                            <span className="text-xl font-bold font-heading">StudioFlow</span>
+                            <span className="text-xl font-bold font-heading">NextGen</span>
+                            <span className="text-xl font-bold font-heading">BrightSide</span>
+                            <span className="text-xl font-bold font-heading">Velocity</span>
+                        </div>
                     ))}
                 </div>
             </div>
