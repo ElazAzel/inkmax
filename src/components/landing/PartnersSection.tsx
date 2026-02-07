@@ -24,14 +24,14 @@ export function PartnersSection() {
     const { data: partners } = useQuery({
         queryKey: ['landing-partners'],
         queryFn: async () => {
-            const { data, error } = await supabase
+            const { data, error } = await (supabase as any)
                 .from('partners')
                 .select('id, name, logo_url, website_url')
                 .eq('is_active', true)
                 .order('sort_order', { ascending: true });
 
             if (error) throw error;
-            return data as Partner[];
+            return (data || []) as Partner[];
         },
         staleTime: 1000 * 60 * 5, // 5 minutes
     });

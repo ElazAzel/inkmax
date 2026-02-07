@@ -102,6 +102,7 @@ const renderPublicPage = async (slug: string) => {
     const queryClient = createTestQueryClient();
     const PublicPage = (await import('../PublicPage')).default;
 
+    window.history.pushState({}, '', `/${slug}`);
     return render(
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
@@ -109,8 +110,7 @@ const renderPublicPage = async (slug: string) => {
                     <Route path="/:slug" element={<PublicPage />} />
                 </Routes>
             </BrowserRouter>
-        </QueryClientProvider>,
-        { route: `/${slug}` }
+        </QueryClientProvider>
     );
 };
 

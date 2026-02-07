@@ -56,7 +56,7 @@ export default function Experts() {
   const { data: experts, isLoading } = useQuery({
     queryKey: ['experts', tag],
     queryFn: async () => {
-      let query = supabase
+      let query = (supabase as any)
         .from('pages')
         .select('id, slug, title, description, avatar_url, niche, view_count')
         .eq('is_published', true)
