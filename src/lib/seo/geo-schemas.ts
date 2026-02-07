@@ -335,7 +335,7 @@ function generateServiceSchemas(
   pageUrl: string
 ): object[] {
   return (pricingBlock.items || [])
-    .filter(item => item && typeof item === 'object')
+    .filter(item => item != null && typeof item === 'object' && item.name)
     .slice(0, 10)
     .map((item, index) => ({
       '@context': 'https://schema.org',

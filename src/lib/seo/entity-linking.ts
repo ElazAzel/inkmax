@@ -62,7 +62,7 @@ export function extractEntityLinks(
   // Extract sameAs from socials block
   const socialsBlock = validBlocks.find(b => b.type === 'socials') as SocialsBlock | undefined;
   if (socialsBlock?.platforms) {
-    for (const platform of socialsBlock.platforms) {
+    for (const platform of (socialsBlock.platforms || []).filter(p => p != null && typeof p === 'object')) {
       if (platform.url && isValidUrl(platform.url)) {
         result.sameAs.push(normalizeUrl(platform.url));
       }
@@ -86,7 +86,8 @@ export function extractEntityLinks(
   // Extract knowsAbout from pricing/services
   const pricingBlock = validBlocks.find(b => b.type === 'pricing') as any;
   if (pricingBlock?.items) {
-    for (const item of (pricingBlock.items || []).filter(i => i)) {
+    for (const item of (pricingBlock.items || []).filter((i): i is NonNullable<typeof i> => i != null && typeof i === 'object')) {
+      if (!item.name) continue;
       const name = getI18nText(item.name, language);
       if (name && name.length > 2 && name.length < 50) {
         result.knowsAbout.push(name);
@@ -97,7 +98,7 @@ export function extractEntityLinks(
   // Extract knowsAbout from catalog categories
   const catalogBlock = validBlocks.find(b => b.type === 'catalog') as any;
   if (catalogBlock?.categories) {
-    for (const category of catalogBlock.categories.slice(0, 3)) {
+    for (const category of (catalogBlock.categories || []).filter((c: any) => c != null && typeof c === 'object' && c.name)) {
       const name = getI18nText(category.name, language);
       if (name && name.length > 2 && name.length < 50) {
         result.knowsAbout.push(name);
@@ -151,7 +152,7 @@ export function extractSkillTags(
   // From pricing serviceType
   const pricingBlock = validBlocks.find(b => b.type === 'pricing') as any;
   if (pricingBlock?.items) {
-    for (const item of pricingBlock.items) {
+    for (const item of (pricingBlock.items || []).filter((i: any) => i != null && typeof i === 'object')) {
       if (item.serviceType && item.serviceType !== 'other') {
         tags.push(item.serviceType);
       }
@@ -161,7 +162,7 @@ export function extractSkillTags(
   // From catalog categories
   const catalogBlock = validBlocks.find(b => b.type === 'catalog') as any;
   if (catalogBlock?.categories) {
-    for (const category of catalogBlock.categories) {
+    for (const category of (catalogBlock.categories || []).filter((c: any) => c != null && typeof c === 'object' && c.name)) {
       const name = getI18nText(category.name, language);
       if (name) {
         tags.push(name.toLowerCase().replace(/\s+/g, '-'));

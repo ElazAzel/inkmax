@@ -197,7 +197,8 @@ function detectNiche(
   // Check pricing/services for niche hints
   const pricingBlock = blocks.find(b => b.type === 'pricing') as PricingBlock | undefined;
   if (pricingBlock?.items) {
-    for (const item of (pricingBlock.items || []).filter(i => i)) {
+    for (const item of (pricingBlock.items || []).filter((i): i is NonNullable<typeof i> => i != null && typeof i === 'object')) {
+      if (!item.name) continue;
       const serviceName = getI18nText(item.name, language)?.toLowerCase() || '';
       for (const [keyword, translations] of Object.entries(NICHE_KEYWORDS)) {
         if (serviceName.includes(keyword)) {
@@ -235,7 +236,7 @@ function extractServices(blocks: Block[], language: 'ru' | 'en' | 'kk'): string[
   if (!pricingBlock?.items) return [];
 
   return (pricingBlock.items || [])
-    .filter(item => item && typeof item === 'object')
+    .filter(item => item != null && typeof item === 'object' && item.name)
     .slice(0, 3)
     .map(item => getI18nText(item.name, language))
     .filter((name): name is string => !!name && name.length > 0);
