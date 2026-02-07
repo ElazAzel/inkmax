@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { getI18nText, isI18nText, ensureI18nText, type SupportedLanguage, type I18nText } from '@/lib/i18n-helpers';
 import { supabase } from '@/platform/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
@@ -104,24 +104,30 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
     }
   }, [isEditingBio]);
 
-  // Optimized save handlers with debounce
+  // Save handlers that preserve multilingual structure
   const handleSaveName = useCallback(() => {
     const trimmedName = editedName.trim();
     if (trimmedName && trimmedName !== name) {
-      onUpdate({ name: trimmedName });
+      // Preserve multilingual structure, update only current language
+      const existingName = ensureI18nText(block.name, currentLang);
+      const updatedName: I18nText = { ...existingName, [currentLang]: trimmedName };
+      onUpdate({ name: updatedName });
       toast.success(t('profile.nameSaved', 'Имя сохранено'));
     }
     setIsEditingName(false);
-  }, [editedName, name, onUpdate, t]);
+  }, [editedName, name, block.name, currentLang, onUpdate, t]);
 
   const handleSaveBio = useCallback(() => {
     const trimmedBio = editedBio.trim();
     if (trimmedBio !== bio) {
-      onUpdate({ bio: trimmedBio });
+      // Preserve multilingual structure, update only current language
+      const existingBio = ensureI18nText(block.bio, currentLang);
+      const updatedBio: I18nText = { ...existingBio, [currentLang]: trimmedBio };
+      onUpdate({ bio: updatedBio });
       toast.success(t('profile.bioSaved', 'Описание сохранено'));
     }
     setIsEditingBio(false);
-  }, [editedBio, bio, onUpdate, t]);
+  }, [editedBio, bio, block.bio, currentLang, onUpdate, t]);
 
   const handleCancelName = useCallback(() => {
     setEditedName(name);
@@ -656,16 +662,12 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
           {/* Editable Bio - Optimized with animations */}
           {isEditingBio ? (
             <div className="space-y-3 w-full animate-in fade-in zoom-in-95 duration-200">
-              <Textarea
-                ref={bioTextareaRef}
+              <RichTextEditor
                 value={editedBio}
-                onChange={(e) => setEditedBio(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') handleCancelBio();
-                }}
+                onChange={(val) => setEditedBio(val)}
                 placeholder={t('profile.bioPlaceholder', 'Расскажите о себе...')}
-                className="min-h-[100px] text-base rounded-2xl border-2 border-primary/50 focus:border-primary resize-none transition-colors"
-                rows={3}
+                type="textarea"
+                className="text-base rounded-2xl border-2 border-primary/50 focus:border-primary resize-none transition-colors"
               />
               <div className="flex items-center justify-center gap-3">
                 <Button size="lg" onClick={handleSaveBio} className="rounded-2xl px-6 h-12 font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
