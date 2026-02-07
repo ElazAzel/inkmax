@@ -1,22 +1,25 @@
 import { Reveal } from '@/components/motion';
 import { UserPlus, Settings2, Rocket } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function StepsSection() {
+    const { t } = useTranslation();
+
     const steps = [
         {
             icon: UserPlus,
-            title: "1. Create Account",
-            desc: "Sign up in seconds using your email or Google account. No credit card required."
+            title: t('landing.v6.steps.step1.title'),
+            desc: t('landing.v6.steps.step1.desc')
         },
         {
             icon: Settings2,
-            title: "2. Customize",
-            desc: "Choose a template, add your links, and style it to match your brand."
+            title: t('landing.v6.steps.step2.title'),
+            desc: t('landing.v6.steps.step2.desc')
         },
         {
             icon: Rocket,
-            title: "3. Launch",
-            desc: "Publish your page and share the link in your bio. Start tracking visits immediately."
+            title: t('landing.v6.steps.step3.title'),
+            desc: t('landing.v6.steps.step3.desc')
         }
     ];
 
@@ -26,12 +29,12 @@ export default function StepsSection() {
                 <div className="text-center mb-16 md:mb-24">
                     <Reveal delay={0} direction="up">
                         <h2 className="font-heading text-3xl md:text-5xl font-bold tracking-tight mb-6">
-                            From Idea to Live in Minutes
+                            {t('landing.v6.steps.title')}
                         </h2>
                     </Reveal>
                     <Reveal delay={100} direction="up">
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-sans">
-                            We removed all the complexity. You focus on your content, we handle the rest.
+                            {t('landing.v6.steps.subtitle')}
                         </p>
                     </Reveal>
                 </div>

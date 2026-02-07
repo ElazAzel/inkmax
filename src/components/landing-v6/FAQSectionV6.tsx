@@ -1,39 +1,16 @@
-
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
-import { useTranslation } from "react-i18next";
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { useTranslation } from 'react-i18next';
+import { ChevronDown } from "lucide-react";
 
 export default function FAQSectionV6() {
     const { t } = useTranslation();
 
-    // Enhanced FAQ data for AEO (Answer Engine Optimization)
-    // Structure focuses on direct questions users ask voice assistants or AI search
-    const faqs = [
-        {
-            question: "Что такое lnkmx и кому он подходит?",
-            answer: "lnkmx — это операционная система для микробизнеса. Она идеально подходит для экспертов, фрилансеров и малого бизнеса, которым нужен быстрый сайт, встроенная CRM для заявок и простая аналитика без сложных настроек."
-        },
-        {
-            question: "Нужно ли знать программирование?",
-            answer: "Нет, lnkmx — это no-code платформа. Вы собираете сайт из готовых блоков, как конструктор Lego. А встроенный AI-помощник может написать тексты за вас."
-        },
-        {
-            question: "Можно ли принимать оплаты в тенге?",
-            answer: "Да, платформа полностью адаптирована для рынка Казахстана. Вы можете указывать цены в KZT, а интеграции с локальными платежными системами находятся в активной разработке."
-        },
-        {
-            question: "Помогает ли сайт на lnkmx продвижению в Google (SEO)?",
-            answer: "Абсолютно. Все страницы на lnkmx автоматически оптимизированы для поисковиков: быстрая загрузка, адаптивность под мобильные устройства и правильная семантическая разметка (Schema.org), что критически важно для SEO в 2025 году."
-        },
-        {
-            question: "Есть ли бесплатный тариф?",
-            answer: "Да, у нас есть вечный бесплатный тариф с базовыми функциями. Вы можете создать страницу и начать принимать заявки без вложений."
-        }
-    ];
+    // Get FAQ data using t() calls
+    const faqs = (t('landing.v6.faq.items', { returnObjects: true }) as { question: string, answer: string }[]);
 
     // JSON-LD for FAQPage (Google optimal)
     const faqSchema = {
@@ -60,29 +37,33 @@ export default function FAQSectionV6() {
             <div className="container px-4 md:px-6 mx-auto max-w-4xl relative z-10">
                 <div className="text-center mb-16 space-y-4">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                        Частые вопросы
+                        {t('landing.v6.faq.title')}
                     </h2>
                     <p className="text-lg text-muted-foreground">
-                        Всё, что нужно знать о платформе
+                        {t('landing.v6.faq.subtitle')}
                     </p>
                 </div>
 
-                <Accordion type="single" collapsible className="w-full space-y-4">
+                <div className="space-y-4">
                     {faqs.map((faq, index) => (
-                        <AccordionItem
+                        <div
                             key={index}
-                            value={`item-${index}`}
-                            className="border rounded-lg px-4 bg-muted/30 data-[state=open]:bg-muted/50 transition-colors"
+                            className="bg-card border border-border rounded-xl overflow-hidden"
                         >
-                            <AccordionTrigger className="text-left text-lg font-medium hover:no-underline py-6">
-                                {faq.question}
-                            </AccordionTrigger>
-                            <AccordionContent className="text-muted-foreground text-base leading-relaxed pb-6">
-                                {faq.answer}
-                            </AccordionContent>
-                        </AccordionItem>
+                            <Collapsible>
+                                <CollapsibleTrigger className="flex items-center justify-between w-full p-6 text-left font-medium text-lg hover:bg-muted/50 transition-colors [&[data-state=open]>svg]:rotate-180">
+                                    {faq.question}
+                                    <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200" />
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                    <div className="px-6 pb-6 text-muted-foreground leading-relaxed">
+                                        {faq.answer}
+                                    </div>
+                                </CollapsibleContent>
+                            </Collapsible>
+                        </div>
                     ))}
-                </Accordion>
+                </div>
             </div>
 
             {/* Decorative background element */}

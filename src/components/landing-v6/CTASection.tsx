@@ -2,8 +2,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Reveal } from '@/components/motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function CTASection() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -16,21 +18,20 @@ export default function CTASection() {
                 <Reveal delay={0} direction="up">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
                         <Sparkles className="w-4 h-4" />
-                        <span>Ready to launch?</span>
+                        <span>{t('landing.v6.cta.badge')}</span>
                     </div>
                 </Reveal>
 
                 <Reveal delay={100} direction="up">
                     <h2 className="font-heading text-4xl md:text-6xl font-bold tracking-tight mb-8 text-foreground pb-2">
-                        Build your micro-site<br />
-                        <span className="text-primary">for free today.</span>
+                        {t('landing.v6.cta.titlePrefix')}<br />
+                        <span className="text-primary">{t('landing.v6.cta.titleSuffix')}</span>
                     </h2>
                 </Reveal>
 
                 <Reveal delay={200} direction="up">
                     <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-                        Join thousands of creators, experts, and small businesses growing with lnkmx.
-                        No credit card required.
+                        {t('landing.v6.cta.description')}
                     </p>
                 </Reveal>
 
@@ -41,7 +42,7 @@ export default function CTASection() {
                             onClick={() => navigate('/auth')}
                             className="h-14 px-10 rounded-full text-lg font-bold shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto"
                         >
-                            Get Started Free
+                            {t('landing.v6.cta.primary')}
                             <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
                         <Button
@@ -50,7 +51,7 @@ export default function CTASection() {
                             onClick={() => navigate('/gallery')}
                             className="h-14 px-10 rounded-full text-lg font-medium bg-background/50 backdrop-blur-sm border-primary/20 hover:bg-background/80 w-full sm:w-auto"
                         >
-                            View Examples
+                            {t('landing.v6.cta.secondary')}
                         </Button>
                     </div>
                 </Reveal>

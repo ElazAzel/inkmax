@@ -36,43 +36,43 @@ export default function FeaturesBento() {
 
     const features = [
         {
-            title: "Mobile-First Builder",
-            description: "Designed for the phone generation. Edit, preview, and publish directly from your mobile device.",
+            title: t('landing.v6.features.mobileBuilder.title'),
+            description: t('landing.v6.features.mobileBuilder.desc'),
             icon: Smartphone,
             className: "md:col-span-2 md:row-span-2",
             delay: 0
         },
         {
-            title: "Real-time Analytics",
-            description: "Track clicks, views, and conversion events with privacy-focused built-in analytics.",
+            title: t('landing.v6.features.analytics.title'),
+            description: t('landing.v6.features.analytics.desc'),
             icon: BarChart3,
             className: "md:col-span-1 md:row-span-1",
             delay: 100
         },
         {
-            title: "Custom Domain",
-            description: "Connect your own .com or .kz domain for professional branding.",
+            title: t('landing.v6.features.domain.title'),
+            description: t('landing.v6.features.domain.desc'),
             icon: Globe2,
             className: "md:col-span-1 md:row-span-1",
             delay: 200
         },
         {
-            title: "Instant SEO",
-            description: "AI-generated meta tags and schema markup ensuring perfect search indexing.",
+            title: t('landing.v6.features.seo.title'),
+            description: t('landing.v6.features.seo.desc'),
             icon: Zap,
             className: "md:col-span-1 md:row-span-1",
             delay: 300
         },
         {
-            title: "28+ Smart Blocks",
-            description: "From simple links to complex forms and booking systems.",
+            title: t('landing.v6.features.blocks.title'),
+            description: t('landing.v6.features.blocks.desc'),
             icon: Layout,
             className: "md:col-span-1 md:row-span-1",
             delay: 400
         },
         {
-            title: "Global Payments",
-            description: "Accept payments from anywhere via Stripe, Kaspi, or Crypto.",
+            title: t('landing.v6.features.payments.title'),
+            description: t('landing.v6.features.payments.desc'),
             icon: CreditCard,
             className: "md:col-span-1 md:row-span-1",
             delay: 500
@@ -84,11 +84,11 @@ export default function FeaturesBento() {
             <div className="container px-4 md:px-6 max-w-7xl mx-auto">
                 <div className="mb-16 md:mb-24 text-center max-w-3xl mx-auto">
                     <h2 className="font-heading text-3xl md:text-5xl font-bold tracking-tight mb-6">
-                        Everything you need. <br />
-                        <span className="text-muted-foreground">Nothing you don't.</span>
+                        {t('landing.v6.features.title')} <br />
+                        <span className="text-muted-foreground">{t('landing.v6.features.subtitle')}</span>
                     </h2>
                     <p className="text-lg text-muted-foreground/80 font-sans">
-                        A complete toolkit for micro-businesses, packaged in a beautiful Swiss-style interface.
+                        {t('landing.v6.features.description')}
                     </p>
                 </div>
 

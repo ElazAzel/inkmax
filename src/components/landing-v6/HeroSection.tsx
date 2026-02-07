@@ -4,6 +4,8 @@ import { ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Reveal } from '@/components/motion/Reveal';
 
 export default function HeroSection() {
+    const { t } = useTranslation();
+
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
         if (element) {
@@ -27,32 +29,32 @@ export default function HeroSection() {
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                                 </span>
-                                V6.0 Live
+                                {t('landing.v6.hero.badge')}
                             </div>
                         </Reveal>
 
                         <Reveal delay={200}>
                             <h1 className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9]">
-                                The <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-violet-500 to-primary animate-gradient-flow bg-[length:200%_auto]">OS</span> <br />
-                                for your <br />
-                                <span className="italic font-serif">Micro-Brand.</span>
+                                {t('landing.v6.hero.titlePrefix')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-violet-500 to-primary animate-gradient-flow bg-[length:200%_auto]">{t('landing.v6.hero.titleHighlight')}</span> <br />
+                                {t('landing.v6.hero.titleSuffix')} <br />
+                                <span className="italic font-serif">{t('landing.v6.hero.titleBrand')}</span>
                             </h1>
                         </Reveal>
 
                         <Reveal delay={300}>
                             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
-                                More than a link-in-bio. A complete operating system to build, sell, and grow entirely from your phone. No code, just flow.
+                                {t('landing.v6.hero.description')}
                             </p>
                         </Reveal>
 
                         <Reveal delay={400}>
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <Button size="lg" className="h-14 px-8 rounded-full text-lg shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300" onClick={() => scrollToSection('pricing')}>
-                                    Start Building Free
+                                    {t('landing.v6.hero.ctaPrimary')}
                                     <ArrowRight className="ml-2 w-5 h-5" />
                                 </Button>
                                 <Button size="lg" variant="outline" className="h-14 px-8 rounded-full text-lg border-2 hover:bg-muted/50 transition-all duration-300" onClick={() => scrollToSection('features')}>
-                                    Explore Features
+                                    {t('landing.v6.hero.ctaSecondary')}
                                 </Button>
                             </div>
                         </Reveal>
@@ -61,11 +63,11 @@ export default function HeroSection() {
                             <div className="flex items-center gap-6 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-2">
                                     <CheckCircle2 className="w-4 h-4 text-primary" />
-                                    <span>No credit card</span>
+                                    <span>{t('landing.v6.hero.noCard')}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <CheckCircle2 className="w-4 h-4 text-primary" />
-                                    <span>Cancel anytime</span>
+                                    <span>{t('landing.v6.hero.cancelAnytime')}</span>
                                 </div>
                             </div>
                         </Reveal>
@@ -81,8 +83,8 @@ export default function HeroSection() {
                                         $
                                     </div>
                                     <div>
-                                        <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Revenue</p>
-                                        <p className="text-xl font-bold font-heading">$12,450</p>
+                                        <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">{t('landing.v6.hero.cardRevenue.label')}</p>
+                                        <p className="text-xl font-bold font-heading">{t('landing.v6.hero.cardRevenue.value')}</p>
                                     </div>
                                 </div>
                                 <div className="h-24 bg-gradient-to-t from-green-500/10 to-transparent rounded-xl border border-green-500/20 relative overflow-hidden">
@@ -116,8 +118,8 @@ export default function HeroSection() {
                                     <Sparkles className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold">New Lead!</p>
-                                    <p className="text-xs text-muted-foreground">Just now via LinkMAX</p>
+                                    <p className="text-sm font-bold">{t('landing.v6.hero.cardLead.title')}</p>
+                                    <p className="text-xs text-muted-foreground">{t('landing.v6.hero.cardLead.subtitle')}</p>
                                 </div>
                             </div>
                         </Reveal>
