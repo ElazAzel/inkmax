@@ -174,10 +174,10 @@ export default {
           '50%': { borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%' }
         },
         'glow-pulse': {
-          '0%, 100%': { 
+          '0%, 100%': {
             boxShadow: '0 0 20px hsl(211 100% 50% / 0.2), 0 0 40px hsl(262 83% 58% / 0.1)'
           },
-          '50%': { 
+          '50%': {
             boxShadow: '0 0 30px hsl(211 100% 50% / 0.4), 0 0 60px hsl(262 83% 58% / 0.2)'
           }
         }
@@ -211,14 +211,21 @@ export default {
       fontFamily: {
         sans: [
           'Inter',
+          'ui-sans-serif',
+          'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
-          'SF Pro Display',
-          'SF Pro Text',
           'Segoe UI',
           'Roboto',
           'Helvetica Neue',
           'Arial',
+          'sans-serif'
+        ],
+        heading: [
+          'Manrope',
+          'Inter',
+          'ui-sans-serif',
+          'system-ui',
           'sans-serif'
         ]
       },
