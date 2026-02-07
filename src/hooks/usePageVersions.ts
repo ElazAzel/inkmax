@@ -37,7 +37,7 @@ export function usePageVersions(onRestore?: (blocks: Block[], theme?: PageTheme,
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('page_snapshots')
         .select('*')
         .eq('page_id', pageId)
@@ -77,7 +77,7 @@ export function usePageVersions(onRestore?: (blocks: Block[], theme?: PageTheme,
       const versionId = `v-${Date.now()}`;
 
       // Insert new version
-      const { error: insertError } = await supabase
+      const { error: insertError } = await (supabase as any)
         .from('page_snapshots')
         .insert({
           page_id: pageId,
@@ -92,15 +92,15 @@ export function usePageVersions(onRestore?: (blocks: Block[], theme?: PageTheme,
       if (insertError) throw insertError;
 
       // Clean up old versions (keep only MAX_VERSIONS)
-      const { data: allVersions } = await supabase
+      const { data: allVersions } = await (supabase as any)
         .from('page_snapshots')
         .select('id, published_at')
         .eq('page_id', pageId)
         .order('published_at', { ascending: false });
 
       if (allVersions && allVersions.length > MAX_VERSIONS) {
-        const toDelete = allVersions.slice(MAX_VERSIONS).map((v) => v.id);
-        await supabase
+        const toDelete = allVersions.slice(MAX_VERSIONS).map((v: any) => v.id);
+        await (supabase as any)
           .from('page_snapshots')
           .delete()
           .in('id', toDelete);
