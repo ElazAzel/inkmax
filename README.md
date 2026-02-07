@@ -45,6 +45,7 @@ The project follows Clean Architecture principles with separation of concerns.
 ## Key Features
 
 ### Page Builder
+
 - **28 block types** (profile, links, products, forms, booking, events, etc.)
 - Drag-and-drop reordering
 - AI-powered content generation
@@ -52,6 +53,7 @@ The project follows Clean Architecture principles with separation of concerns.
 - SEO optimization
 
 ### CRM & Analytics
+
 - Lead capture and management
 - Telegram notifications
 - Page analytics (views, clicks, conversions)
@@ -59,6 +61,7 @@ The project follows Clean Architecture principles with separation of concerns.
 - Device & source breakdown
 
 ### Social Features
+
 - Gallery showcase
 - Template marketplace (50+ templates)
 - Collaboration (shoutouts)
@@ -66,6 +69,7 @@ The project follows Clean Architecture principles with separation of concerns.
 - Friends & activity feed
 
 ### Monetization
+
 - Free/Pro/Business/Enterprise tiers
 - Linkkon token economy
 - Template sales
@@ -74,11 +78,14 @@ The project follows Clean Architecture principles with separation of concerns.
 ## Documentation
 
 📚 **Platform Documentation:**
-- [📖 PLATFORM-DOCUMENTATION.md](./docs/PLATFORM-DOCUMENTATION.md) - Complete platform overview
+
+- [📖 PLATFORM_SNAPSHOT.md](./docs/PLATFORM_SNAPSHOT.md) - **Current System Status & Architecture** (Living Doc)
 - [🧩 BLOCKS-REFERENCE.md](./docs/BLOCKS-REFERENCE.md) - All 28 blocks with examples
 - [📋 BLOCKS-AUDIT.md](./docs/BLOCKS-AUDIT.md) - Full audit of all blocks
+- [📜 AUDIT-SUMMARY.md](./AUDIT-SUMMARY.md) - Historical audit log
 
 **Other Resources:**
+
 - [🏗️ Architecture](./docs/architecture.md) - System design
 - [🔒 Security](./docs/SECURITY.md) - Security measures
 - [⚡ Performance](./docs/performance.md) - Performance metrics
@@ -211,6 +218,6 @@ Automatic deployment via Lovable Cloud:
 
 - **Company**: ИП BEEGIN (БИН: 971207300019)
 - **Location**: Almaty, Kazakhstan
-- **Contact**: admin@lnkmx.my
+- **Contact**: <admin@lnkmx.my>
 
 ---

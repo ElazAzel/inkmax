@@ -1,5 +1,9 @@
 # 📊 PLATFORM AUDIT - EXECUTIVE SUMMARY
 
+> [!NOTE]
+> This is a **HISTORICAL** audit log from Feb 2026.
+> For the current system status and architecture, see [PLATFORM_SNAPSHOT.md](./docs/PLATFORM_SNAPSHOT.md).
+
 > Полный аудит платформы lnkmx с детальным анализом и action plan
 
 **Дата аудита:** 31 января 2026  

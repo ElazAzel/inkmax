@@ -6,8 +6,8 @@
 ## 📚 Документы (Начните отсюда!)
 
 | Документ | Назначение | Для кого |
-|----------|-----------|----------|
-| **[PLATFORM-DOCUMENTATION.md](./docs/PLATFORM-DOCUMENTATION.md)** | Обзор платформы, архитектура, фичи | Все |
+| :--- | :--- | :--- |
+| **[PLATFORM_SNAPSHOT.md](./docs/PLATFORM_SNAPSHOT.md)** | **Current System Status & Architecture** | Все |
 | **[BLOCKS-REFERENCE.md](./docs/BLOCKS-REFERENCE.md)** | Справочник всех 28 блоков с примерами | Разработчики |
 | **[BLOCKS-AUDIT.md](./docs/BLOCKS-AUDIT.md)** | Полный аудит функциональности | Архитекторы |
 | **[AUDIT-REPORT-2026-02-01.md](./AUDIT-REPORT-2026-02-01.md)** | Итоговый отчет аудита | Менеджеры |
@@ -17,7 +17,8 @@
 ## 🏗️ Архитектура
 
 ### Stack технологий
-```
+
+```text
 Frontend:     React 18 + TypeScript + Vite + Tailwind
 Backend:      Supabase (PostgreSQL + Auth)
 Edge:         Cloudflare Worker (SSR + Caching)
@@ -27,7 +28,8 @@ Analytics:    Custom + Supabase
 ```
 
 ### Структура проекта
-```
+
+```text
 src/
 ├── components/
 │   ├── blocks/              # 28 блок компонентов
@@ -49,9 +51,11 @@ src/
 ## 🧩 28 Блоков (Полный список)
 
 ### Профиль (1)
+
 - **Profile** - Аватар + имя + био (15 стилей рамки, 9 анимаций)
 
 ### Базовые (5)
+
 - **Link** - Ссылка с favicon
 - **Button** - CTA кнопка (4 эффекта наведения)
 - **Text** - Rich text
@@ -59,12 +63,14 @@ src/
 - **Separator** - Разделитель (4 варианта)
 
 ### Медиа (4)
+
 - **Image** - Изображение (5 стилей)
 - **Video** - YouTube/Vimeo
 - **Carousel** - Галерея с автопроигрыванием
 - **Before/After** - Интерактивный компаратор
 
 ### Интерактивные (5)
+
 - **Socials** - Социальные сети (20+ платформ)
 - **Messenger** - WhatsApp/Telegram/Viber/WeChat
 - **Form** - Форма сбора лидов (⭐ премиум)
@@ -72,12 +78,14 @@ src/
 - **Map** - Google Maps
 
 ### Коммерция (4)
+
 - **Product** - Карточка товара (25+ валют)
 - **Catalog** - Каталог с фильтром (⭐ премиум)
 - **Pricing** - Пакеты услуг (Schema.org Service)
 - **Download** - Загрузка файла
 
 ### Премиум (6)
+
 - **Custom Code** - HTML/CSS/JS (⭐ премиум)
 - **Newsletter** - Email подписка (⭐ премиум)
 - **Testimonial** - Отзывы + рейтинги (⭐ премиум)
@@ -86,6 +94,7 @@ src/
 - **Booking** - Запись на услуги (⭐ премиум)
 
 ### Социально (3)
+
 - **Community** - Telegram канал
 - **Shoutout** - Рекомендация пользователя
 - **Event** - Регистрация на события (20+ полей)
@@ -239,6 +248,7 @@ interface BlockStyle {
 ## 🌍 Многоязычность
 
 ### Структура данных
+
 ```typescript
 type MultilingualString = {
   ru?: string;
@@ -248,6 +258,7 @@ type MultilingualString = {
 ```
 
 ### Использование
+
 ```typescript
 // В компоненте
 const { i18n } = useTranslation();
@@ -260,6 +271,7 @@ interface MyBlock {
 ```
 
 ### Локализованные строки
+
 ```typescript
 // src/i18n/locales/ru.json
 {
@@ -276,6 +288,7 @@ interface MyBlock {
 ## 📊 Аналитика
 
 ### Отслеживание события
+
 ```typescript
 const { onBlockClick } = useAnalytics();
 
@@ -285,13 +298,15 @@ const handleClick = () => {
 ```
 
 ### Доступные события
+
 - **view** - просмотр блока
 - **click** - клик по ссылке
 - **share** - поделиться
 - **engagement** - взаимодействие
 
 ### Data сохраняется в Supabase
-```
+
+```yaml
 analytics table:
 - block_id
 - event_type
@@ -304,6 +319,7 @@ analytics table:
 ## 🔐 Безопасность
 
 ### XSS Protection
+
 ```typescript
 // ✅ Хорошо - React escaping
 <div>{userContent}</div>
@@ -313,9 +329,11 @@ analytics table:
 ```
 
 ### CSRF Protection
+
 Используется на уровне Supabase RLS
 
 ### Rate Limiting
+
 - API: 60 запросов/минуту
 - Email: 10 писем/час
 - Forms: 10 отправок/минуту
@@ -325,18 +343,21 @@ analytics table:
 ## 🚀 Развертывание
 
 ### Локально
+
 ```bash
 npm install
 npm run dev
 ```
 
 ### Build
+
 ```bash
 npm run build
 npm run preview
 ```
 
 ### Lint & Type check
+
 ```bash
 npm run lint
 npx tsc --noEmit
@@ -344,6 +365,7 @@ npm run lint:i18n
 ```
 
 ### Тесты
+
 ```bash
 npm test
 npm run e2e
@@ -355,6 +377,7 @@ npm run e2e:ci
 ## 📦 Зависимости
 
 **Core:**
+
 - react@18
 - typescript
 - vite
@@ -362,12 +385,14 @@ npm run e2e:ci
 - shadcn/ui
 
 **Utils:**
+
 - react-router-dom@6
 - react-i18next
 - vitest
 - playwright
 
 **Backend:**
+
 - @supabase/supabase-js
 - stripe
 
@@ -375,22 +400,24 @@ npm run e2e:ci
 
 ## 🔗 Полезные ссылки
 
-- **GitHub:** https://github.com/ElazAzel/inkmax
-- **Live:** https://lnkmx.my
-- **Docs:** https://docs.inkmax.dev
-- **Issues:** https://github.com/ElazAzel/inkmax/issues
+- **GitHub:** <https://github.com/ElazAzel/inkmax>
+- **Live:** <https://lnkmx.my>
+- **Docs:** <https://docs.inkmax.dev>
+- **Issues:** <https://github.com/ElazAzel/inkmax/issues>
 
 ---
 
 ## ⚙️ Конфигурация
 
 ### Environment Variables
+
 ```env
 VITE_SUPABASE_URL=https://xxx.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=eyJ...
 ```
 
 ### TypeScript Config
+
 ```json
 {
   "compilerOptions": {
@@ -402,6 +429,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY=eyJ...
 ```
 
 ### Tailwind Config
+
 ```typescript
 // 2-column grid by default
 // Mobile first approach
@@ -437,9 +465,9 @@ VITE_SUPABASE_PUBLISHABLE_KEY=eyJ...
 
 ## 📞 Поддержка
 
-- **GitHub Issues:** https://github.com/ElazAzel/inkmax/issues
-- **Email:** support@inkmax.dev
-- **Docs:** https://docs.inkmax.dev
+- **GitHub Issues:** <https://github.com/ElazAzel/inkmax/issues>
+- **Email:** <support@inkmax.dev>
+- **Docs:** <https://docs.inkmax.dev>
 
 ---
 
