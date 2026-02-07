@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getI18nText, type SupportedLanguage } from '@/lib/i18n-helpers';
@@ -20,33 +20,33 @@ interface ProfileBlockProps {
 }
 
 // Custom verification badge component for user-selected styling
-const CustomVerificationBadge = memo(function CustomVerificationBadgeComponent({ 
-  iconType, 
+const CustomVerificationBadge = memo(function CustomVerificationBadgeComponent({
+  iconType,
   customIcon,
-  color, 
-  position 
-}: { 
-  iconType?: VerificationIconType; 
+  color,
+  position
+}: {
+  iconType?: VerificationIconType;
   customIcon?: string;
-  color?: string; 
-  position?: string; 
+  color?: string;
+  position?: string;
 }) {
   // If custom icon is provided, use it instead of preset icon
   if (customIcon) {
     return (
-      <div 
+      <div
         className={cn(
           "absolute rounded-full shadow-lg z-10 overflow-hidden flex-shrink-0",
           "w-6 h-6 sm:w-7 sm:h-7",
           getVerificationPositionClasses(position)
         )}
-        style={{ 
+        style={{
           backgroundColor: getVerificationColor(color),
         }}
       >
-        <img 
-          src={customIcon} 
-          alt="Verified" 
+        <img
+          src={customIcon}
+          alt="Verified"
           className="w-full h-full object-cover"
         />
       </div>
@@ -56,37 +56,39 @@ const CustomVerificationBadge = memo(function CustomVerificationBadgeComponent({
   const iconOption = VERIFICATION_ICON_OPTIONS.find(opt => opt.value === (iconType || 'check-circle'));
   const iconName = iconOption?.icon || 'CheckCircle2';
   const IconComponent = getLucideIcon(iconName, CheckCircle2);
-  
+
   return (
-    <div 
+    <div
       className={cn(
         "absolute rounded-full p-1 sm:p-1.5 shadow-lg z-10 flex-shrink-0",
         getVerificationPositionClasses(position)
       )}
       style={{ backgroundColor: getVerificationColor(color) }}
     >
-      <IconComponent className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" fill="currentColor" />
+      <Suspense fallback={<div className="h-3.5 w-3.5 sm:h-4 sm:w-4 bg-white/20 rounded-full" />}>
+        <IconComponent className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" fill="currentColor" />
+      </Suspense>
     </div>
   );
 });
 
-export const ProfileBlock = memo(function ProfileBlockComponent({ 
-  block, 
-  isPreview, 
-  isOwnerPremium, 
+export const ProfileBlock = memo(function ProfileBlockComponent({
+  block,
+  isPreview,
+  isOwnerPremium,
   ownerTier,
-  isOwnerVerified = false 
+  isOwnerVerified = false
 }: ProfileBlockProps) {
   const { t, i18n } = useTranslation();
   const name = getI18nText(block.name, i18n.language as SupportedLanguage);
   const bio = getI18nText(block.bio, i18n.language as SupportedLanguage);
-  
+
   // Pro tier users are considered premium
   const isPremiumUser = ownerTier === 'pro' || isOwnerPremium;
-  
+
   // Use platform verification status + premium status for badge
   const showPlatformBadge = isOwnerVerified || isPremiumUser;
-  
+
   const initials = name
     .split(' ')
     .map(n => n[0])
@@ -135,7 +137,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
     switch (position) {
       case 'left': return 'items-start';
       case 'right': return 'items-end';
-      case 'center': 
+      case 'center':
       default: return 'items-center';
     }
   };
@@ -166,9 +168,9 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
     <div className={`relative flex flex-col ${getPositionClass()}`}>
       {block.coverImage && (
         <div className={`relative w-full ${getCoverHeight()} overflow-hidden`}>
-          <img 
-            src={block.coverImage} 
-            alt="Cover" 
+          <img
+            src={block.coverImage}
+            alt="Cover"
             className="w-full h-full object-cover"
           />
           {block.coverGradient !== 'none' && (
@@ -176,12 +178,12 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
           )}
         </div>
       )}
-      
+
       <div className={`flex flex-col ${getPositionClass()} gap-4 p-6 ${block.coverImage ? '-mt-16' : ''}`}>
         {/* Outer container for positioning icon - no animation here */}
         <div className="relative">
           {/* Frame wrapper - animations and shadow apply here ONLY */}
-          <div 
+          <div
             className={cn(
               "flex items-center justify-center rounded-full",
               getFrameSize(),
@@ -203,24 +205,26 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
           {/* Icon badge */}
           {IconComponent && (
             <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full p-1.5 shadow-lg z-10">
-              <IconComponent className="h-4 w-4" />
+              <Suspense fallback={<div className="h-4 w-4 bg-primary-foreground/20 rounded-full" />}>
+                <IconComponent className="h-4 w-4" />
+              </Suspense>
             </div>
           )}
-          
+
           {/* Platform verification badge - shows based on actual verification + premium status */}
           {showPlatformBadge && (
             <div className={cn("absolute z-10", getVerificationPositionClasses(block.verifiedPosition || 'bottom-right'))}>
-              <VerifiedBadge 
+              <VerifiedBadge
                 isVerified={isOwnerVerified}
                 isPremium={isPremiumUser}
                 size="md"
               />
             </div>
           )}
-          
+
           {/* Custom user-defined badge (if manually set and different from platform badge) */}
           {block.verified && !showPlatformBadge && (
-            <CustomVerificationBadge 
+            <CustomVerificationBadge
               iconType={block.verifiedIcon}
               customIcon={block.verifiedCustomIcon}
               color={block.verifiedColor}
@@ -228,7 +232,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
             />
           )}
         </div>
-        
+
         <div className="text-center space-y-2">
           <style>{NAME_ANIMATION_CSS}</style>
           <div className="flex items-center justify-center gap-2">
@@ -239,7 +243,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
               {name}
             </h1>
           </div>
-          
+
           {bio && (
             <p className="text-muted-foreground max-w-md whitespace-pre-line">{parseRichText(bio)}</p>
           )}
@@ -250,7 +254,7 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
           <div className="w-full max-w-md mx-auto space-y-3 mt-4">
             {block.introVideo && (
               <div className="relative rounded-xl overflow-hidden bg-muted/50 border border-border/50">
-                <video 
+                <video
                   src={block.introVideo}
                   controls
                   playsInline
@@ -265,14 +269,14 @@ export const ProfileBlock = memo(function ProfileBlockComponent({
                 </div>
               </div>
             )}
-            
+
             {block.introAudio && !block.introVideo && (
               <div className="relative rounded-xl overflow-hidden bg-muted/50 border border-border/50 p-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="w-3 h-3 bg-primary rounded-full animate-pulse" />
                   </div>
-                  <audio 
+                  <audio
                     src={block.introAudio}
                     controls
                     className="flex-1 h-10"

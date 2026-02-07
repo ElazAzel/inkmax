@@ -1,56 +1,47 @@
-/**
- * Utility for type-safe dynamic Lucide icon access
- * Eliminates the need for `as any` when accessing icons dynamically
- */
-
-import * as LucideIcons from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-
-// Map of icon names to components
-type LucideIconMap = typeof LucideIcons;
+import { lazy, type LazyExoticComponent, type ComponentType } from 'react';
+import { Circle } from 'lucide-react';
+import type { LucideProps } from 'lucide-react';
 
 /**
- * Get a Lucide icon component by name
+ * Get a Lucide icon component by name (Lazy Loaded)
  * Returns the icon component or a fallback
  */
 export function getLucideIcon(
   iconName: string | undefined,
-  fallback: LucideIcon = LucideIcons.Circle
-): LucideIcon {
+  fallback: ComponentType<LucideProps> = Circle
+): LazyExoticComponent<ComponentType<LucideProps>> | ComponentType<LucideProps> {
   if (!iconName) return fallback;
-  
-  // Convert kebab-case to PascalCase
-  const pascalCase = iconName
-    .split('-')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
-  
-  // Try to get the icon from the map
-  const icon = (LucideIcons as unknown as Record<string, LucideIcon>)[pascalCase];
-  
-  if (icon && typeof icon === 'function') {
-    return icon;
-  }
-  
-  // Try original case
-  const directIcon = (LucideIcons as unknown as Record<string, LucideIcon>)[iconName];
-  if (directIcon && typeof directIcon === 'function') {
-    return directIcon;
-  }
-  
-  return fallback;
+
+  return lazy(async () => {
+    try {
+      const module = await import('lucide-react');
+
+      // Convert kebab-case to PascalCase
+      const pascalCase = iconName
+        .split('-')
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .join('');
+
+      const Icon = (module as any)[pascalCase] || (module as any)[iconName];
+
+      if (Icon) {
+        return { default: Icon };
+      }
+    } catch (error) {
+      console.error(`Failed to load icon: ${iconName}`, error);
+    }
+
+    // Return fallback if not found
+    return { default: fallback as ComponentType<any> };
+  });
 }
 
 /**
  * Check if a Lucide icon exists by name
+ * @deprecated Cannot synchronously check existence with lazy loading
  */
 export function hasLucideIcon(iconName: string): boolean {
-  const pascalCase = iconName
-    .split('-')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
-  
-  return pascalCase in LucideIcons || iconName in LucideIcons;
+  return !!iconName;
 }
 
 // Re-export common icons for convenience
