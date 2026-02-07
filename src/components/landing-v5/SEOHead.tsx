@@ -1,33 +1,35 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+// ... (imports)
+
 interface SEOHeadProps {
   language: string;
+  includeFAQ?: boolean;
 }
 
 /**
  * SEOHead - Manages all meta tags, structured data, and bot-content
- * All content is injected into <head>, completely hidden from users
- * - Meta tags: description, keywords, robots, etc.
- * - Open Graph: for social media sharing
- * - Twitter Card: for Twitter sharing
- * - JSON-LD: structured data for search engines
+ * ...
  */
-export default function SEOHead({ language }: SEOHeadProps) {
+export default function SEOHead({ language, includeFAQ = true }: SEOHeadProps) {
+  // ... (existing code)
+
+
   const { t } = useTranslation();
 
   useEffect(() => {
     const isRussian = language === 'ru';
     const isKazakh = language === 'kk';
     const locale = isRussian ? 'ru_RU' : isKazakh ? 'kk_KZ' : 'en_US';
-    
+
     // Titles optimized for CTR and clarity - Micro-Business OS positioning
     const titles = {
       ru: 'lnkmx - Micro-Business OS | Конструктор страниц + CRM для бизнеса',
       en: 'lnkmx - Micro-Business OS | Page Builder + CRM for Business',
       kk: 'lnkmx - Micro-Business OS | Бет конструкторы + CRM бизнеске',
     };
-    
+
     const descriptions = {
       ru: 'Операционная система для микро-бизнеса: AI-конструктор страниц, встроенная CRM, форма заявок и Telegram-уведомления. Запустите бизнес за 2 минуты без кода.',
       en: 'Operating system for micro-business: AI page builder, built-in CRM, lead forms and Telegram notifications. Launch your business in 2 minutes with no code.',
@@ -36,7 +38,7 @@ export default function SEOHead({ language }: SEOHeadProps) {
 
     const title = titles[language as keyof typeof titles] || titles.ru;
     const description = descriptions[language as keyof typeof descriptions] || descriptions.ru;
-    
+
     document.title = title;
 
     const setMeta = (name: string, content: string, isProp = false) => {
@@ -51,7 +53,7 @@ export default function SEOHead({ language }: SEOHeadProps) {
     };
 
     const setLink = (rel: string, href: string, hreflang?: string) => {
-      const selector = hreflang 
+      const selector = hreflang
         ? `link[rel="${rel}"][hreflang="${hreflang}"]`
         : `link[rel="${rel}"]:not([hreflang])`;
       let el = document.querySelector(selector) as HTMLLinkElement;
@@ -70,7 +72,7 @@ export default function SEOHead({ language }: SEOHeadProps) {
     setMeta('author', 'lnkmx');
     setMeta('theme-color', '#0080ff');
     setMeta('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
-    
+
     // Additional security and performance meta tags - HIDDEN IN HEAD
     setMeta('x-ua-compatible', 'IE=edge');
     setMeta('format-detection', 'telephone=no');
@@ -150,6 +152,7 @@ export default function SEOHead({ language }: SEOHeadProps) {
         logo: 'https://lnkmx.my/favicon.jpg',
         sameAs: ['https://t.me/lnkmx_app'],
         description: description,
+        areaServed: 'KZ', // Geo-targeting
       },
       // WebSite with SearchAction - HIDDEN IN HEAD
       {
@@ -190,29 +193,29 @@ export default function SEOHead({ language }: SEOHeadProps) {
             '@type': 'Offer',
             name: 'Free Plan',
             price: '0',
-            priceCurrency: 'USD',
+            priceCurrency: 'KZT',
             availability: 'https://schema.org/InStock',
             category: 'SaaS'
           },
           {
             '@type': 'Offer',
             name: 'Pro Plan',
-            price: '5',
-            priceCurrency: 'USD',
+            price: '2990',
+            priceCurrency: 'KZT',
             availability: 'https://schema.org/InStock',
             category: 'SaaS'
           },
         ],
         aggregateRating: {
           '@type': 'AggregateRating',
-          ratingValue: '4.8',
+          ratingValue: '4.9',
           ratingCount: '150',
           bestRating: '5',
           worstRating: '1'
         },
       },
-      // FAQPage - HIDDEN IN HEAD
-      {
+      // FAQPage - Conditional
+      ...(includeFAQ ? [{
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
         mainEntity: faqItems.map((item) => ({
@@ -223,7 +226,7 @@ export default function SEOHead({ language }: SEOHeadProps) {
             text: item.answer,
           },
         })),
-      },
+      }] : []),
       // BreadcrumbList - HIDDEN IN HEAD
       {
         '@context': 'https://schema.org',

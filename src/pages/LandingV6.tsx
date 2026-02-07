@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 // Lazy sections
 // We will replace these with V6 versions progressively
 const FooterSection = lazy(() => import('@/components/landing-v5/FooterSection'));
+const FAQSectionV6 = lazy(() => import('@/components/landing-v6/FAQSectionV6'));
 
 export default function LandingV6() {
     const navigate = useNavigate();
@@ -21,9 +22,9 @@ export default function LandingV6() {
 
     return (
         <>
-            <SEOHead language={i18n.language} />
+            <SEOHead language={i18n.language} includeFAQ={false} />
 
-            <div className="min-h-screen bg-background font-sans selection:bg-primary/20 selection:text-primary">
+            <div className="min-h-screen bg-background font-sans selection:bg-primary/20 selection:text-primary overflow-x-hidden">
                 <NavBar
                     onCreatePage={() => handleCreatePage()}
                     onViewExamples={() => handleViewExamples()}
@@ -35,8 +36,21 @@ export default function LandingV6() {
                         onViewExamples={handleViewExamples}
                     />
 
-                    {/* Temporary spacer for scroll testing */}
-                    <div className="h-[200vh]" />
+                    <Suspense fallback={<div className="h-24" />}>
+                        <TrustSectionV6 />
+                    </Suspense>
+
+                    <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
+                        <FeaturesBento />
+                    </Suspense>
+
+                    <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
+                        <PricingSectionV6 />
+                    </Suspense>
+
+                    <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
+                        <FAQSectionV6 />
+                    </Suspense>
                 </main>
 
                 <Suspense fallback={null}>
