@@ -22,6 +22,7 @@ export class InsightsService {
         stats: AnalyticsSummary,
         translations: (key: string, variables?: Record<string, any>) => string
     ): InsightSuggestion[] {
+        if (!stats) return [];
         const suggestions: InsightSuggestion[] = [];
 
         const hasPricing = blocks.some((b) => b.type === 'pricing');
