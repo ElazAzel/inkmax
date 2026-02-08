@@ -43,12 +43,6 @@ export const AnalyticsChart = memo(function AnalyticsChart({
 
   if (!data.length) return null;
 
-  // Defensive check for Recharts components availability
-  if (!ResponsiveContainer || (!AreaChart && !LineChart)) {
-    console.error('Recharts components are missing or failed to load');
-    return <div className="h-48 flex items-center justify-center text-muted-foreground bg-muted/20 rounded-lg">{t('analytics.chartError', 'Chart could not be loaded')}</div>;
-  }
-
   const ChartComponent = type === 'area' ? AreaChart : LineChart;
 
   return (

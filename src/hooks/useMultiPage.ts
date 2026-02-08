@@ -163,7 +163,7 @@ export function useMultiPage() {
   }, [pages]);
 
   // Create new page
-  const createPage = useCallback(async (title: string, slug?: string, initialBlocks?: any[]): Promise<CreatePageResult> => {
+  const createPage = useCallback(async (title: string, slug?: string): Promise<CreatePageResult> => {
     if (!user?.id) {
       return { success: false, error: 'not_authenticated' };
     }
@@ -224,35 +224,21 @@ export function useMultiPage() {
         throw createError;
       }
 
-      // Create initial blocks
+      // Create default profile block
       if (newPage) {
-        if (initialBlocks && initialBlocks.length > 0) {
-          // Insert generated blocks
-          const blocksToInsert = initialBlocks.map((b, index) => ({
+        await supabase
+          .from('blocks')
+          .insert({
             page_id: newPage.id,
-            type: b.type,
-            position: index,
-            content: { ...b, id: b.id }, // ensure ID is preserved
-            is_premium: false, // Default to false, logic can be added later
-          }));
-
-          await supabase.from('blocks').insert(blocksToInsert);
-        } else {
-          // Default profile block
-          await supabase
-            .from('blocks')
-            .insert({
-              page_id: newPage.id,
+            type: 'profile',
+            position: 0,
+            content: {
+              id: `profile-${newPage.id}`,
               type: 'profile',
-              position: 0,
-              content: {
-                id: `profile-${newPage.id}`,
-                type: 'profile',
-                name: title || 'My Page',
-              },
-              is_premium: false,
-            });
-        }
+              name: title || 'My Page',
+            },
+            is_premium: false,
+          });
       }
 
       // Refresh pages list

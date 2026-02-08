@@ -70,9 +70,6 @@ const ThemePanel = lazy(() => import('@/components/dashboard-v2/panels').then(m 
 const CreatePageDialogLazy = lazy(() => import('@/components/dashboard-v2/dialogs').then(m => ({ default: m.CreatePageDialog })));
 const PageVersionsDialogLazy = lazy(() => import('@/components/dashboard-v2/dialogs').then(m => ({ default: m.PageVersionsDialog })));
 
-import { PageGenerationWizard } from '@/components/PageGenerationWizard';
-import { BaseBlock } from '@/domain/entities/Block';
-
 import type { Niche } from '@/lib/niches';
 
 type TabId = 'home' | 'editor' | 'pages' | 'activity' | 'insights' | 'monetize' | 'settings' | 'events';
@@ -145,10 +142,7 @@ export default function DashboardV2() {
   const [showQuickStart, setShowQuickStart] = useState(false);
   const [showCreatePage, setShowCreatePage] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
-
   const [showTheme, setShowTheme] = useState(false);
-  const [showWizard, setShowWizard] = useState(false);
-  const [pendingPageDetails, setPendingPageDetails] = useState<{ title: string; slug?: string } | null>(null);
 
   // Page versions
   const handleRestoreVersion = useCallback((blocks: any[], theme?: any, seo?: any) => {
@@ -201,14 +195,7 @@ export default function DashboardV2() {
   }, [multiPage]);
 
   // Handle create page
-  const handleCreatePage = useCallback(async (title: string, slug?: string, useAI?: boolean): Promise<{ success: boolean; error?: string }> => {
-    if (useAI) {
-      setPendingPageDetails({ title, slug });
-      setShowCreatePage(false);
-      setShowWizard(true);
-      return { success: true };
-    }
-
+  const handleCreatePage = useCallback(async (title: string, slug?: string): Promise<{ success: boolean; error?: string }> => {
     const result = await multiPage.createPage(title, slug);
     if (result.success) {
       toast.success(t('dashboard.pages.createSuccess', 'Page created!'));
@@ -218,19 +205,6 @@ export default function DashboardV2() {
     }
     return { success: result.success, error: result.error };
   }, [multiPage, t]);
-
-  const handleWizardGenerate = useCallback(async (blocks: BaseBlock[]) => {
-    if (!pendingPageDetails) return;
-
-    const result = await multiPage.createPage(pendingPageDetails.title, pendingPageDetails.slug, blocks);
-    if (result.success) {
-      toast.success(t('dashboard.pages.createSuccess', 'Page created with AI!'));
-      setShowWizard(false);
-      setPendingPageDetails(null);
-    } else {
-      toast.error(t(`dashboard.pages.errors.${result.error}`, 'Failed to create page'));
-    }
-  }, [multiPage, pendingPageDetails, t]);
 
   // Handle edit page (navigate to editor)
   const handleEditPage = useCallback((pageId: string) => {
@@ -666,13 +640,6 @@ export default function DashboardV2() {
             }}
             isPremium={dashboard.isPremium}
             onUpgrade={() => navigate('/pricing')}
-          />
-
-
-          <PageGenerationWizard
-            isOpen={showWizard}
-            onOpenChange={setShowWizard}
-            onGenerate={handleWizardGenerate}
           />
         </Suspense>
       </div>

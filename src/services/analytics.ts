@@ -12,7 +12,7 @@ import { logger } from '@/lib/logger';
 // Types
 // ============================================
 
-export type AnalyticsEventType = 'view' | 'click' | 'share' | 'form_submit';
+export type AnalyticsEventType = 'view' | 'click' | 'share';
 
 export interface TrackEventOptions {
   pageId: string;
@@ -283,22 +283,6 @@ export async function trackShare(pageId: string, method?: string): Promise<void>
     metadata: {
       method: method || 'unknown',
     },
-  });
-}
-
-/**
- * Track form submission event
- */
-export async function trackFormSubmit(
-  pageId: string,
-  blockId: string,
-  metadata?: Record<string, unknown>
-): Promise<void> {
-  return trackEvent({
-    pageId,
-    eventType: 'form_submit',
-    blockId,
-    metadata,
   });
 }
 
