@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => ({
             if (id.includes('framer-motion')) {
               return 'vendor-animation';
             }
-            if (id.includes('recharts')) {
+            if (id.includes('recharts') || id.includes('victory-vendor') || id.includes('d3-')) {
               return 'vendor-charts';
             }
             if (id.includes('@radix-ui') || id.includes('lucide-react')) {
@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.jpg', 'robots.txt'],
-      // Version bump to clear all user caches - 2026-02-08 v1.3.1 fix OAuth and SW errors
+      // Version bump to clear all user caches - 2026-02-08 v1.3.2 fix Recharts bundling errors
       manifest: {
         name: 'LinkMAX - AI-Powered Link-in-Bio',
         short_name: 'LinkMAX',
