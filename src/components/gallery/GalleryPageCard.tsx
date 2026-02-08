@@ -1,193 +1,195 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Heart, Eye, ExternalLink, Share2, Check, Calendar, Crown } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Heart, Copy, Crown, Eye } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import type { GalleryPage } from '@/services/gallery';
-import { NICHE_ICONS, type Niche } from '@/lib/niches';
 import { PagePreview } from './PagePreview';
-import { parseMultilingualField, type SupportedLanguage } from '@/lib/i18n-helpers';
+import { NICHE_ICONS, type Niche } from '@/lib/niches';
+import { useState } from 'react';
 
+// Unified interface supporting both old and new usage
 interface GalleryPageCardProps {
   page: GalleryPage;
-  onLike: (pageId: string) => Promise<void>;
-  isLiked: boolean;
+  // New props (simplified)
+  onCopy?: () => void;
+  onView?: () => void;
+  onLike?: (pageId: string) => Promise<void> | void;
+
+  // Legacy props (compat)
+  isLiked?: boolean;
   featured?: boolean;
 }
 
-export function GalleryPageCard({ page, onLike, isLiked, featured = false }: GalleryPageCardProps) {
-  const { t, i18n } = useTranslation();
-  const currentLang = i18n.language as SupportedLanguage;
+export function GalleryPageCard({
+  page,
+  onCopy,
+  onView,
+  onLike,
+  isLiked = false,
+  featured = false
+}: GalleryPageCardProps) {
+  const { t } = useTranslation();
+  const [internalLikeState, setInternalLikeState] = useState(isLiked);
   const [isLiking, setIsLiking] = useState(false);
-  const [copied, setCopied] = useState(false);
 
-  const handleLike = async () => {
-    if (isLiking) return;
+  // Sync internal state with prop if provided
+  if (isLiked !== internalLikeState && !isLiking) {
+    setInternalLikeState(isLiked);
+  }
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isLiking || !onLike) return;
+
     setIsLiking(true);
     try {
-      await onLike(page.id);
+      // Optimistic update
+      setInternalLikeState(!internalLikeState);
+
+      const result = onLike(page.id);
+      if (result instanceof Promise) {
+        await result;
+      }
+    } catch {
+      // Revert on error
+      setInternalLikeState(!internalLikeState);
     } finally {
       setIsLiking(false);
     }
   };
 
-  const handleShare = async () => {
-    const url = `${window.location.origin}/${page.slug}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      toast.success(t('gallery.linkCopied', 'Link copied!'));
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      toast.error(t('gallery.copyError', 'Failed to copy'));
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onCopy) {
+      onCopy();
+    } else {
+      // Fallback copy logic if no handler provided
+      navigator.clipboard.writeText(`${window.location.origin}/${page.slug}`);
     }
   };
 
-  const featuredDate = page.gallery_featured_at 
-    ? new Date(page.gallery_featured_at).toLocaleDateString()
-    : null;
+  const handleView = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (onView) {
+      onView();
+    } else {
+      window.open(`/${page.slug}`, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
-    <Card 
+    <Card
       className={`
-        group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1
-        ${featured 
-          ? 'bg-gradient-to-br from-primary/10 via-card/80 to-card border-primary/30' 
-          : 'bg-card/50 backdrop-blur-lg border-border/30'
+        group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer active:scale-[0.98]
+        ${featured
+          ? 'bg-gradient-to-br from-primary/10 via-card/80 to-card border-primary/30'
+          : 'bg-card/50 backdrop-blur-lg border-border/30 hover:border-border/50'
         }
       `}
+      onClick={(e) => handleView()}
     >
       {/* Page Preview Screenshot */}
-      <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer" className="block">
+      <div className="aspect-[4/3] w-full relative overflow-hidden bg-gradient-to-br from-primary/10 to-violet-500/10">
         <PagePreview
           slug={page.slug}
-          title={parseMultilingualField(page.title, currentLang)}
+          title={page.title}
           avatarUrl={page.avatar_url}
           previewUrl={page.preview_url}
-          className="aspect-[4/3] w-full"
+          className="w-full h-full"
         />
-      </a>
 
-      <CardContent className="p-4">
-        {/* Header with title and badges */}
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-foreground truncate">
-                {parseMultilingualField(page.title, currentLang) || page.slug}
-              </h3>
-              {page.is_premium && (
-                <Crown className="h-4 w-4 text-primary flex-shrink-0" />
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground truncate">
-              @{page.slug}
-            </p>
+        {page.is_premium && (
+          <div className="absolute top-2 right-2 z-10">
+            <Crown className="h-4 w-4 text-amber-500 drop-shadow-md" />
           </div>
-          <div className="flex flex-col items-end gap-1 shrink-0">
-            {featured && (
-              <Badge variant="default" className="bg-primary/90 text-xs">
-                ⭐ {t('gallery.featured', 'Featured')}
-              </Badge>
-            )}
-            {page.niche && page.niche !== 'other' && (
-              <Badge variant="outline" className="text-xs bg-card/50">
-                {NICHE_ICONS[page.niche as Niche] || '📌'} {t(`niches.${page.niche}`, page.niche)}
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        {/* Description */}
-        {page.description && (
-          <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
-            {parseMultilingualField(page.description, currentLang)}
-          </p>
         )}
 
-        {/* Stats */}
-        <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-            <span className="font-medium">{page.gallery_likes || 0}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Eye className="h-4 w-4" />
-            <span>{page.view_count || 0}</span>
-          </div>
-          {featuredDate && (
-            <div className="flex items-center gap-1.5 ml-auto text-xs">
-              <Calendar className="h-3 w-3" />
-              <span>{featuredDate}</span>
+        {/* Hover overlay for desktop */}
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex items-center justify-center gap-2">
+          <Button
+            size="sm"
+            variant="secondary"
+            className="h-8"
+            onClick={(e) => { e.stopPropagation(); handleView(e); }}
+          >
+            <Eye className="w-4 h-4 mr-1.5" />
+            {t('common.view', 'View')}
+          </Button>
+        </div>
+      </div>
+
+      <CardContent className="p-3">
+        {/* Header with title and badges */}
+        <div className="flex items-center gap-2 mb-2">
+          <Avatar className="h-6 w-6 rounded-md ring-1 ring-border/50">
+            <AvatarImage src={page.avatar_url || undefined} />
+            <AvatarFallback className="rounded-md text-xs font-bold bg-primary/10 text-primary">
+              {page.title?.charAt(0) || 'L'}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-sm truncate">{page.title || t('gallery.untitled', 'Untitled')}</span>
+              {featured && (
+                <Badge variant="default" className="bg-primary/90 text-[10px] h-4 px-1">
+                  ⭐
+                </Badge>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/30">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={isLiked ? "secondary" : "outline"}
-                size="sm"
-                className="flex-1 gap-2"
-                onClick={handleLike}
-                disabled={isLiking}
-              >
-                <Heart 
-                  className={`h-4 w-4 transition-all ${
-                    isLiked ? 'fill-red-500 text-red-500 scale-110' : ''
-                  }`} 
-                />
-                {isLiked ? t('gallery.unlike', 'Unlike') : t('gallery.like', 'Like')}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {isLiked 
-                ? t('gallery.clickToUnlike', 'Click to remove like')
-                : t('gallery.likeTooltip', 'Show some love!')
-              }
-            </TooltipContent>
-          </Tooltip>
+        {/* Stats & Actions */}
+        <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleLike}
+                  className="flex items-center gap-1 hover:text-red-500 transition-colors group/like"
+                  disabled={isLiking}
+                >
+                  <Heart className={`h-3.5 w-3.5 transition-colors ${internalLikeState ? 'fill-red-500 text-red-500' : 'group-hover/like:text-red-500'}`} />
+                  <span className={internalLikeState ? 'text-red-500 font-medium' : ''}>{page.gallery_likes || 0}</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {internalLikeState ? t('gallery.unlike', 'Unlike') : t('gallery.like', 'Like')}
+              </TooltipContent>
+            </Tooltip>
+
+            <div className="flex items-center gap-1">
+              <Eye className="h-3.5 w-3.5" />
+              {page.view_count || 0}
+            </div>
+          </div>
 
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                className="gap-2"
-                onClick={handleShare}
+                className="h-7 w-7 p-0 rounded-lg hover:bg-primary/10 hover:text-primary ml-auto"
+                onClick={handleCopy}
               >
-                {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                <Copy className="h-3.5 w-3.5" />
+                <span className="sr-only">{t('common.copy', 'Copy')}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              {t('gallery.shareTooltip', 'Copy page link')}
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                asChild
-              >
-                <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {t('gallery.viewPage', 'Open page')}
+              {t('common.copy', 'Copy Link')}
             </TooltipContent>
           </Tooltip>
         </div>
       </CardContent>
     </Card>
   );
+}
+
+// Helper component for layout compatibility if needed
+function CardContent({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <div className={className}>{children}</div>;
 }
