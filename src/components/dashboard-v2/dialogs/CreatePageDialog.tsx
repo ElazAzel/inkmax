@@ -23,7 +23,7 @@ interface CreatePageDialogProps {
   onOpenChange: (open: boolean) => void;
   limits: PageLimits | null;
   isPremium: boolean;
-  onCreatePage: (title: string, slug?: string) => Promise<{ success: boolean; error?: string }>;
+  onCreatePage: (title: string, slug?: string, useAI?: boolean) => Promise<{ success: boolean; error?: string }>;
   onUpgrade: () => void;
 }
 
@@ -38,6 +38,7 @@ export const CreatePageDialog = memo(function CreatePageDialog({
   const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [useAI, setUseAI] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,7 +53,7 @@ export const CreatePageDialog = memo(function CreatePageDialog({
     setLoading(true);
     setError(null);
 
-    const result = await onCreatePage(title.trim(), slug.trim() || undefined);
+    const result = await onCreatePage(title.trim(), slug.trim() || undefined, useAI);
 
     setLoading(false);
 
@@ -182,15 +183,30 @@ export const CreatePageDialog = memo(function CreatePageDialog({
           )}
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t('common.cancel', 'Cancel')}
-          </Button>
-          <Button onClick={handleCreate} disabled={loading} className="rounded-xl">
-            {loading ? t('common.creating', 'Creating...') : t('dashboard.createPage.create', 'Create page')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+
+        <div className="flex items-center space-x-2 pt-2">
+          <input
+            type="checkbox"
+            id="useAI"
+            checked={useAI}
+            onChange={(e) => setUseAI(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <Label htmlFor="useAI" className="font-normal cursor-pointer">
+            {t('dashboard.createPage.useAI', 'Generate with AI Assistant')}
+          </Label>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button variant="outline" onClick={() => onOpenChange(false)}>
+          {t('common.cancel', 'Cancel')}
+        </Button>
+        <Button onClick={handleCreate} disabled={loading} className="rounded-xl">
+          {loading ? t('common.creating', 'Creating...') : t('dashboard.createPage.create', 'Create page')}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+    </Dialog >
   );
 });

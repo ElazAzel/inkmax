@@ -32,12 +32,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Trash2, 
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  Trash2,
   MessageSquare,
   PhoneCall,
   Video,
@@ -82,14 +82,22 @@ const sourceIcons: Record<string, string> = {
   messenger: '💬',
   manual: '✏️',
   page_view: '👁️',
+  page_view: '👁️',
   other: '📌',
 };
+
+const QUICK_TEMPLATES = [
+  { id: 'hello', label: '👋 Hello', text: "Hi, thanks for reaching out! How can I help you today?" },
+  { id: 'price', label: '💰 Price', text: "Hi, here is our price list: [Link]. Let me know if you have questions!" },
+  { id: 'booking', label: '📅 Booking', text: "Hi, let's schedule a call. When are you available?" },
+  { id: 'details', label: 'ℹ️ Details', text: "Could you please provide more details about your request?" },
+];
 
 export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
   const { t } = useTranslation();
   const { updateLead, deleteLead, saving } = useLeads();
   const { interactions, loading: interactionsLoading, addInteraction } = useLeadInteractions(lead.id);
-  
+
   const [status, setStatus] = useState<LeadStatus>(lead.status);
   const [notes, setNotes] = useState(lead.notes || '');
   const [newInteractionType, setNewInteractionType] = useState<InteractionType>('note');
@@ -108,7 +116,7 @@ export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
 
   const handleAddInteraction = async () => {
     if (!newInteractionContent.trim()) return;
-    
+
     await addInteraction(newInteractionType, newInteractionContent);
     setNewInteractionContent('');
   };
@@ -116,6 +124,25 @@ export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
   const handleDelete = async () => {
     await deleteLead(lead.id);
     onOpenChange(false);
+  };
+
+  const handleQuickReply = (template: typeof QUICK_TEMPLATES[0]) => {
+    // 1. Log interaction
+    addInteraction('message', `Sent template: ${template.label}`);
+
+    // 2. Open app
+    const text = encodeURIComponent(template.text);
+    if (lead.phone) {
+      // Prefer WhatsApp if phone exists
+      window.open(`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${text}`, '_blank');
+    } else if (lead.email) {
+      window.open(`mailto:${lead.email}?subject=Re: Your request&body=${text}`, '_blank');
+    } else {
+      // Copy to clipboard if no contact info (fallback)
+      navigator.clipboard.writeText(template.text);
+      // We should probably toast here, but we are inside a function component, so standard toast is fine if imported
+      // distinct from the one in hooks
+    }
   };
 
   const formatDate = (dateStr: string) => {
@@ -158,7 +185,7 @@ export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
                 {t('crm.contactInfo', 'Contact Information')}
               </h4>
               {lead.email && (
-                <a 
+                <a
                   href={`mailto:${lead.email}`}
                   className="flex items-center gap-2 text-xs sm:text-sm hover:text-primary transition-colors"
                 >
@@ -167,7 +194,7 @@ export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
                 </a>
               )}
               {lead.phone && (
-                <a 
+                <a
                   href={`tel:${lead.phone}`}
                   className="flex items-center gap-2 text-xs sm:text-sm hover:text-primary transition-colors"
                 >
@@ -226,6 +253,33 @@ export function LeadDetails({ lead, open, onOpenChange }: LeadDetailsProps) {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Quick Actions */}
+            <Card className="p-3 sm:p-4 bg-primary/5 border-primary/20">
+              <h4 className="font-medium text-xs sm:text-sm text-primary mb-2 sm:mb-3 flex items-center gap-2">
+                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                {t('crm.quickReplies', 'Quick Replies')}
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                {QUICK_TEMPLATES.map(template => (
+                  <Button
+                    key={template.id}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 justify-start text-xs border-primary/20 hover:bg-primary/10 hover:text-primary"
+                    onClick={() => handleQuickReply(template)}
+                    disabled={!lead.phone && !lead.email}
+                  >
+                    {template.label}
+                  </Button>
+                ))}
+              </div>
+              {(!lead.phone && !lead.email) && (
+                <p className="text-[10px] text-muted-foreground mt-2">
+                  {t('crm.noContactInfo', 'Add email or phone to use quick replies')}
+                </p>
+              )}
+            </Card>
 
             {/* Notes - Compact textarea */}
             <div>

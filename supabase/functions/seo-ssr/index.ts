@@ -32,7 +32,7 @@ function truncate(text: string, maxLength: number): string {
 
 serve(async (req: Request) => {
   console.log('[render-page] Request:', req.url);
-  
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -45,9 +45,9 @@ serve(async (req: Request) => {
     console.log('[render-page] slug=', slug, 'lang=', lang);
 
     if (!slug) {
-      return new Response('Slug required', { 
-        status: 400, 
-        headers: { ...corsHeaders, 'Content-Type': 'text/plain' } 
+      return new Response('Slug required', {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
       });
     }
 
@@ -87,13 +87,13 @@ serve(async (req: Request) => {
   <a href="${DOMAIN}/">Go to homepage</a>
 </body>
 </html>`;
-      return new Response(html404, { 
-        status: 404, 
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'text/html; charset=utf-8', 
-          'X-Robots-Tag': 'noindex, nofollow' 
-        } 
+      return new Response(html404, {
+        status: 404,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'text/html; charset=utf-8',
+          'X-Robots-Tag': 'noindex, nofollow'
+        }
       });
     }
 
@@ -106,7 +106,38 @@ serve(async (req: Request) => {
 
     // Build SEO-optimized content
     const displayName = escapeHtml(page.title || '@' + slug);
-    const rawDesc = page.description || '';
+    let rawDesc = page.description || '';
+
+    // Auto-generate description if missing
+    if (!rawDesc && blocks && blocks.length > 0) {
+      const parts: string[] = [];
+      const hasPricing = blocks.some(b => b.type === 'pricing');
+      const hasBooking = blocks.some(b => b.type === 'booking');
+      const hasProducts = blocks.some(b => b.type === 'product' || b.type === 'catalog');
+      const hasEvents = blocks.some(b => b.type === 'event');
+      const hasContacts = blocks.some(b => b.type === 'messenger' || b.type === 'socials');
+
+      if (hasPricing || hasBooking) {
+        parts.push(lang === 'ru' ? 'Услуги и запись' : lang === 'kk' ? 'Қызметтер мен жазылу' : 'Services and booking');
+      } else if (hasProducts) {
+        parts.push(lang === 'ru' ? 'Товары и услуги' : lang === 'kk' ? 'Тауарлар мен қызметтер' : 'Products and services');
+      }
+
+      if (hasEvents) {
+        parts.push(lang === 'ru' ? 'Мероприятия' : lang === 'kk' ? 'Іс-шаралар' : 'Events');
+      }
+
+      if (hasContacts) {
+        parts.push(lang === 'ru' ? 'Контакты' : lang === 'kk' ? 'Байланыс' : 'Contacts');
+      }
+
+      if (parts.length === 0) {
+        parts.push(lang === 'ru' ? 'Страница на LinkMAX' : lang === 'kk' ? 'LinkMAX парақшасы' : 'Page on LinkMAX');
+      }
+
+      rawDesc = parts.join(' • ');
+    }
+
     const cleanDesc = stripMarkdownLinks(rawDesc);
     const metaDesc = escapeHtml(truncate(cleanDesc, 160));
     const canonical = `${DOMAIN}/${slug}`;
@@ -116,12 +147,12 @@ serve(async (req: Request) => {
     // Build body content from blocks
     let bodyContent = '';
     const links: { url: string; title: string }[] = [];
-    
+
     if (blocks && blocks.length > 0) {
       for (const b of blocks.slice(0, 15)) {
         const blockTitle = b.title ? escapeHtml(b.title) : '';
         const content = b.content as Record<string, unknown> | null;
-        
+
         if (b.type === 'text' && content?.text) {
           bodyContent += `<section><p>${escapeHtml(String(content.text))}</p></section>\n`;
         } else if (b.type === 'link' && content?.url) {
@@ -203,8 +234,63 @@ serve(async (req: Request) => {
           "image": avatar,
           "description": cleanDesc.slice(0, 300)
         }
-      ]
+      ] as any[]
     };
+
+    // Add Event Schemas
+    if (blocks && blocks.length > 0) {
+      blocks.forEach(b => {
+        if (b.type === 'event') {
+          const content = b.content as any;
+          if (content?.status === 'published') {
+            jsonLd['@graph'].push({
+              "@type": "Event",
+              "name": content.title,
+              "description": content.description,
+              "startDate": content.startAt,
+              "endDate": content.endAt,
+              "eventStatus": "https://schema.org/EventScheduled",
+              "eventAttendanceMode": content.locationType === 'online' ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
+              "location": content.locationType === 'online'
+                ? { "@type": "VirtualLocation", "url": content.locationValue }
+                : { "@type": "Place", "address": content.locationValue },
+              "image": content.coverUrl,
+              "organizer": {
+                "@type": schemaType,
+                "name": page.title || '@' + slug,
+                "url": canonical
+              }
+            });
+          }
+        }
+
+        if (b.type === 'pricing') {
+          const content = b.content as any;
+          if (content?.items && Array.isArray(content.items)) {
+            content.items.slice(0, 5).forEach((item: any) => {
+              jsonLd['@graph'].push({
+                "@type": "Service",
+                "name": item.name,
+                "description": item.description,
+                "provider": {
+                  "@type": schemaType,
+                  "name": page.title || '@' + slug
+                },
+                "offers": {
+                  "@type": "Offer",
+                  "price": item.price,
+                  "priceCurrency": item.currency || content.currency || 'KZT'
+                }
+              });
+            });
+          }
+        }
+      });
+    }
+
+    // Robots Logic
+    const hasEnoughContent = (blocks?.length || 0) >= 2;
+    const robotsContent = hasEnoughContent ? 'index, follow' : 'noindex, nofollow';
 
     // Build full HTML document
     const html = `<!DOCTYPE html>
@@ -214,7 +300,7 @@ serve(async (req: Request) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${displayName} - LinkMAX</title>
   <meta name="description" content="${metaDesc}">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="${robotsContent}">
   <link rel="canonical" href="${canonical}">
   
   <!-- Open Graph -->
@@ -268,18 +354,18 @@ serve(async (req: Request) => {
 
     return new Response(html, {
       status: 200,
-      headers: { 
-        ...corsHeaders, 
+      headers: {
+        ...corsHeaders,
         'Content-Type': 'text/html; charset=utf-8',
-        'X-Robots-Tag': 'index, follow',
+        'X-Robots-Tag': robotsContent,
         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
       }
     });
   } catch (error) {
     console.error('[render-page] Error:', error);
-    return new Response('Internal Server Error', { 
-      status: 500, 
-      headers: { ...corsHeaders, 'Content-Type': 'text/plain' } 
+    return new Response('Internal Server Error', {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
     });
   }
 });
