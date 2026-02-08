@@ -107,7 +107,8 @@
   </style>
 
   <!-- Load fonts with display=swap - non-blocking -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" />
 
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#0080ff" />
@@ -259,6 +260,18 @@
     </div>
   </noscript>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+      caches.keys().then(function (names) {
+        for (let name of names) delete caches.delete(name);
+      });
+    }
+  </script>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 
