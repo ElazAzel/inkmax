@@ -260,18 +260,7 @@
     </div>
   </noscript>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function (registrations) {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
-      });
-      caches.keys().then(function (names) {
-        for (let name of names) delete caches.delete(name);
-      });
-    }
-  </script>
+
   <script type="module" src="/src/main.tsx"></script>
 </body>
 
