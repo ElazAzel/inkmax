@@ -14,6 +14,7 @@ checkCacheVersion();
 // Lazy load page components for route-based code splitting
 const Index = lazy(() => import("./pages/LandingV6"));
 const Auth = lazy(() => import("./pages/Auth"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Dashboard = lazy(() => import("./pages/DashboardV2"));
 const PublicPage = lazy(() => import("./pages/PublicPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Index /> },
       { path: "auth", element: <Auth /> },
+      { path: "auth/callback", element: <AuthCallback /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "dashboard/home", element: <Dashboard /> },
       { path: "dashboard/pages", element: <Dashboard /> },
