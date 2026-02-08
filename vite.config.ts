@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.jpg', 'robots.txt'],
-      // Version bump to clear all user caches - 2026-01-15 v1.3.0 timing update
+      // Version bump to clear all user caches - 2026-02-08 v1.3.1 fix OAuth and SW errors
       manifest: {
         name: 'LinkMAX - AI-Powered Link-in-Bio',
         short_name: 'LinkMAX',

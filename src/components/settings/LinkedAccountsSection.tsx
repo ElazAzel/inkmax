@@ -71,7 +71,7 @@ export function LinkedAccountsSection({ userEmail }: LinkedAccountsSectionProps)
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.href,
+          redirectTo: `${window.location.origin}/dashboard/settings`,
         },
       });
 

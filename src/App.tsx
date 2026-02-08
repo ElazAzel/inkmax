@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster as Sonner, toast } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
@@ -28,7 +28,23 @@ const PageLoader = () => (
 const App = () => {
   // Initialize Web Vitals monitoring in development
   useWebVitals();
-  
+
+  // Listen for OAuth errors in URL
+  useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const error = hashParams.get('error');
+    const errorDescription = hashParams.get('error_description');
+
+    if (error) {
+      // Clear hash to prevent repeated errors
+      window.history.replaceState(null, '', window.location.pathname);
+      // Wait for toast to be ready
+      setTimeout(() => {
+        toast.error(`Authentication Error: ${errorDescription || error}`);
+      }, 500);
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
