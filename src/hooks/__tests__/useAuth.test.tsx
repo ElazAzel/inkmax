@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from '../useAuth';
 // Mock supabase
 const mockSignUp = vi.fn();
 const mockSignInWithPassword = vi.fn();
+const mockSignInWithOAuth = vi.fn();
 const mockSignOut = vi.fn();
 const mockGetSession = vi.fn();
 const mockOnAuthStateChange = vi.fn();
@@ -18,6 +19,7 @@ vi.mock('@/platform/supabase/client', () => ({
         auth: {
             signUp: (...args: unknown[]) => mockSignUp(...args),
             signInWithPassword: (...args: unknown[]) => mockSignInWithPassword(...args),
+            signInWithOAuth: (...args: unknown[]) => mockSignInWithOAuth(...args),
             signOut: () => mockSignOut(),
             getSession: () => mockGetSession(),
             onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
@@ -29,15 +31,6 @@ vi.mock('@/platform/supabase/client', () => ({
             update: vi.fn().mockReturnThis(),
             eq: vi.fn().mockResolvedValue({ error: null }),
         })),
-    },
-}));
-
-// Mock lovable integration
-vi.mock('@/integrations/lovable', () => ({
-    lovable: {
-        auth: {
-            signInWithOAuth: vi.fn().mockResolvedValue({ error: null }),
-        },
     },
 }));
 
@@ -182,6 +175,54 @@ describe('useAuth', () => {
             await act(async () => {
                 const { error } = await result.current.signIn('test@example.com', 'wrongpassword');
                 expect(error).toBe(mockError);
+            });
+        });
+    });
+
+    describe('signInWithGoogle', () => {
+        it('calls supabase signInWithOAuth with google provider', async () => {
+            mockSignInWithOAuth.mockResolvedValueOnce({ error: null });
+
+            const { result } = renderHook(() => useAuth(), { wrapper });
+
+            await waitFor(() => {
+                expect(result.current.loading).toBe(false);
+            });
+
+            await act(async () => {
+                const { error } = await result.current.signInWithGoogle();
+                expect(error).toBeNull(); // map to { error } structure from hook return
+            });
+
+            expect(mockSignInWithOAuth).toHaveBeenCalledWith({
+                provider: 'google',
+                options: {
+                    redirectTo: expect.stringContaining(window.location.origin),
+                },
+            });
+        });
+    });
+
+    describe('signInWithApple', () => {
+        it('calls supabase signInWithOAuth with apple provider', async () => {
+            mockSignInWithOAuth.mockResolvedValueOnce({ error: null });
+
+            const { result } = renderHook(() => useAuth(), { wrapper });
+
+            await waitFor(() => {
+                expect(result.current.loading).toBe(false);
+            });
+
+            await act(async () => {
+                const { error } = await result.current.signInWithApple();
+                expect(error).toBeNull();
+            });
+
+            expect(mockSignInWithOAuth).toHaveBeenCalledWith({
+                provider: 'apple',
+                options: {
+                    redirectTo: expect.stringContaining(window.location.origin),
+                },
             });
         });
     });
