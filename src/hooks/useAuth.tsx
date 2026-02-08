@@ -8,8 +8,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signUp: (email: string, password: string) => Promise<{ data: { user: User | null; session: Session | null } | null; error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ data: { user: User | null; session: Session | null } | null; error: AuthError | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signInWithApple: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string) => {
     const redirectUrl = `${window.location.origin}/dashboard`;
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -107,16 +107,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
     });
 
-    return { error };
+    return { data, error };
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    return { error };
+    return { data, error };
   };
 
   const signInWithGoogle = async () => {

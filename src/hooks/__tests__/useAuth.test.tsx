@@ -102,7 +102,7 @@ describe('useAuth', () => {
 
     describe('signUp', () => {
         it('calls supabase signUp with email and password', async () => {
-            mockSignUp.mockResolvedValueOnce({ error: null });
+            mockSignUp.mockResolvedValueOnce({ data: { user: { id: '123' }, session: null }, error: null });
 
             const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -126,7 +126,7 @@ describe('useAuth', () => {
 
         it('returns error on signUp failure', async () => {
             const mockError = { message: 'Email already registered' };
-            mockSignUp.mockResolvedValueOnce({ error: mockError });
+            mockSignUp.mockResolvedValueOnce({ data: null, error: mockError });
 
             const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -143,7 +143,7 @@ describe('useAuth', () => {
 
     describe('signIn', () => {
         it('calls supabase signInWithPassword', async () => {
-            mockSignInWithPassword.mockResolvedValueOnce({ error: null });
+            mockSignInWithPassword.mockResolvedValueOnce({ data: { user: { id: '123' }, session: {} }, error: null });
 
             const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -164,7 +164,7 @@ describe('useAuth', () => {
 
         it('returns error on invalid credentials', async () => {
             const mockError = { message: 'Invalid login credentials' };
-            mockSignInWithPassword.mockResolvedValueOnce({ error: mockError });
+            mockSignInWithPassword.mockResolvedValueOnce({ data: null, error: mockError });
 
             const { result } = renderHook(() => useAuth(), { wrapper });
 

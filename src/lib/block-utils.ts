@@ -147,7 +147,7 @@ export function validateBlocksIntegrity(blocks: Block[]): { valid: boolean; issu
   const seenIds = new Set<string>();
 
   for (let i = 0; i < blocks.length; i++) {
-    const block = blocks[i];
+    const block = blocks[i] as any;
 
     // Check for duplicate IDs
     if (seenIds.has(block.id)) {

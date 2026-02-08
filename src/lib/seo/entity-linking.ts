@@ -86,7 +86,7 @@ export function extractEntityLinks(
   // Extract knowsAbout from pricing/services
   const pricingBlock = validBlocks.find(b => b.type === 'pricing') as any;
   if (pricingBlock?.items) {
-    for (const item of (pricingBlock.items || []).filter((i): i is NonNullable<typeof i> => i != null && typeof i === 'object')) {
+    for (const item of (pricingBlock.items || []).filter((i: any): i is NonNullable<typeof i> => i != null && typeof i === 'object')) {
       if (!item.name) continue;
       const name = getI18nText(item.name, language);
       if (name && name.length > 2 && name.length < 50) {

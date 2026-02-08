@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,8 +17,31 @@ serve(async (req: Request) => {
   }
 
   try {
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ valid: false, error: 'missing_authorization' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ valid: false, error: 'unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { chatId }: ValidateRequest = await req.json();
-    
+
     if (!chatId || !chatId.trim()) {
       console.log('Empty chat ID provided');
       return new Response(
@@ -70,8 +94,8 @@ serve(async (req: Request) => {
 
       if (testResult.ok) {
         return new Response(
-          JSON.stringify({ 
-            valid: true, 
+          JSON.stringify({
+            valid: true,
             chatInfo: {
               id: result.result.id,
               type: result.result.type,
@@ -84,10 +108,10 @@ serve(async (req: Request) => {
       } else {
         console.log('Failed to send test message:', testResult.description);
         return new Response(
-          JSON.stringify({ 
-            valid: false, 
+          JSON.stringify({
+            valid: false,
             error: 'cannot_send_message',
-            description: testResult.description 
+            description: testResult.description
           }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
@@ -95,10 +119,10 @@ serve(async (req: Request) => {
     } else {
       console.log('Invalid chat ID:', result.description);
       return new Response(
-        JSON.stringify({ 
-          valid: false, 
+        JSON.stringify({
+          valid: false,
           error: 'invalid_chat_id',
-          description: result.description 
+          description: result.description
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
