@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -163,6 +164,11 @@ export function ImageCropper({
             <Move className="h-4 w-4" />
             {t('imageCropper.title', 'Настройка изображения')}
           </DialogTitle>
+          <VisuallyHidden>
+            <DialogDescription>
+              {t('imageCropper.description', 'Перетащите и масштабируйте изображение')}
+            </DialogDescription>
+          </VisuallyHidden>
         </DialogHeader>
 
         <div className="space-y-4">

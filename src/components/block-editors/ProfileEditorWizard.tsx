@@ -181,8 +181,8 @@ export const ProfileEditorWizard = memo(function ProfileEditorWizard({
 
   const handleCropperSave = async (croppedDataUrl: string) => {
     setCropperOpen(false);
-    const response = await fetch(croppedDataUrl);
-    const blob = await response.blob();
+    const { dataUrlToBlob } = await import('@/lib/data-url-to-blob');
+    const blob = dataUrlToBlob(croppedDataUrl);
     await uploadFile(blob, cropperType);
   };
 
