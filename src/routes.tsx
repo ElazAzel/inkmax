@@ -23,12 +23,15 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const PaymentTerms = lazy(() => import("./pages/PaymentTerms"));
 const EventScanner = lazy(() => import("./pages/EventScanner"));
+const OAuthRedirect = lazy(() => import("./pages/OAuthRedirect"));
 
 export function AppRoutes() {
   return (
     <Route element={<App />}>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      {/* OAuth broker routes - must be above catch-all */}
+      <Route path="/~oauth/*" element={<OAuthRedirect />} />
       {/* Dashboard v1 (legacy) */}
       <Route path="/dashboard" element={<Dashboard />} />
       {/* Dashboard v2 (new multi-page) */}

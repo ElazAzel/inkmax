@@ -46,6 +46,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { NicheSelector } from '@/components/settings/NicheSelector';
 import { TelegramVerification } from '@/components/auth/TelegramVerification';
 import { VerificationPanel } from '@/components/settings/VerificationPanel';
+import { LinkedAccountsSection } from '@/components/settings/LinkedAccountsSection';
 import { cn } from '@/lib/utils';
 import { getI18nText } from '@/lib/i18n-helpers';
 import type { ProfileBlock } from '@/types/page';
@@ -654,8 +655,11 @@ export const SettingsScreen = memo(function SettingsScreen(props: SettingsScreen
                     onClick={() => {/* TODO: Open billing history */}}
                   />
                 )}
-              </Card>
+            </Card>
             </div>
+
+            {/* Linked Accounts (Google / Apple) */}
+            <LinkedAccountsSection userEmail={displayName} />
 
             {/* Security */}
             <div className="space-y-2">
