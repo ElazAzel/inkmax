@@ -77,135 +77,63 @@ The project follows Clean Architecture principles with separation of concerns.
 
 ## Documentation
 
-📚 **Platform Documentation:**
+📚 **Primary Documentation:**
 
-- [📖 PLATFORM_SNAPSHOT.md](./docs/PLATFORM_SNAPSHOT.md) - **Current System Status & Architecture** (Living Doc)
-- [🧩 BLOCKS-REFERENCE.md](./docs/BLOCKS-REFERENCE.md) - All 28 blocks with examples
-- [📋 BLOCKS-AUDIT.md](./docs/BLOCKS-AUDIT.md) - Full audit of all blocks
-- [📜 AUDIT-SUMMARY.md](./AUDIT-SUMMARY.md) - Historical audit log
+- [📖 PLATFORM_SNAPSHOT.md](./docs/PLATFORM_SNAPSHOT.md) - **Single Source of Truth** (Architecture, Status, Flows)
+- [📜 CHANGELOG.md](./docs/CHANGELOG.md) - Version history and changes
 
-**Other Resources:**
+**Component & Feature Refs:**
 
-- [🏗️ Architecture](./docs/architecture.md) - System design
-- [🔒 Security](./docs/SECURITY.md) - Security measures
-- [⚡ Performance](./docs/performance.md) - Performance metrics
+- [🧩 BLOCKS-REFERENCE.md](./docs/BLOCKS-REFERENCE.md) - Block library
+- [🏗️ Architecture](./docs/architecture.md) - Deep dive (complementary to Snapshot)
+- [🔒 Security](./docs/SECURITY.md) - Security protocols
 
-## Database Schema
+## Database & Infrastructure
 
-### Core Tables
-
-| Table           | Purpose                                  |
-| --------------- | ---------------------------------------- |
-| `pages`         | User pages with theme/SEO settings       |
-| `blocks`        | Page content blocks (JSON content)       |
-| `user_profiles` | User metadata, premium status            |
-| `user_roles`    | Role-based access (admin/moderator/user) |
-
-### Features
-
-| Table            | Purpose                |
-| ---------------- | ---------------------- |
-| `leads`          | CRM leads from forms   |
-| `bookings`       | Appointment bookings   |
-| `analytics`      | Page view/click events |
-| `events`         | Event management       |
-| `collaborations` | User collaborations    |
-| `teams`          | Team pages             |
+See `docs/PLATFORM_SNAPSHOT.md` for the complete schema and infrastructure details.
 
 ## Edge Functions
 
-| Function                    | Purpose                    |
-| --------------------------- | -------------------------- |
-| `ai-content-generator`      | AI page/block generation   |
-| `chatbot-stream`            | AI chatbot responses       |
-| `translate-content`         | Content translation        |
-| `create-lead`               | Lead capture               |
-| `send-booking-notification` | Booking alerts to Telegram |
-| `send-lead-notification`    | Lead alerts to Telegram    |
-| `telegram-bot-webhook`      | Telegram bot integration   |
-| `validate-telegram`         | Telegram auth verification |
-| `generate-sitemap`          | Dynamic sitemap generation |
-| `process-crm-automations`   | CRM automation workflows   |
+Key functions (hosted on Supabase):
+
+- `ai-content-generator`
+- `process-crm-automations`
+- `telegram-bot-webhook`
+
+(See `supabase/functions/` for full list)
 
 ## Security
 
-### Row Level Security (RLS)
-
-All tables have RLS enabled with policies:
-
-- **User data**: `auth.uid() = user_id`
-- **Public pages**: `is_published = true` (read-only)
-- **Admin access**: `has_role(auth.uid(), 'admin')`
-
-### Rate Limiting
-
-- API endpoints: 60 requests/minute per IP
-- AI generation: 5 requests/day (free), unlimited (pro)
-- Form submissions: 10 requests/minute per page
-
-### Authentication
-
-- Email/password via Supabase Auth
-- Telegram verification for notifications
-- JWT tokens with 1-hour expiry
-
-## URL Structure
-
-| Route         | Access | Description       |
-| ------------- | ------ | ----------------- |
-| `/`           | Public | Landing page (v5) |
-| `/:username`  | Public | User's bio page   |
-| `/gallery`    | Public | Community gallery |
-| `/dashboard`  | Auth   | User dashboard    |
-| `/admin`      | Admin  | Admin panel       |
-| `/auth`       | Public | Login/signup      |
-| `/team/:slug` | Public | Team pages        |
-
-## Pricing (KZT)
-
-| Plan     | Price     | Features                                |
-| -------- | --------- | --------------------------------------- |
-| Free     | 0₸        | Basic blocks, watermark                 |
-| Pro      | 2,610₸/mo | All blocks, AI, CRM, no watermark       |
-| Business | 7,500₸/mo | White label, unlimited AI, priority     |
-
-Payments via RoboKassa (14-day refund policy per Kazakhstan law).
-
-## Environment Variables
-
-```env
-VITE_SUPABASE_URL=https://xxx.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=eyJ...
-GEMINI_API_KEY=xxx (Edge Functions only)
-TELEGRAM_BOT_TOKEN=xxx (Edge Functions only)
-```
+- **RLS:** Enabled on all public tables.
+- **Auth:** Supabase Auth + JWT.
+- **Rate Limits:** Applied via Edge Functions.
 
 ## Development
 
-### Code Style
-
-- TypeScript strict mode
-- ESLint + Prettier
-- Semantic tokens for colors (no direct Tailwind colors)
-- Mobile-first responsive design
-
-### Testing
+### Setup
 
 ```bash
-npm run lint        # ESLint
-npx tsc --noEmit    # TypeScript check
-npm test            # Unit tests (Vitest)
-npm run lint:i18n   # i18n lint for JSX literals
-npm run i18n:check  # Validate locale alignment
-npm run e2e         # Playwright E2E
-npm run e2e:ci      # E2E in CI mode
+npm install
+npm run dev
 ```
 
-### Localization workflow
+### Testing & Quality
 
-- Add new UI strings via `t('namespace.key')` and update `src/i18n/locales/{ru,en,kk}.json`.
-- Run `npm run i18n:check` to validate alignment and placeholders.
-- Run `npm run lint:i18n` to prevent hardcoded JSX strings.
+```bash
+npm run lint        # Code style
+npm typecheck       # TS Validation (custom script)
+npm test            # Unit tests
+npm run e2e         # Playwright
+```
+
+### Localization
+
+- Add strings in `src/i18n/locales/`
+- Run `npm run i18n:check` to validate
+
+### Deployment
+
+Auto-deploys via Lovable Cloud on push to `main`.
 
 ### Deployment
 
