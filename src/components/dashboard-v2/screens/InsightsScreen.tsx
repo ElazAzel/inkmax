@@ -36,6 +36,7 @@ import {
   AnalyticsExport,
 } from '../analytics';
 import { cn } from '@/lib/utils';
+import { InsightsService } from '@/services/InsightsService';
 import type { Block } from '@/types/page';
 
 interface InsightsScreenProps {
@@ -76,7 +77,7 @@ export const InsightsScreen = memo(function InsightsScreen({
     uniqueVisitors: analytics?.uniqueVisitors ?? 0,
     visitorsChange: analytics?.viewsChange ?? 0,
     avgViewsPerDay: analytics?.avgViewsPerDay ?? 0,
-    ctr: analytics && analytics.totalViews > 0 
+    ctr: analytics && analytics.totalViews > 0
       ? ((analytics.totalClicks / analytics.totalViews) * 100)
       : 0,
     topBlocks: analytics?.topBlocks ?? [],
@@ -96,110 +97,21 @@ export const InsightsScreen = memo(function InsightsScreen({
 
   // Calculate device percentages
   const totalDevices = stats.devices.mobile + stats.devices.desktop + stats.devices.tablet;
-  const devicePercentages = useMemo(() => 
+  const devicePercentages = useMemo(() =>
     totalDevices > 0
       ? {
-          mobile: Math.round((stats.devices.mobile / totalDevices) * 100),
-          desktop: Math.round((stats.devices.desktop / totalDevices) * 100),
-          tablet: Math.round((stats.devices.tablet / totalDevices) * 100),
-        }
+        mobile: Math.round((stats.devices.mobile / totalDevices) * 100),
+        desktop: Math.round((stats.devices.desktop / totalDevices) * 100),
+        tablet: Math.round((stats.devices.tablet / totalDevices) * 100),
+      }
       : { mobile: 0, desktop: 0, tablet: 0 },
     [totalDevices, stats.devices]
   );
 
   // AI Insights
   const insights = useMemo(() => {
-    const hasPricing = blocks.some((b) => b.type === 'pricing');
-    const hasTestimonials = blocks.some((b) => b.type === 'testimonial');
-    const hasContactForm = blocks.some((b) => b.type === 'form');
-
-    const suggestions = [];
-
-    // CTR-based insights
-    if (stats.ctr < 5 && stats.views > 10) {
-      suggestions.push({
-        id: 'low-ctr',
-        type: 'warning',
-        title: t('dashboard.insights.lowCtr', 'Низкий CTR'),
-        description: t('dashboard.insights.lowCtrDesc', `CTR всего ${stats.ctr.toFixed(1)}%. Добавьте яркие CTA-кнопки`),
-        action: () => onApplyInsight({ type: 'add', data: { blockType: 'button' } }),
-        impact: 'high' as const,
-      });
-    }
-
-    // Bounce rate insights
-    if (stats.bounceRate > 70 && stats.views > 10) {
-      suggestions.push({
-        id: 'high-bounce',
-        type: 'warning',
-        title: t('dashboard.insights.highBounce', 'Высокий показатель отказов'),
-        description: t('dashboard.insights.highBounceDesc', `${stats.bounceRate.toFixed(0)}% посетителей уходят без действий`),
-        action: () => onApplyInsight({ type: 'optimize', data: { action: 'improve_engagement' } }),
-        impact: 'high' as const,
-      });
-    }
-
-    if (!hasPricing && blocks.length > 3) {
-      suggestions.push({
-        id: 'add-pricing',
-        type: 'add',
-        title: t('dashboard.insights.addPricing', 'Добавьте блок с ценами'),
-        description: t('dashboard.insights.addPricingDesc', 'Страницы с прайсом получают на 40% больше заявок'),
-        action: () => onApplyInsight({ type: 'add', data: { blockType: 'pricing' } }),
-        impact: 'high' as const,
-      });
-    }
-
-    if (!hasTestimonials && blocks.length > 5) {
-      suggestions.push({
-        id: 'add-testimonials',
-        type: 'add',
-        title: t('dashboard.insights.addTestimonials', 'Добавьте отзывы'),
-        description: t('dashboard.insights.addTestimonialsDesc', 'Отзывы увеличивают доверие и конверсию на 25%'),
-        action: () => onApplyInsight({ type: 'add', data: { blockType: 'testimonial' } }),
-        impact: 'medium' as const,
-      });
-    }
-
-    if (!hasContactForm && stats.views > 50 && stats.conversions === 0) {
-      suggestions.push({
-        id: 'add-form',
-        type: 'add',
-        title: t('dashboard.insights.addForm', 'Добавьте форму захвата'),
-        description: t('dashboard.insights.addFormDesc', 'Есть трафик, но нет конверсий. Добавьте форму обратной связи'),
-        action: () => onApplyInsight({ type: 'add', data: { blockType: 'contact_form' } }),
-        impact: 'high' as const,
-      });
-    }
-
-    if (stats.topBlocks[0]?.ctr > 15) {
-      suggestions.push({
-        id: 'duplicate-top',
-        type: 'optimize',
-        title: t('dashboard.insights.duplicateTop', 'Продублируйте популярную ссылку'),
-        description: t(
-          'dashboard.insights.duplicateTopDesc',
-          `"${stats.topBlocks[0].blockTitle}" получает ${stats.topBlocks[0].ctr.toFixed(0)}% кликов`
-        ),
-        action: () => onApplyInsight({ type: 'duplicate', blockId: stats.topBlocks[0].blockId }),
-        impact: 'medium' as const,
-      });
-    }
-
-    // Mobile optimization
-    if (devicePercentages.mobile > 80) {
-      suggestions.push({
-        id: 'mobile-first',
-        type: 'info',
-        title: t('dashboard.insights.mobileFirst', 'Mobile-first аудитория'),
-        description: t('dashboard.insights.mobileFirstDesc', `${devicePercentages.mobile}% с мобильных. Оптимизируйте под телефоны`),
-        action: null,
-        impact: 'low' as const,
-      });
-    }
-
-    return suggestions.slice(0, 4);
-  }, [blocks, onApplyInsight, stats, devicePercentages, t]);
+    return InsightsService.generateSuggestions(blocks, analytics as any, t);
+  }, [blocks, analytics, t]);
 
   if (loading) {
     return (
@@ -344,8 +256,8 @@ export const InsightsScreen = memo(function InsightsScreen({
                           insight.impact === 'high'
                             ? "border-l-emerald-500 bg-emerald-500/5"
                             : insight.impact === 'medium'
-                            ? "border-l-amber-500 bg-amber-500/5"
-                            : "border-l-blue-500 bg-blue-500/5"
+                              ? "border-l-amber-500 bg-amber-500/5"
+                              : "border-l-blue-500 bg-blue-500/5"
                         )}
                       >
                         <div className="flex items-start gap-3">
@@ -355,8 +267,8 @@ export const InsightsScreen = memo(function InsightsScreen({
                               insight.impact === 'high'
                                 ? "bg-emerald-500/20"
                                 : insight.impact === 'medium'
-                                ? "bg-amber-500/20"
-                                : "bg-blue-500/20"
+                                  ? "bg-amber-500/20"
+                                  : "bg-blue-500/20"
                             )}
                           >
                             <Sparkles
@@ -365,8 +277,8 @@ export const InsightsScreen = memo(function InsightsScreen({
                                 insight.impact === 'high'
                                   ? "text-emerald-600"
                                   : insight.impact === 'medium'
-                                  ? "text-amber-600"
-                                  : "text-blue-600"
+                                    ? "text-amber-600"
+                                    : "text-blue-600"
                               )}
                             />
                           </div>
@@ -375,7 +287,7 @@ export const InsightsScreen = memo(function InsightsScreen({
                             <h3 className="font-bold text-sm mb-0.5">{insight.title}</h3>
                             <p className="text-xs text-muted-foreground mb-2">{insight.description}</p>
                             {insight.action && (
-                              <Button size="sm" variant="outline" className="h-7 text-xs rounded-lg" onClick={insight.action}>
+                              <Button size="sm" variant="outline" className="h-7 text-xs rounded-lg" onClick={() => onApplyInsight(insight.action as any)}>
                                 {t('dashboard.insights.apply', 'Применить')}
                                 <ArrowRight className="h-3 w-3 ml-1" />
                               </Button>

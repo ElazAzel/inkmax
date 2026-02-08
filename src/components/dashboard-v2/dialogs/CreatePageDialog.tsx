@@ -196,17 +196,16 @@ export const CreatePageDialog = memo(function CreatePageDialog({
             {t('dashboard.createPage.useAI', 'Generate with AI Assistant')}
           </Label>
         </div>
-      </div>
 
-      <DialogFooter>
-        <Button variant="outline" onClick={() => onOpenChange(false)}>
-          {t('common.cancel', 'Cancel')}
-        </Button>
-        <Button onClick={handleCreate} disabled={loading} className="rounded-xl">
-          {loading ? t('common.creating', 'Creating...') : t('dashboard.createPage.create', 'Create page')}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            {t('common.cancel', 'Cancel')}
+          </Button>
+          <Button onClick={handleCreate} disabled={loading} className="rounded-xl">
+            {loading ? t('common.creating', 'Creating...') : t('dashboard.createPage.create', 'Create page')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog >
   );
 });
