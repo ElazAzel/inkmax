@@ -268,9 +268,9 @@ export const InlineProfileEditor = memo(function InlineProfileEditor({
   const handleCropperSave = async (croppedDataUrl: string) => {
     setCropperOpen(false);
     
-    // Convert data URL to blob
-    const response = await fetch(croppedDataUrl);
-    const blob = await response.blob();
+    // Convert data URL to blob without fetch (avoids CSP violations)
+    const { dataUrlToBlob } = await import('@/lib/data-url-to-blob');
+    const blob = dataUrlToBlob(croppedDataUrl);
     
     await uploadFile(blob, cropperType);
   };
